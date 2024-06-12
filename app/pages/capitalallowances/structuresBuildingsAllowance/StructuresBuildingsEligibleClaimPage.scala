@@ -34,6 +34,13 @@ object StructuresBuildingsEligibleClaimPage extends StructuresBuildingsBasePage[
       StructuresBuildingsNewClaimAmountPage
     )
 
+  override val dependentPagesWhenYes: List[Settable[_]] =
+    List(
+      StructuresBuildingsClaimedPage,
+      StructuresBuildingsPreviousClaimUsePage,
+      StructuresBuildingsPreviousClaimedAmountPage
+    )
+
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       this,

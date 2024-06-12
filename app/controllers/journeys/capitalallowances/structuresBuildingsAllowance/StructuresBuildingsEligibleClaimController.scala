@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimFormProvider
-import models.Mode
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,22 +45,21 @@ class StructuresBuildingsEligibleClaimController @Inject() (override val message
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = request.userAnswers
-        .get(StructuresBuildingsEligibleClaimPage, businessId.some)
-        .fold(formProvider(request.userType))(formProvider(request.userType).fill)
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val form = request.userAnswers
+      .get(StructuresBuildingsEligibleClaimPage, businessId.some)
+      .fold(formProvider(request.userType))(formProvider(request.userType).fill)
 
-      Ok(view(form, mode, request.userType, taxYear, businessId))
+    Ok(view(form, NormalMode, request.userType, taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.submitAnswerAndRedirect(StructuresBuildingsEligibleClaimPage, businessId, request, answer, taxYear, mode)
+          formErrors => Future.successful(BadRequest(view(formErrors, NormalMode, request.userType, taxYear, businessId))),
+          answer => service.submitAnswerAndRedirect(StructuresBuildingsEligibleClaimPage, businessId, request, answer, taxYear, NormalMode)
         )
   }
 

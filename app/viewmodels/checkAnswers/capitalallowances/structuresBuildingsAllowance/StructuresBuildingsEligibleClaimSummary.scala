@@ -18,7 +18,6 @@ package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
-import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsEligibleClaimPage
@@ -34,7 +33,7 @@ object StructuresBuildingsEligibleClaimSummary {
       .map { answer =>
         buildRowBoolean(
           answer,
-          routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, CheckMode),
+          routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId),
           messages(s"structuresBuildingsEligibleClaim.subHeading.$userType"),
           "structuresBuildingsEligibleClaim.change.hidden",
           rightTextAlign = true

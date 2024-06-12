@@ -205,7 +205,7 @@ class CapitalAllowancesNavigator @Inject() {
           businessId =>
             userAnswers.get(StructuresBuildingsAllowancePage, Some(businessId)) match {
               case Some(true) =>
-                structuresBuildingsAllowance.routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, NormalMode)
+                structuresBuildingsAllowance.routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId)
               case Some(false) =>
                 structuresBuildingsAllowance.routes.StructuresBuildingsClaimedController.onPageLoad(taxYear, businessId, NormalMode)
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()

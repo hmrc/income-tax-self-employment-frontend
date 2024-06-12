@@ -33,8 +33,8 @@ import views.html.journeys.capitalallowances.structuresBuildingsAllowance.Struct
 class StructuresBuildingsEligibleClaimControllerSpec
     extends BooleanGetAndPostQuestionBaseSpec("StructuresBuildingsEligibleClaimController", StructuresBuildingsEligibleClaimPage) {
 
-  override def onPageLoadCall: Call = routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.StructuresBuildingsEligibleClaimController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.StructuresBuildingsEligibleClaimController.onPageLoad(taxYear, businessId)
+  override def onSubmitCall: Call   = routes.StructuresBuildingsEligibleClaimController.onSubmit(taxYear, businessId)
 
   override def onwardRoute: Call = routes.StructuresBuildingsQualifyingUseDateController.onPageLoad(taxYear, businessId, 0, NormalMode)
 
