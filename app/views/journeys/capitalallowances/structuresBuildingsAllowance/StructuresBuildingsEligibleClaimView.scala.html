@@ -50,7 +50,7 @@
         <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.href") >@messages("structuresBuildingsEligibleClaim.link")</a>
             <br><br>
 
-    @formHelper(action = routes.StructuresBuildingsEligibleClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.StructuresBuildingsEligibleClaimController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
