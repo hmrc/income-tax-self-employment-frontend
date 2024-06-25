@@ -188,10 +188,10 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
               }
             }
             "and the user has answered 'No' to living at Business Premises" - {
-              "navigate to the CyaController" ignore { // TODO 6997 finish test
+              "navigate to the CyaController" in {
                 val userAnswers = emptyUserAnswers.set(LiveAtBusinessPremisesPage, false, Some(businessId)).success.value
 
-                navigator.nextPage(WfhFlatRateOrActualCostsPage, mode, userAnswersBPAllowable(userAnswers), taxYear, businessId) shouldBe cyaResult
+                navigator.nextPage(BusinessPremisesAmountPage, mode, userAnswersBPAllowable(userAnswers), taxYear, businessId) shouldBe cyaResult
               }
             }
           }
@@ -253,24 +253,19 @@ class WorkplaceRunningCostsNavigatorSpec extends SpecBase {
             }
           }
           "the answer is Flat Rate" - {
-            "navigate to the CYA page" ignore {
-              val userAnswers = // TODO 6997 unignore, add redirect to CYA page
+            "navigate to the CYA page" in {
+              val userAnswers =
                 emptyUserAnswers.set(WfbpFlatRateOrActualCostsPage, WfbpFlatRateOrActualCosts.FlatRate, Some(businessId)).success.value
-              val expectedResult =
-                workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpFlatRateOrActualCostsController
-                  .onPageLoad(taxYear, businessId, NormalMode)
 
-              navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe expectedResult
+              navigator.nextPage(WfbpFlatRateOrActualCostsPage, mode, userAnswers, taxYear, businessId) shouldBe cyaResult
             }
           }
         }
 
         "the page is WfbpClaimingAmountPage" - {
-          "navigate to the CYA page" ignore {
-            val expectedResult = // TODO 6997 unignore, add redirect to CYA page
-              workplaceRunningCosts.workingFromBusinessPremises.routes.WfbpClaimingAmountController.onPageLoad(taxYear, businessId, mode)
+          "navigate to the CYA page" in {
 
-            navigator.nextPage(WfbpClaimingAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+            navigator.nextPage(WfbpClaimingAmountPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe cyaResult
           }
         }
 

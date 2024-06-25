@@ -364,7 +364,7 @@ tradingAllowanceAmount.error.nonNumeric.agent = The amount of trading allowance 
 tradingAllowanceAmount.error.lessThanZero.individual = The amount of trading allowance you want to use must be more than £0
 tradingAllowanceAmount.error.lessThanZero.agent = The amount of trading allowance your client wants to use must be more than £0
 tradingAllowanceAmount.error.overTurnover.individual = The amount of trading allowance you want to use must be less than £{0}
-tradingAllowanceAmount.error.overTurnover.agent = The amount of trading allowance your client wants to use must be less than  £{0}
+tradingAllowanceAmount.error.overTurnover.agent = The amount of trading allowance your client wants to use must be less than £{0}
 tradingAllowanceAmount.change.hidden = Change trading allowance amount
 
 ## Check your income (Income CYA)
@@ -468,7 +468,7 @@ expensesTailoringCya.title.individual = Check your expenses
 expensesTailoringCya.title.agent = Check your client’s expenses
 expensesTailoringCyaCategories.title.individual = Check your expenses categories
 expensesTailoringCyaCategories.title.agent = Check your client’s expenses categories
-expensesTailoringCya.insetText = We will only save amounts.  Other information will not be saved.
+expensesTailoringCya.insetText = We will only save amounts. Other information will not be saved.
 
 ###### Expenses - Simple Journey ######
 
@@ -784,7 +784,7 @@ repairsAndMaintenanceAmount.error.required.agent = Enter the amount your client 
 repairsAndMaintenanceAmount.error.nonNumeric.individual = The amount you spent on repairs and maintenance must be a number
 repairsAndMaintenanceAmount.error.nonNumeric.agent = The amount your client spent on repairs and maintenance must be a number
 repairsAndMaintenanceAmount.error.overMax.individual = The amount you spent on repairs and maintenance must be less than £100,000,000,000
-repairsAndMaintenanceAmount.error.overMax.agent = The amount your client spent on repairs and maintenance must be less than  £100,000,000,000
+repairsAndMaintenanceAmount.error.overMax.agent = The amount your client spent on repairs and maintenance must be less than £100,000,000,000
 repairsAndMaintenanceAmount.error.lessThanZero.individual = The amount you spent on repairs and maintenance must be more than £0
 repairsAndMaintenanceAmount.error.lessThanZero.agent = The amount your client spent on repairs and maintenance must be more than £0
 repairsAndMaintenanceAmount.change.hidden = Change how much was spent on repairs and maintenance
@@ -811,8 +811,8 @@ repairsAndMaintenanceCostsCYA.title.agent = Check your client’s repairs and ma
 common.workplaceRunning.heating = heating
 
 ## CYA
-worklpaceRunningCostsCya.title.individual =  Check your workplace running costs
-worklpaceRunningCostsCya.title.agent =  Check your client’s workplace running costs
+worklpaceRunningCostsCya.title.individual = Check your workplace running costs
+worklpaceRunningCostsCya.title.agent = Check your client’s workplace running costs
 wfh25To50Hours.subHeading.individual = How many months did you work 25 to 50 hours from home?
 wfh25To50Hours.subHeading.agent = How many months did your client work 25 to 50 hours from home?
 wfh51To100Hours.subHeading.individual = How many months did you work 51 to 100 hours from home?
@@ -820,7 +820,6 @@ wfh51To100Hours.subHeading.agent = How many months did your client work 51 to 10
 wfh101PlusHours.subHeading.individual = How many months did you work 101 or more hours from home?
 wfh101PlusHours.subHeading.agent = How many months did your client work 101 or more hours from home?
 wfhFlatRateOrActualCosts.subHeading.individual = Do you want to report your working-from-home expenses as a flat rate of £{0} or actual costs?
-wfhFlatRateOrActualCosts.subHeading.agent = Does your client want to report their working-from-home expenses as a flat rate of £{0} or actual costs?
 wfbpOnePerson.subHeading.individual = How many months did 1 person live at your business premises?
 wfbpOnePerson.subHeading.agent = How many months did 1 person live at your client’s business premises?
 wfbpTwoPeople.subHeading.individual = How many months did 2 people live at your business premises?
@@ -872,7 +871,6 @@ wfhFlatRateOrActualCosts.months101Plus = {0} at 101 or more hours
 wfhFlatRateOrActualCosts.amount25To50 = £{0} (£10 per month)
 wfhFlatRateOrActualCosts.amount51To100 = £{0} (£18 per month)
 wfhFlatRateOrActualCosts.amount101Plus = £{0} (£26 per month)
-wfhFlatRateOrActualCosts.subHeading.individual = Will you report you working-from-home expenses as a flat rate of £{0} or actual costs?
 wfhFlatRateOrActualCosts.subHeading.agent = Will you report your client’s working-from-home expenses as a flat rate of £{0} or actual costs?
 wfhFlatRateOrActualCosts.error.required.individual = Select if you want to claim your working-from-home expenses as actual costs or simplified expenses
 wfhFlatRateOrActualCosts.error.required.agent = Select if you will report your client’s working-from-home expenses as actual costs or simplified expenses
@@ -932,7 +930,7 @@ businessPremisesAmount.claim.individual = You can claim:
 businessPremisesAmount.claim.agent = Your client can claim:
 businessPremisesAmount.rent = rent for business premises
 businessPremisesAmount.businessAndWater = business and water rates
-businessPremisesAmount.lighting =  lighting
+businessPremisesAmount.lighting = lighting
 businessPremisesAmount.power = power
 businessPremisesAmount.insurance = property insurance
 businessPremisesAmount.security = security
@@ -1324,7 +1322,7 @@ capitalAllowance.inThisTaxYear = All in this tax year
 capitalAllowance.multipleTaxYears = Across multiple tax years
 capitalAllowance.linkHref = https://www.gov.uk/work-out-capital-allowances
 capitalAllowance.linkText = ‘writing down’ allowances
-capitalAllowance.postLinkText =  (opens in new tab) on the balance for this and future tax years.
+capitalAllowance.postLinkText = (opens in new tab) on the balance for this and future tax years.
 
 claimCapitalAllowances.error.required.individual = Select yes if you want to claim any capital allowances or declare a charge
 claimCapitalAllowances.error.required.agent = Select yes if your client wants to claim any capital allowances or declare a charge
@@ -1519,10 +1517,10 @@ zegvHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost 
 
 ########## Capital Allowances - Electric Vehicle Charge Points ##########
 
-evcpAllowance.p1.individual =  You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
-evcpAllowance.p1.agent =  Your client can use the cost of any new and unused electric vehicle charge-points to reduce their taxable income.
-evcpAllowance.p2.individual =  Reduce your taxable income by the full cost of the electric vehicle charge-points.
-evcpAllowance.p2.agent =  Reduce your client’s taxable income by the full cost of the electric vehicle charge-points.
+evcpAllowance.p1.individual = You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
+evcpAllowance.p1.agent = Your client can use the cost of any new and unused electric vehicle charge-points to reduce their taxable income.
+evcpAllowance.p2.individual = Reduce your taxable income by the full cost of the electric vehicle charge-points.
+evcpAllowance.p2.agent = Reduce your client’s taxable income by the full cost of the electric vehicle charge-points.
 evcpAllowance.p3.individual = Claim part of the cost of the charge-points by using this allowance for this tax year. You can then use
 evcpAllowance.p3.agent = Claim part of the cost of the charge-points by using this allowance for this tax year. They can then use
 evcpAllowance.subHeading.individual = Did you buy and install any new and unused electric vehicle charge-points?
@@ -1585,7 +1583,7 @@ balancingAllowance.p1.agent = Your client will get a balancing allowance in the:
 balancingAllowance.p2.individual = main rate or special rate pool when your business ceases
 balancingAllowance.p2.agent = main rate or special rate pool when their business ceases
 balancingAllowance.p3.individual = single asset pool if the item is no longer used in your business
-balancingAllowance.p3.agent = single asset pool if the item is no longer used in their  business
+balancingAllowance.p3.agent = single asset pool if the item is no longer used in their business
 balancingAllowance.p4.individual = Your balancing allowance is the balance left in the pool after you’ve deducted:
 balancingAllowance.p4.agent = Their balancing allowance is the balance left in the pool after they’ve deducted:
 balancingAllowance.p5.individual = the amount you received for the sale
@@ -1605,7 +1603,7 @@ balancingAllowance.change.hidden = Change if any balancing allowance need to be 
 balancingAllowanceAmount.title.individual = How much is the total of your balancing allowances?
 balancingAllowanceAmount.title.agent = How much is the total of your client’s balancing allowances?
 balancingAllowanceAmount.error.required.individual = Enter the amount of the balancing allowance you want to report
-balancingAllowanceAmount.error.required.agent =  Enter the amount of the balancing allowance your client wants to report
+balancingAllowanceAmount.error.required.agent = Enter the amount of the balancing allowance your client wants to report
 balancingAllowanceAmount.change.hidden = Change how much balancing allowance is reported
 
 ########## Capital Allowances - Annual Investment Allowance ##########
@@ -1748,8 +1746,8 @@ structuresBuildingsQualifyingUseDate.hint.individual = If later, enter the date 
 structuresBuildingsQualifyingUseDate.hint.agent = If later, enter the date your client incurred the qualifying spend.
 structuresBuildingsQualifyingUseDate.error = Enter the date when the building first came into qualifying use
 structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building first came into qualifying use must be in the past
-structuresBuildingsQualifyingUseDate.error.required.individual =  Enter the date when you entered into the contract for the building’s construction.
-structuresBuildingsQualifyingUseDate.error.required.agent =  Enter the date when your client entered into the contract for the building’s construction.
+structuresBuildingsQualifyingUseDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction.
+structuresBuildingsQualifyingUseDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction.
 
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
