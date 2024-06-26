@@ -38,11 +38,135 @@ class MessagesSpec extends SpecBase {
     "global.error.fallbackClientError4xx.heading",
     "global.error.fallbackClientError4xx.title",
     "language.day.plural",
-    "language.day.singular",
-    "journeys.income-prepop",
-    "journeys.expenses-prepop",
-    "journeys.adjustments-prepop",
-    "journeys.capital-allowances-prepop"
+    "language.day.singular"
+  )
+
+  /*  List of keys that repeat values of other keys (those other keys are NOT in this list)
+      TODO merge identical values into one aptly-named key
+   */
+  private val exclusionKeysEn: Set[String] = Set(
+    "continueClaimingAllowanceForExistingSite.title.agent",
+    "wdaSpecialRateClaimAmount.l6.individual",
+    "wdaSpecialRateClaimAmount.p4",
+    "site.day",
+    "date.month",
+    "sectionCompletedState.yes",
+    "structuresBuildingsPreviousClaimUse.title.agent",
+    "structuresBuildingsQualifyingUseDate.subHeading",
+    "qualifyingUseStartDate.change.hidden",
+    "wdaMainRateClaimAmount.l4.agent",
+    "writingDownAllowance.l1.agent",
+    "wdaMainRateClaimAmount.details.individual",
+    "wdaMainRateClaimAmount.p2.agent",
+    "site.no",
+    "structuresBuildingsQualifyingUseDate.title",
+    "income.otherBusinessIncome",
+    "wdaSpecialRateClaimAmount.details.individual",
+    "wdaSpecialRateClaimAmount.l2.agent",
+    "structuresBuildingsClaimedAmount.l2",
+    "wdaMainRateClaimAmount.p5",
+    "date.day",
+    "doYouHaveAContinuingClaim.change.hidden",
+    "structuresBuildingsQualifyingUseDate.hint.individual",
+    "disallowableStaffCosts.l1.individual",
+    "structuresBuildingsRemove.error.required.individual",
+    "qualifyingUseStartDate.subHeading",
+    "structuresBuildingsClaimedAmount.href",
+    "wdaMainRateClaimAmount.l5.individual",
+    "specialTaxSiteLocation.change.hidden",
+    "existingSiteClaimingAmount.details.p3",
+    "prepopTastList.hint",
+    "wdaMainRateClaimAmount.l4.individual",
+    "siteSummary.title.agent",
+    "qualifyingUseStartDate.title",
+    "structuresBuildingsPreviousClaimUse.p3.link",
+    "wdaSpecialRateClaimAmount.l6.agent",
+    "structuresBuildingsClaimedAmount.p3",
+    "structuresBuildingsQualifyingUseDate.p1",
+    "structuresBuildingsPreviousClaimUse.p3.href",
+    "wdaMainRateClaimAmount.l1",
+    "structuresBuildingsPreviousClaimUse.title.individual",
+    "wdaMainRateClaimAmount.l2.agent",
+    "siteSummary.title.individual",
+    "wdaSpecialRateClaimAmount.p6",
+    "continueClaimingAllowanceForExistingSite.title.individual",
+    "newTaxSites.remove.hidden",
+    "zegvAllowance.p2.individual",
+    "wdaMainRateClaimAmount.l5.agent",
+    "wdaSpecialRateClaimAmount.p2",
+    "site.yes",
+    "existingSiteClaimingAmount.details.l2",
+    "wdaSpecialRateClaimAmount.l3.individual",
+    "zecOnlyForSelfEmployment.no.agent",
+    "structuresBuildingsRemove.error.required.agent",
+    "site.month",
+    "structuresBuildingsEligibleClaim.change.hidden",
+    "qualifyingUseStartDate.error.tooLate",
+    "structuresBuildingsPreviousClaimUse.hint.individual",
+    "wdaSpecialRateClaimAmount.l5.individual",
+    "wdaSpecialRateClaimAmount.heading",
+    "specialTaxSites.details.l5.href",
+    "structuresBuildingsEligibleClaim.l3.link",
+    "zecHowMuchDoYouWantToClaim.change.hidden",
+    "wdaSpecialRateClaimAmount.l1",
+    "structuresBuildingsEligibleClaim.hint.individual",
+    "zegvHowMuchDoYouWantToClaim.change.hidden",
+    "structuresBuildingsLocation.error.postcode.agent",
+    "structuresBuildingsClaimedAmount.title",
+    "zecOnlyForSelfEmployment.no.individual",
+    "structuresBuildingsClaimedAmount.l1",
+    "qualifyingUseStartDate.hint.individual",
+    "removeSpecialTaxSite.error.required.individual",
+    "wdaMainRateClaimAmount.p3",
+    "common.opensInNewTab",
+    "zegvOnlyForSelfEmployment.no.individual",
+    "qualifyingUseStartDate.error.required",
+    "existingSiteClaimingAmount.title",
+    "wdaSpecialRateClaimAmount.details.agent",
+    "wdaMainRateClaimAmount.p1.individual",
+    "existingSiteClaimingAmount.details.l1",
+    "writingDownAllowance.l1.individual",
+    "wdaMainRateClaimAmount.p4.individual",
+    "wdaMainRateClaimAmount.p2.individual",
+    "newSiteClaimingAmount.change.hidden",
+    "newSpecialTaxSites.change.hidden",
+    "wdaSpecialRateClaimAmount.p3.individual",
+    "specialTaxSites.details.l5.link",
+    "structuresBuildingsEligibleClaim.l3.href",
+    "removeSpecialTaxSite.error.required.agent",
+    "expenses.contributions.individual",
+    "date.year",
+    "wdaMainRateClaimAmount.l6.agent",
+    "wdaSpecialRateClaimAmount.l2.individual",
+    "wdaMainRateClaimAmount.l6.individual",
+    "wdaMainRateClaimAmount.heading",
+    "continueClaimingAllowanceForExistingSite.change.hidden",
+    "wdaMainRateClaimAmount.l2.individual",
+    "wdaSpecialRateClaimAmount.p5.agent",
+    "wdaSpecialRateClaimAmount.l4.individual",
+    "qualifyingUseStartDate.p1",
+    "zecHowMuchDoYouWantToClaim.error.required.individual",
+    "wdaSpecialRateClaimAmount.l5.agent",
+    "wdaSpecialRateClaimAmount.l4.agent",
+    "balancingAllowance.p7.tab",
+    "structuresBuildingsLocation.error.postcode.individual",
+    "sectionCompletedState.no",
+    "zegvHowMuchDoYouWantToClaim.error.required.individual",
+    "newTaxSites.change.hidden",
+    "zegvOnlyForSelfEmployment.no.agent",
+    "structuresBuildingsQualifyingUseDate.error",
+    "capitalAllowance.fullCost",
+    "adjustments.outstandingBusinessIncome",
+    "wdaSpecialRateClaimAmount.p5.individual",
+    "site.year",
+    "wdaMainRateClaimAmount.details.agent",
+    "zegvHowMuchDoYouWantToClaim.fullCost",
+    "capitalAllowance.useFirstYearAllowance",
+    "structuresBuildingsEligibleClaim.href",
+    "wdaMainRateClaimAmount.l3",
+    "structuresBuildingsQualifyingUseDate.error.inFuture",
+    "prepop.useReportingSoftware",
+    "wdaMainRateClaimAmount.p4.agent"
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(
@@ -107,9 +231,8 @@ class MessagesSpec extends SpecBase {
       result mustBe Set()
     }
 
-    // TODO Let's get back to making the messages not duplicated at the end when we also prepare Walsh translation
-    "english messages file" ignore {
-      val messages: List[(String, String)] = filterExcludedKeys(english.toList, exclusionKeys, exclusionKeySubstrings)
+    "english messages file" in {
+      val messages: List[(String, String)] = filterExcludedKeys(english.toList, exclusionKeysEn, exclusionKeySubstrings)
 
       val result = checkMessagesAreUnique(messages, messages)
 
@@ -117,19 +240,15 @@ class MessagesSpec extends SpecBase {
     }
 
     "no duplicate properties" in {
-      // TODO right now we have some duplicates, we need to fix it. Once it is fixed remove this exclusion
-      val excluded = List("wfhFlatRateOrActualCosts.subHeading.individual", "wfhFlatRateOrActualCosts.subHeading.agent")
-
       val filePath = "conf/messages.en"
 
       val keys = Using(Source.fromFile(filePath)) { source =>
         source
           .getLines()
-          .filter(line => line.contains("="))
+          .filter(_.contains("="))
           .toList
           .map(_.takeWhile(_ != '=').trim)
       }.success.value
-        .filterNot(key => excluded.contains(key)) // TODO Once the duplicates are removed, remove this line
 
       val duplicateKeys = keys
         .groupBy(identity)
@@ -254,7 +373,6 @@ class MessagesSpec extends SpecBase {
           case (messageKey, message) if currentMessage == message && currentKey != messageKey =>
             currentKey
         }.toSet
-
         checkMessagesAreUnique(keysToTest, tail, duplicate ++ result)
     }
 
