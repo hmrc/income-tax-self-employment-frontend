@@ -25,7 +25,7 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[TradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
+@(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[TradeJourneyStatusesViewModel], nationalInsuranceSummaryList: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
 
@@ -56,6 +56,10 @@
 
             @govukSummaryList(selfEmployment.statusList)
         }
+
+        <h2 class="app-task-list__section">@messages("taskList.nationalInsuranceContributions")</h2>
+
+        @govukSummaryList(nationalInsuranceSummaryList)
 
     </div>
 

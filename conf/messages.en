@@ -93,6 +93,7 @@ journeys.capital-allowances-annual-investment-allowance = Annual Investment Allo
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
 journeys.capital-allowances-special-tax-sites = Freeport sites
 journeys.capital-allowances-structures-buildings = Structures and Buildings Allowance
+journeys.national-insurance-contributions = Your National Insurance Contributions
 
 date.day = Day
 date.month = Month
@@ -140,6 +141,7 @@ common.opensInNewTab = (opens in a new tab)
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 taskList.reviewLink = Review self-employments
+taskList.nationalInsuranceContributions = National Insurance Contributions
 
 checkYourAnswers.title = Check Your Answers
 
