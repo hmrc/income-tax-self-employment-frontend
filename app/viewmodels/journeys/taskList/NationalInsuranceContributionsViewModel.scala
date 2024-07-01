@@ -27,8 +27,7 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses)(implicit
-      messages: Messages): SummaryList = {
+  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses)(implicit messages: Messages): SummaryList = {
 
     val nicRow = buildRow(NationalInsuranceContributions, tradesJourneyStatuses, dependentJourneyIsFinishedForClickableLink = false)
 
