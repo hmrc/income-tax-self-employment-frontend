@@ -21,6 +21,9 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
 
+// TODO 8907 should pages 1 + 2 in CheckMode go to CYA or always through this summary page?
+//  If to CYA then this page object can be deleted.
+//  If through this page then change CheckNetProfitLossController methods and Page 1 + 2 page object methods
 case object CheckNetProfitLossPage extends AdjustmentsBasePage[Unit] {
   override def toString: String = "checkNetProfitLoss"
 

@@ -16,18 +16,11 @@
 
 package pages.adjustments
 
-import models.common.AccountingType.{Accrual, Cash}
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import pages.OneQuestionPage
 import play.api.mvc.Call
 
 trait AdjustmentsBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
 
-  def redirectForAccountingType(userAnswers: UserAnswers, businessId: BusinessId, accrualRedirect: Call, cashRedirect: Call): Call =
-    userAnswers.getAccountingType(businessId) match {
-      case Accrual => accrualRedirect
-      case Cash    => cashRedirect
-    }
 }

@@ -41,7 +41,7 @@ case object GoodsAndServicesForYourOwnUsePage extends AdjustmentsBasePage[Boolea
       .exists { a =>
         (a && GoodsAndServicesAmountPage.hasAllFurtherAnswers(
           businessId,
-          userAnswers)) || false // TODO should it go to CYA or to the summary page CheckNetProfitLossController
+          userAnswers)) || false
       }
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(GoodsAndServicesAmountPage)
