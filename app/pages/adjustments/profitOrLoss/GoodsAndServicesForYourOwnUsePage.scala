@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.adjustments
+package pages.adjustments.profitOrLoss
 
 import controllers.journeys.adjustments.profitOrLoss.routes
 import models.NormalMode

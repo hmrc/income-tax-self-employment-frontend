@@ -21,7 +21,7 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.adjustments.GoodsAndServicesForYourOwnUsePage
+import pages.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUsePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

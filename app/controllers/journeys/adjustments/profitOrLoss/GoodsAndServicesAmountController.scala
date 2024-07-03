@@ -21,7 +21,7 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import pages.adjustments.GoodsAndServicesAmountPage
+import pages.adjustments.profitOrLoss.GoodsAndServicesAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
