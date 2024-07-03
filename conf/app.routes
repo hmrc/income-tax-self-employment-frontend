@@ -107,3 +107,10 @@ POST        /:taxYear/:businessId/income/change-trading-allowance/amount        
 
 GET         /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## National Insurance Contributions ##########
+
+GET         /:taxYear/:businessId/national-insurance/class-2                        controllers.journeys.nics.Class2NICsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/national-insurance/class-2                        controllers.journeys.nics.Class2NICsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/national-insurance/change-class-2                 controllers.journeys.nics.Class2NICsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/national-insurance/change-class-2                 controllers.journeys.nics.Class2NICsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
