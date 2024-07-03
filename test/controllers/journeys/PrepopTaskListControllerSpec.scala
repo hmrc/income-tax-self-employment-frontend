@@ -125,6 +125,8 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 }
 
 object PrepopTaskListControllerSpec {
-  def taskListRequest(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses]): TaskListWithRequest =
-    TaskListWithRequest(TaskList(tradeDetails, businesses), fakeOptionalRequest)
+  def taskListRequest(tradeDetails: Option[JourneyNameAndStatus],
+                      businesses: List[TradesJourneyStatuses],
+                      nationalInsuranceContributions: List[JourneyNameAndStatus]): TaskListWithRequest =
+    TaskListWithRequest(TaskList(tradeDetails, businesses, nationalInsuranceContributions), fakeOptionalRequest)
 }

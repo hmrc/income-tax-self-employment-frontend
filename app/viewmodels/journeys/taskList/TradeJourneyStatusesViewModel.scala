@@ -61,7 +61,7 @@ object TradeJourneyStatusesViewModel {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)
+    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
       case Abroad => getAbroadUrl(status, businessId, taxYear)
