@@ -112,5 +112,5 @@ POST        /:taxYear/:businessId/income/check-your-income                      
 
 GET         /:taxYear/:businessId/national-insurance-contributions/class-2          controllers.journeys.nics.Class2NICsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/national-insurance-contributions/class-2          controllers.journeys.nics.Class2NICsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/national-insurance/change-class-2                 controllers.journeys.nics.Class2NICsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/national-insurance/change-class-2                 controllers.journeys.nics.Class2NICsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/national-insurance-contributions/change-class-2   controllers.journeys.nics.Class2NICsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/national-insurance-contributions/change-class-2   controllers.journeys.nics.Class2NICsController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
