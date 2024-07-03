@@ -2074,3 +2074,13 @@ existingSiteClaimingAmount.cya.agent = How much does your client want to claim f
 
 newSpecialTaxSites.cya = Total new enhanced structures and buildings allowance claim:
 newSpecialTaxSites.change.hidden =
+
+########## National Insurance Contributions - Class 2 ##########
+
+nics.class2.title = Voluntary Class 2 National Insurance contributions
+nics.class2.p1 = As your adjustable taxable profit is less than £{0} you don’t need to make Class 2 National Insurance contributions.
+nics.class2.p2 = However, you may still want to pay these to get a higher State Pension entitlement.
+nics.class2.subHeading.individual = Would you like to make voluntary Class 2 National Insurance contributions?
+nics.class2.subHeading.agent = Would your client like to make voluntary Class 2 National Insurance contributions?
+nics.class2.error.required.individual = Select yes if you would like to make voluntary Class 2 National Insurance contributions
+nics.class2.error.required.agent = Select yes if your client would like to make voluntary Class 2 National Insurance contributions

@@ -5,6 +5,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "income-tax-self-employment-frontend"
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "2.13.12"
+Global / excludeLintKeys += majorVersion // suppress 'ThisBuild / majorVersion key unused' warning
 
 val additionalScalacOptions = if (sys.props.getOrElse("PLAY_ENV", "") == "Dev") Seq() else Seq("-Xfatal-warnings")
 
