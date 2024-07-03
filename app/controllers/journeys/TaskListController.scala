@@ -60,7 +60,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       idsWithAccountingType = completedTrades.map(t => (t.accountingType, t.businessId))
       updatedUserAnswers <- EitherT.right[ServiceError](service.setAccountingTypeForIds(updatedRequest.answers, idsWithAccountingType))
       viewModelList             = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedUserAnswers.some)(message))
-      nationalInsuranceStatuses = completedTrades.head // ToDo Get National Insurance Status List
+      nationalInsuranceStatuses = taskList.nationalInsuranceContributions
       nationalInsuranceSummary  = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses)
     } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, viewModelList, nationalInsuranceSummary)(updatedRequest, message))
     handleResultT(result)

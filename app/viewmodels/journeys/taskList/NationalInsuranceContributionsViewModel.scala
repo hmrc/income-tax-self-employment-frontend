@@ -17,9 +17,8 @@
 package viewmodels.journeys.taskList
 
 import models.common.JourneyStatus
-import models.journeys.Journey
 import models.journeys.Journey.NationalInsuranceContributions
-import models.requests.TradesJourneyStatuses
+import models.journeys.{Journey, JourneyNameAndStatus}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
@@ -27,9 +26,9 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses)(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(nationalInsuranceStatuses: List[JourneyNameAndStatus])(implicit messages: Messages): SummaryList = {
 
-    val nicRow = buildRow(NationalInsuranceContributions, tradesJourneyStatuses, dependentJourneyIsFinishedForClickableLink = false)
+    val nicRow = buildRow(NationalInsuranceContributions, nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = false)
 
     val rows: List[SummaryListRow] =
       List(nicRow)
@@ -37,9 +36,9 @@ object NationalInsuranceContributionsViewModel {
     SummaryListCYA.summaryList(rows)
   }
 
-  private def buildRow(journey: Journey, tradesJourneyStatuses: TradesJourneyStatuses, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
-      messages: Messages): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(tradesJourneyStatuses)
+  private def buildRow(journey: Journey, nationalInsuranceStatuses: List[JourneyNameAndStatus], dependentJourneyIsFinishedForClickableLink: Boolean)(
+      implicit messages: Messages): SummaryListRow = {
+    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(nationalInsuranceStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
       case NationalInsuranceContributions => "#"

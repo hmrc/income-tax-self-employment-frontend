@@ -24,7 +24,7 @@ import models.requests.TradesJourneyStatuses
 
 object TradesJourneyStatusesBuilder {
 
-  val aTadesJourneyStatusesModel = TradesJourneyStatuses(
+  val aTadesJourneyStatusesModel: TradesJourneyStatuses = TradesJourneyStatuses(
     businessId,
     Some(TradingName("TradingName1")),
     TypeOfBusiness("SelfEmployment"),
@@ -34,14 +34,19 @@ object TradesJourneyStatusesBuilder {
       JourneyNameAndStatus(Income, JourneyStatus.InProgress),
       JourneyNameAndStatus(ExpensesTailoring, JourneyStatus.CheckOurRecords),
       JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.CheckOurRecords),
-      JourneyNameAndStatus(NationalInsurance, JourneyStatus.CheckOurRecords)
+      JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.CheckOurRecords)
     )
   )
 
-  val anEmptyTadesJourneyStatusesModel = TradesJourneyStatuses(businessId, None, TypeOfBusiness("SelfEmployment"), AccountingType.Accrual, Nil)
+  val anEmptyTadesJourneyStatusesModel: TradesJourneyStatuses =
+    TradesJourneyStatuses(businessId, None, TypeOfBusiness("SelfEmployment"), AccountingType.Accrual, Nil)
 
-  val aSequenceTadesJourneyStatusesModel = List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
-  val aTaskList =
-    TaskList(Some(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed)), List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel))
+  val aSequenceTadesJourneyStatusesModel: List[TradesJourneyStatuses] = List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel)
+
+  val aTaskList: TaskList =
+    TaskList(
+      Some(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed)),
+      List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel),
+      Nil)
 
 }

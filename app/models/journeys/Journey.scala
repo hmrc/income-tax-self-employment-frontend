@@ -64,6 +64,7 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
   def startPage: QuestionPage[_] = ??? // TODO Remove default impl when all pages are fixed
 }
 
+//noinspection ScalaStyle
 object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   val values: IndexedSeq[Journey] = findValues
 
