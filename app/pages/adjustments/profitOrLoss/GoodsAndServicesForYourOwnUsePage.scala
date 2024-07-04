@@ -39,9 +39,7 @@ case object GoodsAndServicesForYourOwnUsePage extends AdjustmentsBasePage[Boolea
     userAnswers
       .get(this, businessId)
       .exists { a =>
-        (a && GoodsAndServicesAmountPage.hasAllFurtherAnswers(
-          businessId,
-          userAnswers)) || false
+        (a && GoodsAndServicesAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) || false
       }
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(GoodsAndServicesAmountPage)
