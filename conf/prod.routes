@@ -2,4 +2,5 @@
 ->        /update-and-submit-income-tax-return/self-employment        app.Routes
 ->        /update-and-submit-income-tax-return/self-employment        appExpenses.Routes
 ->        /update-and-submit-income-tax-return/self-employment        appCapitalAllowances.Routes
+->        /update-and-submit-income-tax-return/self-employment        appAdjustments.Routes
 ->        /                                                           health.Routes

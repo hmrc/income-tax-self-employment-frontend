@@ -17,18 +17,17 @@
 package pages.adjustments.profitOrLoss
 
 import controllers.journeys.adjustments.profitOrLoss.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-// TODO 8907 should pages 1 + 2 in CheckMode go to CYA or always through this summary page?
-//  If to CYA then this page object can be deleted.
-//  If through this page then change CheckNetProfitLossController methods and Page 1 + 2 page object methods
-case object CheckNetProfitLossPage extends AdjustmentsBasePage[Unit] {
-  override def toString: String = "checkNetProfitLoss"
+case object CurrentYearLossesPage extends AdjustmentsBasePage[Boolean] { // TODO change this type if required to String/Enum/List
+  override def toString: String = "currentYearLosses"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId)
+    routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = true
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
 }

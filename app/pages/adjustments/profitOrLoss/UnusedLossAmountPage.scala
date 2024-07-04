@@ -17,19 +17,17 @@
 package pages.adjustments.profitOrLoss
 
 import controllers.journeys.adjustments.profitOrLoss.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-case object GoodsAndServicesAmountPage extends AdjustmentsBasePage[BigDecimal] {
-  override def toString: String = "goodsAndServicesAmount"
+case object UnusedLossAmountPage extends AdjustmentsBasePage[BigDecimal] {
+  override def toString: String = "unusedLossAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId)
+    routes.WhichYearIsLossReportedController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && CurrentYearLossesPage.hasAllFurtherAnswers(
-      businessId,
-      userAnswers
-    ) // TODO if no losses this year check PreviousUnusedLossesPage instead of CurrentYearLossesPage
+    userAnswers.get(this, businessId).isDefined && WhichYearIsLossReportedPage.hasAllFurtherAnswers(businessId, userAnswers)
 }

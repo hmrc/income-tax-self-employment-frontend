@@ -21,32 +21,32 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUsePage
+import pages.adjustments.profitOrLoss.PreviousUnusedLossesPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import views.html.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseView
+import views.html.journeys.adjustments.profitOrLoss.PreviousUnusedLossesView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class GoodsAndServicesForYourOwnUseController @Inject() (override val messagesApi: MessagesApi,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         identify: IdentifierAction,
-                                                         getData: DataRetrievalAction,
-                                                         requireData: DataRequiredAction,
-                                                         service: SelfEmploymentService,
-                                                         formProvider: BooleanFormProvider,
-                                                         view: GoodsAndServicesForYourOwnUseView)
+class PreviousUnusedLossesController @Inject() (override val messagesApi: MessagesApi,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                service: SelfEmploymentService,
+                                                formProvider: BooleanFormProvider,
+                                                view: PreviousUnusedLossesView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val page = GoodsAndServicesForYourOwnUsePage
+  private val page = PreviousUnusedLossesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
