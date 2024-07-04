@@ -41,10 +41,10 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages("nics.class2.p1", Class2NICsThresholds.getThresholdForTaxYear(taxYear))
+            @messages(s"nics.class2.p1.$userType", Class2NICsThresholds.getThresholdForTaxYear(taxYear))
         </p>
         <p>
-            @messages("nics.class2.p2")
+            @messages(s"nics.class2.p2.$userType")
         </p>
     </div>
 
