@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package models.journeys
+package models.journeys.nics
 
-import models.requests.TradesJourneyStatuses
-import play.api.libs.json.{Json, OFormat}
+import models.common.TaxYear
 
-final case class TaskList(tradeDetails: Option[JourneyNameAndStatus],
-                          businesses: List[TradesJourneyStatuses],
-                          nationalInsuranceContributions: List[JourneyNameAndStatus])
-object TaskList {
-  implicit val format: OFormat[TaskList] = Json.format[TaskList]
+import java.text.NumberFormat
 
-  val empty: TaskList = TaskList(None, Nil, Nil)
+// TODO refactor/remove when CID response is integrated
+object Class2NICsThresholds {
+  val thresholdsMap: Map[Int, Int] = Map(
+    2021 -> 6475,
+    2022 -> 6515,
+    2023 -> 6725,
+    2024 -> 6725,
+    2025 -> 6725
+  )
+
+  def getThresholdForTaxYear(taxYear: TaxYear): String = {
+    val threshold = thresholdsMap.getOrElse(taxYear.endYear, thresholdsMap(2024))
+    NumberFormat.getNumberInstance.format(threshold)
+  }
 }

@@ -93,6 +93,7 @@ journeys.capital-allowances-annual-investment-allowance = Annual Investment Allo
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
 journeys.capital-allowances-special-tax-sites = Freeport sites
 journeys.capital-allowances-structures-buildings = Structures and Buildings Allowance
+journeys.national-insurance-contributions = Your National Insurance Contributions
 
 date.day = Day
 date.month = Month
@@ -140,6 +141,7 @@ common.opensInNewTab = (opens in a new tab)
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 taskList.reviewLink = Review self-employments
+taskList.nationalInsuranceContributions = National Insurance Contributions
 
 checkYourAnswers.title = Check Your Answers
 
@@ -2074,3 +2076,15 @@ existingSiteClaimingAmount.cya.agent = How much does your client want to claim f
 
 newSpecialTaxSites.cya = Total new enhanced structures and buildings allowance claim:
 newSpecialTaxSites.change.hidden =
+
+########## National Insurance Contributions - Class 2 ##########
+
+class2NICs.title = Voluntary Class 2 National Insurance contributions
+class2NICs.p1.individual = As your adjustable taxable profit is less than £{0} you do not need to make Class 2 National Insurance contributions.
+class2NICs.p1.agent = As your client’s adjustable taxable profit is less than £{0} they do not need to make Class 2 National Insurance contributions.
+class2NICs.p2.individual = However, you may still want to make these to get a higher State Pension entitlement and access to other contributory benefits.
+class2NICs.p2.agent = However, they may still want to make these to get a higher State Pension entitlement and access to other contributory benefits.
+class2NICs.subHeading.individual = Would you like to make voluntary Class 2 National Insurance contributions?
+class2NICs.subHeading.agent = Would your client like to make voluntary Class 2 National Insurance contributions?
+class2NICs.error.required.individual = Select yes if you would like to make voluntary Class 2 National Insurance contributions
+class2NICs.error.required.agent = Select yes if your client would like to make voluntary Class 2 National Insurance contributions

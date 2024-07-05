@@ -17,8 +17,7 @@
 package models.common
 
 import enumeratum._
-import models.journeys.Journey
-import models.requests.TradesJourneyStatuses
+import models.journeys.{Journey, JourneyNameAndStatus}
 
 sealed abstract class JourneyStatus(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
@@ -35,6 +34,6 @@ object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[Journey
   case object InProgress      extends JourneyStatus("inProgress")
   case object Completed       extends JourneyStatus("completed")
 
-  def getJourneyStatus(journey: Journey, journeyStatuses: TradesJourneyStatuses): JourneyStatus =
-    journeyStatuses.journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
+  def getJourneyStatus(journey: Journey, journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus =
+    journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
 }

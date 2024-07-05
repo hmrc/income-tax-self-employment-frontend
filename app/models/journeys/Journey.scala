@@ -64,6 +64,7 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
   def startPage: QuestionPage[_] = ??? // TODO Remove default impl when all pages are fixed
 }
 
+//noinspection ScalaStyle
 object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   val values: IndexedSeq[Journey] = findValues
 
@@ -203,10 +204,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(IrrecoverableDebtsAmountPage.pageName, IrrecoverableDebtsDisallowableAmountPage.pageName)
   }
 
-  case object NationalInsurance extends Journey("national-insurance") {
-    override val pageKeys: List[PageName] = Nil
-  }
-
   sealed abstract class CapitalAllowanceBaseJourney(override val entryName: String) extends Journey(entryName) {
     override def toString: String = entryName
   }
@@ -303,6 +300,13 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       ContinueClaimingAllowanceForExistingSitePage,
       ExistingSiteClaimingAmountPage
     )
+  }
+
+  sealed abstract class NationalInsuranceBaseJourney(override val entryName: String) extends Journey(entryName) {
+    override def toString: String = entryName
+  }
+  case object NationalInsuranceContributions extends NationalInsuranceBaseJourney("national-insurance-contributions") {
+    override val pageKeys: List[PageName] = List.empty
   }
 
 }

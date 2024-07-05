@@ -29,9 +29,9 @@ import views.html.journeys.adjustments.profitOrLoss.GoodsAndServicesAmountView
 class GoodsAndServicesAmountControllerSpec
     extends BigDecimalGetAndPostQuestionBaseSpec("GoodsAndServicesAmountController", GoodsAndServicesAmountPage) {
 
-  def onPageLoadRoute: String = routes.GoodsAndServicesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  override def onPageLoadRoute: String = routes.GoodsAndServicesAmountController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  def onSubmitRoute: String = routes.GoodsAndServicesAmountController.onSubmit(taxYear, businessId, NormalMode).url
+  override def onSubmitRoute: String = routes.GoodsAndServicesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId)
 

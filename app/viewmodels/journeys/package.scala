@@ -19,7 +19,7 @@ package viewmodels
 import models.common.JourneyStatus.{CannotStartYet, CheckOurRecords, Completed, InProgress, NotStarted}
 import models.common.{BusinessId, JourneyStatus}
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
 import play.api.libs.json.Reads
@@ -28,13 +28,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 package object journeys {
 
   def isJourneyCompletedOrInProgress(tradesJourneyStatuses: TradesJourneyStatuses, dependentJourney: Journey): Boolean =
-    getJourneyStatus(dependentJourney)(tradesJourneyStatuses) match {
+    getJourneyStatus(dependentJourney)(tradesJourneyStatuses.journeyStatuses) match {
       case Completed | InProgress                        => true
       case CheckOurRecords | CannotStartYet | NotStarted => false
     }
 
   def getJourneyStatus(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
-      journeyStatuses: TradesJourneyStatuses): JourneyStatus =
+      journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus =
     JourneyStatus.getJourneyStatus(journey, journeyStatuses) match {
       case NotStarted if !dependentJourneyIsFinishedForClickableLink => CannotStartYet
       case NotStarted                                                => NotStarted

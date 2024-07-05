@@ -58,7 +58,7 @@ object PrepopTradeJourneyStatusesViewModel {
       taxYear: TaxYear,
       businessId: BusinessId,
       journeyStatuses: TradesJourneyStatuses): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatus(journey)
+    val status: JourneyStatus = getJourneyStatus(journey)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
       case Income => getIncomeUrl(status, businessId, taxYear)
