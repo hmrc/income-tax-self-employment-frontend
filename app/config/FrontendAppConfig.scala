@@ -63,6 +63,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def incomeTaxSubmissionIvRedirect: String = incomeTaxSubmissionBaseUrl +
     configuration.get[String]("microservice.services.income-tax-submission-frontend.iv-redirect")
 
-  def viewAndChangeEnterUtrUrl: String = configuration.get[String]("microservice.services.income-tax-view-and-change-frontend.url") +
+  def viewAndChangeEnterUtrUrl: String = configuration.get[String]("microservice.services.view-and-change.url") +
     "/report-quarterly/income-and-expenses/view/agents/client-utr"
 }
