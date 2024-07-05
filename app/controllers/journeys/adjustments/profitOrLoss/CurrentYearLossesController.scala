@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,32 +21,30 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUsePage
+import pages.adjustments.profitOrLoss.CurrentYearLossesPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Logging
-import views.html.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseView
+import views.html.journeys.adjustments.profitOrLoss.CurrentYearLossesView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
 
 @Singleton
-class GoodsAndServicesForYourOwnUseController @Inject() (override val messagesApi: MessagesApi,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         identify: IdentifierAction,
-                                                         getData: DataRetrievalAction,
-                                                         requireData: DataRequiredAction,
-                                                         service: SelfEmploymentService,
-                                                         formProvider: BooleanFormProvider,
-                                                         view: GoodsAndServicesForYourOwnUseView)
+class CurrentYearLossesController @Inject() (override val messagesApi: MessagesApi,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             service: SelfEmploymentService,
+                                             identify: IdentifierAction,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             formProvider: BooleanFormProvider,
+                                             view: CurrentYearLossesView)
+// TODO if you can get both versions of the view to be handled by the same form (String, List[Enum], not sure) great, otherwise might need to make multiple views and maybe multiple forms
     extends FrontendBaseController
-    with I18nSupport
-    with Logging {
+    with I18nSupport {
 
-  private val page = GoodsAndServicesForYourOwnUsePage
+  private val page = CurrentYearLossesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -57,10 +55,8 @@ class GoodsAndServicesForYourOwnUseController @Inject() (override val messagesAp
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
-      def handleSuccess(answer: Boolean): Future[Result] =
-        service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
 
-      service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
+      service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }

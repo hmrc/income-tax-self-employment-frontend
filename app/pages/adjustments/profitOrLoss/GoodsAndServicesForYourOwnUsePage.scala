@@ -36,11 +36,7 @@ case object GoodsAndServicesForYourOwnUsePage extends AdjustmentsBasePage[Boolea
   )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers
-      .get(this, businessId)
-      .exists { a =>
-        (a && GoodsAndServicesAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) || false
-      }
+    userAnswers.get(this, businessId).exists(a => (a && GoodsAndServicesAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) || !a)
 
-  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(GoodsAndServicesAmountPage)
+  override val dependentPagesWhenNo: List[Settable[_]] = List(GoodsAndServicesAmountPage)
 }

@@ -16,28 +16,36 @@
 
 @import controllers.journeys.adjustments.profitOrLoss.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import models.journeys.adjustments.WhichYearIsLossReported
 @import views.html.components._
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        twoRadios: TwoRadios,
+        govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: HeadingMsgAware
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"goodsAndServicesForYourOwnUse.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"whichYearIsLossReported.title.$userType"))) {
 
     @errorSummarySection(form)
 
-    @formHelper(action = routes.GoodsAndServicesForYourOwnUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.WhichYearIsLossReportedController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(s"goodsAndServicesForYourOwnUse.title.$userType")
+        @heading(s"whichYearIsLossReported.title.$userType")
 
-        @twoRadios(form, "goodsAndServicesForYourOwnUse", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(s"whichYearIsLossReported.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = WhichYearIsLossReported.options()
+            )
+        )
 
         @submitButton()
     }

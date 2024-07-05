@@ -17,19 +17,26 @@
 package pages.adjustments.profitOrLoss
 
 import controllers.journeys.adjustments.profitOrLoss.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
-case object GoodsAndServicesAmountPage extends AdjustmentsBasePage[BigDecimal] {
-  override def toString: String = "goodsAndServicesAmount"
+case object PreviousUnusedLossesPage extends AdjustmentsBasePage[Boolean] {
+  override def toString: String = "previousUnusedLosses"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectOnBoolean(
+    this,
+    userAnswers,
+    businessId,
+    onTrue = routes.UnusedLossAmountController.onPageLoad(taxYear, businessId, NormalMode),
+    onFalse = ???
+  )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && CurrentYearLossesPage.hasAllFurtherAnswers(
-      businessId,
-      userAnswers
-    ) // TODO if no losses this year check PreviousUnusedLossesPage instead of CurrentYearLossesPage
+    userAnswers.get(this, businessId).exists(a => (a && UnusedLossAmountPage.hasAllFurtherAnswers(businessId, userAnswers)) || !a)
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(UnusedLossAmountPage, WhichYearIsLossReportedPage)
 }

@@ -17,6 +17,7 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.NormalMode
 import models.common._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,7 +41,9 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val summaryList = SummaryListCYA.summaryListOpt(List())
-    Ok(view(request.userType, summaryList, routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId)))
+    Ok(
+      view(request.userType, summaryList, routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode))
+    ) // TODO if no losses this year go to PreviousUnusedLossesPage instead of CurrentYearLossesPage
   }
 
 }
