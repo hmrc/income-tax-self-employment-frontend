@@ -1,0 +1,14 @@
+
+########## Adjustments - Projit and Loss ##########
+
+GET         /:taxYear/:businessId/profit-loss/goods-services-yes-no               controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/profit-loss/goods-services-yes-no               controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/profit-loss/change-goods-services-yes-no        controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/profit-loss/change-goods-services-yes-no        controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/profit-loss/goods-services-amount               controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/profit-loss/goods-services-amount               controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/profit-loss/change-goods-services-amount        controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/profit-loss/change-goods-services-amount        controllers.journeys.adjustments.profitOrLoss.GoodsAndServicesAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/profit-loss/check-profit-loss                   controllers.journeys.adjustments.profitOrLoss.CheckNetProfitLossController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
