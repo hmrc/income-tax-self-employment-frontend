@@ -22,6 +22,7 @@ import models.NormalMode
 import models.common.{BusinessId, PageName, TaxYear}
 import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
+import pages.adjustments.profitOrLoss._
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
 import pages.capitalallowances.electricVehicleChargePoints._
@@ -307,6 +308,20 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
   case object NationalInsuranceContributions extends NationalInsuranceBaseJourney("national-insurance-contributions") {
     override val pageKeys: List[PageName] = List.empty
+  }
+
+  sealed abstract class AdjustmentsBaseJourney(override val entryName: String) extends Journey(entryName) {
+    override def toString: String = entryName
+  }
+  case object ProfitOrLoss extends AdjustmentsBaseJourney("profit-or-loss") {
+    override val pageKeys: List[PageName] = List(
+      GoodsAndServicesForYourOwnUsePage,
+      GoodsAndServicesAmountPage,
+      CurrentYearLossesPage,
+      PreviousUnusedLossesPage,
+      UnusedLossAmountPage,
+      WhichYearIsLossReportedPage
+    ).map(_.pageName)
   }
 
 }

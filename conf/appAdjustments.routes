@@ -32,3 +32,8 @@ GET         /:taxYear/:businessId/profit-loss/loss-year                         
 POST        /:taxYear/:businessId/profit-loss/loss-year                           controllers.journeys.adjustments.profitOrLoss.WhichYearIsLossReportedController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 GET         /:taxYear/:businessId/profit-loss/change-loss-year                    controllers.journeys.adjustments.profitOrLoss.WhichYearIsLossReportedController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/profit-loss/change-loss-year                    controllers.journeys.adjustments.profitOrLoss.WhichYearIsLossReportedController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/profit-loss/check-answers                       controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/profit-loss/check-answers                       controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+GET         /:taxYear/:businessId/profit-loss/calculation                         controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
