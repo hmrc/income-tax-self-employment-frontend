@@ -32,7 +32,7 @@ case object PreviousUnusedLossesPage extends AdjustmentsBasePage[Boolean] {
     userAnswers,
     businessId,
     onTrue = routes.UnusedLossAmountController.onPageLoad(taxYear, businessId, NormalMode),
-    onFalse = ???
+    onFalse = routes.ProfitOrLossCYAController.onPageLoad(taxYear, businessId)
   )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
