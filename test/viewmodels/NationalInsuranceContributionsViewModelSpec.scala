@@ -41,7 +41,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (nationalInsuranceStatuses, _, expectedRows) =>
-        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses)
+        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses)(messages, taxYear, businessId)
 
         withClue(s"""
              |${result.rows.mkString("\n")}

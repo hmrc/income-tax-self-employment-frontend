@@ -48,10 +48,14 @@ object TradeJourneyStatusesViewModel {
     val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
     val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
 
+    val isCarAndAssetsBasedAllowanceAnswered = tradesJourneyStatuses.getStatusOrNotStarted(CapitalAllowancesTailoring).isCompleted
+    val adjustmentsRow = buildRow(Adjustments, dependentJourneyIsFinishedForClickableLink = isCarAndAssetsBasedAllowanceAnswered)
+
     val rows: List[SummaryListRow] =
       List(abroadRow, incomeRow) ++
         buildExpensesCategories ++
-        buildCapitalAllowances(tradesJourneyStatuses, taxYear)
+        buildCapitalAllowances(tradesJourneyStatuses, taxYear) ++
+        List(adjustmentsRow)
 
     SummaryListCYA.summaryList(rows)
   }
@@ -64,9 +68,10 @@ object TradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case Abroad => getAbroadUrl(status, businessId, taxYear)
-      case Income => getIncomeUrl(status, businessId, taxYear)
-      case _      => "#"
+      case Abroad      => getAbroadUrl(status, businessId, taxYear)
+      case Income      => getIncomeUrl(status, businessId, taxYear)
+      case Adjustments => "#"
+      case _           => "#"
     }
 
     buildSummaryRow(href, keyString, status)

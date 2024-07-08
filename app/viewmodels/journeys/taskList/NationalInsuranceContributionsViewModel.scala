@@ -16,7 +16,9 @@
 
 package viewmodels.journeys.taskList
 
-import models.common.JourneyStatus
+import controllers.journeys.nics
+import models.NormalMode
+import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.journeys.Journey.NationalInsuranceContributions
 import models.journeys.{Journey, JourneyNameAndStatus}
 import play.api.i18n.Messages
@@ -26,9 +28,13 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
-  def buildSummaryList(nationalInsuranceStatuses: List[JourneyNameAndStatus])(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(
+      nationalInsuranceStatuses: List[JourneyNameAndStatus])(implicit messages: Messages, taxYear: TaxYear, businessId: BusinessId): SummaryList = {
 
-    val nicRow = buildRow(NationalInsuranceContributions, nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = false)
+    val nicRow = buildRow(NationalInsuranceContributions, nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = false)(
+      messages,
+      taxYear,
+      businessId)
 
     val rows: List[SummaryListRow] =
       List(nicRow)
@@ -36,12 +42,14 @@ object NationalInsuranceContributionsViewModel {
     SummaryListCYA.summaryList(rows)
   }
 
-  private def buildRow(journey: Journey, nationalInsuranceStatuses: List[JourneyNameAndStatus], dependentJourneyIsFinishedForClickableLink: Boolean)(
-      implicit messages: Messages): SummaryListRow = {
+  private def buildRow(
+      journey: Journey,
+      nationalInsuranceStatuses: List[JourneyNameAndStatus],
+      dependentJourneyIsFinishedForClickableLink: Boolean)(implicit messages: Messages, taxYear: TaxYear, businessId: BusinessId): SummaryListRow = {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(nationalInsuranceStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case NationalInsuranceContributions => "#"
+      case NationalInsuranceContributions => nics.routes.Class2NICsController.onPageLoad(taxYear, businessId, NormalMode).url
       case _                              => "#"
     }
 
