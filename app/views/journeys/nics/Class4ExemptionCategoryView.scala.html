@@ -30,13 +30,13 @@
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"selectCapitalAllowances.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"class4ExemptionCategory.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"class4NICsExemptionReason.title.$userType"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+    @heading(messages(s"class4ExemptionCategory.title.$userType"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
 
     @formHelper(action = Class4ExemptionCategoryController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
