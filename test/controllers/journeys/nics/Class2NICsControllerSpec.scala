@@ -27,6 +27,8 @@ import views.html.journeys.nics.Class2NICsView
 
 class Class2NICsControllerSpec extends BooleanGetAndPostQuestionBaseSpec("Class2NICsController", Class2NICsPage) {
 
+  override val checkForExistingAnswers = false
+
   override def onPageLoadCall: Call = routes.Class2NICsController.onPageLoad(taxYear, NormalMode)
   override def onSubmitCall: Call   = routes.Class2NICsController.onSubmit(taxYear, NormalMode)
 

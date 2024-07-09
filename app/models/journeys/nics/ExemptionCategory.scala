@@ -52,7 +52,5 @@ object ExemptionCategory extends Enumerable.Implicits {
       )
     }
 
-  implicit val enumerable: Enumerable[ExemptionCategory] =
-    Enumerable(values.map(v => v.toString -> v): _*)
-
+  implicit val enumerable: Enumerable[ExemptionCategory] = Enumerable(values.map(v => v.toString -> v): _*)
 }
