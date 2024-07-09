@@ -19,7 +19,7 @@ package viewmodels.journeys.taskList
 import controllers.journeys.nics
 import models.NormalMode
 import models.common.{BusinessId, JourneyStatus, TaxYear}
-import models.journeys.Journey.NationalInsuranceContributions
+import models.journeys.Journey.{Adjustments, NationalInsuranceContributions}
 import models.journeys.{Journey, JourneyNameAndStatus}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
@@ -31,10 +31,11 @@ object NationalInsuranceContributionsViewModel {
   def buildSummaryList(
       nationalInsuranceStatuses: List[JourneyNameAndStatus])(implicit messages: Messages, taxYear: TaxYear, businessId: BusinessId): SummaryList = {
 
-    val nicRow = buildRow(NationalInsuranceContributions, nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = false)(
-      messages,
-      taxYear,
-      businessId)
+    val isAdjustmentsAnswered = JourneyStatus.getJourneyStatus(Adjustments, nationalInsuranceStatuses).isCompleted
+    val nicRow = buildRow(
+      NationalInsuranceContributions,
+      nationalInsuranceStatuses,
+      dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered)(messages, taxYear, businessId)
 
     val rows: List[SummaryListRow] =
       List(nicRow)

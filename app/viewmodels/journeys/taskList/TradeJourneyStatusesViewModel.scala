@@ -48,17 +48,25 @@ object TradeJourneyStatusesViewModel {
     val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
     val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
 
-    val isCarAndAssetsBasedAllowanceAnswered = tradesJourneyStatuses.getStatusOrNotStarted(CapitalAllowancesTailoring).isCompleted
-    val adjustmentsRow = buildRow(Adjustments, dependentJourneyIsFinishedForClickableLink = isCarAndAssetsBasedAllowanceAnswered)
+    val expensesRows: Seq[SummaryListRow] = buildExpensesCategories
+    val expensesAllCompleted: Boolean     = expensesRows.forall(checkIfRowIsCompleted)
+
+    val capitalAllowanceRows: Seq[SummaryListRow] = buildCapitalAllowances(tradesJourneyStatuses, taxYear)
+    val capitalAllowanceAllCompleted: Boolean     = capitalAllowanceRows.forall(checkIfRowIsCompleted)
+
+    val adjustmentsRow = buildRow(Adjustments, dependentJourneyIsFinishedForClickableLink = capitalAllowanceAllCompleted && expensesAllCompleted)
 
     val rows: List[SummaryListRow] =
       List(abroadRow, incomeRow) ++
-        buildExpensesCategories ++
-        buildCapitalAllowances(tradesJourneyStatuses, taxYear) ++
+        expensesRows ++
+        capitalAllowanceRows ++
         List(adjustmentsRow)
 
     SummaryListCYA.summaryList(rows)
   }
+
+  private def checkIfRowIsCompleted(summaryListRow: SummaryListRow): Boolean =
+    summaryListRow.actions.exists(_.items.exists(_.content.toString.contains("completed")))
 
   private def buildRow(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
       messages: Messages,
@@ -70,7 +78,7 @@ object TradeJourneyStatusesViewModel {
     val href = journey match {
       case Abroad      => getAbroadUrl(status, businessId, taxYear)
       case Income      => getIncomeUrl(status, businessId, taxYear)
-      case Adjustments => "#"
+      case Adjustments => getAdjustmentsUrl(status, businessId, taxYear)
       case _           => "#"
     }
 
@@ -102,5 +110,7 @@ object TradeJourneyStatusesViewModel {
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,
       income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
+  private def getAdjustmentsUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
+    "#"
 
 }

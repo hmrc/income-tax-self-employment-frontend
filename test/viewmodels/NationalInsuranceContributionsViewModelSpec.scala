@@ -17,10 +17,12 @@
 package viewmodels
 
 import base.SpecBase
+import controllers.journeys._
+import models.NormalMode
 import models.common.JourneyStatus
-import models.common.JourneyStatus.CannotStartYet
+import models.common.JourneyStatus._
 import models.journeys.Journey
-import models.journeys.Journey.NationalInsuranceContributions
+import models.journeys.Journey._
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -32,10 +34,12 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private implicit val messages: Messages = messagesStubbed
 
+  private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, businessId, NormalMode).url
+
   private val testScenarios = Table(
     ("nationalInsuranceStatuses", "userAnswers", "expected"),
     // No statuses, no answers, defaults to cannot start yet until the saving is implemented
-    (Nil, Nil, List(expectedRow("#", NationalInsuranceContributions, CannotStartYet)))
+    (Nil, Nil, List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet)))
   )
 
   "buildSummaryList" - {
