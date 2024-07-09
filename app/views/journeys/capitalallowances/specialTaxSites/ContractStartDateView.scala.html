@@ -16,14 +16,15 @@
 
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
 @import viewmodels.LegendSize.Large
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukDateInput: GovukDateInput,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
@@ -44,8 +45,6 @@
             .withHint(HintViewModel(messages("site.exampleDate")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

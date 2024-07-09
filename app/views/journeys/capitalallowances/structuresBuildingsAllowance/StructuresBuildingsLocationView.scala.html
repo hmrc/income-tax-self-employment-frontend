@@ -19,13 +19,14 @@
 @import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
 @import viewmodels.InputWidth.{Fixed10, Full}
 @import viewmodels.LabelSize.Medium
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading)
 
 @(form: Form[StructuresBuildingsLocation], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
@@ -73,8 +74,6 @@
             ).withWidth(Fixed10)
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

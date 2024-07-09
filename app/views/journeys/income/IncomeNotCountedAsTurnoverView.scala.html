@@ -14,17 +14,18 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.income.routes.IncomeNotCountedAsTurnoverController
+@import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -38,30 +39,24 @@
     @heading(messages("incomeNotCountedAsTurnover.title"), None)
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>
-            @messages(s"incomeNotCountedAsTurnover.p1.$userType")
-        </p>
+        <p>@messages(s"incomeNotCountedAsTurnover.p1.$userType")</p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages(s"incomeNotCountedAsTurnover.l1.$userType")</li>
             <li>@messages(s"incomeNotCountedAsTurnover.l2.$userType")</li>
         </ul>
-        <p>
-            @messages("incomeNotCountedAsTurnover.p2")
-        </p>
+        <p>@messages("incomeNotCountedAsTurnover.p2")</p>
     </div>
 
-    @formHelper(action = IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"incomeNotCountedAsTurnover.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

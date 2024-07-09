@@ -14,16 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.income.routes.TurnoverNotTaxableController
+@import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import views.html.components._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
+        submitButton: SubmitButton,
     heading: Heading
 )
 
@@ -54,7 +55,7 @@
         </p>
     </div>
 
-    @formHelper(action = TurnoverNotTaxableController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
@@ -64,8 +65,6 @@
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

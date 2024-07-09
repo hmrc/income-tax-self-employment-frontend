@@ -16,17 +16,17 @@
 
 @import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
-@import views.html.components.Link
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading,
-    link: Link
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton,
+        heading: Heading,
+        link: Link
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -59,14 +59,12 @@
 
         @govukRadios(
             RadiosViewModel.yesNo(
-                field  = form("value"),
+                field = form("value"),
                 legend = LegendViewModel(messages(s"zeroEmission.subheading.$userType"))
-                            .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
+                .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-5"),
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

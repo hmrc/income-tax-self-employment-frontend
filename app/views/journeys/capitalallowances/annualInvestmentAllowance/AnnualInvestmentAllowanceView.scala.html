@@ -16,13 +16,14 @@
 
 @import controllers.journeys.capitalallowances.annualInvestmentAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -66,8 +67,6 @@
                 .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-6"))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

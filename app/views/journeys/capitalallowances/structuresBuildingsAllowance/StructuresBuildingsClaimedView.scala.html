@@ -16,15 +16,16 @@
 
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -45,8 +46,6 @@
                 legend = LegendViewModel(""))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

@@ -14,17 +14,18 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import controllers.journeys.income.routes.OtherIncomeAmountController
+@import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.InputWidth._
 @import viewmodels.LabelSize.Large
+@import views.html.components._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -35,22 +36,20 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @formHelper(action = OtherIncomeAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.OtherIncomeAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"otherIncomeAmount.title.$userType"))
-                        .asPageHeading(size = Large)
-                        .withCssClass("govuk-!-margin-bottom-6")
+                .asPageHeading(size = Large)
+                .withCssClass("govuk-!-margin-bottom-6")
             )
             .asNumeric()
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

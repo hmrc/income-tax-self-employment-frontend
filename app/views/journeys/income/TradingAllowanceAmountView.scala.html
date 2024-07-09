@@ -14,19 +14,19 @@
  * limitations under the License.
  *@
 
+@import controllers.journeys.income.routes
+@import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
-@import controllers.journeys.income.routes.TradingAllowanceAmountController
-@import models.common.{BusinessId, TaxYear}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
-@import models.common.UserType
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -39,7 +39,7 @@
 
     @heading(messages(s"tradingAllowanceAmount.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3")
 
-    @formHelper(action = TradingAllowanceAmountController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.TradingAllowanceAmountController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukInput(
             InputViewModel(
@@ -51,8 +51,6 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withCssClass("govuk-!-margin-top-2")
-        )
+        @submitButton(extraClasses = "govuk-!-margin-top-2")
     }
 }
