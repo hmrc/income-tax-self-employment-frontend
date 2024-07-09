@@ -24,8 +24,6 @@ import play.api.mvc.Call
 case object Class4NonDivingExemptPage extends OneQuestionPage[Boolean] {
   override def toString: String = "class4NonDivingExempt"
 
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
-
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =

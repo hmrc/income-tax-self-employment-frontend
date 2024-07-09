@@ -22,8 +22,7 @@ import pages.OneQuestionPage
 import play.api.mvc.Call
 
 case object Class2NICsPage extends OneQuestionPage[Boolean] {
-  override def toString: String                                        = "class2NICs"
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
+  override def toString: String = "class2NICs"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
 

@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.TaxYear
 import pages.nics.Class2NICsPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,17 +45,15 @@ class Class2NICsController @Inject() (override val messagesApi: MessagesApi,
 
   private val page = Class2NICsPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, taxYear, businessId, request.userType, mode))
+  def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+    val form = fillForm(page, formProvider(page, request.userType))
+    Ok(view(form, taxYear, request.userType, mode))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
+  def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+    def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
 
-      service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
+    service.defaultHandleForm(formProvider(page, request.userType), page, taxYear, mode, handleError)
   }
 
 }

@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,31 @@
  * limitations under the License.
  *@
 
-@import models.common.{BusinessId, TaxYear, UserType}
-@import cats.implicits._
-@import controllers.journeys.nics.routes.Class4ExemptionCategoryController
-@import views.html.templates.helpers.Heading
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, Checkboxes}
+@import controllers.journeys.nics.routes
+@import models.common.{TaxYear, UserType}
+@import views.html.components._
 
-@this(layout: templates.Layout,
-      formHelper: FormWithCSRF,
-      govukErrorSummary: GovukErrorSummary,
-      govukCheckboxes: GovukCheckboxes,
-      govukButton: GovukButton,
-      heading: Heading)
+@this(
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        errorSummarySection: ErrorSummarySection,
+        twoRadios: TwoRadios,
+        submitButton: SubmitButton,
+        heading: HeadingMsgAware
+)
 
-@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"class4ExemptionCategory.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
-    @heading(messages(s"class4ExemptionCategory.title.$userType"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+    @formHelper(action = routes.Class4ExemptionCategoryController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = Class4ExemptionCategoryController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @heading(messages("class4ExemptionCategory.title"), None, extraClasses = "govuk-!-margin-bottom-3")
 
-        @govukButton(ButtonViewModel(messages("site.continue")))
+        @twoRadios(form, "class4ExemptionCategory", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
 
+        @submitButton()
     }
 }

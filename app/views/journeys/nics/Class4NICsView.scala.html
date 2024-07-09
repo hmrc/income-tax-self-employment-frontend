@@ -14,42 +14,31 @@
  * limitations under the License.
  *@
 
-@import controllers.actions.AuthenticatedIdentifierAction.User
-@import controllers.journeys.nics.routes.Class4NICsController
-@import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
+@import controllers.journeys.nics.routes
+@import models.common.{TaxYear, UserType}
+@import views.html.components._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        errorSummarySection: ErrorSummarySection,
+        twoRadios: TwoRadios,
+        submitButton: SubmitButton,
+        heading: HeadingMsgAware
 )
 
-@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("class4NICs.title"))) {
+@layout(pageTitle = title(form, messages(s"class4NICs.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
+
+    @formHelper(action = routes.Class4NICsController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
     @heading(messages("class4NICs.title"), None, extraClasses = "govuk-!-margin-bottom-3")
 
-@formHelper(action = Class4NICsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        @twoRadios(form, "class4NICs", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
 
-    @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages(s"class4NICs.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
-            )
-        )
-
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }
