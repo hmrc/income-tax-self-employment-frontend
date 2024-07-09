@@ -17,12 +17,13 @@
 @import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.templates.helpers.Heading
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, fullCostAmount: BigDecimal)(implicit request: Request[_], messages: Messages)
@@ -106,9 +107,7 @@
                 </fieldset>
             </div>
 
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
+            @submitButton()
         }
 
     <script>

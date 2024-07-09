@@ -41,9 +41,7 @@
     @heading(messages("turnoverIncomeAmount.title"), None)
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-5">
-        <p>
-        @messages(s"turnoverIncomeAmount.p1.$userType")
-        </p>
+        <p>@messages(s"turnoverIncomeAmount.p1.$userType")</p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("turnoverIncomeAmount.l1")</li>
             <li>@messages("turnoverIncomeAmount.l2")</li>
@@ -67,8 +65,6 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        <div class="govuk-!-margin-top-7">
-        @submitButton()
-        </div>
+        <div class="govuk-!-margin-top-7">@submitButton()</div>
     }
 }

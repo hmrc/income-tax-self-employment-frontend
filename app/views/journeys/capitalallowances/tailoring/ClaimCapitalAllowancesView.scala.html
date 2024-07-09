@@ -14,24 +14,24 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.tailoring.routes.ClaimCapitalAllowancesController
-@import models.common.{BusinessId, TaxYear, UserType}
+@import controllers.journeys.capitalallowances.tailoring.routes
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
-@import models.common.AccountingType
 
 @this(layout: templates.Layout,
-      formHelper: FormWithCSRF,
-      govukErrorSummary: GovukErrorSummary,
-      govukRadios: GovukRadios,
-      govukButton: GovukButton,
-      heading: Heading)
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton,
+        heading: Heading)
 
 @(form: Form[_],
-  mode: Mode,
-  userType: UserType,
-  taxYear: TaxYear,
-  accountingType: AccountingType,
-  businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+        mode: Mode,
+        userType: UserType,
+        taxYear: TaxYear,
+        accountingType: AccountingType,
+        businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"claimCapitalAllowances.title.$accountingType"))) {
 
@@ -48,18 +48,16 @@
         <p>@messages(s"claimCapitalAllowances.p4.$userType")<p>
     </div>
 
-    @formHelper(action = ClaimCapitalAllowancesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ClaimCapitalAllowancesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"claimCapitalAllowances.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+            )
         )
-    )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }
