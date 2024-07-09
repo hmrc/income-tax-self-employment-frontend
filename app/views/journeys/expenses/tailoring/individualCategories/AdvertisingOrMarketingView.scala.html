@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
 @import models.common.{BusinessId, TaxYear, UserType}
+@import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -24,7 +25,7 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -66,8 +67,6 @@
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

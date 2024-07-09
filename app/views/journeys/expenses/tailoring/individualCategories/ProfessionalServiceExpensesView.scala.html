@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
-@import controllers.journeys.expenses.tailoring.individualCategories.routes.ProfessionalServiceExpensesController
+@import controllers.journeys.expenses.tailoring.individualCategories.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -24,7 +25,7 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukCheckboxes: GovukCheckboxes,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading
 )
 
@@ -110,7 +111,7 @@
         </div>
     </details>
 
-    @formHelper(action = ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukCheckboxes(
             CheckboxesViewModel(
@@ -132,8 +133,6 @@
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.TravelForWork
 @import models.common.{BusinessId, TaxYear, UserType}
+@import models.journeys.expenses.individualCategories.TravelForWork
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -24,48 +25,46 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages("travelForWork.title"))) {
+@layout(pageTitle = title(form, messages("travelForWork.title"))) {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
-
-        @heading(messages("travelForWork.title"), None, extraClasses = "no-padding-top")
-
-        <div class="govuk-body govuk-!-margin-top-6">
-            <p>
-                @messages(s"site.canInclude.$userType")
-            </p>
-            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages(s"travelForWork.l1.$userType")</li>
-                <li>@messages("travelForWork.l2")</li>
-                <li>@messages("travelForWork.l3")</li>
-                <li>@messages("travelForWork.l4")</li>
-                <li>@messages("travelForWork.l5")</li>
-                <li>@messages("travelForWork.l6")</li>
-            </ul>
-        </div>
-        <div class="govuk-inset-text">
-            <p>@messages("travelForWork.insetText")</p>
-        </div>
-
-        @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.TravelForWorkController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
-            @govukRadios(
-                RadiosViewModel(
-                    field = form("value"),
-                    legend = LegendViewModel(messages(s"travelForWork.question.$userType"))
-                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                    items = TravelForWork.options(userType)
-                )
-            )
-
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
-        }
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
+
+    @heading(messages("travelForWork.title"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+        @messages(s"site.canInclude.$userType")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages(s"travelForWork.l1.$userType")</li>
+            <li>@messages("travelForWork.l2")</li>
+            <li>@messages("travelForWork.l3")</li>
+            <li>@messages("travelForWork.l4")</li>
+            <li>@messages("travelForWork.l5")</li>
+            <li>@messages("travelForWork.l6")</li>
+        </ul>
+    </div>
+    <div class="govuk-inset-text">
+        <p>@messages("travelForWork.insetText")</p>
+    </div>
+
+    @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.TravelForWorkController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+        @govukRadios(
+            RadiosViewModel(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"travelForWork.question.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items = TravelForWork.options(userType)
+            )
+        )
+
+        @submitButton()
+    }
+}

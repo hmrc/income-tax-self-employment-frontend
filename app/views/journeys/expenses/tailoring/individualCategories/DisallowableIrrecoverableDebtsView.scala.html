@@ -16,6 +16,7 @@
 
 @import controllers.journeys.expenses.tailoring.individualCategories.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -23,7 +24,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
+    submitButton: SubmitButton,
     heading: Heading
 )
 
@@ -58,8 +59,6 @@
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

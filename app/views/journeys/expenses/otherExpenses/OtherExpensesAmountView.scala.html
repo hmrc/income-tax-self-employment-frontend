@@ -14,21 +14,20 @@
  * limitations under the License.
  *@
 
-@import models.common._
-@import viewmodels.InputWidth._
-@import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesAmountController
-@import views.html.templates.helpers.Heading
-@import viewmodels.LabelSize
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-@import models.common.AccountingType
+@import controllers.journeys.expenses.otherExpenses.routes
+@import models.common.{AccountingType, _}
 @import models.journeys.expenses.individualCategories.OtherExpenses
 @import models.journeys.expenses.individualCategories.OtherExpenses.YesAllowable
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import viewmodels.InputWidth._
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton,
+    submitButton: SubmitButton,
     heading: Heading)
 
 @(form: Form[_],
@@ -41,7 +40,7 @@
 
 @layout(pageTitle = title(form, messages(s"otherExpensesAmount.title.$userType"))) {
 
-    @formHelper(action = OtherExpensesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.OtherExpensesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -57,7 +56,7 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(ButtonViewModel(messages("site.continue")))
+        @submitButton()
     }
 }
 

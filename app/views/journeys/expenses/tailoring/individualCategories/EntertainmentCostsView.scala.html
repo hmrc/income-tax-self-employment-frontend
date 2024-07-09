@@ -15,6 +15,7 @@
  *@
 
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -23,45 +24,41 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton
+        submitButton: SubmitButton
 )
 
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages("journeys.expenses-entertainment"))) {
+@layout(pageTitle = title(form, messages("journeys.expenses-entertainment"))) {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
-
-        @heading(messages("journeys.expenses-entertainment"), None, extraClasses = "no-padding-top")
-
-        <div class="govuk-body govuk-!-margin-top-6">
-            <p>
-            @messages("expenses.hint.disallowableExpenses")
-            @messages("site.theyInclude")
-            </p>
-            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                <li>@messages("entertainmentCosts.l1")</li>
-                <li>@messages("entertainmentCosts.l2")</li>
-            </ul>
-        </div>
-
-        @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.EntertainmentCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
-
-
-
-            @govukRadios(
-                RadiosViewModel.yesNo(
-                    field = form("value"),
-                    legend = LegendViewModel(messages(s"entertainmentCosts.question.$userType"))
-                    .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
-                )
-            )
-
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
-        }
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
+
+    @heading(messages("journeys.expenses-entertainment"), None, extraClasses = "no-padding-top")
+
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>
+        @messages("expenses.hint.disallowableExpenses")
+        @messages("site.theyInclude")
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+            <li>@messages("entertainmentCosts.l1")</li>
+            <li>@messages("entertainmentCosts.l2")</li>
+        </ul>
+    </div>
+
+    @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.EntertainmentCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"entertainmentCosts.question.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+            )
+        )
+
+        @submitButton()
+    }
+}

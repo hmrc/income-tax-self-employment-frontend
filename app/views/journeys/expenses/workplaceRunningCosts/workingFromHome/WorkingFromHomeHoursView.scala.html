@@ -15,9 +15,10 @@
  *@
 
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
+@import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider.WorkingFromHomeHoursFormModel
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth.Fixed5
-@import forms.expenses.workplaceRunningCosts.workingFromHome.WorkingFromHomeHoursFormProvider.WorkingFromHomeHoursFormModel
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -25,7 +26,7 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading
 )
 
@@ -109,9 +110,7 @@
             </div>
         </fieldset>
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
 
     }
 }

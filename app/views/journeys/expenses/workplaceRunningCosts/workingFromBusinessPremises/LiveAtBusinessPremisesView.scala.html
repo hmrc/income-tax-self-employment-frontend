@@ -16,38 +16,39 @@
 
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
-  layout: templates.Layout,
-  formHelper: FormWithCSRF,
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
         heading: Heading,
-  govukErrorSummary: GovukErrorSummary,
-  govukRadios: GovukRadios,
-  govukButton: GovukButton
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-  @layout(pageTitle = title(form, messages(s"liveAtBusinessPremises.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"liveAtBusinessPremises.title.$userType"))) {
 
     @if(form.errors.nonEmpty) {
-      @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
     @heading(messages("liveAtBusinessPremises.heading"), None, extraClasses = "no-padding-top")
 
     <div class="govuk-body govuk-!-margin-top-6">
-            <p>@messages("liveAtBusinessPremises.l1")</p>
+        <p>@messages("liveAtBusinessPremises.l1")</p>
     </div>
 
     @formHelper(action = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-      @govukRadios(
-        RadiosViewModel.yesNo(
-          field = form("value"),
-          legend = LegendViewModel(HtmlContent(
-              s"""
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
                         <div>
                             <label class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                 ${messages(s"liveAtBusinessPremises.title.$userType")}
@@ -57,12 +58,10 @@
                             </div>
                         </div>
                         """))
-          .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+            )
         )
-      )
 
-      @govukButton(
-        ButtonViewModel(messages("site.continue"))
-      )
+        @submitButton()
     }
-  }
+}
