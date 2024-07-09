@@ -16,7 +16,7 @@
 
 @import controllers.journeys.expenses.repairsandmaintenance.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
-@import views.html.components.{SingleAmountContent, ErrorSummarySection, FoldableDetails, Heading}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         heading: Heading,
@@ -25,7 +25,7 @@
         singleAmountContent: SingleAmountContent,
         formHelper: FormWithCSRF,
         govukInput: GovukInput,
-        govukButton: GovukButton
+        submitButton: SubmitButton
 )
 
 @(form: Form[_],
@@ -62,8 +62,6 @@
             }
         }
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

@@ -14,11 +14,9 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
 @import controllers.journeys.expenses.staffCosts.routes
 @import models.common.{BusinessId, TaxYear, TextAmount, UserType}
-@import views.html.components.{ErrorSummarySection, SingleAmountContent}
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import views.html.components._
 
 @this(
     layout: templates.Layout,
@@ -27,7 +25,7 @@
     singleAmountContent: SingleAmountContent,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, staffCostsAmount: TextAmount
@@ -57,8 +55,6 @@
                     </details>
         }
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

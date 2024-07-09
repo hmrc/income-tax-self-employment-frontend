@@ -16,8 +16,7 @@
 
 @import controllers.journeys.expenses.repairsandmaintenance.routes
 @import models.common.{BusinessId, TaxYear, TextAmount, UserType}
-@import views.html.components.{ErrorSummarySection, SingleAmountContent}
-@import views.html.components.Heading
+@import views.html.components._
 
 @this(
     layout: templates.Layout,
@@ -27,7 +26,7 @@
     singleAmountContent: SingleAmountContent,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    submitButton: SubmitButton
 )
 
 @(form: Form[_],
@@ -48,8 +47,6 @@
             @heading(messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", allowableAmount.value))
         }
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

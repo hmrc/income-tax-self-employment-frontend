@@ -15,9 +15,10 @@
  *@
 
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
+@import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesFormProvider.PeopleLivingAtBusinessPremisesFormModel
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth.Fixed5
-@import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesFormProvider.PeopleLivingAtBusinessPremisesFormModel
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -25,7 +26,7 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading
 )
 
@@ -107,9 +108,7 @@
             </div>
         </fieldset>
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
 
     }
 }

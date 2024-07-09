@@ -14,25 +14,25 @@
  * limitations under the License.
  *@
 
+@import controllers.journeys.expenses.officeSupplies.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
-@import viewmodels.InputWidth._
-@import controllers.journeys.expenses.officeSupplies.routes.OfficeSuppliesAmountController
-@import views.html.templates.helpers.Heading
-@import viewmodels.LabelSize
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import viewmodels.InputWidth._
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
       govukErrorSummary: GovukErrorSummary,
       govukInput: GovukInput,
-      govukButton: GovukButton,
+      submitButton: SubmitButton,
       heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, accountingType: AccountingType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$userType"))) {
 
-    @formHelper(action = OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -48,9 +48,7 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }
 

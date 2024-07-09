@@ -14,18 +14,18 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.ExpensesTailoring
-@import controllers.journeys.expenses.tailoring.routes.ExpensesCategoriesController
+@import controllers.journeys.expenses.tailoring.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import models.journeys.expenses.ExpensesTailoring
+@import views.html.components._
 @import views.html.templates.helpers.Heading
-@import views.html.components.FoldableDetails
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
+    submitButton: SubmitButton,
     heading: Heading,
     foldableDetails: FoldableDetails
 )
@@ -45,8 +45,8 @@
         <p class="govuk-body govuk-!-margin-top-6">@messages(s"expensesCategories.p4.$userType")</p>
 
 
-        @formHelper(action = ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
-            @govukButton(ButtonViewModel(messages("site.continue")))
+        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+            @submitButton()
         }
 
     } else {
@@ -83,7 +83,7 @@
             }
         </div>
 
-        @formHelper(action = ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
             @govukRadios(
                 RadiosViewModel(
@@ -94,7 +94,7 @@
                 )
             )
 
-            @govukButton(ButtonViewModel(messages("site.continue")))
+            @submitButton()
         }
     }
 }

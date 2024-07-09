@@ -14,17 +14,18 @@
  * limitations under the License.
  *@
 
+@import controllers.journeys.expenses.otherExpenses.routes
 @import models.common._
 @import viewmodels.InputWidth._
-@import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesDisallowableAmountController
-@import views.html.templates.helpers.Heading
 @import viewmodels.LabelSize
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
       govukErrorSummary: GovukErrorSummary,
       govukInput: GovukInput,
-      govukButton: GovukButton,
+      submitButton: SubmitButton,
       heading: Heading)
 
 @(form: Form[_],
@@ -36,7 +37,7 @@
 
 @layout(pageTitle = title(form, messages(s"otherExpensesDisallowableAmount.title.$userType", amount))) {
 
-    @formHelper(action = OtherExpensesDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.OtherExpensesDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -54,6 +55,6 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(ButtonViewModel(messages("site.continue")))
+        @submitButton()
     }
 }

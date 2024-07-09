@@ -16,9 +16,10 @@
 
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromHome.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
 @import viewmodels.LegendSize.Medium
 @import viewmodels.checkAnswers.expenses.workplaceRunningCosts.WfhFlatRateViewModel
-@import models.journeys.expenses.workplaceRunningCosts.WfhFlatRateOrActualCosts
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 @import utils.MoneyUtils.formatMoney
 
@@ -27,7 +28,7 @@
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton,
+        submitButton: SubmitButton,
         heading: Heading
 )
 
@@ -76,8 +77,6 @@
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

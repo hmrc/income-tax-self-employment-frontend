@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.journeys.expenses.individualCategories.GoodsToSellOrUse
-@import controllers.journeys.expenses.tailoring.individualCategories.routes.GoodsToSellOrUseController
+@import controllers.journeys.expenses.tailoring.individualCategories.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -25,7 +26,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
@@ -70,7 +71,7 @@
         </ul>
     </div>
 
-    @formHelper(action = GoodsToSellOrUseController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel(
@@ -81,8 +82,6 @@
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

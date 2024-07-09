@@ -17,6 +17,7 @@
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
+@import views.html.components._
 @import views.html.templates.helpers.Heading
 
 @this(
@@ -24,7 +25,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton,
+    submitButton: SubmitButton,
     heading: Heading
 )
 
@@ -58,8 +59,6 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }

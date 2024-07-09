@@ -14,17 +14,18 @@
  * limitations under the License.
  *@
 
+@import controllers.journeys.expenses.professionalFees.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
-@import controllers.journeys.expenses.professionalFees.routes
 @import viewmodels.LabelSize.Large
+@import views.html.components._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, amount: String)(implicit request: Request[_], messages: Messages)
@@ -48,8 +49,6 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }
