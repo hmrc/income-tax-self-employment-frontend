@@ -14,19 +14,20 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import controllers.journeys.income.routes.TurnoverIncomeAmountController
-@import views.html.templates.helpers.Heading
+@import controllers.journeys.income.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import viewmodels.InputWidth._
 @import viewmodels.LabelSize
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
@@ -41,7 +42,7 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-5">
         <p>
-            @messages(s"turnoverIncomeAmount.p1.$userType")
+        @messages(s"turnoverIncomeAmount.p1.$userType")
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("turnoverIncomeAmount.l1")</li>
@@ -53,13 +54,13 @@
         </ul>
     </div>
 
-    @formHelper(action = TurnoverIncomeAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TurnoverIncomeAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"turnoverIncomeAmount.subHeading.$userType"))
-                            .asPageHeading(LabelSize.Medium)
+                .asPageHeading(LabelSize.Medium)
             )
             .asNumeric()
             .withWidth(Fixed10)
@@ -67,9 +68,7 @@
         )
 
         <div class="govuk-!-margin-top-7">
-            @govukButton(
-                ButtonViewModel(messages("site.continue"))
-            )
+        @submitButton()
         </div>
     }
 }

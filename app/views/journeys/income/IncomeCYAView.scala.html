@@ -16,7 +16,8 @@
 
 @import templates.helpers.Heading
 @import models.common._
-@import controllers.journeys.income.routes._
+@import controllers.journeys.income.routes
+@import views.html.components._
 
 @this(layout: templates.Layout,
       govukButton: GovukButton,
@@ -28,7 +29,7 @@
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourIncome.title.$userType"))) {
 
-    @formHelper(action = IncomeCYAController.onSubmit(taxYear, businessId)) {
+    @formHelper(action = routes.IncomeCYAController.onSubmit(taxYear, businessId)) {
 
         @heading(
             heading = messages(s"checkYourIncome.title.$userType"),

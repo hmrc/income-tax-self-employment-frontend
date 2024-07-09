@@ -14,19 +14,19 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import controllers.journeys.income.routes.HowMuchTradingAllowanceController
-@import views.html.templates.helpers.Heading
-@import models.journeys.income.HowMuchTradingAllowance
+@import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import models.journeys.income.HowMuchTradingAllowance
+@import views.html.components._
+@import views.html.templates.helpers.Heading
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    heading: Heading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, tradingAllowance: String)(implicit request: Request[_], messages: Messages)
@@ -41,26 +41,24 @@
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>
-            @messages(s"howMuchTradingAllowance.p1.$userType")
+        @messages(s"howMuchTradingAllowance.p1.$userType")
         </p>
         <p>
-            @messages("howMuchTradingAllowance.p2")
+        @messages("howMuchTradingAllowance.p2")
         </p>
     </div>
 
-    @formHelper(action = HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.HowMuchTradingAllowanceController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(
-                field  = form("value"),
+                field = form("value"),
                 legend = LegendViewModel(messages(s"howMuchTradingAllowance.subHeading.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                items  = HowMuchTradingAllowance.options(tradingAllowance)
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items = HowMuchTradingAllowance.options(tradingAllowance)
             )
         )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
+        @submitButton()
     }
 }
