@@ -22,7 +22,7 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        twoRadios: TwoRadios,
+        govukCheckboxes: GovukCheckboxes,
         submitButton: SubmitButton,
         heading: HeadingMsgAware
 )
@@ -35,9 +35,34 @@
 
     @formHelper(action = routes.Class4ExemptionCategoryController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @heading(messages("class4ExemptionCategory.title"), None, extraClasses = "govuk-!-margin-bottom-3")
-
-        @twoRadios(form, "class4ExemptionCategory", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
+    @govukCheckboxes(
+            CheckboxesViewModel(
+                form = form,
+                name = "value",
+                items = Seq(
+                      CheckboxItem(
+                        content = Text(messages(s"class4ExemptionCategory.checkbox1.$userType")),
+                        value = ""
+                      ),
+                      CheckboxItem(
+                        content = Text(messages(s"class4ExemptionCategory.checkbox2.$userType")),
+                        value = ""
+                      )
+                ),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                ${messages(s"class4ExemptionCategoryView.subHeading.$userType")}
+                            </legend>
+                            <div class="govuk-hint">
+                                ${messages(s"class4ExemptionCategoryView.hint.$userType")}
+                            </div>
+                        </div>
+                    """
+                )).withCssClass("no-margin-bottom")
+            )
+        )
 
         @submitButton()
     }

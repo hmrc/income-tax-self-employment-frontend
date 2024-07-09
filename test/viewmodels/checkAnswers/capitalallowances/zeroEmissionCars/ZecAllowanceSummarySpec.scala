@@ -28,7 +28,7 @@ class ZecAllowanceSummarySpec extends SummaryBaseSpec("ZecAllowanceSummary") {
 
   override val validData: JsObject = Json.obj("zecAllowance" -> true)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zeroEmission.subheading.$userType"))
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zeroEmission.subHeading.$userType"))
 
   override val testValue: HtmlContent = HtmlContent("site.yes")
 

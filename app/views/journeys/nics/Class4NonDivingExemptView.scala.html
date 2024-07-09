@@ -22,7 +22,7 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        twoRadios: TwoRadios,
+        govukCheckboxes: GovukCheckboxes,
         submitButton: SubmitButton,
         heading: HeadingMsgAware
 )
@@ -35,9 +35,31 @@
 
     @formHelper(action = routes.Class4NonDivingExemptController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @heading(messages("class4NonDivingExempt.title"), None, extraClasses = "govuk-!-margin-bottom-3")
-
-        @twoRadios(form, "class4NonDivingExempt", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
+    @govukCheckboxes(
+            CheckboxesViewModel(
+                form = form,
+                name = "value",
+                items = Seq( // TODO implement dynamic businesses fetching
+                      CheckboxItem(
+                        content = Text("Business 1"),
+                        value = ""
+                      ),
+                      CheckboxItem(
+                        content = Text("Business 2"),
+                        value = ""
+                      )
+                ),
+                legend = LegendViewModel(HtmlContent(
+                    s"""
+                        <div>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                ${messages(s"class4NonDivingExempt.subHeading.$userType")}
+                            </legend>
+                        </div>
+                    """
+                )).withCssClass("no-margin-bottom")
+            )
+        )
 
         @submitButton()
     }

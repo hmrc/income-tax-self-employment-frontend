@@ -35,9 +35,9 @@
 
     @formHelper(action = routes.Class4NICsController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @heading(messages("class4NICs.title"), None, extraClasses = "govuk-!-margin-bottom-3")
+    @heading(s"class4NICs.title.$userType")
 
-        @twoRadios(form, "class4NICs", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
+        @twoRadios(form, "class4NICs", userType, taxYear, inline = true, afterSubheadingHtml = Html(""))
 
         @submitButton()
     }

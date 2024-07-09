@@ -46,11 +46,6 @@ package object journeys {
     }
   }
 
-  def fillForm[A: Reads](page: OneQuestionPage[A], form: Form[A])(implicit request: DataRequest[AnyContent]): Form[A] =
-    request.userAnswers
-      .get(page)
-      .fold(form)(form.fill)
-
   def fillForm[A: Reads](page: OneQuestionPage[A], businessId: BusinessId, form: Form[A])(implicit request: DataRequest[AnyContent]): Form[A] =
     request.userAnswers
       .get(page, businessId.some)

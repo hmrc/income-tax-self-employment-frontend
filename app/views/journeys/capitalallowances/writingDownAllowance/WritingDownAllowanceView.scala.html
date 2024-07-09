@@ -21,7 +21,7 @@
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         submitButton: SubmitButton,
-        subheading: Subheading,
+        subHeading: Subheading,
         heading: HeadingMsgAware)
 
 @(mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -34,7 +34,7 @@
         <p>@messages(s"writingDownAllowance.p2.$userType")<p>
         <p>@messages(s"writingDownAllowance.p3.$userType")<p>
 
-        @subheading("writingDownAllowance.h2")
+        @subHeading("writingDownAllowance.h2")
         <p>@messages(s"writingDownAllowance.p4.$userType")<p>
 
         <ul class="govuk-list govuk-list--bullet">

@@ -16,12 +16,12 @@
 
 @this()
 
-@(heading: String, subheading: Option[String] = None, extraClasses: String = "", size: String = "l", marginZero: Boolean = true)(implicit messages: Messages)
+@(heading: String, subHeading: Option[String] = None, extraClasses: String = "", size: String = "l", marginZero: Boolean = true)(implicit messages: Messages)
 
 <header class="hmrc-page-heading @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">
 
-    @subheading.map{ subheading =>
-    <p class="govuk-caption-@{size} hmrc-caption-xl">@messages(subheading)</p>
+    @subHeading.map{ subHeading =>
+    <p class="govuk-caption-@{size} hmrc-caption-xl">@messages(subHeading)</p>
     }
     <h1 class="govuk-heading-@{size} @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">@messages(heading)</h1>
 

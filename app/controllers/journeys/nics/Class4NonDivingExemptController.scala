@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
+import models.common.BusinessId.nationalInsuranceContributions
 import models.common.TaxYear
 import pages.nics.Class4NonDivingExemptPage
 import play.api.data.Form
@@ -46,14 +47,14 @@ class Class4NonDivingExemptController @Inject() (override val messagesApi: Messa
   private val page = Class4NonDivingExemptPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, formProvider(page, request.userType))
+    val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
     Ok(view(form, taxYear, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
 
-    service.defaultHandleForm(formProvider(page, request.userType), page, taxYear, mode, handleError)
+    service.defaultHandleForm(formProvider(page, request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
   }
 
 }

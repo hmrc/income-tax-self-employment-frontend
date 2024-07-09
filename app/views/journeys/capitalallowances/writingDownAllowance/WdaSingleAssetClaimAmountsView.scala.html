@@ -23,7 +23,7 @@
         formHelper: FormWithCSRF,
         errorSummary: ErrorSummarySection,
         singleAmountContent: SingleAmountContent,
-        subheading: Subheading,
+        subHeading: Subheading,
         submitButton: SubmitButton,
         heading: HeadingMsgAware)
 
@@ -38,7 +38,7 @@
 
         @formHelper(action = routes.WdaSingleAssetClaimAmountsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
             @singleAmountContent(form) {
-                @subheading(s"wdaSingleAssetClaimAmounts.subheading.$userType")
+                @subHeading(s"wdaSingleAssetClaimAmounts.subHeading.$userType")
             }
             @submitButton()
         }
