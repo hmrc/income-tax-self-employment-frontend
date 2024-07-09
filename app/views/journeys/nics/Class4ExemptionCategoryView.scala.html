@@ -16,6 +16,7 @@
 
 @import controllers.journeys.nics.routes
 @import models.common.{TaxYear, UserType}
+@import models.journeys.nics.ExemptionCategory
 @import views.html.components._
 
 @this(
@@ -39,16 +40,7 @@
             CheckboxesViewModel(
                 form = form,
                 name = "value",
-                items = Seq(
-                      CheckboxItem(
-                        content = Text(messages(s"class4ExemptionCategory.checkbox1.$userType")),
-                        value = ""
-                      ),
-                      CheckboxItem(
-                        content = Text(messages(s"class4ExemptionCategory.checkbox2.$userType")),
-                        value = ""
-                      )
-                ),
+                items = ExemptionCategory.checkboxItems(userType),
                 legend = LegendViewModel(HtmlContent(
                     s"""
                         <div>

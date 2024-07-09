@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.nics.Class4ExemptionCategoryView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class Class4ExemptionCategoryController @Inject() (override val messagesApi: MessagesApi,
@@ -53,7 +54,9 @@ class Class4ExemptionCategoryController @Inject() (override val messagesApi: Mes
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
+    def handleSuccess(answer: Boolean): Future[Result] =
+      service.submitGatewayQuestionAndRedirect(page, nationalInsuranceContributions, request.userAnswers, answer, taxYear, mode)
 
-    service.defaultHandleForm(formProvider(page, request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
+    service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
 }

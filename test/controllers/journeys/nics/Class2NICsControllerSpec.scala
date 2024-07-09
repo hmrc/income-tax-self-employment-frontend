@@ -27,15 +27,15 @@ import views.html.journeys.nics.Class2NICsView
 
 class Class2NICsControllerSpec extends BooleanGetAndPostQuestionBaseSpec("Class2NICsController", Class2NICsPage) {
 
-  override def onPageLoadCall: Call = routes.Class2NICsController.onPageLoad(taxYear, businessId, NormalMode)
-  override def onSubmitCall: Call   = routes.Class2NICsController.onSubmit(taxYear, businessId, NormalMode)
+  override def onPageLoadCall: Call = routes.Class2NICsController.onPageLoad(taxYear, NormalMode)
+  override def onSubmitCall: Call   = routes.Class2NICsController.onSubmit(taxYear, NormalMode)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[Class2NICsView]
-    view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode).toString()
+    view(form, scenario.taxYear, scenario.userType, scenario.mode).toString()
   }
 
 }

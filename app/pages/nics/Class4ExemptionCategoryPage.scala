@@ -16,16 +16,29 @@
 
 package pages.nics
 
+import controllers.journeys.nics.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.OneQuestionPage
+import models.journeys.nics.ExemptionCategory
+import models.journeys.nics.ExemptionCategory.TrusteeExecutorAdmin
 import play.api.mvc.Call
+import queries.Settable
 
-case object Class4ExemptionCategoryPage extends OneQuestionPage[Boolean] {
+case object Class4ExemptionCategoryPage extends NicsBasePage[Set[ExemptionCategory]] {
   override def toString: String = "class4ExemptionCategory"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectForExemptionCategory(
+    userAnswers,
+    TrusteeExecutorAdmin,
+    routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode),
+    routes.Class4NonDivingExemptController
+      .onPageLoad(taxYear, NormalMode) // TODO to be changed in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
+  )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
+    List(Class4NonDivingExemptPage) // TODO add further pages in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
 }
