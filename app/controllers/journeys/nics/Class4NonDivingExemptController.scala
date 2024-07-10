@@ -22,29 +22,29 @@ import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.TaxYear
-import pages.nics.Class2NICsPage
+import pages.nics.Class4NonDivingExemptPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.nics.Class2NICsView
+import views.html.journeys.nics.Class4NonDivingExemptView
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Class2NICsController @Inject() (override val messagesApi: MessagesApi,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      formProvider: BooleanFormProvider,
-                                      service: SelfEmploymentService,
-                                      view: Class2NICsView)
+class Class4NonDivingExemptController @Inject() (override val messagesApi: MessagesApi,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: BooleanFormProvider,
+                                                 service: SelfEmploymentService,
+                                                 view: Class4NonDivingExemptView)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = Class2NICsPage
+  private val page = Class4NonDivingExemptPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))

@@ -16,15 +16,29 @@
 
 package pages.nics
 
+import controllers.journeys.nics.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
-case object Class2NICsPage extends NicsBasePage[Boolean] {
-  override def toString: String = "class2NICs"
+case object Class4NICsPage extends NicsBasePage[Boolean] {
+  override def toString: String = "class4NICs"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectOnBoolean(
+    this,
+    userAnswers,
+    businessId,
+    onTrue = routes.Class4ExemptionCategoryController.onPageLoad(taxYear, NormalMode),
+    onFalse = cyaPage(taxYear, businessId)
+  )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(Class4ExemptionCategoryPage, Class4NonDivingExemptPage) // TODO add further pages in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
+
 }

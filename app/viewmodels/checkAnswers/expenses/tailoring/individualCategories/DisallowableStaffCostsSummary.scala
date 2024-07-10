@@ -40,7 +40,7 @@ object DisallowableStaffCostsSummary {
       buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableStaffCostsController.onPageLoad(taxYear, businessId, CheckMode),
-        s"disallowableStaffCosts.subheading.$userType",
+        s"disallowableStaffCosts.subHeading.$userType",
         "disallowableStaffCosts.change.hidden"
       )
     }

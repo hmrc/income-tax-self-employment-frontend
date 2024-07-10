@@ -40,7 +40,7 @@ object DisallowableSubcontractorCostsSummary {
       buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableSubcontractorCostsController.onPageLoad(taxYear, businessId, CheckMode),
-        s"disallowableSubcontractorCosts.subheading.$userType",
+        s"disallowableSubcontractorCosts.subHeading.$userType",
         "disallowableSubcontractorCosts.change.hidden"
       )
     }

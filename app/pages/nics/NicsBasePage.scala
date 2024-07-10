@@ -18,13 +18,14 @@ package pages.nics
 
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.nics.ExemptionCategory
+import pages.OneQuestionPage
 import play.api.mvc.Call
 
-case object Class2NICsPage extends NicsBasePage[Boolean] {
-  override def toString: String = "class2NICs"
+trait NicsBasePage[A] extends OneQuestionPage[A] {
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    ??? // TODO to be added in https://jira.tools.tax.service.gov.uk/browse/SASS-8727
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
-
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+  def redirectForExemptionCategory(userAnswers: UserAnswers, category: ExemptionCategory, onTrue: Call, onFalse: Call): Call =
+    userAnswers.get(Class4ExemptionCategoryPage).map(seq => if (seq.contains(category)) onTrue else onFalse).get
 }

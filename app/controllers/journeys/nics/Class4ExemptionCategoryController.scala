@@ -18,43 +18,42 @@ package controllers.journeys.nics
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.standard.BooleanFormProvider
+import forms.nics.ExemptionCategoryFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.TaxYear
-import pages.nics.Class2NICsPage
+import pages.nics.Class4ExemptionCategoryPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.nics.Class2NICsView
+import views.html.journeys.nics.Class4ExemptionCategoryView
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Class2NICsController @Inject() (override val messagesApi: MessagesApi,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      formProvider: BooleanFormProvider,
-                                      service: SelfEmploymentService,
-                                      view: Class2NICsView)
+class Class4ExemptionCategoryController @Inject() (override val messagesApi: MessagesApi,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   formProvider: ExemptionCategoryFormProvider,
+                                                   service: SelfEmploymentService,
+                                                   view: Class4ExemptionCategoryView)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = Class2NICsPage
+  private val page = Class4ExemptionCategoryPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
+    val form = fillForm(page, nationalInsuranceContributions, formProvider(request.userType))
     Ok(view(form, taxYear, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
-
-    service.defaultHandleForm(formProvider(page, request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
+    // TODO improve implementation to clear dependent pages upon answers changing
+    service.defaultHandleForm(formProvider(request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
   }
-
 }

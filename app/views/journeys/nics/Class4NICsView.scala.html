@@ -15,8 +15,7 @@
  *@
 
 @import controllers.journeys.nics.routes
-@import models.common.{BusinessId, TaxYear, UserType}
-@import models.journeys.nics.Class2NICsThresholds
+@import models.common.{TaxYear, UserType}
 @import views.html.components._
 
 @this(
@@ -30,23 +29,15 @@
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("class2NICs.title"))) {
+@layout(pageTitle = title(form, messages(s"class4NICs.title.$userType"))) {
 
     @errorSummarySection(form)
 
-    @formHelper(action = routes.Class2NICsController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.Class4NICsController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @heading("class2NICs.title")
+    @heading(s"class4NICs.title.$userType")
 
-    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>
-            @messages(s"class2NICs.p1.$userType", Class2NICsThresholds.getThresholdForTaxYear(taxYear))
-        </p>
-        <p>
-            @messages(s"class2NICs.p2.$userType")
-        </p>
-    </div>
-        @twoRadios(form, "class2NICs", userType, taxYear, inline = true, afterSubheadingHtml = Html(""))
+        @twoRadios(form, "class4NICs", userType, taxYear, inline = true, afterSubheadingHtml = Html(""))
 
         @submitButton()
     }

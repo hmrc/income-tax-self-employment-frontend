@@ -33,12 +33,12 @@
 
     @heading(
         heading = messages("businessIncomeSummary.title"),
-        subheading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
+        subHeading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
         marginZero = false
     )
     <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
 
-    @subHeading(messages("businessIncomeSummary.subheading"), isH2 = true)
+    @subHeading(messages("businessIncomeSummary.subHeading"), isH2 = true)
     @govukTable(incomeTable)
 
     <div class="govuk-!-margin-top-7">

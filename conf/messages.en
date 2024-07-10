@@ -195,7 +195,7 @@ selfEmploymentAbroad.change.hidden = Change if all self-employment was carried o
 prepop.useReportingSoftware = To change this data you’ll have to use your reporting software.
 
 businessIncomeSummary.title = Business income
-businessIncomeSummary.subheading = Total for this year
+businessIncomeSummary.subHeading = Total for this year
 
 adjustments.businessAdjustments = Business adjustments
 adjustments.adjustment = Adjustment
@@ -331,8 +331,8 @@ tradingAllowance.p5.agent = Your client cannot use the trading allowance to make
 tradingAllowance.p6.individual = See if you can claim and read more information.
 tradingAllowance.p6.agent = See if your client can claim and read more information.
 tradingAllowance.p6.href = https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income
-tradingAllowance.subheading.individual = What do you want to do?
-tradingAllowance.subheading.agent = What does your client want to do?
+tradingAllowance.subHeading.individual = What do you want to do?
+tradingAllowance.subHeading.agent = What does your client want to do?
 tradingAllowance.useTradingAllowance = Use the trading allowance
 tradingAllowance.declareExpenses = Declare expenses
 tradingAllowance.checkYourAnswersLabel.individual = Do you want to use the trading allowance or declare expenses?
@@ -449,7 +449,7 @@ expenses.false.cya = No
 expenses.true.cya = Yes
 
 ## Expenses Categories
-expensesCategories.subheading = Allowable and disallowable expenses
+expensesCategories.subHeading = Allowable and disallowable expenses
 expensesCategories.p1.individual = If you already know about the allowable expenses you can claim, you may prefer to report your expenses as one total amount.
 expensesCategories.p1.agent = If you already know about the allowable expenses your client can claim, you may prefer to report their expenses as one total amount.
 expensesCategories.p2.individual = If you would like to know more about what you can claim in expenses, you may want to report them in individual categories. Selecting this option will help you add only the categories you need to tell us about. You can add amounts later.
@@ -598,8 +598,8 @@ professionalServiceExpenses.d3.l5 = indemnity insurance premiums
 
 ## Disallowable staff costs
 disallowableStaffCosts.title = Disallowable staff costs
-disallowableStaffCosts.subheading.individual = Are any of your staff costs disallowable?
-disallowableStaffCosts.subheading.agent = Are any of your client’s staff costs disallowable?
+disallowableStaffCosts.subHeading.individual = Are any of your staff costs disallowable?
+disallowableStaffCosts.subHeading.agent = Are any of your client’s staff costs disallowable?
 disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
 disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
 disallowableStaffCosts.change.hidden = DisallowableStaffCosts
@@ -608,8 +608,8 @@ disallowableStaffCosts.l1.agent = your client’s own pay, pension or National I
 
 ## Disallowable subcontractor costs
 disallowableSubcontractorCosts.title = Disallowable construction industry subcontractors costs
-disallowableSubcontractorCosts.subheading.individual = Are any of your construction industry subcontractors costs disallowable?
-disallowableSubcontractorCosts.subheading.agent = Are any of your client’s construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subHeading.individual = Are any of your construction industry subcontractors costs disallowable?
+disallowableSubcontractorCosts.subHeading.agent = Are any of your client’s construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.error.required.individual = Select yes if any of your construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client’s construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
@@ -618,8 +618,8 @@ disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. Fo
 
 ## Disallowable professional fees
 disallowableProfessionalFees.title = Disallowable professional fees
-disallowableProfessionalFees.subheading.individual = Are any of your professional fees disallowable?
-disallowableProfessionalFees.subheading.agent = Are any of your client’s professional fees disallowable?
+disallowableProfessionalFees.subHeading.individual = Are any of your professional fees disallowable?
+disallowableProfessionalFees.subHeading.agent = Are any of your client’s professional fees disallowable?
 disallowableProfessionalFees.error.required.individual = Select yes if any of your professional fees are disallowable
 disallowableProfessionalFees.error.required.agent = Select yes if any of your client’s professional fees are disallowable
 disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
@@ -1390,8 +1390,8 @@ capitalAllowancesCYA.title.agent = Check your client’s answers
 
 ########## Capital Allowances - Zero Emission Cars ##########
 
-zeroEmission.subheading.individual = Do you want to use your 100% first year allowance?
-zeroEmission.subheading.agent = Does your client want to use their 100% first year allowance?
+zeroEmission.subHeading.individual = Do you want to use your 100% first year allowance?
+zeroEmission.subHeading.agent = Does your client want to use their 100% first year allowance?
 zeroEmission.error.required.individual = Select yes if you want to use all your 100% first year allowance
 zeroEmission.error.required.agent = Select yes if your client wants to use all their 100% first year allowance
 zeroEmission.change.hidden = Change whether to use the 100% first year allowances
@@ -1652,8 +1652,8 @@ structuresBuildingsAllowance.p3 = All construction contracts were signed on or a
 structuresBuildingsAllowance.p4 = Construction began on or after 29 October 2018
 structuresBuildingsAllowance.p5.individual = You can claim 3% of the qualifying costs to reduce their taxable profits.
 structuresBuildingsAllowance.p5.agent = They can claim 3% of the qualifying costs to reduce their taxable profits.
-structuresBuildingsAllowance.subheading.individual = In this accounting period did you build, renovate or buy a structure for your self-employment?
-structuresBuildingsAllowance.subheading.agent = In this accounting period did your client build, renovate or buy a structure for their self-employment?
+structuresBuildingsAllowance.subHeading.individual = In this accounting period did you build, renovate or buy a structure for your self-employment?
+structuresBuildingsAllowance.subHeading.agent = In this accounting period did your client build, renovate or buy a structure for their self-employment?
 structuresBuildingsAllowance.hint = The structure or building must be for non-residential use.
 structuresBuildingsAllowance.error.required.individual = Select yes if you built, renovated or bought a structure or building for your self-employment
 structuresBuildingsAllowance.error.required.agent = Select yes if your client built, renovated or bought a structure or building for their self-employment
@@ -1679,8 +1679,8 @@ structuresBuildingsPreviousClaimUse.p3.href = https://www.gov.uk/guidance/claimi
 structuresBuildingsPreviousClaimUse.p4 = or the qualifying cost is treated as £0.
 structuresBuildingsPreviousClaimUse.link = Claiming capital allowances for structures and buildings (link opens in a new tab)
 structuresBuildingsPreviousClaimUse.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings
-structuresBuildingsPreviousClaimUse.subheading.individual = Do you want to use the structures and buildings allowance for an existing building?
-structuresBuildingsPreviousClaimUse.subheading.agent = Does your client want to use the structures and buildings allowance for an existing building?
+structuresBuildingsPreviousClaimUse.subHeading.individual = Do you want to use the structures and buildings allowance for an existing building?
+structuresBuildingsPreviousClaimUse.subHeading.agent = Does your client want to use the structures and buildings allowance for an existing building?
 structuresBuildingsAllowance.cya.individual = Did you build, renovate or buy a new structure for your self-employment?
 structuresBuildingsAllowance.cya.agent = Did your client build, renovate or buy a new structure for their self-employment?
 structuresBuildingsPreviousClaimUse.hint.individual = If you’ve sold, demolished or used the building for anything other than your claim, click ‘no’.
@@ -1805,8 +1805,8 @@ wdaSpecialRate.l4 = thermal insulation you’ve added to a building
 wdaSpecialRate.l5.leftPart = cars with CO2 emissions over a certain threshold -
 wdaSpecialRate.l5.link = check the threshold for your car
 wdaSpecialRate.l5.href = https://www.gov.uk/capital-allowances/business-cars
-wdaSpecialRate.subheading.individual = Do you want to claim allowances on items in the special rate pool?
-wdaSpecialRate.subheading.agent = Does your client want to claim allowances on items in the special rate pool?
+wdaSpecialRate.subHeading.individual = Do you want to claim allowances on items in the special rate pool?
+wdaSpecialRate.subHeading.agent = Does your client want to claim allowances on items in the special rate pool?
 wdaSpecialRate.error.required.individual = Select yes if you want to claim allowances on items in the 6 per cent pool
 wdaSpecialRate.error.required.agent = Select yes if your client wants to claim allowances on items in the 6 per cent pool
 
@@ -1834,8 +1834,8 @@ wdaSpecialRateClaimAmount.l6.individual = £1,000 or less, you can claim the ful
 wdaSpecialRateClaimAmount.l6.agent = £1,000 or less, your client can claim the full amount (known as the small pools allowance)
 wdaSpecialRateClaimAmount.l7.individual = £1,000 or more, you can claim 6% of the balance.
 wdaSpecialRateClaimAmount.l7.agent = £1,000 or more, your client can claim 6% of the balance.
-wdaSpecialRateClaimAmount.subheading.individual = How much do you want to claim from the 6% pool?
-wdaSpecialRateClaimAmount.subheading.agent = How much does your client want to claim from the 6% pool?
+wdaSpecialRateClaimAmount.subHeading.individual = How much do you want to claim from the 6% pool?
+wdaSpecialRateClaimAmount.subHeading.agent = How much does your client want to claim from the 6% pool?
 wdaSpecialRateClaimAmount.error.required.individual = Enter the amount you want to claim from the 6 per cent pool
 wdaSpecialRateClaimAmount.error.required.agent = Enter the amount your client wants to claim from the 6 per cent pool
 
@@ -1845,8 +1845,8 @@ wdaMainRate.p1.agent = Your client can claim 18% tax relief on all equipment the
 wdaMainRate.l1 = the special rate pool
 wdaMainRate.l2.individual = a single asset pool (for example, because you have chosen to treat them as ‘short life’ assets or you’ve used them outside your self-employment)
 wdaMainRate.l2.agent = a single asset pool (for example, because your client has chosen to treat them as ‘short life’ assets or they’ve used them outside their self-employment)
-wdaMainRate.subheading.individual = Do you want to claim allowances on items in the main rate pool?
-wdaMainRate.subheading.agent = Do your client want to claim allowances on items in the main rate pool?
+wdaMainRate.subHeading.individual = Do you want to claim allowances on items in the main rate pool?
+wdaMainRate.subHeading.agent = Do your client want to claim allowances on items in the main rate pool?
 wdaMainRate.error.required.individual = Select yes if you want to claim allowances on items in the 18 per cent pool
 wdaMainRate.error.required.agent = Select yes if your client wants to claim allowances on items in the 18 per cent pool
 
@@ -1873,8 +1873,8 @@ wdaMainRateClaimAmount.l6.individual = £1,000 or less, you can claim the full a
 wdaMainRateClaimAmount.l6.agent = £1,000 or less, your client can claim the full amount (known as the small pools allowance)
 wdaMainRateClaimAmount.l7.individual = £1,000 or more, you can claim 18% of the balance.
 wdaMainRateClaimAmount.l7.agent = £1,000 or more, your client can claim 18% of the balance.
-wdaMainRateClaimAmount.subheading.individual = How much do you want to claim for the main rate pool?
-wdaMainRateClaimAmount.subheading.agent = How much does your client want to claim for the main rate pool?
+wdaMainRateClaimAmount.subHeading.individual = How much do you want to claim for the main rate pool?
+wdaMainRateClaimAmount.subHeading.agent = How much does your client want to claim for the main rate pool?
 wdaMainRateClaimAmount.error.required.individual = Enter the amount you want to claim from the 18 per cent pool
 wdaMainRateClaimAmount.error.required.agent = Enter the amount your client wants to claim from the 18 per cent pool
 
@@ -1885,8 +1885,8 @@ wdaSingleAsset.l1.individual = have a short life (for assets you’re not going 
 wdaSingleAsset.l1.agent = have a short life (for assets your client is not going to keep for a long time)
 wdaSingleAsset.l2.individual = you use outside your self-employment if you’re a sole trader or a partnership
 wdaSingleAsset.l2.agent = your client uses outside their self-employment if they are a sole trader or in a partnership
-wdaSingleAsset.subheading.individual = Do you have any single asset pools?
-wdaSingleAsset.subheading.agent = Does your client have any single asset pools?
+wdaSingleAsset.subHeading.individual = Do you have any single asset pools?
+wdaSingleAsset.subHeading.agent = Does your client have any single asset pools?
 wdaSingleAsset.p2.individual = Include any pools from a previous accounting period or pools you need to set up for this period.
 wdaSingleAsset.p2.agent = Include any pools from your client’s previous accounting period or pools they need to set up for this period on their behalf.
 wdaSingleAsset.error.required.individual = Select yes if you have any single asset pools
@@ -1895,8 +1895,8 @@ wdaSingleAsset.error.required.agent = Select yes if your client has any single a
 wdaSingleAssetClaimAmounts.heading = Claim amount for single asset pools
 wdaSingleAssetClaimAmounts.p1.individual = If you have more than one pool, you’ll need to combine them.
 wdaSingleAssetClaimAmounts.p1.agent = If your client has more than one pool, you’ll need to combine them.
-wdaSingleAssetClaimAmounts.subheading.individual = How much allowance are you claiming for all these pools this year?
-wdaSingleAssetClaimAmounts.subheading.agent = How much allowance is being claimed for all these pools on behalf of your client this year?
+wdaSingleAssetClaimAmounts.subHeading.individual = How much allowance are you claiming for all these pools this year?
+wdaSingleAssetClaimAmounts.subHeading.agent = How much allowance is being claimed for all these pools on behalf of your client this year?
 wdaSingleAssetClaimAmounts.error.required.individual = Enter the value of your single asset pools this year
 wdaSingleAssetClaimAmounts.error.required.agent = Enter the value of your client’s single asset pools this year
 
@@ -1937,8 +1937,8 @@ specialTaxSites.details.l5.1 = The
 specialTaxSites.details.l5.link = allowance statement
 specialTaxSites.details.l5.href = https://www.gov.uk/guidance/claiming-capital-allowances-for-structures-and-buildings#allowance-statement
 specialTaxSites.details.l5.2 = must specify that the spend is to be treated as special tax site qualifying expenditure
-specialTaxSites.subheading.individual = Are you claiming the allowance for a structure or building in a special tax site?
-specialTaxSites.subheading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
+specialTaxSites.subHeading.individual = Are you claiming the allowance for a structure or building in a special tax site?
+specialTaxSites.subHeading.agent = Is your client claiming the allowance for a structure or building in a special tax site?
 specialTaxSites.error.required.individual = Select yes if you are claiming the allowance for a structure or building in a special tax site
 specialTaxSites.error.required.agent = Select yes if your client is claiming the allowance for a structure or building in a special tax site
 specialTaxSites.change.hidden = Change if claiming the allowance for a structure or building in a special tax site
@@ -2015,8 +2015,8 @@ newSiteClaimingAmount.error.required.agent = Enter the amount your client wants 
 newSiteClaimingAmount.change.hidden =
 
 newTaxSites.title = New special tax site structures or buildings
-newTaxSites.subheading.individual = Do you need to add another site?
-newTaxSites.subheading.agent = Does your client need to add another site?
+newTaxSites.subHeading.individual = Do you need to add another site?
+newTaxSites.subHeading.agent = Does your client need to add another site?
 newTaxSites.hint.individual = You must tell us about all new sites where you claimed the allowance.
 newTaxSites.hint.agent = Your client must tell us about all new sites where they have claimed the allowance.
 newTaxSites.totalAmount = Total new enhanced structures and buildings allowance claim: £{0}

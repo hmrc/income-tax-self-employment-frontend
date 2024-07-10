@@ -40,7 +40,7 @@ object DisallowableProfessionalFeesSummary {
       buildRowString(
         formatAnswer(answer.toString),
         routes.DisallowableProfessionalFeesController.onPageLoad(taxYear, businessId, CheckMode),
-        s"disallowableProfessionalFees.subheading.$userType",
+        s"disallowableProfessionalFees.subHeading.$userType",
         "disallowableProfessionalFees.change.hidden"
       )
     }

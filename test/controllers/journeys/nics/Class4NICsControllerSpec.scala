@@ -18,25 +18,25 @@ package controllers.journeys.nics
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
-import pages.nics.Class2NICsPage
+import pages.nics.Class4NICsPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
-import views.html.journeys.nics.Class2NICsView
+import views.html.journeys.nics.Class4NICsView
 
-class Class2NICsControllerSpec extends BooleanGetAndPostQuestionBaseSpec("Class2NICsController", Class2NICsPage) {
+class Class4NICsControllerSpec extends BooleanGetAndPostQuestionBaseSpec("Class4NICsController", Class4NICsPage) {
 
   override val checkForExistingAnswers = false
 
-  override def onPageLoadCall: Call = routes.Class2NICsController.onPageLoad(taxYear, NormalMode)
-  override def onSubmitCall: Call   = routes.Class2NICsController.onSubmit(taxYear, NormalMode)
+  override def onPageLoadCall: Call = routes.Class4NICsController.onPageLoad(taxYear, NormalMode)
+  override def onSubmitCall: Call   = routes.Class4NICsController.onSubmit(taxYear, NormalMode)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[Class2NICsView]
+    val view = application.injector.instanceOf[Class4NICsView]
     view(form, scenario.taxYear, scenario.userType, scenario.mode).toString()
   }
 

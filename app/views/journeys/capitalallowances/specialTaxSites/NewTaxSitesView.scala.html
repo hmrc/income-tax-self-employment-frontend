@@ -48,7 +48,7 @@
     @totalForMultipleSites
     @formHelper(action = routes.NewTaxSitesController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
         @yesNoWithHeadingAndHint(form,
-            messages(s"newTaxSites.subheading.$userType"),
+            messages(s"newTaxSites.subHeading.$userType"),
             messages(s"newTaxSites.hint.$userType"),
             headingSize = "m"
         )

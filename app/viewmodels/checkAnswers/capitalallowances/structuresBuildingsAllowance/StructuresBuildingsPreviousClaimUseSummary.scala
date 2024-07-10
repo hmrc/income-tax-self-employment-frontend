@@ -35,7 +35,7 @@ object StructuresBuildingsPreviousClaimUseSummary {
         buildRowBoolean(
           answer,
           routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"structuresBuildingsPreviousClaimUse.subheading.$userType"),
+          messages(s"structuresBuildingsPreviousClaimUse.subHeading.$userType"),
           "structuresBuildingsEligibleClaim.change.hidden",
           rightTextAlign = true
         )

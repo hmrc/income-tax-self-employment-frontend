@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package forms.nics
 
-@(heading: String, subHeading: Option[String] = None, extraClasses: String = "", size: String = "l", marginZero: Boolean = true)(implicit messages: Messages)
+import forms.mappings.Mappings
+import models.common.UserType
+import models.journeys.nics.ExemptionCategory
+import play.api.data.Form
+import play.api.data.Forms.set
 
-<header class="hmrc-page-heading @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">
+import javax.inject.Inject
 
-    @subHeading.map{ subHeading =>
-    <p class="govuk-caption-@{size} hmrc-caption-xl">@messages(subHeading)</p>
-    }
-    <h1 class="govuk-heading-@{size} @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">@messages(heading)</h1>
+class ExemptionCategoryFormProvider @Inject() extends Mappings {
 
-</header>
+  def apply(userType: UserType): Form[Set[ExemptionCategory]] =
+    Form("value" -> set(enumerable[ExemptionCategory](s"class4ExemptionCategory.error.required.$userType")))
+
+}

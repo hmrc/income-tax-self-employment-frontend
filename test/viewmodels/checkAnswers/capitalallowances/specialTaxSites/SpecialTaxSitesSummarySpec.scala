@@ -28,7 +28,7 @@ class SpecialTaxSitesSummarySpec extends SummaryBaseSpec("SpecialTaxSitesSummary
 
   override def validData: JsObject = Json.obj("specialTaxSites" -> true)
 
-  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"specialTaxSites.subheading.$userType"))
+  override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"specialTaxSites.subHeading.$userType"))
 
   override val testValue: HtmlContent = HtmlContent("site.yes")
 

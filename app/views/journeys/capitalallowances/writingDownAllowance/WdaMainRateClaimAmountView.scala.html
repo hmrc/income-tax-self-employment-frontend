@@ -23,7 +23,7 @@
         errorSummary: ErrorSummarySection,
         foldableDetails: FoldableDetails,
         singleAmountContent: SingleAmountContent,
-        subheading: Subheading,
+        subHeading: Subheading,
         submitButton: SubmitButton,
         heading: HeadingMsgAware)
 
@@ -57,7 +57,7 @@
 
         @formHelper(action = routes.WdaMainRateClaimAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
             @singleAmountContent(form) {
-                @subheading(s"wdaMainRateClaimAmount.subheading.$userType")
+                @subHeading(s"wdaMainRateClaimAmount.subHeading.$userType")
             }
             @submitButton()
         }
