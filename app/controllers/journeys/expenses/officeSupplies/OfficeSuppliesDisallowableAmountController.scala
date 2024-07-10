@@ -16,15 +16,13 @@
 
 package controllers.journeys.expenses.officeSupplies
 
-import cats.implicits.toBifunctorOps
 import controllers.actions._
-import controllers.standard.routes.JourneyRecoveryController
+import controllers.journeys.fillForm
 import forms.expenses.officeSupplies.OfficeSuppliesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.requests.DataRequest
-import navigation.ExpensesNavigator
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -33,12 +31,11 @@ import utils.MoneyUtils
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class OfficeSuppliesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                            selfEmploymentService: SelfEmploymentService,
-                                                            navigator: ExpensesNavigator,
+                                                            service: SelfEmploymentService,
                                                             identify: IdentifierAction,
                                                             getData: DataRetrievalAction,
                                                             requireData: DataRequiredAction,
@@ -49,38 +46,30 @@ class OfficeSuppliesDisallowableAmountController @Inject() (override val message
     with I18nSupport
     with MoneyUtils {
 
+  private val page = OfficeSuppliesDisallowableAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      obtainAllowableAmount(businessId).map { allowableAmount =>
-        val preparedForm = request.userAnswers.get(OfficeSuppliesDisallowableAmountPage, Some(businessId)) match {
-          case Some(existingAnswer) => formProvider(request.userType, allowableAmount).fill(existingAnswer)
-          case None                 => formProvider(request.userType, allowableAmount)
+      request
+        .valueOrRedirectDefault(OfficeSuppliesAmountPage, businessId)
+        .map { allowableAmount =>
+          val form = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+          Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))
         }
-        Ok(view(preparedForm, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))
-      }.merge
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      obtainAllowableAmount(businessId)
+      def handleError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))
+
+      request
+        .valueOrFutureRedirectDefault(OfficeSuppliesAmountPage, businessId)
         .map { allowableAmount =>
-          formProvider(request.userType, allowableAmount)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, taxYear, businessId, request.userType, formatMoney(allowableAmount)))),
-              value =>
-                selfEmploymentService
-                  .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesDisallowableAmountPage)
-                  .map(updatedAnswers =>
-                    Redirect(navigator.nextPage(OfficeSuppliesDisallowableAmountPage, mode, updatedAnswers, taxYear, businessId)))
-            )
+          service.defaultHandleForm(formProvider(request.userType, allowableAmount), page, businessId, taxYear, mode, handleError(allowableAmount))
         }
-        .leftMap(Future.successful)
         .merge
   }
-
-  private def obtainAllowableAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
-    request.userAnswers.get(OfficeSuppliesAmountPage, Some(businessId)).toRight(Redirect(JourneyRecoveryController.onPageLoad()))
 
 }

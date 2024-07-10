@@ -19,12 +19,10 @@ package controllers.journeys.expenses.officeSupplies
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common._
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.officeSupplies.OfficeSuppliesAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.officeSupplies.OfficeSuppliesAmountView
 
@@ -34,10 +32,6 @@ class OfficeSuppliesAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
   lazy val onSubmitRoute: String   = routes.OfficeSuppliesAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   val onwardRoute: Call = routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

@@ -24,9 +24,9 @@ import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.OtherExpenses
-import navigation.ExpensesNavigator
 import pages.expenses.otherExpenses.OtherExpensesAmountPage
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OtherExpensesAmountController @Inject() (override val messagesApi: MessagesApi,
                                                service: SelfEmploymentService,
-                                               navigator: ExpensesNavigator,
                                                identify: IdentifierAction,
                                                getAnswers: DataRetrievalAction,
                                                requireAnswers: DataRequiredAction,
@@ -66,22 +65,13 @@ class OtherExpensesAmountController @Inject() (override val messagesApi: Message
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers) async { implicit request =>
-      def handleSuccess(value: BigDecimal): Future[Result] =
-        service
-          .persistAnswer(businessId, request.userAnswers, value, page)
-          .map(answer => Redirect(navigator.nextPage(page, mode, answer, taxYear, businessId)))
+      def handleError(tailoringAnswer: OtherExpenses)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, returnAccountingType(businessId), tailoringAnswer, taxYear, businessId))
 
       request.valueOrRedirectDefault[OtherExpenses](OtherExpensesPage, businessId) match {
         case Left(redirect) => Future(redirect)
         case Right(tailoringAnswer) =>
-          form(request.userType)
-            .bindFromRequest()
-            .fold(
-              formErrors =>
-                Future.successful(
-                  BadRequest(view(formErrors, mode, request.userType, returnAccountingType(businessId), tailoringAnswer, taxYear, businessId))),
-              value => handleSuccess(value)
-            )
+          service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError(tailoringAnswer))
       }
     }
 }

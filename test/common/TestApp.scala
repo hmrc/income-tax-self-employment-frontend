@@ -19,9 +19,8 @@ package common
 import base.SpecBase
 import base.SpecBase._
 import controllers.actions.SubmittedDataRetrievalActionProvider
-import models.common.{AccountingType, UserType, onwardRoute}
+import models.common.{AccountingType, UserType}
 import models.database.UserAnswers
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -37,7 +36,6 @@ object TestApp {
       .applicationBuilder(userAnswers, userType)
       .overrides(
         bind[SelfEmploymentService].toInstance(selfEmploymentService),
-        bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)),
         bind[SubmittedDataRetrievalActionProvider].toInstance(StubSubmittedDataRetrievalActionProvider())
       )
       .build()

@@ -20,12 +20,10 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.professionalFees.ProfessionalFeesDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.professionalFees.ProfessionalFeesDisallowableAmountView
@@ -40,10 +38,6 @@ class ProfessionalFeesDisallowableAmountControllerSpec
   lazy val onSubmitRoute: String   = routes.ProfessionalFeesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def baseAnswers = emptyUserAnswers.set(ProfessionalFeesAmountPage, amount, Some(businessId)).success.value
 

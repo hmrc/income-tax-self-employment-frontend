@@ -19,12 +19,8 @@ package controllers.journeys.tradeDetails
 import controllers.actions._
 import controllers.handleResultT
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import models.domain.BusinessData
-import models.requests.OptionalDataRequest
-import navigation.TradeDetailsNavigator
 import pages.tradeDetails.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,7 +39,6 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
                                                  service: SelfEmploymentService,
-                                                 navigator: TradeDetailsNavigator,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SelfEmploymentSummaryView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -53,17 +48,10 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
       val viewModel = generateRowList(taxYear, businesses.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
-      val nextRoute = navigate(taxYear, navigator)
+      val nextRoute = SelfEmploymentSummaryPage.nextPage(taxYear, BusinessId.tradeDetailsId).url
       Ok(view(viewModel, nextRoute))
     }
     handleResultT(result)
-  }
-
-  private def navigate(taxYear: TaxYear, navigator: TradeDetailsNavigator)(implicit request: OptionalDataRequest[AnyContent]): String = {
-    val businessId = BusinessId.tradeDetailsId
-    navigator
-      .nextPage(SelfEmploymentSummaryPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
-      .url
   }
 
 }

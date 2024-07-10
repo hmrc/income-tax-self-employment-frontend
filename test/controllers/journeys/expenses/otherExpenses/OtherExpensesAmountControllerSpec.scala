@@ -20,13 +20,11 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common._
 import models.journeys.expenses.individualCategories.OtherExpenses
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.otherExpenses.OtherExpensesAmountPage
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.Request
 import views.html.journeys.expenses.otherExpenses.OtherExpensesAmountView
 
@@ -42,10 +40,6 @@ class OtherExpensesAmountControllerSpec
   override val onwardRoute = routes.OtherExpensesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def baseAnswers = emptyUserAnswersAccrual.set(OtherExpensesPage, OtherExpenses.YesDisallowable, Some(businessId)).success.value
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

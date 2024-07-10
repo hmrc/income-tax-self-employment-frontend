@@ -16,8 +16,26 @@
 
 package pages.expenses.officeSupplies
 
+import controllers.journeys.expenses.officeSupplies.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.OfficeSupplies
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
+import play.api.mvc.Call
 
 case object OfficeSuppliesAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "officeSuppliesAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.OfficeSuppliesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined &&
+      (!hasDisallowable(businessId, userAnswers) || OfficeSuppliesDisallowableAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(OfficeSuppliesPage, businessId).contains(OfficeSupplies.YesDisallowable)
 }

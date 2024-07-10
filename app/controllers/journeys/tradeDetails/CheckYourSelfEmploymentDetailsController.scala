@@ -18,12 +18,8 @@ package controllers.journeys.tradeDetails
 
 import controllers.actions._
 import controllers.handleResultT
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import models.domain.BusinessData
-import models.requests.OptionalDataRequest
-import navigation.TradeDetailsNavigator
 import pages.tradeDetails.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,7 +37,6 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
                                                           service: SelfEmploymentService,
-                                                          navigator: TradeDetailsNavigator,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           view: CheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
@@ -51,16 +46,10 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
       val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
-      val nextRoute             = navigate(taxYear, businessId, navigator)
+      val nextRoute             = CheckYourSelfEmploymentDetailsPage.nextPage(taxYear).url
       Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))
     }
     handleResultT(result)
   }
-
-  private def navigate(taxYear: TaxYear, businessId: BusinessId, navigator: TradeDetailsNavigator)(implicit
-      request: OptionalDataRequest[AnyContent]): String =
-    navigator
-      .nextPage(CheckYourSelfEmploymentDetailsPage, NormalMode, request.userAnswers.getOrElse(UserAnswers(request.userId)), taxYear, businessId)
-      .url
 
 }
