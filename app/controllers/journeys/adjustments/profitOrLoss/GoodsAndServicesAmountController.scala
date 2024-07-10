@@ -16,11 +16,13 @@
 
 package controllers.journeys.adjustments.profitOrLoss
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
+import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 import pages.adjustments.profitOrLoss.GoodsAndServicesAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,19 +46,21 @@ class GoodsAndServicesAmountController @Inject() (override val messagesApi: Mess
     with I18nSupport {
 
   private val page = GoodsAndServicesAmountPage
-  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some("goodsAndServicesAmount"))
+  private val form = (userType: UserType, accountingType: AccountingType) => formProvider(page, userType, optAccountingType = accountingType.some)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm = fillForm(page, businessId, form(request.userType))
-      Ok(view(filledForm, taxYear, businessId, request.userType, mode))
+      val accountingType = returnAccountingType(businessId)
+      val filledForm     = fillForm(page, businessId, form(request.userType, accountingType))
+      Ok(view(filledForm, taxYear, businessId, request.userType, mode, accountingType))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
+      val accountingType                               = returnAccountingType(businessId)
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode, accountingType))
 
-      selfEmploymentService.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
+      selfEmploymentService.defaultHandleForm(form(request.userType, accountingType), page, businessId, taxYear, mode, handleError)
   }
 
 }

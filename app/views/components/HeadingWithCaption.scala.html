@@ -16,6 +16,7 @@
 
 @this()
 
-@(value: String, extraHeadingClasses: String = "")(implicit messages: Messages)
+@(heading: String, caption: String, extraHeadingClasses: String = "")(implicit messages: Messages)
 
-<h1 class="govuk-heading-l @{extraHeadingClasses}">@messages(value)</h1>
+<h1 class="govuk-heading-l @{extraHeadingClasses}">@messages(heading)</h1>
+<div class="govuk-hint">@messages(caption)</div>
