@@ -106,7 +106,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       List(
         expectedRow(abroadUrl, Abroad, NotStarted),
         expectedRow("#", Income, CannotStartYet),
-        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet)
+        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet),
+        expectedRow("#", Adjustments, CannotStartYet)
       )),
     // Just one route: Abroad in progress
     (
@@ -115,7 +116,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       List(
         expectedRow(abroadCyaUrl, Abroad, InProgress),
         expectedRow("#", Income, CannotStartYet),
-        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet)
+        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet),
+        expectedRow("#", Adjustments, CannotStartYet)
       )),
     // Abroad, Income and CapAllowances there, but income without answers so no expenses tailoring rendered
     (
@@ -129,7 +131,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       List(
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
-        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted)
+        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted),
+        expectedRow("#", Adjustments, CannotStartYet)
       )),
     // Expense Tailoring there, with some sub journeys
     (
@@ -150,7 +153,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(goodsToSellCyaUrl, ExpensesGoodsToSellOrUse, InProgress),
         expectedRow(irrecoverableUrl, ExpensesIrrecoverableDebts, NotStarted),
         expectedRow(otherExpensesUrl, ExpensesOtherExpenses, NotStarted),
-        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted)
+        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted),
+        expectedRow("#", Adjustments, CannotStartYet)
       )
     ),
     // Capital Allowances Tailoring completed, with some sub journeys
@@ -178,7 +182,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(structuresBuildingsAllowanceUrl, CapitalAllowancesStructuresBuildings, NotStarted),
         expectedRow(specialTaxSitesUrl, CapitalAllowancesSpecialTaxSites, NotStarted),
         expectedRow(annualInvestmentAllowanceCyaUrl, CapitalAllowancesAnnualInvestmentAllowance, Completed),
-        expectedRow(balancingAllowanceCyaUrl, CapitalAllowancesBalancingAllowance, Completed)
+        expectedRow(balancingAllowanceCyaUrl, CapitalAllowancesBalancingAllowance, Completed),
+        expectedRow("#", Adjustments, CannotStartYet)
       ))
   )
 

@@ -22,7 +22,7 @@ import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleResultT
 import models.common.JourneyStatus._
-import models.common.{BusinessId, TaxYear}
+import models.common.TaxYear
 import models.errors.ServiceError
 import models.journeys.TaskList
 import models.requests.TradesJourneyStatuses
@@ -61,7 +61,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       updatedUserAnswers <- EitherT.right[ServiceError](service.setAccountingTypeForIds(updatedRequest.answers, idsWithAccountingType))
       viewModelList             = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedUserAnswers.some)(message))
       nationalInsuranceStatuses = taskList.nationalInsuranceContributions
-      nationalInsuranceSummary = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses)(message, taxYear, BusinessId(""))
+      nationalInsuranceSummary  = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses, taxYear)(message)
     } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, viewModelList, nationalInsuranceSummary)(updatedRequest, message))
     handleResultT(result)
   }

@@ -50,7 +50,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   private val nationalInsuranceJourneyStatus: JourneyNameAndStatus = JourneyNameAndStatus(NationalInsuranceContributions, CannotStartYet)
 
   def nationalInsuranceSummaryList(messages: Messages): SummaryList =
-    NationalInsuranceContributionsViewModel.buildSummaryList(List(nationalInsuranceJourneyStatus))(messages, taxYear, businessId)
+    NationalInsuranceContributionsViewModel.buildSummaryList(List(nationalInsuranceJourneyStatus), taxYear)(messages)
 
   "onPageLoad" should {
 

@@ -34,7 +34,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private implicit val messages: Messages = messagesStubbed
 
-  private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, businessId, NormalMode).url
+  private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
 
   private val testScenarios = Table(
     ("nationalInsuranceStatuses", "userAnswers", "expected"),
@@ -45,7 +45,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (nationalInsuranceStatuses, _, expectedRows) =>
-        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses)(messages, taxYear, businessId)
+        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses, taxYear)(messages)
 
         withClue(s"""
              |${result.rows.mkString("\n")}

@@ -18,7 +18,7 @@ package viewmodels.journeys.taskList
 
 import controllers.journeys.nics
 import models.NormalMode
-import models.common.{BusinessId, JourneyStatus, TaxYear}
+import models.common.{JourneyStatus, TaxYear}
 import models.journeys.Journey.{Adjustments, NationalInsuranceContributions}
 import models.journeys.{Journey, JourneyNameAndStatus}
 import play.api.i18n.Messages
@@ -28,14 +28,13 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
-  def buildSummaryList(
-      nationalInsuranceStatuses: List[JourneyNameAndStatus])(implicit messages: Messages, taxYear: TaxYear, businessId: BusinessId): SummaryList = {
+  def buildSummaryList(nationalInsuranceStatuses: List[JourneyNameAndStatus], taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
 
     val isAdjustmentsAnswered = JourneyStatus.getJourneyStatus(Adjustments, nationalInsuranceStatuses).isCompleted
     val nicRow = buildRow(
       NationalInsuranceContributions,
       nationalInsuranceStatuses,
-      dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered)(messages, taxYear, businessId)
+      dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered)(messages, taxYear)
 
     val rows: List[SummaryListRow] =
       List(nicRow)
@@ -43,14 +42,13 @@ object NationalInsuranceContributionsViewModel {
     SummaryListCYA.summaryList(rows)
   }
 
-  private def buildRow(
-      journey: Journey,
-      nationalInsuranceStatuses: List[JourneyNameAndStatus],
-      dependentJourneyIsFinishedForClickableLink: Boolean)(implicit messages: Messages, taxYear: TaxYear, businessId: BusinessId): SummaryListRow = {
+  private def buildRow(journey: Journey,
+                       nationalInsuranceStatuses: List[JourneyNameAndStatus],
+                       dependentJourneyIsFinishedForClickableLink: Boolean)(implicit messages: Messages, taxYear: TaxYear): SummaryListRow = {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(nationalInsuranceStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case NationalInsuranceContributions => nics.routes.Class2NICsController.onPageLoad(taxYear, businessId, NormalMode).url
+      case NationalInsuranceContributions => nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
       case _                              => "#"
     }
 
