@@ -17,12 +17,13 @@
 package viewmodels
 
 import base.SpecBase
+import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import controllers.journeys._
 import models.NormalMode
-import models.common.JourneyStatus
 import models.common.JourneyStatus._
-import models.journeys.Journey
+import models.common.{JourneyStatus, TradingName}
 import models.journeys.Journey._
+import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -36,16 +37,92 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
 
+  private val nicCannotStartStatus: Option[JourneyNameAndStatus] = Some(
+    JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.CannotStartYet))
+
+  private val nicNotStartedStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.NotStarted))
+
+  private val nicInProgressStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.InProgress))
+
+  private val nicCompleteStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.Completed))
+
   private val testScenarios = Table(
-    ("nationalInsuranceStatuses", "userAnswers", "expected"),
-    // No statuses, no answers, defaults to cannot start yet until the saving is implemented
-    (Nil, Nil, List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet)))
+    ("nationalInsuranceStatus", "businessStatuses", "expected"),
+    // If Business status does not contain completed adjustment status; NIC status should be CanNotStartYet
+    (
+      None,
+      List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicCannotStartStatus,
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicCannotStartStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicCannotStartStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName3")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+
+    // If Adjustments is completed, it should show NIC status as NotStarted
+    (
+      None,
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, NotStarted))),
+    (
+      nicNotStartedStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, NotStarted))),
+    (
+      nicInProgressStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName3")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
+    (
+      nicCompleteStatus,
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, Completed)))
   )
 
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
-      forAll(testScenarios) { case (nationalInsuranceStatuses, _, expectedRows) =>
-        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses, taxYear)(messages)
+      forAll(testScenarios) { case (nationalInsuranceStatus, businessStatuses, expectedRows) =>
+        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatus, businessStatuses, taxYear)(messages)
 
         withClue(s"""
              |${result.rows.mkString("\n")}

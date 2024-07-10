@@ -47,6 +47,6 @@ object TradesJourneyStatusesBuilder {
     TaskList(
       Some(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed)),
       List(aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel),
-      Nil)
+      None)
 
 }

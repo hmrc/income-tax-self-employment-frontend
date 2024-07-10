@@ -21,9 +21,9 @@ import play.api.libs.json.{Json, OFormat}
 
 final case class TaskList(tradeDetails: Option[JourneyNameAndStatus],
                           businesses: List[TradesJourneyStatuses],
-                          nationalInsuranceContributions: List[JourneyNameAndStatus])
+                          nationalInsuranceContributions: Option[JourneyNameAndStatus])
 object TaskList {
   implicit val format: OFormat[TaskList] = Json.format[TaskList]
 
-  val empty: TaskList = TaskList(None, Nil, Nil)
+  val empty: TaskList = TaskList(None, Nil, None)
 }

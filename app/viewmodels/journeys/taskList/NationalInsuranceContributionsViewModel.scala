@@ -20,7 +20,8 @@ import controllers.journeys.nics
 import models.NormalMode
 import models.common.{JourneyStatus, TaxYear}
 import models.journeys.Journey.{Adjustments, NationalInsuranceContributions}
-import models.journeys.{Journey, JourneyNameAndStatus}
+import models.journeys.JourneyNameAndStatus
+import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
@@ -28,31 +29,25 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
-  def buildSummaryList(nationalInsuranceStatuses: List[JourneyNameAndStatus], taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
+  def buildSummaryList(nationalInsuranceStatuses: Option[JourneyNameAndStatus], tradeStatuses: List[TradesJourneyStatuses], taxYear: TaxYear)(implicit
+      messages: Messages): SummaryList = {
 
-    val isAdjustmentsAnswered = JourneyStatus.getJourneyStatus(Adjustments, nationalInsuranceStatuses).isCompleted
-    val nicRow = buildRow(
-      NationalInsuranceContributions,
-      nationalInsuranceStatuses,
-      dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered)(messages, taxYear)
+    val isAdjustmentsAnswered = tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(Adjustments, s.journeyStatuses).isCompleted)
 
-    val rows: List[SummaryListRow] =
-      List(nicRow)
+    val nicRow =
+      buildRow(nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered, taxYear)
 
-    SummaryListCYA.summaryList(rows)
+    SummaryListCYA.summaryList(List(nicRow))
   }
 
-  private def buildRow(journey: Journey,
-                       nationalInsuranceStatuses: List[JourneyNameAndStatus],
-                       dependentJourneyIsFinishedForClickableLink: Boolean)(implicit messages: Messages, taxYear: TaxYear): SummaryListRow = {
-    val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(nationalInsuranceStatuses)
-    val keyString             = messages(s"journeys.$journey")
-    val href = journey match {
-      case NationalInsuranceContributions => nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
-      case _                              => "#"
-    }
+  private def buildRow(nationalInsuranceStatuses: Option[JourneyNameAndStatus],
+                       dependentJourneyIsFinishedForClickableLink: Boolean,
+                       taxYear: TaxYear)(implicit messages: Messages): SummaryListRow = {
+    val status: JourneyStatus = getJourneyStatus(NationalInsuranceContributions, dependentJourneyIsFinishedForClickableLink)(
+      nationalInsuranceStatuses.fold(List.empty[JourneyNameAndStatus])(List(_)))
+    val keyString = messages(s"journeys.$NationalInsuranceContributions")
+    val href      = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
 
     buildSummaryRow(href, keyString, status)
   }
-
 }

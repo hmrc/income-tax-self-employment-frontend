@@ -23,8 +23,8 @@ import cats.implicits._
 import controllers.TaskListControllerSpec._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
-import models.common.JourneyStatus
-import models.common.JourneyStatus.CannotStartYet
+import models.common.JourneyStatus._
+import models.common.{AccountingType, JourneyStatus, TradingName, TypeOfBusiness}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.{NationalInsuranceContributions, TradeDetails}
@@ -49,8 +49,16 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
   private val nationalInsuranceJourneyStatus: JourneyNameAndStatus = JourneyNameAndStatus(NationalInsuranceContributions, CannotStartYet)
 
-  def nationalInsuranceSummaryList(messages: Messages): SummaryList =
-    NationalInsuranceContributionsViewModel.buildSummaryList(List(nationalInsuranceJourneyStatus), taxYear)(messages)
+  private val tradesJourneyStatuses = TradesJourneyStatuses(
+    businessId,
+    Some(TradingName("TradingName1")),
+    TypeOfBusiness("SelfEmployment"),
+    AccountingType.Accrual,
+    List(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.Completed))
+  )
+
+  private def nationalInsuranceSummaryList(messages: Messages): SummaryList =
+    NationalInsuranceContributionsViewModel.buildSummaryList(Some(nationalInsuranceJourneyStatus), List(tradesJourneyStatuses), taxYear)(messages)
 
   "onPageLoad" should {
 
@@ -148,5 +156,5 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
 object TaskListControllerSpec {
   def taskListRequest(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses]): TaskListWithRequest =
-    TaskListWithRequest(TaskList(tradeDetails, businesses, Nil), fakeOptionalRequest)
+    TaskListWithRequest(TaskList(tradeDetails, businesses, None), fakeOptionalRequest)
 }
