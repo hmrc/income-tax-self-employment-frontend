@@ -52,7 +52,7 @@
     @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.EntertainmentCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"entertainmentCosts.question.$userType"))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")

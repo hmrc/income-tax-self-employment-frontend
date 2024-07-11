@@ -47,7 +47,7 @@
     @formHelper(action = routes.DisallowableOtherFinancialChargesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"disallowableOtherFinancialCharges.title.$userType"))
                             .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")

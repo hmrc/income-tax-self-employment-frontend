@@ -45,7 +45,7 @@
     @formHelper(action = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel(HtmlContent(
                     s"""
