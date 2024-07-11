@@ -16,8 +16,6 @@
 
 @this()
 
-@(value: String)
+@(value: String, headingArgs: Option[String] = None, extraHeadingClasses: String = "")(implicit messages: Messages)
 
-<h1 class="govuk-label-wrapper">
-    <label class="govuk-label govuk-label--l" for="event-name">@value</label>
-</h1>
+<h1 class="govuk-heading-l @{extraHeadingClasses}">@{headingArgs.fold(messages(value))(messages(value, _))}</h1>

@@ -41,7 +41,7 @@
 
     @formHelper(action = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @singleAmountContent(form) {
-            @heading(messages(s"repairsAndMaintenanceAmount.title.$userType"))
+            @heading(s"repairsAndMaintenanceAmount.title.$userType")
 
             @foldableDetails(messages("repairsAndMaintenanceAmount.details")) {
                 <p>@messages(s"site.canInclude.$userType")</p>

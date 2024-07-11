@@ -41,7 +41,7 @@
 
     @formHelper(action = routes.BusinessPremisesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @singleAmountContent(form) {
-            @heading(messages("businessPremisesAmount.title"))
+            @heading("businessPremisesAmount.title")
 
             <div class="govuk-body govuk-!-margin-top-6">
                 <p>

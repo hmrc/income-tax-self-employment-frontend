@@ -44,7 +44,7 @@
 
     @formHelper(action = routes.RepairsAndMaintenanceDisallowableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
         @singleAmountContent(form) {
-            @heading(messages(s"repairsAndMaintenanceDisallowableAmount.title.$userType", allowableAmount.value))
+            @heading(s"repairsAndMaintenanceDisallowableAmount.title.$userType", headingArgs = Some(allowableAmount.value))
         }
 
         @submitButton()
