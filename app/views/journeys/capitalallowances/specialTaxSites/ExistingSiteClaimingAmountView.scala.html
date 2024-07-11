@@ -19,7 +19,6 @@
 @import viewmodels.InputWidth._
 @import viewmodels.LabelSize
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -38,8 +37,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"existingSiteClaimingAmount.title"), extraClasses = "govuk-!-margin-bottom-3")
-
+    @heading(s"existingSiteClaimingAmount.title")
 
     <div class="govuk-body">
       <p>@messages(s"existingSiteClaimingAmount.details.p1.$userType")</p>

@@ -16,7 +16,6 @@
 
 @import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
 @import views.html.components._
 
 @this(layout: templates.Layout,
@@ -56,7 +55,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
     }
 
-    @heading(messages("capitalAllowance.claimingTheAllowance"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading("capitalAllowance.claimingTheAllowance")
 
     <div class="govuk-body">
         <p>@messages(s"capitalAllowance.p1.$userType")</p>

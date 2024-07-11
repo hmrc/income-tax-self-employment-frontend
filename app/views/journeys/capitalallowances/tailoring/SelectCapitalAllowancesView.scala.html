@@ -21,7 +21,6 @@
 @import models.journeys.capitalallowances.tailoring.CapitalAllowances
 @import models.journeys.capitalallowances.tailoring.CapitalAllowances._
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 @import viewsupport.journeys.capitalallowances.tailoring.SelectCapitalAllowancesViewSupport.{buildCheckboxItems, buildCheckboxes, sortByAllowanceGroups}
 
 @this(layout: templates.Layout,
@@ -44,7 +43,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages(s"selectCapitalAllowances.title.$userType"), None, extraClasses = "no-padding-top govuk-!-margin-bottom-3")
+    @heading(s"selectCapitalAllowances.title.$userType")
 
     @formHelper(action = routes.SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 

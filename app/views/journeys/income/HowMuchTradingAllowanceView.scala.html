@@ -18,7 +18,6 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import models.journeys.income.HowMuchTradingAllowance
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -37,7 +36,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("howMuchTradingAllowance.title"), None)
+    @heading("howMuchTradingAllowance.title")
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>

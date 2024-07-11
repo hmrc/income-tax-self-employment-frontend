@@ -23,8 +23,7 @@
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
         govukCheckboxes: GovukCheckboxes,
-        submitButton: SubmitButton,
-        heading: Heading
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)

@@ -17,13 +17,12 @@
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
       govukErrorSummary: GovukErrorSummary,
       govukRadios: GovukRadios,
-        submitButton: SubmitButton,
+      submitButton: SubmitButton,
       heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -34,7 +33,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"structuresBuildingsEligibleClaim.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
+    @heading(s"structuresBuildingsEligibleClaim.title.$userType")
 
     <div class="govuk-body">
         <p>@messages("structuresBuildingsEligibleClaim.p1")<p>

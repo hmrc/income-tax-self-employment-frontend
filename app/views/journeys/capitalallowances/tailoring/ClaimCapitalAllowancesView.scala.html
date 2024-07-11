@@ -17,7 +17,6 @@
 @import controllers.journeys.capitalallowances.tailoring.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -39,7 +38,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"claimCapitalAllowances.title.$accountingType"), None)
+    @heading(s"claimCapitalAllowances.title.$accountingType")
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>@messages(s"claimCapitalAllowances.p1.$userType.$accountingType")<p>

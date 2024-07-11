@@ -16,7 +16,6 @@
 
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
 @import views.html.components._
 
 @this(
@@ -35,7 +34,7 @@
 
     @errorSummarySection(form)
 
-    @heading(messages("selectCapitalAllowances.zeroEmissionCar"), None, extraClasses = "no-padding-top")
+    @heading("selectCapitalAllowances.zeroEmissionCar")
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>@messages(s"zecAllowance.p1.$userType")</p>

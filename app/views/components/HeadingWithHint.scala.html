@@ -14,16 +14,18 @@
  * limitations under the License.
  *@
 
-@this()
+@import views.html.components.Heading
+
+@this(header: Heading)
 
 @(
         heading: String,
         caption: String,
-        headingArgs: Seq[String] = Seq.empty,
-        captionArgs: Seq[String] = Seq.empty,
+        headingArgs: Option[String] = None,
+        captionArgs: Option[String] = None,
         extraHeadingClasses: String = "",
         extraCaptionClasses: String = ""
 )(implicit messages: Messages)
 
-<h1 class="govuk-heading-l @{extraHeadingClasses}">@messages(heading, headingArgs)</h1>
-<div class="govuk-hint @{extraCaptionClasses}">@messages(caption, captionArgs)</div>
+@header(heading, headingArgs, extraHeadingClasses)
+<div class="govuk-hint @{extraCaptionClasses}">@{captionArgs.fold(messages(caption))(messages(caption, _))}</div>
