@@ -41,7 +41,7 @@
         @heading(messages(s"selfEmploymentAbroad.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3")
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel("")
             )

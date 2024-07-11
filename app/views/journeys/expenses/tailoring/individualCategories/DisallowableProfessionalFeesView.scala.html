@@ -52,7 +52,7 @@
     @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableProfessionalFeesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"disallowableProfessionalFees.subHeading.$userType"))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")

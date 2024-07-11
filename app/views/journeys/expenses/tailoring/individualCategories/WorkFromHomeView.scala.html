@@ -38,7 +38,7 @@
     @formHelper(action = routes.WorkFromHomeController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"workFromHome.title.$userType")).asPageHeading(size = Large)
             )
