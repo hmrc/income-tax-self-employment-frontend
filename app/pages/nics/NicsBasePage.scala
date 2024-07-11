@@ -17,15 +17,10 @@
 package pages.nics
 
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.journeys.nics.ExemptionCategory
 import pages.OneQuestionPage
 import play.api.mvc.Call
 
 trait NicsBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
     ??? // TODO to be added in https://jira.tools.tax.service.gov.uk/browse/SASS-8727
-
-  def redirectForExemptionCategory(userAnswers: UserAnswers, category: ExemptionCategory, onTrue: Call, onFalse: Call): Call =
-    userAnswers.get(Class4ExemptionCategoryPage).map(seq => if (seq.contains(category)) onTrue else onFalse).get
 }
