@@ -15,7 +15,6 @@
  *@
 
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
-@import controllers.journeys
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{SubmitButton, Heading, YesNoWithHeadingAndHint, ErrorSummarySection, Button}
 
@@ -60,7 +59,7 @@
 
     @errorSummarySection(form)
 
-    @heading(messages("newTaxSites.title"))
+    @heading("newTaxSites.title")
 
     @{ if (summaryList.rows.isEmpty) emptyListContent else newSitesListContent }
 

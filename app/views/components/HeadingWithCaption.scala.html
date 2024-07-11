@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,14 @@
 
 @this()
 
-@(heading: String, caption: String, extraHeadingClasses: String = "")(implicit messages: Messages)
+@(
+        heading: String,
+        caption: String,
+        headingArgs: Seq[String] = Seq.empty,
+        captionArgs: Seq[String] = Seq.empty,
+        extraHeadingClasses: String = "",
+        extraCaptionClasses: String = ""
+)(implicit messages: Messages)
 
-<h1 class="govuk-heading-l @{extraHeadingClasses}">@messages(heading)</h1>
-<div class="govuk-hint">@messages(caption)</div>
+<h1 class="govuk-heading-l @{extraHeadingClasses}">@messages(heading, headingArgs)</h1>
+<div class="govuk-hint @{extraCaptionClasses}">@messages(caption, captionArgs)</div>

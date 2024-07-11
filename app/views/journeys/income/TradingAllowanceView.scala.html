@@ -28,7 +28,7 @@
         link: Link,
         govukRadios: GovukRadios,
         submitButton: SubmitButton,
-        heading: HeadingMsgAware
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
@@ -52,7 +52,7 @@
 
     @errorSummarySection(form)
 
-    @heading(messages("tradingAllowance.title"))
+    @heading("tradingAllowance.title")
 
     <div class="govuk-body">
         <p>@messages(s"tradingAllowance.p1.$userType")</p>
