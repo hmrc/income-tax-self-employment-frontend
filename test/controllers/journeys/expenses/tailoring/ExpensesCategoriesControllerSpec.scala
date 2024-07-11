@@ -23,14 +23,12 @@ import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.NoExpenses
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
@@ -51,10 +49,6 @@ class ExpensesCategoriesControllerSpec
   override def onwardRoute: Call              = routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
   override def validAnswer: ExpensesTailoring = NoExpenses
   override def baseAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 

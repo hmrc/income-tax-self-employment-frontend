@@ -19,12 +19,10 @@ package controllers.journeys.expenses.repairsandmaintenance
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceAmountView
 
@@ -38,9 +36,6 @@ class RepairsAndMaintenanceAmountControllerSpec
   lazy val onSubmitRoute: String   = routes.RepairsAndMaintenanceAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override val onwardRoute: Call = routes.RepairsAndMaintenanceDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-
-  override val bindings: List[Binding[_]] =
-    List(bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute)))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

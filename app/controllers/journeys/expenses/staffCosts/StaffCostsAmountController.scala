@@ -23,7 +23,6 @@ import controllers.standard.routes
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.StaffCostsAmountPage
 import pages.expenses.tailoring.individualCategories.DisallowableStaffCostsPage
 import play.api.data.Form
@@ -34,12 +33,11 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.staffCosts.StaffCostsAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class StaffCostsAmountController @Inject() (override val messagesApi: MessagesApi,
                                             selfEmploymentService: SelfEmploymentService,
-                                            navigator: ExpensesNavigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
@@ -64,26 +62,15 @@ class StaffCostsAmountController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(disallowableStaffCosts: Boolean): Future[Result] =
-        form(request.userType)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => handleError(formWithErrors, disallowableStaffCosts),
-            value => handleSuccess(value)
-          )
-      def handleError(formWithErrors: Form[_], disallowableStaffCosts: Boolean): Future[Result] =
-        Future.successful(
-          BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
-        )
-      def handleSuccess(value: BigDecimal): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, request.userAnswers, value, page)
-          .map(updated => Redirect(navigator.nextPage(page, mode, updated, taxYear, businessId)))
+      def handleError(disallowableStaffCosts: Boolean)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, disallowableStaffCosts))
 
-      request.userAnswers.get(DisallowableStaffCostsPage, Some(businessId)) match {
-        case Some(disallowableStaffCosts) => handleForm(disallowableStaffCosts)
-        case _                            => Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-      }
+      request
+        .valueOrFutureRedirectDefault(DisallowableStaffCostsPage, businessId)
+        .map { disallowableStaffCosts =>
+          selfEmploymentService.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError(disallowableStaffCosts))
+        }
+        .merge
   }
 
 }

@@ -21,12 +21,10 @@ import cats.implicits.catsSyntaxOptionId
 import forms.expenses.otherExpenses.OtherExpensesDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.otherExpenses.OtherExpensesDisallowableAmountView
@@ -38,10 +36,6 @@ class OtherExpensesDisallowableAmountControllerSpec
   lazy val onSubmitRoute: String   = routes.OtherExpensesDisallowableAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
   override lazy val onwardRoute: Call = routes.OtherExpensesCYAController.onPageLoad(taxYear, businessId)
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def baseAnswers = emptyUserAnswers.set(OtherExpensesAmountPage, amount, businessId.some).success.value
 

@@ -20,9 +20,7 @@ import cats.data.EitherT
 import controllers.actions._
 import forms.expenses.professionalFees.ProfessionalFeesDisallowableAmountFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import navigation.ExpensesNavigator
+import models.common.{BusinessId, TaxYear}
 import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ProfessionalFeesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
                                                               selfEmploymentService: SelfEmploymentService,
-                                                              navigator: ExpensesNavigator,
                                                               identify: IdentifierAction,
                                                               getData: DataRetrievalAction,
                                                               requireData: DataRequiredAction,
@@ -49,11 +46,13 @@ class ProfessionalFeesDisallowableAmountController @Inject() (override val messa
     with I18nSupport
     with MoneyUtils {
 
+  private val page = ProfessionalFeesDisallowableAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       (for {
         allowableAmount <- request.valueOrRedirectDefault(ProfessionalFeesAmountPage, businessId)
-        existingAnswer = request.getValue(ProfessionalFeesDisallowableAmountPage, businessId)
+        existingAnswer = request.getValue(page, businessId)
         form           = formProvider(request.userType, allowableAmount)
         preparedForm   = existingAnswer.fold(form)(form.fill)
       } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))).merge
@@ -61,28 +60,16 @@ class ProfessionalFeesDisallowableAmountController @Inject() (override val messa
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      def handleSuccess(userAnswers: UserAnswers, value: BigDecimal): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, userAnswers, value, ProfessionalFeesDisallowableAmountPage)
-          .map(updated => Redirect(navigator.nextPage(ProfessionalFeesDisallowableAmountPage, mode, updated, taxYear, businessId)))
+      def handleFormError(allowableAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(allowableAmount)))
 
-      def handleForm(form: Form[BigDecimal], userType: UserType, userAnswers: UserAnswers, allowableAmount: BigDecimal): Future[Result] =
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future(BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, formatMoney(allowableAmount)))),
-            value => handleSuccess(userAnswers, value)
-          )
+      def handleForm(form: Form[BigDecimal], allowableAmount: BigDecimal): Future[Result] =
+        selfEmploymentService.defaultHandleForm(form, page, businessId, taxYear, mode, handleFormError(allowableAmount))
 
-      val getAllowableValue = request.valueOrRedirectDefault(ProfessionalFeesAmountPage, businessId)
-      val result = for {
-        allowableAmount <- EitherT.fromEither[Future](getAllowableValue)
-        userType    = request.userType
-        userAnswers = request.userAnswers
-        form        = formProvider(userType, allowableAmount)
-        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, allowableAmount))
-      } yield finalResult
-
-      result.merge
+      (for {
+        allowableAmount <- EitherT.fromEither[Future](request.valueOrRedirectDefault(ProfessionalFeesAmountPage, businessId))
+        form = formProvider(request.userType, allowableAmount)
+        finalResult <- EitherT.right[Result](handleForm(form, allowableAmount))
+      } yield finalResult).merge
   }
 }
