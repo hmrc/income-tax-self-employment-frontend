@@ -46,12 +46,11 @@ import play.api.mvc.{AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.Settable.SetAnswer
-import repositories.SessionRepository
 import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
 import stubs.repositories.StubSessionRepository
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec {
   val nino              = Nino("nino")
