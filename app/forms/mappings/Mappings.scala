@@ -17,7 +17,7 @@
 package forms.mappings
 
 import forms.{MissingDayError, MissingMonthError, MissingYearError, ValidDateError}
-import models.common.{Enumerable, UserType}
+import models.common.{AccountingType, Enumerable, UserType}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 
@@ -65,6 +65,8 @@ trait Mappings extends Formatters with Constraints {
     of(new LocalDateFormatter(requiredKey, invalidKey, missingDay, missingMonth, missingYear, earliestDateAndError, latestDateAndError, args))
 
   def userTypeAware(userType: UserType, prefix: String): String = s"$prefix.${userType.toString}"
+  def optAccountingTypeAware(accountingType: Option[AccountingType])(prefix: String): String =
+    if (accountingType.exists(_ == AccountingType.Cash)) s"$prefix.cash" else prefix
 }
 
 object Mappings extends Mappings
