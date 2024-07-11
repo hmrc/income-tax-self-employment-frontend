@@ -18,10 +18,11 @@ package controllers.journeys.nics
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.nics.ExemptionCategoryFormProvider
+import forms.standard.EnumerableFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.TaxYear
+import models.journeys.nics.ExemptionCategory
 import pages.nics.Class4ExemptionCategoryPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.nics.Class4ExemptionCategoryView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class Class4ExemptionCategoryController @Inject() (override val messagesApi: MessagesApi,
@@ -38,7 +40,7 @@ class Class4ExemptionCategoryController @Inject() (override val messagesApi: Mes
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   formProvider: ExemptionCategoryFormProvider,
+                                                   formProvider: EnumerableFormProvider,
                                                    service: SelfEmploymentService,
                                                    view: Class4ExemptionCategoryView)
     extends FrontendBaseController
@@ -47,13 +49,15 @@ class Class4ExemptionCategoryController @Inject() (override val messagesApi: Mes
   private val page = Class4ExemptionCategoryPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, nationalInsuranceContributions, formProvider(request.userType))
+    val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
     Ok(view(form, taxYear, request.userType, mode))
   }
 
-  def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async { implicit request =>
     def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
-    // TODO improve implementation to clear dependent pages upon answers changing
-    service.defaultHandleForm(formProvider(request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
+    def handleSuccess(answer: ExemptionCategory): Future[Result] =
+      service.submitGatewayQuestionAndRedirect(page, nationalInsuranceContributions, request.userAnswers, answer, taxYear, mode)
+
+    service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
 }

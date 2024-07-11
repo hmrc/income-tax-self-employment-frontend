@@ -16,11 +16,10 @@
 
 package models.journeys.nics
 
-import models.common.{Enumerable, UserType, WithName}
+import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import viewmodels.govuk.checkbox._
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait ExemptionCategory
 
@@ -34,23 +33,13 @@ object ExemptionCategory extends Enumerable.Implicits {
     DiverDivingInstructor
   )
 
-  def checkboxItems(userType: UserType)(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.flatMap { case (value, index) =>
-      Seq(
-        CheckboxItemViewModel(
-          content = Text(messages(s"class4ExemptionCategory.${value.toString}.$userType")),
-          fieldId = "value",
-          index = index,
-          value = value.toString
-        ),
-        CheckboxItemViewModel(
-          content = Text(messages(s"class4ExemptionCategory.${value.toString}.$userType")),
-          fieldId = "value",
-          index = index,
-          value = value.toString
-        )
-      )
-    }
+  def options()(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"class4ExemptionCategory.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
+  }
 
   implicit val enumerable: Enumerable[ExemptionCategory] = Enumerable(values.map(v => v.toString -> v): _*)
 }
