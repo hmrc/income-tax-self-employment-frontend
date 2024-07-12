@@ -25,14 +25,14 @@ GET         /unauthorised                                                       
 GET         /:taxYear/task-list                                                     controllers.journeys.TaskListController.onPageLoad(taxYear: TaxYear)
 GET         /:taxYear/task-list-prepop                                              controllers.journeys.PrepopTaskListController.onPageLoad(taxYear: TaxYear)
 
-GET         /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/:journey/details/change-completed-section         controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/:journey/details/change-completed-section         controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/:journey/completed-section                        controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/:journey/completed-section                        controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/:journey/change-completed-section                 controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/:journey/change-completed-section                 controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = CheckMode)
 
 ########## Trade-details Journey ##########
 
-GET         /:taxYear/:businessId/details/check                                     controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/check                                             controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
 GET         /:taxYear/self-employment-summary                                       controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: TaxYear)
 
@@ -41,17 +41,17 @@ GET         /:taxYear/self-employment-summary                                   
 GET         /:taxYear/:businessId/income/prepop                                     controllers.journeys.prepop.BusinessIncomeSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 GET         /:taxYear/:businessId/adjustments/prepop                                controllers.journeys.prepop.AdjustmentsSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
-GET         /:taxYear/:businessId/details/prepop                                    controllers.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/prepop                                            controllers.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Abroad Journey ##########
 
-GET         /:taxYear/:businessId/details/self-employment-abroad                    controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/details/self-employment-abroad                    controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/details/change-self-employment-abroad             controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/details/change-self-employment-abroad             controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/self-employment-abroad                            controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/self-employment-abroad                            controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/change-self-employment-abroad                     controllers.journeys.abroad.SelfEmploymentAbroadController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/change-self-employment-abroad                     controllers.journeys.abroad.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/details/self-employment-abroad/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
-POST        /:taxYear/:businessId/details/self-employment-abroad/check              controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/self-employment-abroad/check                      controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/self-employment-abroad/check                      controllers.journeys.abroad.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Income Journey ##########
 

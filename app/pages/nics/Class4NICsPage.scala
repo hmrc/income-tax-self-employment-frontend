@@ -39,6 +39,10 @@ case object Class4NICsPage extends NicsBasePage[Boolean] {
     userAnswers.get(this, businessId).isDefined
 
   override val dependentPagesWhenNo: List[Settable[_]] =
-    List(Class4ExemptionCategoryPage, Class4NonDivingExemptPage) // TODO add further pages in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
+    List(
+      Class4ExemptionCategoryPage,
+      Class4NonDivingExemptPage,
+      Class4DivingExemptPage
+    )
 
 }
