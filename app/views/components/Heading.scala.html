@@ -18,4 +18,4 @@
 
 @(value: String, headingArgs: Option[String] = None, extraHeadingClasses: String = "", headerSize: String = "l")(implicit messages: Messages)
 
-<h1 class=@{s"govuk-heading-$headerSize extraHeadingClasses"}>@{headingArgs.fold(messages(value))(messages(value, _))}</h1>
+<h1 class=@{s"govuk-heading-$headerSize $extraHeadingClasses"}>@{headingArgs.fold(messages(value))(messages(value, _))}</h1>
