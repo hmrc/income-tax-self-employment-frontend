@@ -19,14 +19,12 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import viewmodels.InputWidth._
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
       govukErrorSummary: GovukErrorSummary,
       govukInput: GovukInput,
-      submitButton: SubmitButton,
-      heading: Heading)
+      submitButton: SubmitButton)
 
 @(form: Form[_], mode: Mode, userType: UserType, accountingType: AccountingType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 

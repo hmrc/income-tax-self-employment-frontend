@@ -19,7 +19,6 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth.Fixed5
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -58,7 +57,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"peopleLivingAtBusinessPremises.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-2")
+    @heading(s"peopleLivingAtBusinessPremises.title.$userType")
 
     <div class="govuk-body">
         <p>@messages(s"peopleLivingAtBusinessPremises.p1.$userType")</p>
