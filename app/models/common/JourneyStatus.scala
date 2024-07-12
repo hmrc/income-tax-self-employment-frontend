@@ -34,6 +34,8 @@ object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[Journey
   case object InProgress      extends JourneyStatus("inProgress")
   case object Completed       extends JourneyStatus("completed")
 
-  def getJourneyStatus(journey: Journey, journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus =
-    journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
+  def getJourneyStatus(journey: Journey, journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus = {
+    val testStatus = journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
+    testStatus
+  }
 }

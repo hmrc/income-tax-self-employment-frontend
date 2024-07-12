@@ -32,7 +32,7 @@ object NationalInsuranceContributionsViewModel {
   def buildSummaryList(nationalInsuranceStatuses: Option[JourneyNameAndStatus], tradeStatuses: List[TradesJourneyStatuses], taxYear: TaxYear)(implicit
       messages: Messages): SummaryList = {
 
-    val isAdjustmentsAnswered = tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(Adjustments, s.journeyStatuses).isCompleted)
+    val isAdjustmentsAnswered: Boolean = tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(Adjustments, s.journeyStatuses).isCompleted)
 
     val nicRow =
       buildRow(nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered, taxYear)
@@ -45,6 +45,7 @@ object NationalInsuranceContributionsViewModel {
                        taxYear: TaxYear)(implicit messages: Messages): SummaryListRow = {
     val status: JourneyStatus = getJourneyStatus(NationalInsuranceContributions, dependentJourneyIsFinishedForClickableLink)(
       nationalInsuranceStatuses.fold(List.empty[JourneyNameAndStatus])(List(_)))
+
     val keyString = messages(s"journeys.$NationalInsuranceContributions")
     val href      = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
 

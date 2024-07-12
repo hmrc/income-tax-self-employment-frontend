@@ -48,7 +48,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private val testScenarios = Table(
     ("nationalInsuranceStatus", "businessStatuses", "expected"),
-    // If Business status does not contain completed adjustment status; NIC status should be CanNotStartYet
+    // if adjustments in businessStatuses are not ALL completed then the UI status will be CannotStartYet regardless of the saved NICStatus.
     (
       None,
       List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))),
@@ -82,8 +82,22 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress)))
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicNotStartedStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName3")),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
 
-    // If Adjustments is completed, it should show NIC status as NotStarted
+    // if adjustments in businessStatuses are ALL completed then the UI status will match the saved NICStatus or default to NotStarted.
     (
       None,
       List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))),

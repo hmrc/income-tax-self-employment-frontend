@@ -27,7 +27,7 @@ import models.common.JourneyStatus._
 import models.common.{AccountingType, JourneyStatus, TradingName, TypeOfBusiness}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import models.journeys.Journey.{NationalInsuranceContributions, TradeDetails}
+import models.journeys.Journey.{Adjustments, NationalInsuranceContributions, TradeDetails}
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec
@@ -47,18 +47,24 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
   private val stubService = StubSubmittedDataRetrievalActionProvider()
 
-  private val nationalInsuranceJourneyStatus: JourneyNameAndStatus = JourneyNameAndStatus(NationalInsuranceContributions, CannotStartYet)
+  private val nationalInsuranceNotStartedJourneyStatus: JourneyNameAndStatus  = JourneyNameAndStatus(NationalInsuranceContributions, NotStarted)
+  private val nationalInsuranceCannotStartJourneyStatus: JourneyNameAndStatus = JourneyNameAndStatus(NationalInsuranceContributions, CannotStartYet)
 
   private val tradesJourneyStatuses = TradesJourneyStatuses(
     businessId,
     Some(TradingName("TradingName1")),
     TypeOfBusiness("SelfEmployment"),
     AccountingType.Accrual,
-    List(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.Completed))
+    List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))
   )
 
   private def nationalInsuranceSummaryList(messages: Messages): SummaryList =
-    NationalInsuranceContributionsViewModel.buildSummaryList(Some(nationalInsuranceJourneyStatus), List(tradesJourneyStatuses), taxYear)(messages)
+    NationalInsuranceContributionsViewModel.buildSummaryList(Some(nationalInsuranceNotStartedJourneyStatus), List(tradesJourneyStatuses), taxYear)(
+      messages)
+
+  private def nationalInsuranceSummaryListCannotStartStatus(messages: Messages): SummaryList =
+    NationalInsuranceContributionsViewModel.buildSummaryList(Some(nationalInsuranceCannotStartJourneyStatus), List(tradesJourneyStatuses), taxYear)(
+      messages)
 
   "onPageLoad" should {
 
@@ -83,7 +89,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
         fakeUser,
         JourneyStatus.Completed,
         selfEmploymentList,
-        nationalInsuranceSummaryList(messages(application)))(fakeOptionalRequest, messages(application)).toString
+        nationalInsuranceSummaryListCannotStartStatus(messages(application)))(fakeOptionalRequest, messages(application)).toString
     }
 
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
