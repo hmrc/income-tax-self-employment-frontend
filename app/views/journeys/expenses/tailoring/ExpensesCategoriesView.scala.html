@@ -51,16 +51,10 @@
     } else {
 
         <div class="govuk-body govuk-!-margin-top-6">
-            <p>
-                @messages(s"expensesCategories.p1.$userType")
-            </p>
-            <p>
-                @messages(s"expensesCategories.p2.$userType")
-            </p>
-            @heading("expensesCategories.subHeading"), None, size = "m")
-            <p>
-                @messages("expensesCategories.p3")
-            </p>
+            <p>@messages(s"expensesCategories.p1.$userType")</p>
+            <p>@messages(s"expensesCategories.p2.$userType")</p>
+            @heading("expensesCategories.subHeading", headerSize = "m")
+            <p>@messages("expensesCategories.p3")</p>
 
             @foldableDetails(messages("expensesCategories.details.heading")) {
                 <p>@messages("expensesCategories.details.p1")</p>
