@@ -19,7 +19,6 @@
 @import play.twirl.api.{Html, HtmlFormat}
 @import viewmodels.components.{ConditionalRadioWithOptions, RadioIdWithLabel}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -65,7 +64,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
     }
 
-    @heading(messages("capitalAllowance.claimingTheAllowance"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading("capitalAllowance.claimingTheAllowance")
 
     <div class="govuk-body">
         <p>@messages(s"capitalAllowance.p1.$userType")</p>

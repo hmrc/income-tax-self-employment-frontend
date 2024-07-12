@@ -17,7 +17,6 @@
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -36,17 +35,16 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @heading(messages("selectCapitalAllowances.structuresAndBuildings"), None, extraClasses = "no-padding-top")
-
+        @heading("selectCapitalAllowances.structuresAndBuildings")
 
         <div class="govuk-body govuk-!-margin-top-6">
             <p>@messages(s"structuresBuildingsAllowance.p1.$userType")</p>
 
-        <ul class="govuk-list--bullet">
-            <li>@messages(s"structuresBuildingsAllowance.p2.$userType")</li>
-            <li>@messages(s"structuresBuildingsAllowance.p3")</li>
-            <li>@messages(s"structuresBuildingsAllowance.p4")</li>
-        </ul>
+            <ul class="govuk-list--bullet">
+                <li>@messages(s"structuresBuildingsAllowance.p2.$userType")</li>
+                <li>@messages(s"structuresBuildingsAllowance.p3")</li>
+                <li>@messages(s"structuresBuildingsAllowance.p4")</li>
+            </ul>
 
             <p>@messages(s"structuresBuildingsAllowance.p5.$userType")</p>
 

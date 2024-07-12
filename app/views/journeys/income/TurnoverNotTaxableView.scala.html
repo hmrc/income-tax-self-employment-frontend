@@ -16,16 +16,15 @@
 
 @import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.templates.helpers.Heading
 @import views.html.components._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
         submitButton: SubmitButton,
-    heading: Heading
+        heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -36,23 +35,17 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("turnoverNotTaxable.title"), None)
+    @heading("turnoverNotTaxable.title")
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>
-            @messages(s"turnoverNotTaxable.p1.$userType")
-        </p>
-        <p>
-            @messages("site.thisIncludes")
-        </p>
+        <p>@messages(s"turnoverNotTaxable.p1.$userType")</p>
+        <p>@messages("site.thisIncludes")</p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
             <li>@messages("turnoverNotTaxable.l1")</li>
             <li>@messages("turnoverNotTaxable.l2")</li>
             <li>@messages("turnoverNotTaxable.l3")</li>
         </ul>
-        <p>
-            @messages(s"turnoverNotTaxable.p3.$userType")
-        </p>
+        <p>@messages(s"turnoverNotTaxable.p3.$userType")</p>
     </div>
 
     @formHelper(action = routes.TurnoverNotTaxableController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
@@ -61,7 +54,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"income.turnoverExemptFromTax.$userType"))
-                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
             )
         )
 

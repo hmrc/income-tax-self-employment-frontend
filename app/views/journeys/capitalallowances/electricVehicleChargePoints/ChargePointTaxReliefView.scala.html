@@ -17,7 +17,6 @@
 @import controllers.journeys.capitalallowances.electricVehicleChargePoints.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -36,7 +35,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("taxReliefChargePoints.title"), None, extraClasses = "no-padding-top")
+    @heading("taxReliefChargePoints.title")
 
 
     <div class="govuk-body govuk-!-margin-top-6">

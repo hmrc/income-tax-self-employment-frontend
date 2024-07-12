@@ -25,7 +25,7 @@
         singleAmountContent: SingleAmountContent,
         submitButton: SubmitButton,
         heading: Heading,
-        headingWithCaption: HeadingWithCaption
+        headingWithHint: HeadingWithHint
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
@@ -39,7 +39,7 @@
         @{
             if(accountingType == AccountingType.Cash) {
                 singleAmountContent(form) {
-                    headingWithCaption(s"goodsAndServicesAmount.title.cash.$userType", s"goodsAndServicesAmount.caption.$userType", extraHeadingClasses = "govuk-!-margin-bottom-2")
+                    headingWithHint(s"goodsAndServicesAmount.title.cash.$userType", s"goodsAndServicesAmount.caption.$userType", extraHeadingClasses = "govuk-!-margin-bottom-2")
                 }
             } else {
                 singleAmountContent(form) {

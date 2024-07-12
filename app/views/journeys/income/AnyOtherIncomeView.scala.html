@@ -17,7 +17,6 @@
 @import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -36,7 +35,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"anyOtherIncome.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-4")
+    @heading(s"anyOtherIncome.title.$userType")
 
     @formHelper(action = routes.AnyOtherIncomeController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

@@ -18,7 +18,6 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.LegendSize.Medium
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -35,7 +34,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("qualifyingUseStartDate.title"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading("qualifyingUseStartDate.title")
 
         <div class="govuk-body">
             <p>@messages("qualifyingUseStartDate.p1")</p>
