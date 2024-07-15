@@ -16,14 +16,14 @@
 
 @import config.FrontendAppConfig
 @import views.html.templates.Layout
-@import views.html.templates.helpers.Heading
+@import views.html.components.Heading
 
 @this(layout: Layout, heading: Heading, govUkButton: GovukButton)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(messages("error.agent.title")) {
-@heading(messages("error.agent.title"), None, extraClasses = "govuk-!-margin-bottom-5", size = "xl")
+@heading("error.agent.title", headerSize = "xl")
 
 <p class="govuk-body">@{messages("error.agent.paragraph1")}
     <a class="govuk-link" id="client_auth_link" href="https://www.gov.uk/guidance/client-authorisation-an-overview" target="_blank" rel="noopener noreferrer">

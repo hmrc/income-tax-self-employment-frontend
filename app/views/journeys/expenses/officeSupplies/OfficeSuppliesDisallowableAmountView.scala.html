@@ -19,15 +19,13 @@
 @import viewmodels.InputWidth._
 @import viewmodels.LabelSize
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    submitButton: SubmitButton,
-    heading: Heading
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, taxYear: TaxYear, businessId: BusinessId, userType: UserType, formattedAllowableAmount: String)(implicit request: Request[_], messages: Messages)
@@ -39,7 +37,6 @@
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
-
 
         @govukInput(
             InputViewModel(
