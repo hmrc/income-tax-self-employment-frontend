@@ -20,7 +20,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-case object Class4DivingExemptPage extends NicsBasePage[Boolean] { // TODO type TBC, we may need a custom FormProvider
+case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] { // TODO type TBC, we may need a custom FormProvider
   override def toString: String = "class4DivingExempt"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)

@@ -21,7 +21,7 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import pages.nics.Class4NonDivingExemptPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.nics.Class4NonDivingExemptView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class Class4NonDivingExemptController @Inject() (override val messagesApi: MessagesApi,
@@ -47,14 +48,19 @@ class Class4NonDivingExemptController @Inject() (override val messagesApi: Messa
   private val page = Class4NonDivingExemptPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
+    val form = formProvider(page, request.userType)
     Ok(view(form, taxYear, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
-
-    service.defaultHandleForm(formProvider(page, request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
+    service.persistAnswerAndRedirect(
+      page,
+      nationalInsuranceContributions,
+      request,
+      List(BusinessId("business1")),
+      taxYear,
+      mode
+    ) // TODO: Proper impl will be in next story
   }
 
 }
