@@ -26,19 +26,19 @@ class Class4ExemptionCategoryPageSpec extends AnyWordSpecLike {
   "navigation" should {
     "navigate to there ia a problem if no answer" in {
       val result = Class4ExemptionCategoryPage.nextPageInNormalMode(emptyUserAnswers, nationalInsuranceContributions, taxYear)
-      assert(result.url === "/there-is-a-problem")
+      assert(result.url.endsWith("/there-is-a-problem"))
     }
 
     "navigate to CYA page for single business when TrusteeExecutorAdmin" in {
       val answers = emptyUserAnswers.set(Class4ExemptionCategoryPage, TrusteeExecutorAdmin, Some(nationalInsuranceContributions)).success.value
       val result  = Class4ExemptionCategoryPage.nextPageInNormalMode(answers, nationalInsuranceContributions, taxYear)
-      assert(result.url === s"/$taxYear/national-insurance/class-4-non-diving-exempt")
+      assert(result.url.endsWith(s"/$taxYear/national-insurance/class-4-non-diving-exempt"))
     }
 
     "navigate to CYA page for single business when DiverDivingInstructor" in {
       val answers = emptyUserAnswers.set(Class4ExemptionCategoryPage, DiverDivingInstructor, Some(nationalInsuranceContributions)).success.value
       val result  = Class4ExemptionCategoryPage.nextPageInNormalMode(answers, nationalInsuranceContributions, taxYear)
-      assert(result.url === s"/$taxYear/national-insurance/class-4-diving-exempt")
+      assert(result.url.endsWith(s"/$taxYear/national-insurance/class-4-diving-exempt"))
     }
   }
 

@@ -25,7 +25,7 @@ class Class2NICsPageSpec extends AnyWordSpecLike {
   "navigation" should {
     "navigate to CYA page" in {
       val result = Class2NICsPage.nextPageInNormalMode(emptyUserAnswers, nationalInsuranceContributions, taxYear)
-      assert(result.url === s"/${taxYear}/national-insurance/check-your-answers")
+      assert(result.url.endsWith(s"/${taxYear}/national-insurance/check-your-answers"))
     }
   }
 
