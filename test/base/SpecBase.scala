@@ -19,7 +19,6 @@ package base
 import builders.UserBuilder
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
-import models.common.BusinessId.nationalInsuranceContributions
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
