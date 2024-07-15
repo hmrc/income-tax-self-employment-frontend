@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pages.nics
+package models.journeys.nics
 
-import models.common.{BusinessId, TaxYear}
-import pages.OneQuestionPage
-import play.api.mvc.Call
-import controllers.journeys.nics.routes
+import play.api.libs.json._
 
-trait NicsBasePage[A] extends OneQuestionPage[A] {
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.NICsCYAController.onPageLoad(taxYear)
+final case class NICsClass2Answers(class2NICs: Option[Boolean])
+
+object NICsClass2Answers {
+  implicit val format: OFormat[NICsClass2Answers] = Json.format[NICsClass2Answers]
 }
