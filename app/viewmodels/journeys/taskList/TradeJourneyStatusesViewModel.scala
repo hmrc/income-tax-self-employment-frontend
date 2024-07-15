@@ -16,10 +16,10 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{abroad, income}
+import controllers.journeys.{abroad, adjustments, income}
 import models._
 import models.common.JourneyStatus.CannotStartYet
-import models.common.{BusinessId, JourneyStatus, TaxYear, TradingName, TypeOfBusiness}
+import models.common._
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey._
@@ -48,13 +48,28 @@ object TradeJourneyStatusesViewModel {
     val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
     val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
 
+    val isIncomeAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Income).isCompleted
+
+    val expensesRows: Seq[SummaryListRow] = buildExpensesCategories
+    val expensesAllCompleted: Boolean     = expensesRows.forall(checkIfRowIsCompleted)
+
+    val capitalAllowanceRows: Seq[SummaryListRow] = buildCapitalAllowances(tradesJourneyStatuses, taxYear)
+    val capitalAllowanceAllCompleted: Boolean     = capitalAllowanceRows.forall(checkIfRowIsCompleted)
+
+    val adjustmentsRow =
+      buildRow(ProfitOrLoss, dependentJourneyIsFinishedForClickableLink = isIncomeAnswered && capitalAllowanceAllCompleted && expensesAllCompleted)
+
     val rows: List[SummaryListRow] =
       List(abroadRow, incomeRow) ++
-        buildExpensesCategories ++
-        buildCapitalAllowances(tradesJourneyStatuses, taxYear)
+        expensesRows ++
+        capitalAllowanceRows ++
+        List(adjustmentsRow)
 
     SummaryListCYA.summaryList(rows)
   }
+
+  private def checkIfRowIsCompleted(summaryListRow: SummaryListRow): Boolean =
+    summaryListRow.actions.exists(_.items.exists(_.content.toString.contains("completed")))
 
   private def buildRow(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean)(implicit
       messages: Messages,
@@ -64,9 +79,10 @@ object TradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case Abroad => getAbroadUrl(status, businessId, taxYear)
-      case Income => getIncomeUrl(status, businessId, taxYear)
-      case _      => "#"
+      case Abroad       => getAbroadUrl(status, businessId, taxYear)
+      case Income       => getIncomeUrl(status, businessId, taxYear)
+      case ProfitOrLoss => getAdjustmentsUrl(status, businessId, taxYear)
+      case _            => "#"
     }
 
     buildSummaryRow(href, keyString, status)
@@ -96,6 +112,11 @@ object TradeJourneyStatusesViewModel {
     determineJourneyStartOrCyaUrl(
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,
       income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
+    )(journeyStatus)
+  private def getAdjustmentsUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
+    determineJourneyStartOrCyaUrl(
+      adjustments.profitOrLoss.routes.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear, businessId, NormalMode).url,
+      adjustments.profitOrLoss.routes.ProfitOrLossCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
 
 }

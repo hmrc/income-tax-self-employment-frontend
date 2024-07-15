@@ -17,10 +17,13 @@
 package viewmodels
 
 import base.SpecBase
-import models.common.JourneyStatus
-import models.common.JourneyStatus.CannotStartYet
-import models.journeys.Journey
-import models.journeys.Journey.NationalInsuranceContributions
+import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
+import controllers.journeys._
+import models.NormalMode
+import models.common.JourneyStatus._
+import models.common.{JourneyStatus, TradingName}
+import models.journeys.Journey._
+import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -32,20 +35,97 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private implicit val messages: Messages = messagesStubbed
 
+  private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
+
+  private val nicNotStartedStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.NotStarted))
+
+  private val nicInProgressStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.InProgress))
+
+  private val nicCompleteStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.Completed))
+
   private val testScenarios = Table(
-    ("nationalInsuranceStatuses", "userAnswers", "expected"),
-    // No statuses, no answers, defaults to cannot start yet until the saving is implemented
-    (Nil, Nil, List(expectedRow("#", NationalInsuranceContributions, CannotStartYet)))
+    ("nationalInsuranceStatus", "businessStatuses", "expected"),
+    // if adjustments in businessStatuses are not ALL completed then the UI status will be CannotStartYet regardless of the saved NICStatus.
+    (
+      None,
+      List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicNotStartedStatus,
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicInProgressStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName3")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.InProgress)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+    (
+      nicCompleteStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(tradingName = Some(TradingName("TradingName3")), journeyStatuses = List.empty)
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+
+    // if adjustments in businessStatuses are ALL completed then the UI status will match the saved NICStatus or default to NotStarted.
+    (
+      None,
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, NotStarted))),
+    (
+      nicNotStartedStatus, // When backend returns NotStarted, answers have been submitted but Have You Completed page not answered -> status is InProgress
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
+    (
+      nicInProgressStatus,
+      List(
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName1")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName2")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(
+          tradingName = Some(TradingName("TradingName3")),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
+      ),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
+    (
+      nicCompleteStatus,
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, Completed)))
   )
 
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
-      forAll(testScenarios) { case (nationalInsuranceStatuses, _, expectedRows) =>
-        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses)
+      forAll(testScenarios) { case (nationalInsuranceStatus, businessStatuses, expectedRows) =>
+        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatus, businessStatuses, taxYear)(messages)
 
         withClue(s"""
+             |Result:
              |${result.rows.mkString("\n")}
-             |did not equal:
+             |did not equal expected result:
              |${expectedRows.mkString("\n")}
              |""".stripMargin) {
           assert(result.rows === expectedRows)
@@ -54,6 +134,58 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     }
   }
 
+  private val adjustmentTestScenarios = Table(
+    ("businessStatuses", "expectedResult"),
+    (List.empty, false),
+    (List(anEmptyTadesJourneyStatusesModel), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty)), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.CannotStartYet)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.InProgress)))), false),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty)
+      ),
+      false),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
+      ),
+      false),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.CannotStartYet))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
+      ),
+      false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))), true),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
+      ),
+      true)
+  )
+
+  "isAdjustmentsAnswered" - {
+    "should return true when there are Adjustment journey statuses saved, that are all 'Completed'" in {
+      forAll(adjustmentTestScenarios) { case (businessStatuses, expectedResult) =>
+        val result = NationalInsuranceContributionsViewModel.isAdjustmentsAnswered(businessStatuses)
+
+        withClue(s"""
+                    |Result:
+                    |$result
+                    |did not equal expected result:
+                    |$expectedResult
+                    |""".stripMargin) {
+          assert(result === expectedResult)
+        }
+      }
+    }
+  }
 }
 
 object NationalInsuranceContributionsViewModelSpec {

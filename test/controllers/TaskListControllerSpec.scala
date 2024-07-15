@@ -17,17 +17,16 @@
 package controllers
 
 import base.SpecBase._
-import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
+import builders.TradesJourneyStatusesBuilder.{aSequenceTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import builders.UserBuilder.aNoddyUser
 import cats.implicits._
 import controllers.TaskListControllerSpec._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.common.JourneyStatus
-import models.common.JourneyStatus.CannotStartYet
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import models.journeys.Journey.{NationalInsuranceContributions, TradeDetails}
+import models.journeys.Journey.TradeDetails
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec
@@ -47,10 +46,8 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
   private val stubService = StubSubmittedDataRetrievalActionProvider()
 
-  private val nationalInsuranceJourneyStatus: JourneyNameAndStatus = JourneyNameAndStatus(NationalInsuranceContributions, CannotStartYet)
-
-  def nationalInsuranceSummaryList(messages: Messages): SummaryList =
-    NationalInsuranceContributionsViewModel.buildSummaryList(List(nationalInsuranceJourneyStatus))(messages)
+  private def nationalInsuranceEmptySummary(messages: Messages): SummaryList =
+    NationalInsuranceContributionsViewModel.buildSummaryList(None, List(anEmptyTadesJourneyStatusesModel), taxYear)(messages)
 
   "onPageLoad" should {
 
@@ -75,7 +72,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
         fakeUser,
         JourneyStatus.Completed,
         selfEmploymentList,
-        nationalInsuranceSummaryList(messages(application)))(fakeOptionalRequest, messages(application)).toString
+        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
     }
 
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
@@ -89,7 +86,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.Completed, Nil, nationalInsuranceSummaryList(messages(application)))(
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.Completed, Nil, nationalInsuranceEmptySummary(messages(application)))(
         fakeOptionalRequest,
         messages(application)).toString
     }
@@ -105,9 +102,12 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.InProgress, Nil, nationalInsuranceSummaryList(messages(application)))(
-        fakeOptionalRequest,
-        messages(application)).toString
+      contentAsString(result) mustEqual view(
+        taxYear,
+        aNoddyUser,
+        JourneyStatus.InProgress,
+        Nil,
+        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
     }
 
     "must return OK and display no Self-employments when the review of trade details has not been started" in {
@@ -125,7 +125,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
         aNoddyUser,
         JourneyStatus.CheckOurRecords,
         Nil,
-        nationalInsuranceSummaryList(messages(application)))(fakeOptionalRequest, messages(application)).toString
+        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
     }
   }
 
@@ -148,5 +148,5 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
 object TaskListControllerSpec {
   def taskListRequest(tradeDetails: Option[JourneyNameAndStatus], businesses: List[TradesJourneyStatuses]): TaskListWithRequest =
-    TaskListWithRequest(TaskList(tradeDetails, businesses, Nil), fakeOptionalRequest)
+    TaskListWithRequest(TaskList(tradeDetails, businesses, None), fakeOptionalRequest)
 }
