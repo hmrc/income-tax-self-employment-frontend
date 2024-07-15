@@ -16,8 +16,25 @@
 
 package pages.expenses.professionalFees
 
+import controllers.journeys.expenses.professionalFees.routes
+import models.NormalMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import pages.expenses.tailoring.individualCategories.DisallowableProfessionalFeesPage
+import play.api.mvc.Call
 
 case object ProfessionalFeesAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "professionalFeesAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    if (hasDisallowable(businessId, userAnswers)) routes.ProfessionalFeesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    else routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined &&
+      (!hasDisallowable(businessId, userAnswers) || ProfessionalFeesDisallowableAmountPage.hasAllFurtherAnswers(businessId, userAnswers))
+
+  private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(DisallowableProfessionalFeesPage, businessId).getOrElse(false)
 }

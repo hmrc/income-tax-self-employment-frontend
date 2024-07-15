@@ -19,7 +19,6 @@
 @import viewmodels.InputWidth._
 @import viewmodels.LabelSize
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -38,7 +37,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages("turnoverIncomeAmount.title"), None)
+    @heading("turnoverIncomeAmount.title")
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-5">
         <p>@messages(s"turnoverIncomeAmount.p1.$userType")</p>

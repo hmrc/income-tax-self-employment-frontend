@@ -18,7 +18,7 @@ package forms.standard
 
 import forms.mappings.Mappings._
 import forms.{LessThanZeroError, NonNumericError, OverMaxError}
-import models.common.{MoneyBounds, UserType}
+import models.common.{AccountingType, MoneyBounds, UserType}
 import pages.OneQuestionPage
 import play.api.data.Form
 
@@ -34,9 +34,12 @@ class CurrencyFormProvider @Inject() {
             maxValue: BigDecimal = MoneyBounds.maximumValue,
             maxValueError: String = OverMaxError,
             nonNumericError: String = NonNumericError,
-            prefix: Option[String] = None): Form[BigDecimal] = {
+            prefix: Option[String] = None,
+            optAccountingType: Option[AccountingType] = None): Form[BigDecimal] = {
 
-    val requiredError: String  = userTypeAware(userType, prefix.fold(page.requiredErrorKey)(s => s"$s.error.required"))
+    def optCashSuffix(prefix: String) = optAccountingTypeAware(optAccountingType)(prefix)
+    val requiredError: String = userTypeAware(userType, prefix.fold(optCashSuffix(page.requiredErrorKey))(s => optCashSuffix(s"$s.error.required")))
+
     val minError: String       = prefix.fold(minValueError)(s => s"$s.error.lessThanZero.$userType")
     val maxError: String       = prefix.fold(maxValueError)(s => s"$s.error.overMax.$userType")
     val nonNumberError: String = prefix.fold(nonNumericError)(s => s"$s.error.nonNumeric.$userType")

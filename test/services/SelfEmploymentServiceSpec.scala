@@ -34,6 +34,7 @@ import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
@@ -45,21 +46,13 @@ import play.api.mvc.{AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.Settable.SetAnswer
-import repositories.SessionRepository
 import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
 import stubs.repositories.StubSessionRepository
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec {
-
-  val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
-  val mockSessionRepository                    = mock[SessionRepository]
-  val repository                               = StubSessionRepository()
-  val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
-
-  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository)
-
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
   val businessIdCash    = BusinessId("businessIdCash")
@@ -69,7 +62,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   val largeTurnover: BigDecimal             = 45000.00
 
   "getJourneyStatus" - {
-    "should return status" in {
+    "should return status" in new ServiceWithStubs {
       val status = JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.Completed)
       mockConnector.getJourneyState(any[BusinessId], any[Journey], any[TaxYear], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](status)
@@ -81,7 +74,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   }
 
   "setJourneyStatus" - {
-    "should save status" in {
+    "should save status" in new ServiceWithStubs {
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
       val result = service
         .setJourneyStatus(JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
@@ -122,9 +115,10 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       .as[JsObject]
     val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
     val ctx                      = JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse)
-    mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[ServiceError]))
 
-    "submit answers to the connector" in {
+    "submit answers to the connector" in new ServiceWithStubs {
+      mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[ServiceError]))
+
       val result = service.submitAnswers[JsObject](ctx, userAnswers).value.futureValue
       result shouldBe ().asRight
     }
@@ -165,7 +159,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   "setAccountingTypeForIds" - {
     "should set the AccountingType of each supplied BusinessId to the UserAnswers, returning the updated UserAnswers when" - {
-      "supplied a valid sequence of BusinessIds and AccountingTypes" in {
+      "supplied a valid sequence of BusinessIds and AccountingTypes" in new ServiceWithStubs {
         val testList = Seq(
           (AccountingType.Accrual, BusinessId("testId1")),
           (AccountingType.Cash, BusinessId("testId2")),
@@ -178,7 +172,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
         result shouldBe expectedResult
       }
-      "input sequence is empty" in {
+      "input sequence is empty" in new ServiceWithStubs {
         val result = await(service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty)).data
 
         result shouldBe Json.obj()
@@ -200,7 +194,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     .value
   private val expectedClearedAnswers = emptyUserAnswers.set(ZeroEmissionGoodsVehiclePage, false, Some(businessId)).success.value.data
   "submitGatewayQuestionAndClearDependentAnswers" - {
-    "return UserAnswers with cleared dependent pages when selected No" in {
+    "return UserAnswers with cleared dependent pages when selected No" in new ServiceWithStubs {
       val updatedAnswers =
         service
           .submitGatewayQuestionAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, existingZegvAnswers, newAnswer = false)
@@ -214,7 +208,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   }
 
   "submitGatewayQuestionAndRedirect" - {
-    "return a Redirect to the next page and cleared dependent pages when answer is 'No'" in {
+    "return a Redirect to the next page and cleared dependent pages when answer is 'No'" in new ServiceWithStubs {
       val result = service.submitGatewayQuestionAndRedirect(
         ZeroEmissionGoodsVehiclePage,
         businessId,
@@ -232,7 +226,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   }
 
   "persistAnswerAndRedirect" - {
-    "save answer to session repository and return a Redirect to the next page" in {
+    "save answer to session repository and return a Redirect to the next page" in new ServiceWithStubs {
       val result =
         service
           .persistAnswerAndRedirect(
@@ -261,14 +255,14 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       def handleSuccess(answer: Boolean): Future[Result] = answer match {
         case _ => Future(Redirect(page.cyaPage(taxYear, businessId)))
       }
-      "following the handleSuccess method if it binds successfully" in {
+      "following the handleSuccess method if it binds successfully" in new ServiceWithStubs {
         val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", fakeUser, existingZegvAnswers)
         val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe ZeroEmissionGoodsVehiclePage.cyaPage(taxYear, businessId).url.some
       }
-      "following the handleError method if it binds unsuccessfully" in {
+      "following the handleError method if it binds unsuccessfully" in new ServiceWithStubs {
         val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", "invalid value")), "userId", fakeUser, existingZegvAnswers)
         val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
 
@@ -277,4 +271,12 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     }
   }
 
+}
+
+trait ServiceWithStubs {
+  val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
+  val repository                               = StubSessionRepository()
+  val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
+
+  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository)
 }

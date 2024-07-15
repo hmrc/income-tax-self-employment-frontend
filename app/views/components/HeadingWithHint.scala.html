@@ -1,5 +1,5 @@
-/*
- * Copyright 2023 HM Revenue & Customs
+@*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,23 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package navigation
+@import views.html.components.Heading
 
-import models.Mode
-import models.common.{BusinessId, TaxYear, onwardRoute}
-import models.database.UserAnswers
-import pages._
-import play.api.mvc.Call
+@this(header: Heading)
 
-class FakeExpensesNavigator(desiredRoute: Call) extends ExpensesNavigator {
+@(
+        heading: String,
+        caption: String,
+        headingArgs: Option[String] = None,
+        captionArgs: Option[String] = None,
+        extraHeadingClasses: String = "",
+        extraCaptionClasses: String = ""
+)(implicit messages: Messages)
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
-    desiredRoute
-
-}
-
-object FakeExpensesNavigator {
-  def apply(): FakeExpensesNavigator = new FakeExpensesNavigator(onwardRoute)
-}
+@header(heading, headingArgs, extraHeadingClasses)
+<div class="govuk-hint @{extraCaptionClasses}">@{captionArgs.fold(messages(caption))(messages(caption, _))}</div>

@@ -38,7 +38,7 @@
     @formHelper(action = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"moreThan25Hours.title.$userType")).asPageHeading(size = Large)
             )

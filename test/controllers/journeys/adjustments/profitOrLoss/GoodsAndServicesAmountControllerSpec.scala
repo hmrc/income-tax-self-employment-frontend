@@ -18,6 +18,7 @@ package controllers.journeys.adjustments.profitOrLoss
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
+import models.common.AccountingType.Accrual
 import models.common.UserType
 import pages.adjustments.profitOrLoss.GoodsAndServicesAmountPage
 import play.api.Application
@@ -42,7 +43,7 @@ class GoodsAndServicesAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[GoodsAndServicesAmountView]
-    view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode).toString()
+    view(form, scenario.taxYear, scenario.businessId, scenario.userType, scenario.mode, Accrual).toString()
   }
 
 }

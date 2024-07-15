@@ -23,7 +23,6 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
 import pages.TradeAccountingType
 import pages.expenses.tailoring.ExpensesCategoriesPage
@@ -31,7 +30,6 @@ import pages.expenses.tailoring.individualCategories._
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.GoodsToSellOrUseView
@@ -48,10 +46,6 @@ class GoodsToSellOrUseControllerSpec
   override def onSubmitCall: Call            = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, NormalMode)
   override def onwardRoute: Call             = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode)
   override def validAnswer: GoodsToSellOrUse = YesDisallowable
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
-  )
 
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(

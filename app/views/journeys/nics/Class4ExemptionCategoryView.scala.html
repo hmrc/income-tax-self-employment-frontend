@@ -23,9 +23,8 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        govukCheckboxes: GovukCheckboxes,
-        submitButton: SubmitButton,
-        heading: HeadingMsgAware
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -36,23 +35,12 @@
 
     @formHelper(action = routes.Class4ExemptionCategoryController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @govukCheckboxes(
-            CheckboxesViewModel(
-                form = form,
-                name = "value",
-                items = ExemptionCategory.checkboxItems(userType),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                ${messages(s"class4ExemptionCategoryView.subHeading.$userType")}
-                            </legend>
-                            <div class="govuk-hint">
-                                ${messages(s"class4ExemptionCategoryView.hint.$userType")}
-                            </div>
-                        </div>
-                    """
-                )).withCssClass("no-margin-bottom")
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(s"class4ExemptionCategory.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = ExemptionCategory.options()
             )
         )
 

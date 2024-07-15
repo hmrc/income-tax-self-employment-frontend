@@ -20,7 +20,6 @@
 @import viewmodels.InputWidth.{Fixed10, Full}
 @import viewmodels.LabelSize.Medium
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -41,7 +40,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(filteredErrorSummary))
     }
 
-    @heading(messages("specialTaxSiteLocation.title"), extraClasses = "govuk-!-margin-bottom-3")
+    @heading("specialTaxSiteLocation.title")
 
     @formHelper(action = routes.SpecialTaxSiteLocationController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 

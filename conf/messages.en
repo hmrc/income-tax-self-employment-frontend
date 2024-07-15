@@ -2078,6 +2078,19 @@ existingSiteClaimingAmount.cya.agent = How much does your client want to claim f
 newSpecialTaxSites.cya = Total new enhanced structures and buildings allowance claim:
 newSpecialTaxSites.change.hidden =
 
+########## Profit or Loss ##########
+
+goodsAndServicesAmount.title.individual = What was the market value of the goods and services you provided?
+goodsAndServicesAmount.title.agent = What was the market value of the goods and services your client provided?
+goodsAndServicesAmount.title.cash.individual = How much did you spend on goods and services for your own use?
+goodsAndServicesAmount.title.cash.agent = How much did your client spend on goods and services for their own use?
+goodsAndServicesAmount.caption.individual = Enter the cost to you.
+goodsAndServicesAmount.caption.agent = Enter the cost to your client.
+goodsAndServicesAmount.error.required.individual = Enter the market value of the goods and services you provided
+goodsAndServicesAmount.error.required.agent = Enter the market value of the goods and services your client provided
+goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
+goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
+
 ########## National Insurance Contributions - Class 2 ##########
 
 class2NICs.title = Voluntary Class 2 National Insurance contributions

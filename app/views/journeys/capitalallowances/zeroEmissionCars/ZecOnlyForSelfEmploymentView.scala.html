@@ -33,7 +33,7 @@
     @formHelper(action = routes.ZecOnlyForSelfEmploymentController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @twoRadios(form, "", userType, taxYear,
-            legend = Some(Html(s"""<label class="govuk-label govuk-label--m">${messages(s"zecOnlyForSelfEmployment.title.$userType")}</label>""")),
+            legend = Some(Html(s"""<label class="govuk-label govuk-label--l">${messages(s"zecOnlyForSelfEmployment.title.$userType")}</label>""")),
             inline = false,
             noLabel = s"zecOnlyForSelfEmployment.no.$userType"
         )

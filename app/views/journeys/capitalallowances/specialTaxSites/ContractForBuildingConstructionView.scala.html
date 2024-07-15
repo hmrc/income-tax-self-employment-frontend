@@ -18,7 +18,6 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.LegendSize.Medium
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -35,7 +34,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    <h1 class="govuk-heading-l">@messages("contractForBuildingConstruction.title")</h1>
+    @heading("contractForBuildingConstruction.title")
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>@messages(s"contractForBuildingConstruction.p1.$userType")</p>

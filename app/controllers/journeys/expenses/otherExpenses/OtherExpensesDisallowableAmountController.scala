@@ -16,13 +16,14 @@
 
 package controllers.journeys.expenses.otherExpenses
 
-import cats.implicits.{catsSyntaxOptionId, toTraverseOps}
+import cats.implicits.toTraverseOps
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.fillForm
 import forms.expenses.otherExpenses.OtherExpensesDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesNavigator
 import pages.expenses.otherExpenses.{OtherExpensesAmountPage, OtherExpensesDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -35,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OtherExpensesDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                           navigator: ExpensesNavigator,
                                                            identify: IdentifierAction,
                                                            getAnswers: DataRetrievalAction,
                                                            requireAnswers: DataRequiredAction,
@@ -46,35 +46,24 @@ class OtherExpensesDisallowableAmountController @Inject() (override val messages
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = OtherExpensesDisallowableAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) {
     implicit request =>
       (for {
         amount <- request.valueOrRedirectDefault(OtherExpensesAmountPage, businessId)
-        form = request.userAnswers
-          .get(OtherExpensesDisallowableAmountPage, businessId.some)
-          .fold(formProvider(request.userType, amount))(formProvider(request.userType, amount).fill)
+        form = fillForm(page, businessId, formProvider(request.userType, amount))
       } yield Ok(view(form, mode, taxYear, businessId, request.userType, formatMoney(amount)))).merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getAnswers andThen requireAnswers).async { implicit request =>
+      def handleError(amount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, taxYear, businessId, request.userType, formatMoney(amount)))
       def handleForm(amount: BigDecimal): Future[Result] =
-        formProvider(request.userType, amount)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, taxYear, businessId, request.userType, formatMoney(amount)))),
-            answer => handleSuccess(answer)
-          )
+        service.defaultHandleForm(formProvider(request.userType, amount), page, businessId, taxYear, mode, handleError(amount))
 
-      def handleSuccess(answer: BigDecimal): Future[Result] =
-        service
-          .persistAnswer(businessId, request.userAnswers, answer, OtherExpensesDisallowableAmountPage)
-          .map(answer => Redirect(navigator.nextPage(OtherExpensesDisallowableAmountPage, mode, answer, taxYear, businessId)))
-
-      request
-        .valueOrRedirectDefault(OtherExpensesAmountPage, businessId)
-        .traverse(handleForm)
-        .map(_.merge)
+      request.valueOrRedirectDefault(OtherExpensesAmountPage, businessId).traverse(handleForm).map(_.merge)
     }
 
 }

@@ -17,7 +17,6 @@
 @import controllers.journeys.capitalallowances.writingDownAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, FoldableDetails, Heading, SingleAmountContent}
-@import views.html.components.SubmitButton
 @import views.html.components._
 
 @this(layout: templates.Layout,
@@ -27,7 +26,7 @@
         singleAmountContent: SingleAmountContent,
         subHeading: Subheading,
         submitButton: SubmitButton,
-        heading: HeadingMsgAware)
+        heading: Heading)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 

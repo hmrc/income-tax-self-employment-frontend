@@ -35,7 +35,12 @@ object JourneyStatus extends Enum[JourneyStatus] with utils.PlayJsonEnum[Journey
   case object Completed       extends JourneyStatus("completed")
 
   def getJourneyStatus(journey: Journey, journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus = {
-    val testStatus = journeyStatuses.find(_.name == journey).map(_.journeyStatus).getOrElse(NotStarted)
-    testStatus
+    val status: Option[JourneyStatus] = journeyStatuses.find(_.name == journey).map(_.journeyStatus)
+    status // If backend returns NotStarted -> answers are submitted but status not submitted -> UI journey status is InProgress
+      .collect {
+        case NotStarted => InProgress
+        case status     => status
+      } // If no status is returned from backend -> journey is not started -> UI journey status is NotStarted
+      .getOrElse(NotStarted)
   }
 }

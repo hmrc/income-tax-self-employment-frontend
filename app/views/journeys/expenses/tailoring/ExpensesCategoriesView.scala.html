@@ -18,7 +18,6 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import models.journeys.expenses.ExpensesTailoring
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
     layout: templates.Layout,
@@ -38,7 +37,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("journeys.expenses-categories"), None, extraClasses = "no-padding-top")
+    @heading("journeys.expenses-categories")
 
     @if(incomeIsOverThreshold){
 
@@ -52,16 +51,10 @@
     } else {
 
         <div class="govuk-body govuk-!-margin-top-6">
-            <p>
-                @messages(s"expensesCategories.p1.$userType")
-            </p>
-            <p>
-                @messages(s"expensesCategories.p2.$userType")
-            </p>
-            @heading(messages("expensesCategories.subHeading"), None, size = "m")
-            <p>
-                @messages("expensesCategories.p3")
-            </p>
+            <p>@messages(s"expensesCategories.p1.$userType")</p>
+            <p>@messages(s"expensesCategories.p2.$userType")</p>
+            @heading("expensesCategories.subHeading", headerSize = "m")
+            <p>@messages("expensesCategories.p3")</p>
 
             @foldableDetails(messages("expensesCategories.details.heading")) {
                 <p>@messages("expensesCategories.details.p1")</p>

@@ -23,16 +23,17 @@
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
         govukCheckboxes: GovukCheckboxes,
-        submitButton: SubmitButton
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"class4NonDivingExempt.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"class4DivingExempt.title.$userType"))) {
 
     @errorSummarySection(form)
 
-    @formHelper(action = routes.Class4NonDivingExemptController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.Class4DivingExemptController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
     @govukCheckboxes(
             CheckboxesViewModel(
@@ -52,7 +53,7 @@
                     s"""
                         <div>
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                ${messages(s"class4NonDivingExempt.subHeading.$userType")}
+                                ${messages(s"class4DivingExempt.subHeading.$userType")}
                             </legend>
                         </div>
                     """

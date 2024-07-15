@@ -18,7 +18,6 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -37,7 +36,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    @heading(messages(s"nonTurnoverIncomeAmount.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3")
+    @heading(s"nonTurnoverIncomeAmount.title.$userType")
 
     @formHelper(action = routes.NonTurnoverIncomeAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

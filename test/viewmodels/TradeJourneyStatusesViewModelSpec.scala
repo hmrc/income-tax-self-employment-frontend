@@ -123,8 +123,6 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     (
       List(
         JourneyNameAndStatus(Abroad, Completed),
-        JourneyNameAndStatus(Income, NotStarted),
-        JourneyNameAndStatus(CapitalAllowancesTailoring, NotStarted),
         JourneyNameAndStatus(ExpensesTailoring, Completed)
       ),
       Nil,
@@ -140,9 +138,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(Abroad, Completed),
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed),
-        JourneyNameAndStatus(ExpensesOfficeSupplies, NotStarted),
-        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress),
-        JourneyNameAndStatus(CapitalAllowancesTailoring, NotStarted)
+        JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress)
       ),
       categoriesExpenses,
       List(
@@ -161,13 +157,9 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     (
       List(
         JourneyNameAndStatus(Abroad, Completed),
-        JourneyNameAndStatus(Income, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
-        JourneyNameAndStatus(CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesElectricVehicleChargePoints, Completed),
-        JourneyNameAndStatus(CapitalAllowancesStructuresBuildings, NotStarted),
-        JourneyNameAndStatus(CapitalAllowancesSpecialTaxSites, NotStarted),
         JourneyNameAndStatus(CapitalAllowancesAnnualInvestmentAllowance, Completed),
         JourneyNameAndStatus(CapitalAllowancesBalancingAllowance, Completed)
       ),

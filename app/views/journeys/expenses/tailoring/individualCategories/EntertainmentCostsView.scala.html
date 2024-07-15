@@ -16,7 +16,6 @@
 
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(
         layout: templates.Layout,
@@ -36,7 +35,7 @@
         @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
     }
 
-    @heading(messages("journeys.expenses-entertainment"), None, extraClasses = "no-padding-top")
+    @heading("journeys.expenses-entertainment")
 
     <div class="govuk-body govuk-!-margin-top-6">
         <p>
@@ -52,7 +51,7 @@
     @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.EntertainmentCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"entertainmentCosts.question.$userType"))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")

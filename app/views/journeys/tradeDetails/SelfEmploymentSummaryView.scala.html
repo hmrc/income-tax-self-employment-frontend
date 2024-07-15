@@ -14,23 +14,22 @@
  * limitations under the License.
  *@
 
+@import views.html.components.Heading
+
 @this(
         layout: templates.Layout,
         govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
+        govukSummaryList: GovukSummaryList,
+        heading: Heading
 )
 
 @(tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 
-    <h1 class="govuk-heading-l">@messages("journeys.selfEmployment")</h1>
+    @heading("journeys.selfEmployment")
 
-     @govukSummaryList(tradingNames)
+    @govukSummaryList(tradingNames)
 
-     <p class="govuk-body">
-         @govukButton(ButtonViewModel(messages("site.continue"))
-           .asLink(nextRoute)
-         )
-     </p>
+    <p class="govuk-body">@govukButton(ButtonViewModel(messages("site.continue")).asLink(nextRoute))</p>
 }

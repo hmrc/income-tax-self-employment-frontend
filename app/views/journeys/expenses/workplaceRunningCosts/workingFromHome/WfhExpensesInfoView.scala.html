@@ -15,7 +15,7 @@
  *@
 
 @import models.common.UserType
-@import views.html.templates.helpers.Heading
+@import views.html.components.Heading
 
 @this(
         layout: templates.Layout,
@@ -27,7 +27,7 @@
 
 @layout(pageTitle = titleNoForm(messages("wfhExpensesInfo.title"))) {
 
-    @heading(messages("wfhExpensesInfo.title"), None, extraClasses = "govuk-!-margin-bottom-2")
+    @heading("wfhExpensesInfo.title")
 
     <div class="govuk-body">
         <p>@messages(s"wfhExpensesInfo.p1.$userType")</p>

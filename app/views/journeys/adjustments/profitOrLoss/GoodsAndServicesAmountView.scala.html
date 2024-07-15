@@ -15,7 +15,7 @@
  *@
 
 @import controllers.journeys.adjustments.profitOrLoss.routes
-@import models.common.{BusinessId, TaxYear, UserType}
+@import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import views.html.components._
 
 @this(
@@ -24,10 +24,11 @@
         errorSummarySection: ErrorSummarySection,
         singleAmountContent: SingleAmountContent,
         submitButton: SubmitButton,
-        heading: HeadingMsgAware
+        heading: Heading,
+        headingWithHint: HeadingWithHint
 )
 
-@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"goodsAndServicesAmount.title.$userType"))) {
 
@@ -35,8 +36,16 @@
 
     @formHelper(action = routes.GoodsAndServicesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @singleAmountContent(form) {
-            @heading(s"goodsAndServicesAmount.title.$userType")
+        @{
+            if(accountingType == AccountingType.Cash) {
+                singleAmountContent(form) {
+                    headingWithHint(s"goodsAndServicesAmount.title.cash.$userType", s"goodsAndServicesAmount.caption.$userType", extraHeadingClasses = "govuk-!-margin-bottom-2")
+                }
+            } else {
+                singleAmountContent(form) {
+                    heading(s"goodsAndServicesAmount.title.$userType", extraHeadingClasses = "govuk-!-margin-bottom-3")
+                }
+            }
         }
 
         @submitButton()

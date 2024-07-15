@@ -16,16 +16,13 @@
 
 package controllers.journeys.expenses.staffCosts
 
-import cats.implicits.toBifunctorOps
 import controllers.actions._
 import controllers.journeys.fillForm
-import controllers.standard
 import forms.expenses.staffCosts.StaffCostsDisallowableAmountFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, TextAmount}
-import models.requests.DataRequest
-import navigation.ExpensesNavigator
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
@@ -34,12 +31,11 @@ import utils.MoneyUtils
 import views.html.journeys.expenses.staffCosts.StaffCostsDisallowableAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class StaffCostsDisallowableAmountController @Inject() (override val messagesApi: MessagesApi,
-                                                        selfEmploymentService: SelfEmploymentService,
-                                                        navigator: ExpensesNavigator,
+                                                        service: SelfEmploymentService,
                                                         identify: IdentifierAction,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
@@ -50,34 +46,30 @@ class StaffCostsDisallowableAmountController @Inject() (override val messagesApi
     with I18nSupport
     with MoneyUtils {
 
+  private val page = StaffCostsDisallowableAmountPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getStaffCostsAmount(businessId).map { allowableAmount =>
-        val preparedForm = fillForm(StaffCostsDisallowableAmountPage, businessId, formProvider(request.userType, allowableAmount))
-        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, TextAmount(allowableAmount)))
-      }.merge
+      request
+        .valueOrRedirectDefault(StaffCostsAmountPage, businessId)
+        .map { allowableAmount =>
+          val preparedForm = fillForm(page, businessId, formProvider(request.userType, allowableAmount))
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, TextAmount(allowableAmount)))
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      getStaffCostsAmount(businessId)
+      def handleError(staffCostsAmount: BigDecimal)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, TextAmount(staffCostsAmount)))
+
+      request
+        .valueOrFutureRedirectDefault(StaffCostsAmountPage, businessId)
         .map { staffCostsAmount =>
-          formProvider(request.userType, staffCostsAmount)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, TextAmount(staffCostsAmount)))),
-              value =>
-                selfEmploymentService
-                  .persistAnswer(businessId, request.userAnswers, value, StaffCostsDisallowableAmountPage)
-                  .map(updated => Redirect(navigator.nextPage(StaffCostsDisallowableAmountPage, mode, updated, taxYear, businessId)))
-            )
+          service.defaultHandleForm(formProvider(request.userType, staffCostsAmount), page, businessId, taxYear, mode, handleError(staffCostsAmount))
         }
-        .leftMap(Future.successful)
         .merge
   }
-
-  private def getStaffCostsAmount(businessId: BusinessId)(implicit request: DataRequest[AnyContent]): Either[Result, BigDecimal] =
-    request.userAnswers.get(StaffCostsAmountPage, Some(businessId)).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
 
 }

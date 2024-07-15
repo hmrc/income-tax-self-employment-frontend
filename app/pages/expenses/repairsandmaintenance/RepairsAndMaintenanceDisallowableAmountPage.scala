@@ -16,8 +16,18 @@
 
 package pages.expenses.repairsandmaintenance
 
+import controllers.journeys.expenses.repairsandmaintenance.routes
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.OneQuestionPage
+import play.api.mvc.Call
 
 case object RepairsAndMaintenanceDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
   override def toString: String = "repairsAndMaintenanceDisallowableAmount"
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }

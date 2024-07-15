@@ -17,22 +17,17 @@
 package pages.nics
 
 import controllers.journeys.nics.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.nics.ExemptionCategory.DiverDivingInstructor
 import play.api.mvc.Call
 
-case object Class4NonDivingExemptPage extends NicsBasePage[Boolean] {
+case object Class4NonDivingExemptPage extends NicsBasePage[Boolean] { // TODO type TBC, we may need a custom FormProvider
   override def toString: String = "class4NonDivingExempt"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectForExemptionCategory(
-    userAnswers,
-    DiverDivingInstructor,
-    routes.Class4NonDivingExemptController
-      .onPageLoad(taxYear, NormalMode), // TODO to be changed in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
-    cyaPage(taxYear, businessId)
-  )
+  override def cyaPage(taxYear: TaxYear): Call = routes.Class4NICsCYAController.onPageLoad(taxYear)
+
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear)
+
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
 }

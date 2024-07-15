@@ -23,7 +23,6 @@ import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import models.journeys.expenses.individualCategories.OfficeSupplies.YesDisallowable
-import navigation.{ExpensesNavigator, FakeExpensesNavigator}
 import org.mockito.Mockito.when
 import pages.TradeAccountingType
 import pages.expenses.tailoring.ExpensesCategoriesPage
@@ -31,7 +30,6 @@ import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.inject.{Binding, bind}
 import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import views.html.journeys.expenses.tailoring.individualCategories.OfficeSuppliesView
@@ -54,10 +52,6 @@ class OfficeSuppliesControllerSpec
       ExpensesCategoriesPage.toString -> IndividualCategories.toString,
       TradeAccountingType.toString    -> Accrual.toString
     )
-  )
-
-  override val bindings: List[Binding[_]] = List(
-    bind[ExpensesNavigator].toInstance(new FakeExpensesNavigator(onwardRoute))
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)

@@ -16,8 +16,7 @@
 
 @import controllers.journeys.abroad.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.SubmitButton
-@import views.html.templates.helpers.Heading
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
         layout: templates.Layout,
@@ -38,10 +37,10 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @heading(messages(s"selfEmploymentAbroad.title.$userType"), None, extraClasses = "govuk-!-margin-bottom-3")
+        @heading(s"selfEmploymentAbroad.title.$userType")
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel("")
             )

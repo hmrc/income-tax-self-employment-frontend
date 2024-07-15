@@ -18,14 +18,12 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.LegendSize.Large
 @import views.html.components._
-@import views.html.templates.helpers.Heading
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        submitButton: SubmitButton,
-        heading: Heading)
+        submitButton: SubmitButton)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
