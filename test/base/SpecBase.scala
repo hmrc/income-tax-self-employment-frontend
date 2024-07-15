@@ -54,6 +54,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val taxYear: TaxYear               = TaxYear(ZonedDateTime.now().getYear)
   val userAnswersId                  = "id"
+  val sampleUserId: UserId           = UserId("id")
   val someNino: Nino                 = Nino("someNino")
   val mtditid                        = Mtditid("someId")
   val businessId: BusinessId         = BusinessId("SJPR05893938418")
@@ -131,6 +132,9 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   implicit class ToFutureOps[A](value: A) {
     def asFuture: Future[A] = Future.successful(value)
   }
+
+  def setBooleanAnswer(page: Settable[Boolean], businessId: BusinessId, answer: Boolean): UserAnswers =
+    emptyUserAnswers.set(page, answer, Some(businessId)).success.value
 
 }
 

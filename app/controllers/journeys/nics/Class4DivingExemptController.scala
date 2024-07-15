@@ -17,15 +17,13 @@
 package controllers.journeys.nics
 
 import controllers.actions._
-import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import pages.nics.Class4DivingExemptPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.nics.Class4DivingExemptView
@@ -47,14 +45,19 @@ class Class4DivingExemptController @Inject() (override val messagesApi: Messages
   private val page = Class4DivingExemptPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
+    val form = formProvider(page, request.userType)
     Ok(view(form, taxYear, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
-
-    service.defaultHandleForm(formProvider(page, request.userType), page, nationalInsuranceContributions, taxYear, mode, handleError)
+    service.persistAnswerAndRedirect(
+      page,
+      nationalInsuranceContributions,
+      request,
+      List(BusinessId("business1")),
+      taxYear,
+      mode
+    ) // TODO: Proper impl will be in next story
   }
 
 }

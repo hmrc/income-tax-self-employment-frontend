@@ -27,13 +27,14 @@ import queries.Settable
 case object Class4NICsPage extends NicsBasePage[Boolean] {
   override def toString: String = "class4NICs"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = redirectOnBoolean(
-    this,
-    userAnswers,
-    businessId,
-    onTrue = routes.Class4ExemptionCategoryController.onPageLoad(taxYear, NormalMode),
-    onFalse = cyaPage(taxYear, businessId)
-  )
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    redirectOnBoolean(
+      this,
+      userAnswers,
+      businessId,
+      onTrue = routes.Class4ExemptionCategoryController.onPageLoad(taxYear, NormalMode),
+      onFalse = cyaPage(taxYear, businessId)
+    )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined

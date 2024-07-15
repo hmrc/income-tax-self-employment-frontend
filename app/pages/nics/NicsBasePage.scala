@@ -16,10 +16,11 @@
 
 package pages.nics
 
-import models.common.TaxYear
+import models.common.{BusinessId, TaxYear}
 import pages.OneQuestionPage
 import play.api.mvc.Call
+import controllers.journeys.nics.routes
 
 trait NicsBasePage[A] extends OneQuestionPage[A] {
-  def cyaPage(taxYear: TaxYear): Call = ??? // TODO implement if we decide to go with one CYA for both Class 2 and 4
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.NICsCYAController.onPageLoad(taxYear)
 }

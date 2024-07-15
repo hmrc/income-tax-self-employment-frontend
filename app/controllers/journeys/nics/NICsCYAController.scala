@@ -33,12 +33,12 @@ import views.html.standard.CheckYourAnswersView
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Class4NICsCYAController @Inject() (override val messagesApi: MessagesApi,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getAnswers: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         view: CheckYourAnswersView)
+class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   identify: IdentifierAction,
+                                   getAnswers: DataRetrievalAction,
+                                   requireData: DataRequiredAction,
+                                   view: CheckYourAnswersView)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -52,7 +52,7 @@ class Class4NICsCYAController @Inject() (override val messagesApi: MessagesApi,
         taxYear,
         request.userType,
         summaryList,
-        routes.Class4NICsCYAController.onSubmit(taxYear)
+        routes.NICsCYAController.onSubmit(taxYear)
       )
     )
   }
