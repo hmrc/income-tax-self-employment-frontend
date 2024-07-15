@@ -16,11 +16,10 @@
 
 package pages.nics
 
-import models.common.{BusinessId, TaxYear}
+import models.common.TaxYear
 import pages.OneQuestionPage
 import play.api.mvc.Call
 
 trait NicsBasePage[A] extends OneQuestionPage[A] {
-  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    ??? // TODO to be added in https://jira.tools.tax.service.gov.uk/browse/SASS-8727
+  def cyaPage(taxYear: TaxYear): Call = ??? // TODO implement if we decide to go with one CYA for both Class 2 and 4
 }

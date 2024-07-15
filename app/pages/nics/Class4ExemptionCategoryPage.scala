@@ -33,16 +33,14 @@ case object Class4ExemptionCategoryPage extends NicsBasePage[ExemptionCategory] 
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     userAnswers.get(this, businessId) match {
-      case Some(TrusteeExecutorAdmin) => routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
-      case Some(DiverDivingInstructor) =>
-        routes.Class4NonDivingExemptController
-          .onPageLoad(taxYear, NormalMode) // TODO to be changed in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
-      case None => standard.routes.JourneyRecoveryController.onPageLoad()
+      case Some(TrusteeExecutorAdmin)  => routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
+      case Some(DiverDivingInstructor) => routes.Class4DivingExemptController.onPageLoad(taxYear, NormalMode)
+      case None                        => standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
-    List(Class4NonDivingExemptPage) // TODO add further pages in https://jira.tools.tax.service.gov.uk/browse/SASS-8996
+    List(Class4NonDivingExemptPage, Class4DivingExemptPage)
 }
