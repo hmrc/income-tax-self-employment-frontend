@@ -34,15 +34,8 @@ package object journeys {
     }
 
   def getJourneyStatus(journey: Journey, dependentJourneyIsFinishedForClickableLink: Boolean = true)(implicit
-      journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus = {
-    val result =
-      JourneyStatus.getJourneyStatus(journey, journeyStatuses) match {
-        case NotStarted if !dependentJourneyIsFinishedForClickableLink => CannotStartYet
-        case NotStarted                                                => NotStarted
-        case status: JourneyStatus                                     => status
-      }
-    result
-  }
+      journeyStatuses: List[JourneyNameAndStatus]): JourneyStatus =
+    if (dependentJourneyIsFinishedForClickableLink) JourneyStatus.getJourneyStatus(journey, journeyStatuses) else CannotStartYet
 
   def getPageAnswer[A](page: OneQuestionPage[A])(implicit businessId: BusinessId, userAnswers: Option[UserAnswers], reads: Reads[A]): Option[A] =
     userAnswers.flatMap(_.get(page, Some(businessId)))

@@ -16,7 +16,7 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{abroad, income}
+import controllers.journeys.{abroad, adjustments, income}
 import models._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
@@ -114,6 +114,9 @@ object TradeJourneyStatusesViewModel {
       income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
   private def getAdjustmentsUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
-    "#"
+    determineJourneyStartOrCyaUrl(
+      adjustments.profitOrLoss.routes.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear, businessId, NormalMode).url,
+      adjustments.profitOrLoss.routes.ProfitOrLossCYAController.onPageLoad(taxYear, businessId).url
+    )(journeyStatus)
 
 }

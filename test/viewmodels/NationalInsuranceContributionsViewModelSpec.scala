@@ -37,9 +37,6 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
 
-  private val nicCannotStartStatus: Option[JourneyNameAndStatus] = Some(
-    JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.CannotStartYet))
-
   private val nicNotStartedStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.NotStarted))
 
   private val nicInProgressStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.InProgress))
@@ -51,29 +48,18 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     // if adjustments in businessStatuses are not ALL completed then the UI status will be CannotStartYet regardless of the saved NICStatus.
     (
       None,
-      List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))),
+      List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
     (
-      nicCannotStartStatus,
+      nicNotStartedStatus,
       List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
     (
-      nicCannotStartStatus,
+      nicInProgressStatus,
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress))),
-        aTadesJourneyStatusesModel.copy(
-          tradingName = Some(TradingName("TradingName2")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))
-      ),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
-    (
-      nicCannotStartStatus,
-      List(
-        aTadesJourneyStatusesModel.copy(
-          tradingName = Some(TradingName("TradingName1")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet))),
+          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName2")),
           journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted))),
@@ -83,7 +69,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
     (
-      nicNotStartedStatus,
+      nicCompleteStatus,
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
@@ -91,9 +77,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName2")),
           journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
-        aTadesJourneyStatusesModel.copy(
-          tradingName = Some(TradingName("TradingName3")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))
+        aTadesJourneyStatusesModel.copy(tradingName = Some(TradingName("TradingName3")), journeyStatuses = List.empty)
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
 
@@ -103,7 +87,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
       List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, NotStarted))),
     (
-      nicNotStartedStatus,
+      nicNotStartedStatus, // When backend returns NotStarted, answers have been submitted but Have You Completed page not answered -> status is InProgress
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
@@ -112,7 +96,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           tradingName = Some(TradingName("TradingName2")),
           journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
       ),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, NotStarted))),
+      List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
     (
       nicInProgressStatus,
       List(
@@ -139,8 +123,9 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
         val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatus, businessStatuses, taxYear)(messages)
 
         withClue(s"""
+             |Result:
              |${result.rows.mkString("\n")}
-             |did not equal:
+             |did not equal expected result:
              |${expectedRows.mkString("\n")}
              |""".stripMargin) {
           assert(result.rows === expectedRows)
@@ -149,6 +134,58 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     }
   }
 
+  private val adjustmentTestScenarios = Table(
+    ("businessStatuses", "expectedResult"),
+    (List.empty, false),
+    (List(anEmptyTadesJourneyStatusesModel), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty)), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress)))), false),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty)
+      ),
+      false),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+      ),
+      false),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+      ),
+      false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))), true),
+    (
+      List(
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+      ),
+      true)
+  )
+
+  "isAdjustmentsAnswered" - {
+    "should return true when there are Adjustment journey statuses saved, that are all 'Completed'" in {
+      forAll(adjustmentTestScenarios) { case (businessStatuses, expectedResult) =>
+        val result = NationalInsuranceContributionsViewModel.isAdjustmentsAnswered(businessStatuses)
+
+        withClue(s"""
+                    |Result:
+                    |$result
+                    |did not equal expected result:
+                    |$expectedResult
+                    |""".stripMargin) {
+          assert(result === expectedResult)
+        }
+      }
+    }
+  }
 }
 
 object NationalInsuranceContributionsViewModelSpec {

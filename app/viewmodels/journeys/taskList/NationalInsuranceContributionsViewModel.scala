@@ -29,13 +29,14 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
+  def isAdjustmentsAnswered(tradeStatuses: List[TradesJourneyStatuses]): Boolean =
+    tradeStatuses.nonEmpty && tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(Adjustments, s.journeyStatuses).isCompleted)
+
   def buildSummaryList(nationalInsuranceStatuses: Option[JourneyNameAndStatus], tradeStatuses: List[TradesJourneyStatuses], taxYear: TaxYear)(implicit
       messages: Messages): SummaryList = {
 
-    val isAdjustmentsAnswered: Boolean = tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(Adjustments, s.journeyStatuses).isCompleted)
-
     val nicRow =
-      buildRow(nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered, taxYear)
+      buildRow(nationalInsuranceStatuses, dependentJourneyIsFinishedForClickableLink = isAdjustmentsAnswered(tradeStatuses), taxYear)
 
     SummaryListCYA.summaryList(List(nicRow))
   }
