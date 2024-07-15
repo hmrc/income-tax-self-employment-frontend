@@ -48,24 +48,24 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     // if adjustments in businessStatuses are not ALL completed then the UI status will be CannotStartYet regardless of the saved NICStatus.
     (
       None,
-      List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))),
+      List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
     (
       nicNotStartedStatus,
-      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))),
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
     (
       nicInProgressStatus,
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName2")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName3")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress)))
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.InProgress)))
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
     (
@@ -73,10 +73,10 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName2")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(tradingName = Some(TradingName("TradingName3")), journeyStatuses = List.empty)
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
@@ -84,17 +84,17 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     // if adjustments in businessStatuses are ALL completed then the UI status will match the saved NICStatus or default to NotStarted.
     (
       None,
-      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))),
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, NotStarted))),
     (
       nicNotStartedStatus, // When backend returns NotStarted, answers have been submitted but Have You Completed page not answered -> status is InProgress
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName2")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
     (
@@ -102,18 +102,18 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
       List(
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName1")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName2")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(
           tradingName = Some(TradingName("TradingName3")),
-          journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+          journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
       List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
     (
       nicCompleteStatus,
-      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))),
+      List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))),
       List(expectedRow(nicUrl, NationalInsuranceContributions, Completed)))
   )
 
@@ -139,33 +139,33 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     (List.empty, false),
     (List(anEmptyTadesJourneyStatusesModel), false),
     (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty)), false),
-    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet)))), false),
-    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.NotStarted)))), false),
-    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.InProgress)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.CannotStartYet)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))), false),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.InProgress)))), false),
     (
       List(
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty)
       ),
       false),
     (
       List(
         aTadesJourneyStatusesModel.copy(journeyStatuses = List.empty),
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
       false),
     (
       List(
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.CannotStartYet))),
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.CannotStartYet))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
       false),
-    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))), true),
+    (List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))), true),
     (
       List(
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed))),
-        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(Adjustments, JourneyStatus.Completed)))
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
+        aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
       true)
   )

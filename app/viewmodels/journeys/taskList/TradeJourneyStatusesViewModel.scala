@@ -57,7 +57,7 @@ object TradeJourneyStatusesViewModel {
     val capitalAllowanceAllCompleted: Boolean     = capitalAllowanceRows.forall(checkIfRowIsCompleted)
 
     val adjustmentsRow =
-      buildRow(Adjustments, dependentJourneyIsFinishedForClickableLink = isIncomeAnswered && capitalAllowanceAllCompleted && expensesAllCompleted)
+      buildRow(ProfitOrLoss, dependentJourneyIsFinishedForClickableLink = isIncomeAnswered && capitalAllowanceAllCompleted && expensesAllCompleted)
 
     val rows: List[SummaryListRow] =
       List(abroadRow, incomeRow) ++
@@ -79,10 +79,10 @@ object TradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case Abroad      => getAbroadUrl(status, businessId, taxYear)
-      case Income      => getIncomeUrl(status, businessId, taxYear)
-      case Adjustments => getAdjustmentsUrl(status, businessId, taxYear)
-      case _           => "#"
+      case Abroad       => getAbroadUrl(status, businessId, taxYear)
+      case Income       => getIncomeUrl(status, businessId, taxYear)
+      case ProfitOrLoss => getAdjustmentsUrl(status, businessId, taxYear)
+      case _            => "#"
     }
 
     buildSummaryRow(href, keyString, status)

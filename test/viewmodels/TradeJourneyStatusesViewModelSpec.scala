@@ -107,7 +107,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(abroadUrl, Abroad, NotStarted),
         expectedRow("#", Income, CannotStartYet),
         expectedRow("#", CapitalAllowancesTailoring, CannotStartYet),
-        expectedRow("#", Adjustments, CannotStartYet)
+        expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
     // Just one route: Abroad in progress
     (
@@ -117,7 +117,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(abroadCyaUrl, Abroad, InProgress),
         expectedRow("#", Income, CannotStartYet),
         expectedRow("#", CapitalAllowancesTailoring, CannotStartYet),
-        expectedRow("#", Adjustments, CannotStartYet)
+        expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
     // Abroad, Income and CapAllowances there, but income without answers so no expenses tailoring rendered
     (
@@ -130,7 +130,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
         expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted),
-        expectedRow("#", Adjustments, CannotStartYet)
+        expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
     // Expense Tailoring there, with some sub journeys
     (
@@ -150,7 +150,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(irrecoverableUrl, ExpensesIrrecoverableDebts, NotStarted),
         expectedRow(otherExpensesUrl, ExpensesOtherExpenses, NotStarted),
         expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted),
-        expectedRow("#", Adjustments, CannotStartYet)
+        expectedRow("#", ProfitOrLoss, CannotStartYet)
       )
     ),
     // Capital Allowances Tailoring completed, with some sub journeys
@@ -175,7 +175,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(specialTaxSitesUrl, CapitalAllowancesSpecialTaxSites, NotStarted),
         expectedRow(annualInvestmentAllowanceCyaUrl, CapitalAllowancesAnnualInvestmentAllowance, Completed),
         expectedRow(balancingAllowanceCyaUrl, CapitalAllowancesBalancingAllowance, Completed),
-        expectedRow("#", Adjustments, CannotStartYet)
+        expectedRow("#", ProfitOrLoss, CannotStartYet)
       ))
   )
 

@@ -19,7 +19,7 @@ package viewmodels.journeys.taskList
 import controllers.journeys.nics
 import models.NormalMode
 import models.common.{JourneyStatus, TaxYear}
-import models.journeys.Journey.{Adjustments, NationalInsuranceContributions}
+import models.journeys.Journey.{NationalInsuranceContributions, ProfitOrLoss}
 import models.journeys.JourneyNameAndStatus
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
@@ -30,7 +30,7 @@ import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
 object NationalInsuranceContributionsViewModel {
 
   def isAdjustmentsAnswered(tradeStatuses: List[TradesJourneyStatuses]): Boolean =
-    tradeStatuses.nonEmpty && tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(Adjustments, s.journeyStatuses).isCompleted)
+    tradeStatuses.nonEmpty && tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(ProfitOrLoss, s.journeyStatuses).isCompleted)
 
   def buildSummaryList(nationalInsuranceStatuses: Option[JourneyNameAndStatus], tradeStatuses: List[TradesJourneyStatuses], taxYear: TaxYear)(implicit
       messages: Messages): SummaryList = {
