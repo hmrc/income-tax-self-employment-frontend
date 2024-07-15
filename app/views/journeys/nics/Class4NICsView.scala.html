@@ -16,6 +16,7 @@
 
 @import controllers.journeys.nics.routes
 @import models.common.{TaxYear, UserType}
+@import models.journeys.nics.NICsThresholds.Class4NICsFigures._
 @import views.html.components._
 
 @this(
@@ -29,13 +30,31 @@
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"class4NICs.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"class4NICs.title"))) {
 
     @errorSummarySection(form)
 
     @formHelper(action = routes.Class4NICsController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @heading(s"class4NICs.title.$userType")
+    @heading(s"class4NICs.title")
+
+    <div class="govuk-body govuk-!-margin-bottom-6">
+        <p>@messages(s"class4NICs.p1.$userType", getFiguresForTaxYear(taxYear, "lowerProfitsLimit"))</p>
+        <p>
+            @messages(s"class4NICs.p2.$userType", taxYear.startYear.toString, taxYear.toString)
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages(s"class4NICs.l1", getFiguresForTaxYear(taxYear, "rateBetweenLimits"), getFiguresForTaxYear(taxYear, "lowerProfitsLimit"), getFiguresForTaxYear(taxYear, "upperProfitsLimit"))</li>
+                    <li>@messages(s"class4NICs.l2", getFiguresForTaxYear(taxYear, "rateAboveUpperLimit"), getFiguresForTaxYear(taxYear, "upperProfitsLimit"))</li>
+                </ul>
+        </p>
+        <p>
+            @messages(s"class4NICs.p3.$userType")
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages(s"class4NICs.l3.$userType")</li>
+                    <li>@messages(s"class4NICs.l4.$userType")</li>
+                </ul>
+        </p>
+    </div>
 
         @twoRadios(form, "class4NICs", userType, taxYear, inline = true, afterSubheadingHtml = Html(""))
 
