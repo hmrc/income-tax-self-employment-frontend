@@ -25,7 +25,7 @@ import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
-import viewmodels.journeys.{SummaryListCYA, getJourneyStatus}
+import viewmodels.journeys.{SummaryListCYA, determineJourneyStartOrCyaUrl, getJourneyStatus}
 
 object NationalInsuranceContributionsViewModel {
 
@@ -48,8 +48,10 @@ object NationalInsuranceContributionsViewModel {
       nationalInsuranceStatuses.fold(List.empty[JourneyNameAndStatus])(List(_)))
 
     val keyString = messages(s"journeys.$NationalInsuranceContributions")
-    val href      = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
-
+    val href = determineJourneyStartOrCyaUrl(
+      nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url,
+      nics.routes.NICsCYAController.onPageLoad(taxYear).url
+    )(status)
     buildSummaryRow(href, keyString, status)
   }
 }
