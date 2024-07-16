@@ -21,7 +21,7 @@
 @this(layout: templates.Layout,
       govukButton: GovukButton,
       heading: Heading,
-      caption: Caption,
+      caption: CaptionWithTaxYear,
       govukSummaryList: GovukSummaryList,
       formHelper: FormWithCSRF)
 
@@ -31,7 +31,7 @@
 
     @formHelper(action = routes.IncomeCYAController.onSubmit(taxYear, businessId)) {
 
-        @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+        @caption(taxYear)
         @heading(s"checkYourIncome.title.$userType")
 
         @govukSummaryList(summaryList)

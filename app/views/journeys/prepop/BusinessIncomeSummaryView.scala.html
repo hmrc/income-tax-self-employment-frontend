@@ -17,11 +17,11 @@
 @import controllers.journeys
 @import models.common.{BusinessId, TaxYear, UserType}
 @import models.journeys.Journey.IncomePrepop
-@import views.html.components.{Button, Caption, Heading, Subheading}
+@import views.html.components.{Button, CaptionWithTaxYear, Heading, Subheading}
 
 @this(layout: templates.Layout,
         heading: Heading,
-        caption: Caption,
+        caption: CaptionWithTaxYear,
         subHeading: Subheading,
         govukTable: GovukTable,
         button: Button
@@ -31,7 +31,7 @@
 
 @layout(pageTitle = titleNoForm(messages("newTaxSites.title"))) {
 
-    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+    @caption(taxYear)
     @heading("businessIncomeSummary.title")
 
     <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>

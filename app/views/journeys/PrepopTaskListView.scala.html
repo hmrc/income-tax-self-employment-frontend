@@ -25,7 +25,7 @@
         layout: Layout,
         govukSummaryList: GovukSummaryList,
         heading: Heading,
-        caption: Caption
+        caption: CaptionWithTaxYear
 )
 
 
@@ -37,7 +37,7 @@
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 
-    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+    @caption(taxYear)
     @heading("prepopTastList.taxReturn")
 
     <div class="task-list">

@@ -21,7 +21,7 @@
         formHelper: FormWithCSRF,
         govukButton: GovukButton,
         heading: Heading,
-        caption: Caption,
+        caption: CaptionWithTaxYear,
         govukSummaryList: GovukSummaryList
 )
 
@@ -36,7 +36,7 @@
 
     @formHelper(action = onSubmitCall) {
 
-        @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+        @caption(taxYear)
         @heading(s"$pageName.title.$userType")
 
         @govukSummaryList(summaryList)

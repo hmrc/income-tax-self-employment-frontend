@@ -14,8 +14,10 @@
  * limitations under the License.
  *@
 
+@import models.common.TaxYear
+
 @this()
 
-@(caption: String, captionSize: String = "l", extraClasses: String = "")
+@(taxYear: TaxYear)(implicit messages: Messages)
 
-<span class="govuk-caption-@{s"$captionSize $extraClasses"}">@caption</span>
+<span class="govuk-caption-l">@{messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)}</span>

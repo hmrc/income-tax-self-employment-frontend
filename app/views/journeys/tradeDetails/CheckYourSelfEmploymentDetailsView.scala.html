@@ -21,14 +21,14 @@
         govukButton: GovukButton,
         govukSummaryList: GovukSummaryList,
         heading: Heading,
-        caption: Caption,
+        caption: CaptionWithTaxYear,
 )
 
 @(list: SummaryList, taxYear: TaxYear, userType: UserType, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$userType"))) {
 
-    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+    @caption(taxYear)
     @heading(s"checkYourSelfEmploymentDetails.title.$userType")
 
     @govukSummaryList(list)

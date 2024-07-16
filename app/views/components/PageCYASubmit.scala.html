@@ -21,7 +21,7 @@
         formHelper: FormWithCSRF,
         submitButton: SubmitButton,
         heading: Heading,
-        caption: Caption,
+        caption: CaptionWithTaxYear,
         govukSummaryList: GovukSummaryList)
 
 @(pageName: PageName,
@@ -33,7 +33,7 @@
 
 @layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
 
-    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+    @caption(taxYear)
     @heading(s"$pageName.title.$userType")
 
     @govukSummaryList(summaryList)
