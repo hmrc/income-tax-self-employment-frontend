@@ -42,6 +42,7 @@ object NICsThresholds {
     )
 
     def getFiguresForTaxYear(taxYear: TaxYear, figureType: String): String = {
+      // TODO refactor to using richer types rather than Int and String if this is to remain
       val class4Figures = getFiguresForYear(taxYear.endYear, taxYearFiguresMap)
       val figure = figureType match {
         case "lowerProfitsLimit"   => class4Figures.lowerProfitsLimit
