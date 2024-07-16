@@ -21,7 +21,7 @@ import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmpt
 import controllers.journeys._
 import models.NormalMode
 import models.common.JourneyStatus._
-import models.common.{JourneyStatus, TradingName}
+import models.common._
 import models.journeys.Journey._
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -35,7 +35,9 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
 
   private implicit val messages: Messages = messagesStubbed
 
-  private val nicUrl = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
+  private val canNotStartUrl = "#"
+  private val nicUrl         = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
+  private val nicCyaUrl      = nics.routes.NICsCYAController.onPageLoad(taxYear).url
 
   private val nicNotStartedStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.NotStarted))
 
@@ -49,11 +51,11 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     (
       None,
       List(anEmptyTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+      List(expectedRow(canNotStartUrl, NationalInsuranceContributions, CannotStartYet))),
     (
       nicNotStartedStatus,
       List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.NotStarted)))),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+      List(expectedRow(canNotStartUrl, NationalInsuranceContributions, CannotStartYet))),
     (
       nicInProgressStatus,
       List(
@@ -67,7 +69,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           tradingName = Some(TradingName("TradingName3")),
           journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.InProgress)))
       ),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+      List(expectedRow(canNotStartUrl, NationalInsuranceContributions, CannotStartYet))),
     (
       nicCompleteStatus,
       List(
@@ -79,7 +81,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed))),
         aTadesJourneyStatusesModel.copy(tradingName = Some(TradingName("TradingName3")), journeyStatuses = List.empty)
       ),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, CannotStartYet))),
+      List(expectedRow(canNotStartUrl, NationalInsuranceContributions, CannotStartYet))),
 
     // if adjustments in businessStatuses are ALL completed then the UI status will match the saved NICStatus or default to NotStarted.
     (
@@ -96,7 +98,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           tradingName = Some(TradingName("TradingName2")),
           journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
+      List(expectedRow(nicCyaUrl, NationalInsuranceContributions, InProgress))),
     (
       nicInProgressStatus,
       List(
@@ -110,11 +112,11 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           tradingName = Some(TradingName("TradingName3")),
           journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))
       ),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, InProgress))),
+      List(expectedRow(nicCyaUrl, NationalInsuranceContributions, InProgress))),
     (
       nicCompleteStatus,
       List(aTadesJourneyStatusesModel.copy(journeyStatuses = List(JourneyNameAndStatus(ProfitOrLoss, JourneyStatus.Completed)))),
-      List(expectedRow(nicUrl, NationalInsuranceContributions, Completed)))
+      List(expectedRow(nicCyaUrl, NationalInsuranceContributions, Completed)))
   )
 
   "buildSummaryList" - {
