@@ -36,8 +36,8 @@
 
     @formHelper(action = onSubmitCall) {
 
-        @heading(s"$pageName.title.$userType")
         @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+        @heading(s"$pageName.title.$userType")
 
         @govukSummaryList(summaryList)
 

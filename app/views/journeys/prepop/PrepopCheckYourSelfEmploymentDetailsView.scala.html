@@ -28,8 +28,8 @@
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$userType"))) {
 
-    @heading(s"checkYourSelfEmploymentDetails.title.$userType")
     @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+    @heading(s"checkYourSelfEmploymentDetails.title.$userType")
 
     <p class="govuk-body">
         @messages("checkYourSelfEmploymentDetails.p1")

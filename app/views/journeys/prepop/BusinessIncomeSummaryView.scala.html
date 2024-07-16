@@ -31,8 +31,8 @@
 
 @layout(pageTitle = titleNoForm(messages("newTaxSites.title"))) {
 
-    @heading("businessIncomeSummary.title")
     @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+    @heading("businessIncomeSummary.title")
 
     <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
 
