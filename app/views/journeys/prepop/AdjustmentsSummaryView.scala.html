@@ -16,12 +16,12 @@
 
 @import controllers.journeys
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{Subheading, Button}
-@import views.html.templates.helpers.Heading
 @import models.journeys.Journey.AdjustmentsPrepop
+@import views.html.components.{Button, Caption, Heading, Subheading}
 
 @this(layout: templates.Layout,
         heading: Heading,
+        caption: Caption,
         subHeading: Subheading,
         govukTable: GovukTable,
         button: Button
@@ -31,11 +31,9 @@
 
 @layout(pageTitle = titleNoForm(messages("newTaxSites.title"))) {
 
-    @heading(
-        heading = messages("adjustments.businessAdjustments"),
-        subHeading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
-        marginZero = false
-    )
+    @heading("adjustments.businessAdjustments")
+    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
+
     <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
 
     @govukTable(adjustmentsTable)

@@ -14,25 +14,22 @@
  * limitations under the License.
  *@
 
-@import templates.helpers.Heading
 @import models.common.{TaxYear, UserType}
-@import models._
+@import views.html.components._
 
 @this(layout: templates.Layout,
         govukButton: GovukButton,
         govukSummaryList: GovukSummaryList,
-        heading: Heading
+        heading: Heading,
+        caption: Caption,
 )
 
 @(list: SummaryList, taxYear: TaxYear, userType: UserType, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"checkYourSelfEmploymentDetails.title.$userType"))) {
 
-    @heading(
-        messages(s"checkYourSelfEmploymentDetails.title.$userType"),
-        Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
-        extraClasses = "govuk-!-margin-bottom-3"
-    )
+    @heading(s"checkYourSelfEmploymentDetails.title.$userType")
+    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
 
     @govukSummaryList(list)
 

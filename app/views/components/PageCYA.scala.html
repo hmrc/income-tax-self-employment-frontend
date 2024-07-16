@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import templates.helpers.Heading
 @import models.common.{TaxYear, UserType}
+@import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukButton: GovukButton,
         heading: Heading,
+        caption: Caption,
         govukSummaryList: GovukSummaryList
 )
 
@@ -35,11 +36,8 @@
 
     @formHelper(action = onSubmitCall) {
 
-        @heading(
-            heading = messages(s"$pageName.title.$userType"),
-            subHeading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
-            extraClasses = "govuk-!-margin-bottom-3"
-        )
+        @heading(s"$pageName.title.$userType")
+        @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
 
         @govukSummaryList(summaryList)
 

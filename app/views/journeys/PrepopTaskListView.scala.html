@@ -19,35 +19,30 @@
 @import templates.Layout
 @import viewmodels.journeys.taskList.PrepopTradeJourneyStatusesViewModel
 @import models.common.TaxYear
-@import views.html.templates.helpers.Heading
+@import views.html.components._
 
 @this(
         layout: Layout,
         govukSummaryList: GovukSummaryList,
-        heading: Heading
+        heading: Heading,
+        caption: Caption
 )
 
 
 @(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[PrepopTradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
 
 @selfEmploymentSummaryLink = {
-@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
+    @controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
 }
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 
-    @heading(
-        heading = messages(s"prepopTastList.taxReturn"),
-        subHeading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
-        extraClasses = "govuk-!-margin-bottom-3 govuk-!-padding-top-0")
-
-
+    @heading("prepopTastList.taxReturn")
+    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
 
     <div class="task-list">
 
-        <h2 class ="govuk-heading-m" >
-        @messages("journeys.selfEmployment")
-        </h2>
+        <h2 class ="govuk-heading-m" >@messages("journeys.selfEmployment")</h2>
 
         @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex) {
             <h2 class="govuk-heading-s">
@@ -57,11 +52,8 @@
                 @selfEmployment.typeOfBusiness
             }
             </h2>
-            </h2>
 
-            <p class="govuk-body">
-            @messages("prepopTastList.hint")
-            </p>
+            <p class="govuk-body">@messages("prepopTastList.hint")</p>
             @govukSummaryList(selfEmployment.statusList)
         }
 

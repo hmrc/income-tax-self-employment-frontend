@@ -15,13 +15,13 @@
  *@
 
 @import models.common._
-@import templates.helpers.Heading
 @import views.html.components._
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         submitButton: SubmitButton,
         heading: Heading,
+        caption: Caption,
         govukSummaryList: GovukSummaryList)
 
 @(pageName: PageName,
@@ -33,11 +33,8 @@
 
 @layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
 
-    @heading(
-        heading = messages(s"$pageName.title.$userType"),
-        subHeading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
-        extraClasses = "govuk-!-margin-bottom-3"
-    )
+    @heading(s"$pageName.title.$userType")
+    @caption(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString))
 
     @govukSummaryList(summaryList)
 

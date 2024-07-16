@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,6 @@
 
 @this()
 
-@(heading: String, subHeading: Option[String] = None, extraClasses: String = "", size: String = "l", marginZero: Boolean = true)(implicit messages: Messages)
+@(caption: String, captionSize: String = "l", extraClasses: String = "")
 
-<header class="hmrc-page-heading @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">
-
-    @subHeading.map{ subHeading =>
-    <p class="govuk-caption-@{size} hmrc-caption-xl">@messages(subHeading)</p>
-    }
-    <h1 class="govuk-heading-@{size} @{if (marginZero) "govuk-!-margin-0" else ""} @extraClasses">@messages(heading)</h1>
-
-</header>
+<span class="govuk-caption-@{s"$captionSize $extraClasses"}">@caption</span>
