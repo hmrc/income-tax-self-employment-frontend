@@ -32,7 +32,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("newSiteClaimingAmount.subHeading"))) {
+@layout(pageTitle = title(form, messages("capitalAllowance.claimingTheAllowance"))) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
