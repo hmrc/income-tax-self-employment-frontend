@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import templates.helpers.Heading
 @import models.common._
 @import controllers.journeys.income.routes
 @import views.html.components._
@@ -22,6 +21,7 @@
 @this(layout: templates.Layout,
       govukButton: GovukButton,
       heading: Heading,
+      caption: CaptionWithTaxYear,
       govukSummaryList: GovukSummaryList,
       formHelper: FormWithCSRF)
 
@@ -31,11 +31,8 @@
 
     @formHelper(action = routes.IncomeCYAController.onSubmit(taxYear, businessId)) {
 
-        @heading(
-            heading = messages(s"checkYourIncome.title.$userType"),
-            subHeading = Some(messages("site.taxYearCaption", taxYear.startYear.toString, taxYear.endYear.toString)),
-            extraClasses = "govuk-!-margin-bottom-3"
-        )
+        @caption(taxYear)
+        @heading(s"checkYourIncome.title.$userType")
 
         @govukSummaryList(summaryList)
 

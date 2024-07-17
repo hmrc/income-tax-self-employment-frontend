@@ -16,13 +16,13 @@
 
 @import config.FrontendAppConfig
 @import views.html.templates.Layout
-@import views.html.templates.helpers.Heading
+@import views.html.components.Heading
 
 @this(layout: Layout, heading: Heading)
 @()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(messages("error.unauthorised.title"), showBackLink = false) {
-    @heading(messages("error.unauthorised.title"), None, "govuk-!-margin-bottom-5", "xl")
+    @heading("error.unauthorised.title", None, "govuk-!-margin-bottom-5", "xl")
     <p class="govuk-body">@messages("error.unauthorised.1") <a class="govuk-link" href="https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax">@messages("error.unauthorised.2a")</a> @messages("error.unauthorised.3")</p>
 }
 

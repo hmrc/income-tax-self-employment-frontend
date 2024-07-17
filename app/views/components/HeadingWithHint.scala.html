@@ -20,12 +20,12 @@
 
 @(
         heading: String,
-        caption: String,
+        hint: String,
         headingArgs: Option[String] = None,
-        captionArgs: Option[String] = None,
+        hintArgs: Option[String] = None,
         extraHeadingClasses: String = "",
-        extraCaptionClasses: String = ""
+        extraHintClasses: String = ""
 )(implicit messages: Messages)
 
 @header(heading, headingArgs, extraHeadingClasses)
-<div class="govuk-hint @{extraCaptionClasses}">@{captionArgs.fold(messages(caption))(messages(caption, _))}</div>
+<div class="govuk-hint @{extraHintClasses}">@{hintArgs.fold(messages(hint))(messages(hint, _))}</div>
