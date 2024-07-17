@@ -20,21 +20,22 @@ import models.common.TaxYear
 
 import java.text.NumberFormat
 
-object NICsThresholds {
+// TODO refactor to combine with other year-dependent config into one place
+//  also use richer types rather than Int and String if this is to remain
 
-  // TODO remove fallback tax year after https://jira.tools.tax.service.gov.uk/browse/SASS-8881
-  //  and add data for all tax years that we support
-  private val fallbackYear: Int = 2025
+object NICsThresholds {
 
   private case class Class4Limits(lowerProfitsLimit: Int, upperProfitsLimit: Int, rateBetweenLimits: Double, rateAboveUpperLimit: Double)
 
   private def formatter(number: AnyVal): String = NumberFormat.getNumberInstance.format(number)
 
-  private def getFiguresForYear[T](taxYear: Int, figuresMap: Map[Int, T]): T = figuresMap.getOrElse(taxYear, figuresMap(fallbackYear))
+  private def getFiguresForYear[T](taxYear: Int, figuresMap: Map[Int, T]): T =
+    figuresMap.getOrElse(taxYear, throw new IllegalArgumentException(s"Tax year not supported: $taxYear"))
 
   object Class4NICsFigures {
 
     private val taxYearFiguresMap: Map[Int, Class4Limits] = Map(
+      2021 -> Class4Limits(9500, 50000, 9, 2),
       2022 -> Class4Limits(9568, 50270, 9, 2),
       2023 -> Class4Limits(11908, 50270, 9.73, 2.73),
       2024 -> Class4Limits(12570, 50270, 9, 2),
@@ -42,7 +43,6 @@ object NICsThresholds {
     )
 
     def getFiguresForTaxYear(taxYear: TaxYear, figureType: String): String = {
-      // TODO refactor to using richer types rather than Int and String if this is to remain
       val class4Figures = getFiguresForYear(taxYear.endYear, taxYearFiguresMap)
       val figure = figureType match {
         case "lowerProfitsLimit"   => class4Figures.lowerProfitsLimit
@@ -57,6 +57,7 @@ object NICsThresholds {
 
   object Class2NICsThresholds {
     private val taxYearSmallProfitsThresholdMap: Map[Int, Int] = Map(
+      2021 -> 6475,
       2022 -> 6515,
       2023 -> 6725,
       2024 -> 6725,
