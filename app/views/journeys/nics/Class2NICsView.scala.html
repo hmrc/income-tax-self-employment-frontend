@@ -16,7 +16,7 @@
 
 @import controllers.journeys.nics.routes
 @import models.common.{TaxYear, UserType}
-@import models.journeys.nics.Class2NICsThresholds
+@import models.journeys.nics.NICsThresholds.Class2NICsThresholds._
 @import views.html.components._
 
 @this(
@@ -38,14 +38,11 @@
 
     @heading("class2NICs.title")
 
-    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>
-            @messages(s"class2NICs.p1.$userType", Class2NICsThresholds.getThresholdForTaxYear(taxYear))
-        </p>
-        <p>
-            @messages(s"class2NICs.p2.$userType")
-        </p>
+    <div class="govuk-body govuk-!-margin-bottom-6">
+        <p>@messages(s"class2NICs.p1.$userType", getThresholdForTaxYear(taxYear))</p>
+        <p>@messages(s"class2NICs.p2.$userType")</p>
     </div>
+
         @twoRadios(form, "class2NICs", userType, taxYear, inline = true, afterSubheadingHtml = Html(""))
 
         @submitButton()
