@@ -18,15 +18,17 @@ package controllers.journeys.nics
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys
-import models.NormalMode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.TaxYear
 import models.journeys.Journey.NationalInsuranceContributions
+import models.{CheckMode, NormalMode}
 import pages.Page
+import pages.nics.Class2NICsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.checkAnswers.BooleanSummary
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -44,7 +46,11 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
     with Logging {
 
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) { implicit request =>
-    val summaryList = SummaryListCYA.summaryListOpt(List())
+    val summaryList = SummaryListCYA.summaryListOpt(
+      List(
+        new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))
+          .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType)
+      ))
 
     Ok(
       view(
