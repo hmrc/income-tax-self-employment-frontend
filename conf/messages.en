@@ -2102,6 +2102,9 @@ class2NICs.subHeading.individual = Would you like to make voluntary Class 2 Nati
 class2NICs.subHeading.agent = Would your client like to make voluntary Class 2 National Insurance contributions?
 class2NICs.error.required.individual = Select yes if you would like to make voluntary Class 2 National Insurance contributions
 class2NICs.error.required.agent = Select yes if your client would like to make voluntary Class 2 National Insurance contributions
+class2NICs.subHeading.cya.individual = Would you like to make voluntary class 2 National Insurance contributions?
+class2NICs.subHeading.cya.agent = Would your client like to make voluntary class 2 National Insurance contributions?
+class2NICs.change.hidden = Change if you want to make voluntary Class 2 National Insurance Contributions
 
 class4NICs.title = Class 4 National Insurance contributions
 class4NICs.p1.individual = As your adjusted taxable profit is more than £{0} a year you must pay Class 4 contributions.
