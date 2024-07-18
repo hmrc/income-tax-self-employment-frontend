@@ -22,7 +22,7 @@ import controllers.journeys.capitalallowances.electricVehicleChargePoints
 import models.common._
 import models.journeys.Journey.CapitalAllowancesElectricVehicleChargePoints
 import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -64,7 +64,7 @@ class ElectricVehicleChargePointsCYAController @Inject() (override val messagesA
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,

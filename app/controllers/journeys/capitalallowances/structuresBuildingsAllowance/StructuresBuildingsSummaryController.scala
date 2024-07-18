@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.redirectJourneyRecovery
 import models.common._
+import pages.Page
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsAllowancePage.getStructureFromIndex
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -62,7 +62,7 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
 
           Ok(
             view(
-              CapitalAllowancesCYAPage,
+              Page.cyaCheckYourAnswersHeading,
               taxYear,
               request.userType,
               summaryList,

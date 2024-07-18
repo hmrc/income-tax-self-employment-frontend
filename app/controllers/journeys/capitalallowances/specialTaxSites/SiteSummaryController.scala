@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.specialTaxSites
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.redirectJourneyRecovery
 import models.common._
+import pages.Page
 import pages.capitalallowances.specialTaxSites.SpecialTaxSitesPage.getSiteFromIndex
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -60,7 +60,7 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
 
           Ok(
             view(
-              CapitalAllowancesCYAPage,
+              Page.cyaCheckYourAnswersHeading,
               taxYear,
               request.userType,
               summaryList,

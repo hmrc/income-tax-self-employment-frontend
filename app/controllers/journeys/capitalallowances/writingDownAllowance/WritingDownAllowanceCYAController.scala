@@ -21,7 +21,7 @@ import controllers.handleSubmitAnswersResult
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.Journey.CapitalAllowancesWritingDownAllowance
 import models.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -63,7 +63,7 @@ class WritingDownAllowanceCYAController @Inject() (override val messagesApi: Mes
 
       Ok(
         view(
-          CapitalAllowancesCYAPage.pageName.value,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,
