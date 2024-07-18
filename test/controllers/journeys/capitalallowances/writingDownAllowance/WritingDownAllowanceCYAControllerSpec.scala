@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.writingDownAllowance
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import pages.capitalallowances.writingDownAllowance.WdaSpecialRatePage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.writingDownAllowance.WdaSpecialRateSummary
 
 class WritingDownAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
-  val pageHeading: String           = CapitalAllowancesCYAPage.pageName.value
+  val pageHeading: String           = Page.cyaCheckYourAnswersHeading
   val testDataCases: List[JsObject] = List(Json.obj(WdaSpecialRatePage.pageName.value -> false))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.WritingDownAllowanceCYAController.onPageLoad

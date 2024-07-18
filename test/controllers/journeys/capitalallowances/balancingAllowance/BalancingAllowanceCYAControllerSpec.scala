@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.balancingAllowance
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.capitalallowances.balancingAllowance.{BalancingAl
 
 class BalancingAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
-  override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
+  override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(

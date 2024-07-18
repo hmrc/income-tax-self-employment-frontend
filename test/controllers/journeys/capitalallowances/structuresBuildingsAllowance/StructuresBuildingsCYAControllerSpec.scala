@@ -20,7 +20,7 @@ import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -29,7 +29,7 @@ import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance._
 
 class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
-  override val pageHeading: String = CapitalAllowancesCYAPage.pageName.value
+  override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
   override val testDataCases: List[JsObject] = List(
     Json.obj(
