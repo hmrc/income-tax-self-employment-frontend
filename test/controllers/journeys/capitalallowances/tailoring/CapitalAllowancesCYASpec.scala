@@ -22,7 +22,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.CapitalAllowancesTailoring
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -31,8 +31,7 @@ import viewmodels.checkAnswers.capitalallowances.tailoring.{ClaimCapitalAllowanc
 
 class CapitalAllowancesCYASpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
-  override val pageHeading: String =
-    CapitalAllowancesCYAPage.pageName.value
+  override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
   override val submissionData: JsObject =
     Json.obj("claimCapitalAllowances" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar"))

@@ -135,8 +135,10 @@ error.postcode.invalid = Enter a full UK postcode, for example BN1 1AR
 
 common.insert = {0}
 common.lowerAmount = A lower amount
-common.checkYourDetails.title.agent = Check your client’s details
 common.checkYourDetails.title.individual = Check your details
+common.checkYourDetails.title.agent = Check your client’s details
+common.checkYourAnswers.title.individual = Check your answers
+common.checkYourAnswers.title.agent = Check your client’s answers
 common.opensInNewTab = (opens in a new tab)
 
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -1386,8 +1388,6 @@ capitalAllowancesCYA.key1.agent = Does your client want to claim any capital all
 capitalAllowancesCYA.key1.change.hidden = Change your answer for claiming capital allowances
 capitalAllowances.CYA.key2 = Capital Allowances
 capitalAllowances.CYA.key2.change.hidden = Change which allowances you want to claim for
-capitalAllowancesCYA.title.individual = Check your answers
-capitalAllowancesCYA.title.agent = Check your client’s answers
 
 ########## Capital Allowances - Zero Emission Cars ##########
 

@@ -29,5 +29,6 @@ object Page {
   implicit def toString(page: Page): String =
     page.toString
 
-  val cyaHeadingKeyPrefix: String = "common.checkYourDetails"
+  val cyaCheckYourDetailsHeading: String = "common.checkYourDetails"
+  val cyaCheckYourAnswersHeading: String = "common.checkYourAnswers"
 }
