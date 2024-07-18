@@ -60,7 +60,7 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
 
     Ok(
       view(
-        Page.cyaHeadingKeyPrefix,
+        Page.cyaCheckYourDetailsHeading,
         taxYear,
         request.userType,
         summaryList,

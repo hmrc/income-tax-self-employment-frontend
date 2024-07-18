@@ -45,7 +45,7 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
 
       Ok(
         view(
-          Page.cyaHeadingKeyPrefix,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,
