@@ -18,11 +18,11 @@ package controllers.journeys.capitalallowances.balancingAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
-import models.common._
 import controllers.journeys.capitalallowances.balancingAllowance
+import models.common._
 import models.journeys.Journey.CapitalAllowancesBalancingAllowance
 import models.journeys.capitalallowances.balancingAllowance.BalancingAllowanceAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -60,7 +60,7 @@ class BalancingAllowanceCYAController @Inject() (override val messagesApi: Messa
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,

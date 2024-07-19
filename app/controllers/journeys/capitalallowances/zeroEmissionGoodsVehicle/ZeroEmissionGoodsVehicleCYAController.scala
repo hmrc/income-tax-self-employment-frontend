@@ -22,7 +22,7 @@ import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 import models.common._
 import models.journeys.Journey.CapitalAllowancesZeroEmissionGoodsVehicle
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -65,7 +65,7 @@ class ZeroEmissionGoodsVehicleCYAController @Inject() (override val messagesApi:
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,

@@ -21,7 +21,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.Journey
 import models.journeys.Journey.CapitalAllowancesZeroEmissionCars
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -31,7 +31,7 @@ import viewmodels.checkAnswers.capitalallowances.zeroEmissionCars._
 class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String =
-    CapitalAllowancesCYAPage.pageName.value
+    Page.cyaCheckYourAnswersHeading
 
   override val submissionData: JsObject =
     Json.obj("zeroEmissionCars" -> false)

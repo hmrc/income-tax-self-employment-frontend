@@ -22,7 +22,7 @@ import controllers.journeys.capitalallowances.zeroEmissionCars
 import models.common._
 import models.journeys.Journey.CapitalAllowancesZeroEmissionCars
 import models.journeys.capitalallowances.zeroEmissionCars.ZeroEmissionCarsAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -64,11 +64,12 @@ class ZeroEmissionCarsCYAController @Inject() (override val messagesApi: Message
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,
-          zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onSubmit(taxYear, businessId)))
+          zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onSubmit(taxYear, businessId)
+        ))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {

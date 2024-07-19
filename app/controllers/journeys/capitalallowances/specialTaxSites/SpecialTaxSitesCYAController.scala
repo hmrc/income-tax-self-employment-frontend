@@ -21,7 +21,7 @@ import controllers.handleSubmitAnswersResult
 import models.common._
 import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -63,7 +63,7 @@ class SpecialTaxSitesCYAController @Inject() (override val messagesApi: Messages
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,

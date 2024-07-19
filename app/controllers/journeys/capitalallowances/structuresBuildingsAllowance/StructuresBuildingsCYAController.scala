@@ -22,7 +22,7 @@ import controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import models.common._
 import models.journeys.Journey.CapitalAllowancesStructuresBuildings
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -67,7 +67,7 @@ class StructuresBuildingsCYAController @Inject() (override val messagesApi: Mess
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,

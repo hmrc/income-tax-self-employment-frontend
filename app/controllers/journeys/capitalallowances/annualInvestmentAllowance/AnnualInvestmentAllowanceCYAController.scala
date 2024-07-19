@@ -21,7 +21,7 @@ import controllers.handleSubmitAnswersResult
 import models.common._
 import models.journeys.Journey.CapitalAllowancesAnnualInvestmentAllowance
 import models.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAnswers
-import pages.capitalallowances.tailoring.CapitalAllowancesCYAPage
+import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -59,7 +59,7 @@ class AnnualInvestmentAllowanceCYAController @Inject() (override val messagesApi
 
       Ok(
         view(
-          CapitalAllowancesCYAPage,
+          Page.cyaCheckYourAnswersHeading,
           taxYear,
           request.userType,
           summaryList,
