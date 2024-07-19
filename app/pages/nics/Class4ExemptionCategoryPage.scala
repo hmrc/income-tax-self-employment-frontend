@@ -33,7 +33,7 @@ case object Class4ExemptionCategoryPage extends NicsBasePage[ExemptionCategory] 
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     userAnswers.get(this, businessId) match {
-      case Some(TrusteeExecutorAdmin)  => routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
+      case Some(TrusteeExecutorAdmin)  => routes.Class4TrusteeOrOtherExemptController.onPageLoad(taxYear, NormalMode)
       case Some(DiverDivingInstructor) => routes.Class4DivingExemptController.onPageLoad(taxYear, NormalMode)
       case None                        => standard.routes.JourneyRecoveryController.onPageLoad()
     }
@@ -42,5 +42,5 @@ case object Class4ExemptionCategoryPage extends NicsBasePage[ExemptionCategory] 
     userAnswers.get(this, businessId).isDefined
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
-    List(Class4NonDivingExemptPage, Class4DivingExemptPage)
+    List(Class4TrusteeOrOtherExemptPage, Class4DivingExemptPage)
 }
