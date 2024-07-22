@@ -31,6 +31,7 @@ site.months = months
 site.enterTheAmount = Enter the amount
 site.includesTheCostOf = This includes the cost of:
 site.pound = £
+site.poundAmount = £{0}
 site.percentage = %
 site.tenPercent = 10%
 site.twentyFivePercent = 25%
@@ -2080,6 +2081,19 @@ newSpecialTaxSites.change.hidden =
 
 ########## Profit or Loss ##########
 
+profitOfLoss.showCalculations = Show calculations
+profitOfLoss.netProfitOrLoss.profit = Net profit
+profitOfLoss.turnover = Turnover
+profitOfLoss.totalExpenses = Total expenses
+profitOfLoss.additions.profit = Additions to net profit
+profitOfLoss.goodsAndServices = Goods and services for your own use
+profitOfLoss.disallowableExpenses = Disallowable expenses
+profitOfLoss.totalAdditions.profit = Total additions to net profit
+profitOfLoss.deductions.profit = Deductions from net profit
+profitOfLoss.turnoverNotTaxable.profit = Turnover not taxable as business profit
+profitOfLoss.totalDeductions.profit = Total deductions from net profit
+profitOfLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
+
 goodsAndServicesAmount.title.individual = What was the market value of the goods and services you provided?
 goodsAndServicesAmount.title.agent = What was the market value of the goods and services your client provided?
 goodsAndServicesAmount.title.cash.individual = How much did you spend on goods and services for your own use?
@@ -2091,7 +2105,11 @@ goodsAndServicesAmount.error.required.agent = Enter the market value of the good
 goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
 goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
 
-########## National Insurance Contributions - Class 2 ##########
+checkNetProfitLoss.title.profit = Net business profit: £{0}
+checkNetProfitLoss.p1.individual = We’re now going to ask you about any final adjustments to your your net business profit. This will give you your your total taxable profit or loss.
+checkNetProfitLoss.p1.agent = We’re now going to ask you about any final adjustments to your client’s your net business profit. This will give you their your total taxable profit or loss.
+
+########## National Insurance Contributions ##########
 
 class2NICs.title = Voluntary Class 2 National Insurance contributions
 class2NICs.p1.individual = As your adjustable taxable profit is less than £{0} you do not need to make Class 2 National Insurance contributions.

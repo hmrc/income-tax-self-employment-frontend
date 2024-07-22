@@ -19,11 +19,13 @@ package controllers.journeys.adjustments.profitOrLoss
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common._
+import models.journeys.adjustments.ProfitOrLoss.Profit
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.journeys.SummaryListCYA
+import utils.MoneyUtils.formatMoney
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitTable}
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 import javax.inject.{Inject, Singleton}
@@ -40,9 +42,18 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList = SummaryListCYA.summaryListOpt(List())
+    val profitOrLoss = Profit
+    val netAmount    = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
     Ok(
-      view(request.userType, summaryList, routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode))
+      view(
+        request.userType,
+        profitOrLoss,
+        netAmount,
+        buildNetProfitTable(profitOrLoss),
+        buildAdditionsTable(profitOrLoss),
+        buildDeductionsTable(profitOrLoss),
+        routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
+      )
     ) // TODO if no losses this year go to PreviousUnusedLossesPage instead of CurrentYearLossesPage
   }
 
