@@ -26,7 +26,7 @@ import play.api.mvc.{Call, Request}
 import views.html.journeys.adjustments.profitOrLoss.GoodsAndServicesForYourOwnUseView
 
 class GoodsAndServicesForYourOwnUseControllerSpec
-    extends BooleanGetAndPostQuestionBaseSpec("GoodsAndServicesForYourOwnUseController", GoodsAndServicesForYourOwnUsePage) {
+    extends BooleanGetAndPostQuestionBaseSpec("GoodsAndServicesForYourOwnUseControllerSpec", GoodsAndServicesForYourOwnUsePage) {
 
   override def onPageLoadCall: Call = routes.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -37,7 +37,7 @@ class GoodsAndServicesForYourOwnUseControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[GoodsAndServicesForYourOwnUseView]
-    view(form, scenario.taxYear, scenario.businessId, scenario.userType, NormalMode).toString()
+    view(form, scenario.taxYear, scenario.businessId, scenario.userType, NormalMode, scenario.accountingType.value).toString()
   }
 
 }
