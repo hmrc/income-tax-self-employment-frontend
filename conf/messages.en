@@ -2097,7 +2097,7 @@ goodsAndServicesForYourOwnUse.p1.individual.CASH = Enter the cost if you:
 goodsAndServicesForYourOwnUse.l1.individual = took any stock or manufactured goods out of your business
 goodsAndServicesForYourOwnUse.l2.individual = provided business services to family and friends
 goodsAndServicesForYourOwnUse.subHeading.individual = Did you take goods out of your business or provide business services to family and friends?
-goodsAndServicesForYourOwnUse.hint.individual = If you have already included this amount in the question about your turnover, select ''no''.
+goodsAndServicesForYourOwnUse.hint.individual = If you have already included this amount in the question about your turnover, select ‘no’.
 goodsAndServicesForYourOwnUse.error.required.individual = Select yes if you took goods out of your business or provided business services to family and friends
 goodsAndServicesForYourOwnUse.error.required.agent = Select yes if your client took goods out of their business or provided business services to family and friends
 
