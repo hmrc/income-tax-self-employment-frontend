@@ -16,6 +16,7 @@
 
 package models.common
 
+import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.PathBindable
 
 final case class TaxYear(endYear: Int) extends AnyVal {
@@ -35,5 +36,7 @@ object TaxYear {
       intBinder.unbind(key, taxYear.endYear)
 
   }
+
+  implicit val writes: Writes[TaxYear] = taxYear => JsString(taxYear.endYear.toString)
 
 }

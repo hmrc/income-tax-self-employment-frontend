@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models.common
+package models.audit
 
+import models.common.BusinessName
 import play.api.libs.json.{JsString, Writes}
 
-final case class Mtditid(value: String) extends AnyVal
+sealed abstract class SectionName(val name: String)
 
-object Mtditid {
-  implicit val writes: Writes[Mtditid] = mtditid => JsString(mtditid.value)
+object SectionName {
+  final case object ReviewSelfEmploymentSection                extends SectionName("reviewSelfEmployment")
+  final case class BusinessSection(businessName: BusinessName) extends SectionName(s"$businessName - Self Employment")
+  final case object NationalInsuranceContributonsSection       extends SectionName("nationalInsuranceContributions")
+
+  implicit val writes: Writes[SectionName] = (sectionName: SectionName) => JsString(sectionName.name)
 }

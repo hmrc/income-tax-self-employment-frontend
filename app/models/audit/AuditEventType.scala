@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package models.common
+package models.audit
 
-import play.api.libs.json.{JsString, Writes}
+import enumeratum._
 
-final case class Mtditid(value: String) extends AnyVal
+sealed abstract class AuditEventType(override val entryName: String) extends EnumEntry {
+  override def toString: String = entryName
+}
 
-object Mtditid {
-  implicit val writes: Writes[Mtditid] = mtditid => JsString(mtditid.value)
+object AuditEventType extends Enum[AuditEventType] with utils.PlayJsonEnum[AuditEventType] {
+  val values = findValues
+
+  final case object CreateOrUpdateSelfEmploymentAbroadAuditType extends AuditEventType("CreateOrAmendSelfEmploymentAbroad")
 }
