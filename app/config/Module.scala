@@ -19,7 +19,7 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions._
 import repositories.{SessionRepository, SessionRepositoryBase}
-import services.{SelfEmploymentService, SelfEmploymentServiceImpl}
+import services.{AuditService, AuditServiceImpl, SelfEmploymentService, SelfEmploymentServiceImpl}
 
 import java.time.{Clock, ZoneOffset}
 
@@ -40,5 +40,7 @@ class Module extends AbstractModule {
     bind(classOf[SessionRepositoryBase]).to(classOf[SessionRepository]).asEagerSingleton()
 
     bind(classOf[SubmittedDataRetrievalActionProvider]).to(classOf[SubmittedDataRetrievalActionProviderImpl]).asEagerSingleton()
+
+    bind(classOf[AuditService]).to(classOf[AuditServiceImpl]).asEagerSingleton()
   }
 }

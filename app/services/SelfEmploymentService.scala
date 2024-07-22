@@ -30,7 +30,7 @@ import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
-import play.api.libs.json.{Format, Reads, Writes}
+import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
 import play.api.mvc.Result
 import queries.Settable
 import repositories.SessionRepositoryBase
@@ -79,7 +79,8 @@ trait SelfEmploymentService {
 
 class SelfEmploymentServiceImpl @Inject() (
     connector: SelfEmploymentConnector,
-    sessionRepository: SessionRepositoryBase
+    sessionRepository: SessionRepositoryBase,
+    auditService: AuditService
 )(implicit ec: ExecutionContext)
     extends SelfEmploymentService
     with Logging {
@@ -114,7 +115,10 @@ class SelfEmploymentServiceImpl @Inject() (
 
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = {
     val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ context.businessId.value).as[SubsetOfAnswers]
-    connector.submitAnswers(context, journeyAnswers)
+    for {
+      _ <- connector.submitAnswers(context, journeyAnswers)
+      _ = auditService.sendExplicitAuditEvent(context, Json.toJson(journeyAnswers).as[JsObject])
+    } yield ()
   }
 
   @nowarn("msg=match may not be exhaustive")

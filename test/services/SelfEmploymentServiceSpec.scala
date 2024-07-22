@@ -48,6 +48,7 @@ import play.api.test.Helpers._
 import queries.Settable.SetAnswer
 import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
 import stubs.repositories.StubSessionRepository
+import stubs.services.AuditServiceStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -278,5 +279,5 @@ trait ServiceWithStubs {
   val repository                               = StubSessionRepository()
   val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
 
-  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository)
+  val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository, AuditServiceStub())
 }

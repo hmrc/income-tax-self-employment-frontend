@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package models.common
+package stubs.services
 
-import play.api.libs.json.{JsString, Writes}
+import models.common.JourneyContext
+import play.api.libs.json.{JsObject, Writes}
+import services.AuditService
+import uk.gov.hmrc.http.HeaderCarrier
 
-final case class Mtditid(value: String) extends AnyVal
+case class AuditServiceStub() extends AuditService {
 
-object Mtditid {
-  implicit val writes: Writes[Mtditid] = mtditid => JsString(mtditid.value)
+  def sendExplicitAuditEvent[A: Writes](context: JourneyContext, answers: JsObject)(implicit hc: HeaderCarrier): Unit = ()
 }
