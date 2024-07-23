@@ -17,6 +17,7 @@
 @import controllers.journeys.adjustments.profitOrLoss.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
+@import models.common.AccountingType
 
 @this(
         layout: templates.Layout,
@@ -27,17 +28,31 @@
         heading: Heading
 )
 
-@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
+
+@hintText = {
+    <div class="govuk-hint">
+    @messages(s"goodsAndServicesForYourOwnUse.hint.$userType")
+    </div>
+}
 
 @layout(pageTitle = title(form, messages(s"goodsAndServicesForYourOwnUse.title.$userType"))) {
 
     @errorSummarySection(form)
 
+    @heading(s"goodsAndServicesForYourOwnUse.title.$userType")
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+        <p>@messages(s"goodsAndServicesForYourOwnUse.p1.$userType.$accountingType")<p>
+    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <li>@messages(s"goodsAndServicesForYourOwnUse.l1.$userType")</li>
+        <li>@messages(s"goodsAndServicesForYourOwnUse.l2")</li>
+    </ul>
+    </div>
+
     @formHelper(action = routes.GoodsAndServicesForYourOwnUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(s"goodsAndServicesForYourOwnUse.title.$userType")
-
-        @twoRadios(form, "goodsAndServicesForYourOwnUse", userType, taxYear, inline = false, afterSubheadingHtml = Html(""))
+        @twoRadios(form, "goodsAndServicesForYourOwnUse", userType, taxYear, hintText, inline = false)
 
         @submitButton()
     }

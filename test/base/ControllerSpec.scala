@@ -57,7 +57,7 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
                           mode: Mode = NormalMode,
                           taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
                           businessId: BusinessId = SpecBase.businessId,
-                          accountingType: Option[AccountingType] = None,
+                          accountingType: Option[AccountingType] = Some(AccountingType.Accrual),
                           service: SelfEmploymentService = mockService) {
     implicit val application: Application = createApp(userType, answers, service)
     implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]

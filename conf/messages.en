@@ -2091,6 +2091,22 @@ goodsAndServicesAmount.error.required.agent = Enter the market value of the good
 goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
 goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
 
+goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
+goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
+goodsAndServicesForYourOwnUse.p1.individual.ACCRUAL = Enter the total sale price, not the cost, if you:
+goodsAndServicesForYourOwnUse.p1.agent.ACCRUAL = Enter the total sale price, not the cost, if your client:
+goodsAndServicesForYourOwnUse.p1.individual.CASH = Enter the cost if you:
+goodsAndServicesForYourOwnUse.p1.agent.CASH = Enter the cost if your client:
+goodsAndServicesForYourOwnUse.l1.individual = took any stock or manufactured goods out of your business
+goodsAndServicesForYourOwnUse.l1.agent = took any stock or manufactured goods out of their business
+goodsAndServicesForYourOwnUse.l2 = provided business services to family and friends
+goodsAndServicesForYourOwnUse.subHeading.individual = Did you take goods out of your business or provide business services to family and friends?
+goodsAndServicesForYourOwnUse.subHeading.agent = Did your client take goods from their business or provide business services to family and friends?
+goodsAndServicesForYourOwnUse.hint.individual = If you have already included this amount in the question about your turnover, select ‘no’.
+goodsAndServicesForYourOwnUse.hint.agent = If you have already included this amount in the question about their turnover, select ‘no’.
+goodsAndServicesForYourOwnUse.error.required.individual = Select yes if you took goods out of your business or provided business services to family and friends
+goodsAndServicesForYourOwnUse.error.required.agent = Select yes if your client took goods out of their business or provided business services to family and friends
+
 ########## National Insurance Contributions - Class 2 ##########
 
 class2NICs.title = Voluntary Class 2 National Insurance contributions
