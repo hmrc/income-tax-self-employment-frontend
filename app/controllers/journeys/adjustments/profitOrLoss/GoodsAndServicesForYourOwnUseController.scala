@@ -51,16 +51,14 @@ class GoodsAndServicesForYourOwnUseController @Inject() (override val messagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val accountingType = returnAccountingType(businessId)
       val filledForm     = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(filledForm, taxYear, businessId, request.userType, mode, accountingType))
+      Ok(view(filledForm, taxYear, businessId, request.userType, mode, returnAccountingType(businessId)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val accountingType = returnAccountingType(businessId)
       def handleError(formWithErrors: Form[_]): Result =
-        BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode, accountingType))
+        BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode, returnAccountingType(businessId)))
 
       def handleSuccess(answer: Boolean): Future[Result] =
         service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
