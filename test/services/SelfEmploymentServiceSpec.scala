@@ -68,7 +68,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getJourneyState(any[BusinessId], any[Journey], any[TaxYear], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](status)
 
-      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse)).value.futureValue
+      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesGoodsToSellOrUse)).value.futureValue
 
       result shouldBe status.journeyStatus.asRight
     }
@@ -78,7 +78,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     "should save status" in new ServiceWithStubs {
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
       val result = service
-        .setJourneyStatus(JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
+        .setJourneyStatus(JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
         .value
         .futureValue
       result shouldBe ().asRight
@@ -115,7 +115,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
            |""".stripMargin)
       .as[JsObject]
     val userAnswers: UserAnswers = UserAnswers(userAnswersId, userAnswerData)
-    val ctx                      = JourneyAnswersContext(taxYear, businessId, mtditid, ExpensesGoodsToSellOrUse)
+    val ctx                      = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesGoodsToSellOrUse)
 
     "submit answers to the connector" in new ServiceWithStubs {
       mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[ServiceError]))

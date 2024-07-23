@@ -17,11 +17,11 @@
 package stubs.services
 
 import models.common.JourneyContext
-import play.api.libs.json.{JsObject, Writes}
+import play.api.libs.json.JsObject
 import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 
 case class AuditServiceStub() extends AuditService {
 
-  def sendExplicitAuditEvent[A: Writes](context: JourneyContext, answers: JsObject)(implicit hc: HeaderCarrier): Unit = ()
+  def unsafeSendExplicitCYAAuditEvent(context: JourneyContext, answers: JsObject, wasSuccessful: Boolean)(implicit hc: HeaderCarrier): Unit = ()
 }

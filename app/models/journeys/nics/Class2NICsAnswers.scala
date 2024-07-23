@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models.audit
+package models.journeys.nics
 
-import enumeratum._
+import play.api.libs.json.{Format, Json}
 
-sealed abstract class AuditEventType(override val entryName: String) extends EnumEntry {
-  override def toString: String = entryName
-}
+case class Class2NICsAnswers(class2NICs: Boolean)
 
-object AuditEventType extends Enum[AuditEventType] with utils.PlayJsonEnum[AuditEventType] {
-  val values = findValues
-
-  final case object CreateOrUpdateNationalInsuranceContributionsAuditType
-      extends AuditEventType("CreateOrUpdateSelfEmploymentNationalInsuranceContributions")
+object Class2NICsAnswers {
+  implicit val formats: Format[Class2NICsAnswers] = Json.format[Class2NICsAnswers]
 }

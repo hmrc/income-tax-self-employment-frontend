@@ -16,27 +16,40 @@
 
 package models.audit
 
-import models.common.{Mtditid, TaxYear}
+import models.common.{JourneyStatus, Mtditid, Nino, TaxYear}
 import models.journeys.Journey
 import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 
 sealed trait SelfEmploymentAuditEvent
 
-final case class SelfEmploymentCYAnswersAuditEvent(
+final case class CYAnswersAuditEvent(
     mtditid: Mtditid,
+    nino: Nino,
     taxYear: TaxYear,
-    sectionName: SectionName,
+    sectionName: Option[AuditSectionName],
     journeyName: Journey,
     priorAnswers: Option[JsObject],
-    submittedAnswers: JsObject
+    submittedAnswers: JsObject,
+    isSuccessful: Boolean
 ) extends SelfEmploymentAuditEvent
 
-object SelfEmploymentCYAnswersAuditEvent {
-  implicit val writes: OWrites[SelfEmploymentCYAnswersAuditEvent] = Json.writes[SelfEmploymentCYAnswersAuditEvent]
+object CYAnswersAuditEvent {
+  implicit val writes: OWrites[CYAnswersAuditEvent] = Json.writes[CYAnswersAuditEvent]
+}
+
+final case class StatusAuditEvent(
+    priorStatus: JourneyStatus,
+    submittedStatus: JourneyStatus,
+    successful: Boolean
+) extends SelfEmploymentAuditEvent
+
+object StatusAuditEvent {
+  implicit val writes: OWrites[StatusAuditEvent] = Json.writes[StatusAuditEvent]
 }
 
 object SelfEmploymentAuditEvent {
-  implicit def writes: Writes[SelfEmploymentAuditEvent] = { case e: SelfEmploymentCYAnswersAuditEvent =>
-    Json.toJson(e)(SelfEmploymentCYAnswersAuditEvent.writes)
+  implicit def writes: Writes[SelfEmploymentAuditEvent] = {
+    case e: CYAnswersAuditEvent => Json.toJson(e)(CYAnswersAuditEvent.writes)
+    case e: StatusAuditEvent    => Json.toJson(e)(StatusAuditEvent.writes)
   }
 }

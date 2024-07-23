@@ -16,15 +16,12 @@
 
 package models.audit
 
-import models.common.BusinessName
 import play.api.libs.json.{JsString, Writes}
 
-sealed abstract class SectionName(val name: String)
+sealed abstract class AuditSectionName(val name: String)
 
-object SectionName {
-  final case object ReviewSelfEmploymentSection                extends SectionName("reviewSelfEmployment")
-  final case class BusinessSection(businessName: BusinessName) extends SectionName(s"$businessName - Self Employment")
-  final case object NationalInsuranceContributonsSection       extends SectionName("nationalInsuranceContributions")
+object AuditSectionName {
+  final case object NationalInsuranceContributionsAuditSection extends AuditSectionName("nationalInsuranceContributions")
 
-  implicit val writes: Writes[SectionName] = (sectionName: SectionName) => JsString(sectionName.name)
+  implicit val writes: Writes[AuditSectionName] = (sectionName: AuditSectionName) => JsString(sectionName.name)
 }
