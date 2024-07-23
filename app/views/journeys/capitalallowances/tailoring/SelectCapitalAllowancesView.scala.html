@@ -25,7 +25,7 @@
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukCheckboxes: GovukCheckboxes,
         submitButton: SubmitButton,
         heading: Heading)
@@ -39,9 +39,7 @@
 
 @layout(pageTitle = title(form, messages(s"selectCapitalAllowances.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading(s"selectCapitalAllowances.title.$userType")
 

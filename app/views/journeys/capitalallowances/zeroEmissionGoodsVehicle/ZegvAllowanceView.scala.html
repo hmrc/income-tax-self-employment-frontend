@@ -21,7 +21,7 @@
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: Heading,
@@ -32,9 +32,7 @@
 
 @layout(pageTitle = title(form, messages("selectCapitalAllowances.zeroEmissionGoodsVehicle"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading(messages("selectCapitalAllowances.zeroEmissionGoodsVehicle"))
 

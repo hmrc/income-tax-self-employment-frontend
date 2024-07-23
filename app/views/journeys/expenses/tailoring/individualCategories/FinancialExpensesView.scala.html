@@ -22,7 +22,7 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
+    errorSummarySection: ErrorSummarySection,
     govukCheckboxes: GovukCheckboxes,
     submitButton: SubmitButton,
     heading: Heading
@@ -33,9 +33,7 @@
 
 @layout(pageTitle = title(form, messages("financialExpenses.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading("financialExpenses.title")
 

@@ -23,7 +23,7 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
+    errorSummarySection: ErrorSummarySection,
     govukInput: GovukInput,
     submitButton: SubmitButton
 )
@@ -32,9 +32,7 @@
 
 @layout(pageTitle = title(form, messages(s"advertisingAmount.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
     @formHelper(action = routes.AdvertisingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

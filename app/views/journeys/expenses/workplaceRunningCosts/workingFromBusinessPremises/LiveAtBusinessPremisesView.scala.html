@@ -22,7 +22,7 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         heading: Heading,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton
 )
@@ -31,9 +31,7 @@
 
 @layout(pageTitle = title(form, messages(s"liveAtBusinessPremises.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading("liveAtBusinessPremises.heading")
 
