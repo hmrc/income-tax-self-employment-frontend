@@ -42,16 +42,20 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val profitOrLoss = Profit
-    val netAmount    = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
+    val profitOrLoss    = Profit
+    val netAmount       = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
+    val netProfitTable  = buildNetProfitTable(profitOrLoss)
+    val additionsTable  = buildAdditionsTable(profitOrLoss)
+    val deductionsTable = buildDeductionsTable(profitOrLoss)
+    // TODO SASS-8626 all of these ^^ values will be calculated/created from API data
     Ok(
       view(
         request.userType,
         profitOrLoss,
         netAmount,
-        buildNetProfitTable(profitOrLoss),
-        buildAdditionsTable(profitOrLoss),
-        buildDeductionsTable(profitOrLoss),
+        netProfitTable,
+        additionsTable,
+        deductionsTable,
         routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
       )
     ) // TODO if no losses this year go to PreviousUnusedLossesPage instead of CurrentYearLossesPage
