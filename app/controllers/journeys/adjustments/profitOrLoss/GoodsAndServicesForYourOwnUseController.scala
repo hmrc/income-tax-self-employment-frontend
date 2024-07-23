@@ -51,7 +51,7 @@ class GoodsAndServicesForYourOwnUseController @Inject() (override val messagesAp
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm     = fillForm(page, businessId, formProvider(page, request.userType))
+      val filledForm = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(filledForm, taxYear, businessId, request.userType, mode, returnAccountingType(businessId)))
   }
 
