@@ -24,7 +24,7 @@ import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
 
 object NetBusinessProfitOrLossSummary {
 
-  private val placeholderAmount: BigDecimal = 200
+  private val placeholderAmount: BigDecimal = 200 // TODO this value is till SASS-8626 gets all values from backend
 
   def buildNetProfitTable(profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
 
@@ -32,6 +32,7 @@ object NetBusinessProfitOrLossSummary {
     val incomeNotCountedAsTurnover = placeholderAmount
     val totalExpenses              = placeholderAmount
     val netProfitOrLoss            = turnover + incomeNotCountedAsTurnover + totalExpenses
+    // TODO separate calculations from table building when real values are added SASS-8626
 
     val netProfitRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOfLoss.turnover", turnover),

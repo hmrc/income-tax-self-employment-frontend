@@ -16,19 +16,17 @@
 
 package models.journeys.adjustments
 
-import enumeratum._
-import models.common.{Enumerable, WithName}
+import enumeratum.{Enum, EnumEntry}
 
-sealed trait ProfitOrLoss extends EnumEntry {
-  override def entryName: String = toString.toLowerCase
+sealed abstract class ProfitOrLoss(override val entryName: String) extends EnumEntry {
+  override def toString: String = entryName
 }
 
-object ProfitOrLoss extends Enumerable.Implicits {
-  val values: Seq[ProfitOrLoss] = Seq(Profit, Loss)
+object ProfitOrLoss extends Enum[ProfitOrLoss] with utils.PlayJsonEnum[ProfitOrLoss] {
+  val values = findValues
 
-  case object Profit extends WithName("profit") with ProfitOrLoss
-  case object Loss   extends WithName("loss") with ProfitOrLoss
+  case object Profit extends ProfitOrLoss("profit")
 
-  implicit val enumerable: Enumerable[ProfitOrLoss] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+  case object Loss extends ProfitOrLoss("loss")
+
 }
