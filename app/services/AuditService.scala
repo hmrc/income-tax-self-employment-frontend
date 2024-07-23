@@ -16,10 +16,11 @@
 
 package services
 
-import models.audit.{AuditEventType, SectionName, SelfEmploymentCYAnswersAuditEvent}
-import models.common.{BusinessName, JourneyContext}
-import models.journeys.Journey.Abroad
-import play.api.libs.json.{JsObject, Writes}
+import models.audit.{AuditEventType, AuditSectionName, CYAnswersAuditEvent}
+import models.common.JourneyContext
+import models.journeys.Journey
+import models.journeys.Journey.NationalInsuranceContributions
+import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.Logging
@@ -28,26 +29,35 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 trait AuditService {
-  def sendExplicitAuditEvent[A: Writes](context: JourneyContext, answers: JsObject)(implicit hc: HeaderCarrier): Unit
+  def unsafeSendExplicitCYAAuditEvent(context: JourneyContext, answers: JsObject, wasSuccessful: Boolean)(implicit hc: HeaderCarrier): Unit
 }
 
 @Singleton
 class AuditServiceImpl @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) extends AuditService with Logging {
-  def sendExplicitAuditEvent[A: Writes](context: JourneyContext, answers: JsObject)(implicit hc: HeaderCarrier): Unit = {
-    val auditEvent = SelfEmploymentCYAnswersAuditEvent(
+  def unsafeSendExplicitCYAAuditEvent(context: JourneyContext, answers: JsObject, wasSuccessful: Boolean)(implicit hc: HeaderCarrier): Unit = {
+    val auditEvent = CYAnswersAuditEvent(
       context.mtditid,
+      context.nino,
       context.taxYear,
-      SectionName.BusinessSection(BusinessName(context.businessId.value)), // TODO We probably want a business name, change it to business name
+      toAuditSectionName(context.journey),
       context.journey,
       None, // TODO do we want previous answers from the backend?
-      answers
+      answers,
+      wasSuccessful
     )
 
     context.journey match {
-      case Abroad =>
-        auditConnector.sendExplicitAudit(AuditEventType.CreateOrUpdateSelfEmploymentAbroadAuditType.entryName, auditEvent)
+      case Journey.NationalInsuranceContributions =>
+        auditConnector.sendExplicitAudit(AuditEventType.CreateOrUpdateNationalInsuranceContributionsAuditType.entryName, auditEvent)
       case _ =>
         () // TODO do nothing for now, we'll get back to it once we know more business requirements
     }
   }
+
+  private def toAuditSectionName(journey: Journey): Option[AuditSectionName] =
+    journey match {
+      case NationalInsuranceContributions => Some(AuditSectionName.NationalInsuranceContributionsAuditSection)
+      case _                              => None
+    }
+
 }

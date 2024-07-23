@@ -16,6 +16,12 @@
 
 package models.common
 
+import play.api.libs.json.{JsString, Writes}
+
 final case class Nino(value: String) extends AnyVal {
   override def toString: String = value
+}
+
+object Nino {
+  implicit val writes: Writes[Nino] = nino => JsString(nino.value)
 }

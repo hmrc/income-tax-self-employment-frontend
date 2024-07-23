@@ -30,7 +30,7 @@ import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
   private def journeyNinoCtx(journey: Journey) = JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey)
-  private def journeyCtx(journey: Journey)     = JourneyAnswersContext(taxYear, businessId, mtditid, journey)
+  private def journeyCtx(journey: Journey)     = JourneyAnswersContext(taxYear, nino, businessId, mtditid, journey)
 
   private def downstreamNinoUrl(journey: Journey) = s"/income-tax-self-employment/$taxYear/$businessId/$journey/$nino/answers"
   private def downstreamUrl(journey: Journey)     = s"/income-tax-self-employment/$taxYear/$businessId/$journey/answers"

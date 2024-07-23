@@ -29,8 +29,15 @@ import queries.Gettable
 
 import scala.concurrent.{ExecutionContext, Future}
 
+sealed trait NinoDataRequest {
+  val userType: UserType
+  val nino: Nino
+  val mtditid: Mtditid
+}
+
 case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
-    extends WrappedRequest[A](request) {
+    extends WrappedRequest[A](request)
+    with NinoDataRequest {
   val userType: UserType   = user.userType
   val nino: Nino           = Nino(user.nino)
   val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
@@ -40,7 +47,9 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
     JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey, extraContext)
 }
 
-case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers) extends WrappedRequest[A](request) {
+case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers)
+    extends WrappedRequest[A](request)
+    with NinoDataRequest {
   val userType: UserType = user.userType
   val nino: Nino         = Nino(user.nino)
   val mtditid: Mtditid   = Mtditid(user.mtditid)

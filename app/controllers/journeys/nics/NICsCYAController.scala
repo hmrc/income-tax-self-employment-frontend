@@ -17,15 +17,17 @@
 package controllers.journeys.nics
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys
+import controllers.handleSubmitAnswersResult
+import models.CheckMode
 import models.common.BusinessId.nationalInsuranceContributions
-import models.common.TaxYear
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.Journey.NationalInsuranceContributions
-import models.{CheckMode, NormalMode}
+import models.journeys.nics.Class2NICsAnswers
 import pages.Page
 import pages.nics.Class2NICsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.BooleanSummary
@@ -33,6 +35,7 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +43,8 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
                                    identify: IdentifierAction,
                                    getAnswers: DataRetrievalAction,
                                    requireData: DataRequiredAction,
-                                   view: CheckYourAnswersView)
+                                   service: SelfEmploymentService,
+                                   view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -63,9 +67,10 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
     )
   }
 
-  def onSubmit(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) { _ =>
-    Redirect(
-      journeys.routes.SectionCompletedStateController
-        .onPageLoad(taxYear, nationalInsuranceContributions, NationalInsuranceContributions.entryName, NormalMode))
+  def onSubmit(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) async { implicit request =>
+    val context =
+      JourneyContextWithNino(taxYear, request.nino, BusinessId.nationalInsuranceContributions, request.mtditid, NationalInsuranceContributions)
+    val result = service.submitAnswers[Class2NICsAnswers](context, request.userAnswers)
+    handleSubmitAnswersResult(context, result)
   }
 }

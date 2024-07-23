@@ -41,9 +41,10 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
   "apply" should {
     "return a SubmittedDataRetrievalActionImpl" in new TestCase {
-      val underTest                                            = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
-      val ctx: OptionalDataRequest[_] => JourneyAnswersContext = req => JourneyAnswersContext(taxYear, businessId, req.mtditid, Journey.TradeDetails)
-      val result                                               = underTest[JsObject](ctx)
+      val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
+      val ctx: OptionalDataRequest[_] => JourneyAnswersContext =
+        req => JourneyAnswersContext(taxYear, req.nino, businessId, req.mtditid, Journey.TradeDetails)
+      val result = underTest[JsObject](ctx)
       result shouldBe a[SubmittedDataRetrievalActionImpl[_]]
     }
   }
