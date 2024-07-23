@@ -45,7 +45,7 @@
 
     @heading(s"selectCapitalAllowances.title.$userType")
 
-    @formHelper(action = routes.SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @{
             accountingType match {
