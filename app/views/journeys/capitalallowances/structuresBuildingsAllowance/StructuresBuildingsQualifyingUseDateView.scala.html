@@ -21,7 +21,7 @@
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukDateInput: GovukDateInput,
         submitButton: SubmitButton,
         heading: Heading)
@@ -30,9 +30,7 @@
 
 @layout(pageTitle = title(form, messages("structuresBuildingsQualifyingUseDate.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
   @heading("structuresBuildingsQualifyingUseDate.title")
 

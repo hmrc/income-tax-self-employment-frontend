@@ -21,7 +21,7 @@
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         yesNoWithHeadingAndHint: YesNoWithHeadingAndHint,
         submitButton: SubmitButton
 )
@@ -32,9 +32,7 @@
 
     @formHelper(action = controllers.journeys.routes.SectionCompletedStateController.onSubmit(taxYear, businessId, journey.entryName, mode), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
+        @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
         @yesNoWithHeadingAndHint(form,
             messages("sectionCompletedState.title"),

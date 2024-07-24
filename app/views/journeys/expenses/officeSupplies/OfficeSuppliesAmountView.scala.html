@@ -22,7 +22,7 @@
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
-      govukErrorSummary: GovukErrorSummary,
+      errorSummarySection: ErrorSummarySection,
       govukInput: GovukInput,
       submitButton: SubmitButton)
 
@@ -32,9 +32,7 @@
 
     @formHelper(action = routes.OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+        @errorSummarySection(form)
 
         @govukInput(
             InputViewModel(

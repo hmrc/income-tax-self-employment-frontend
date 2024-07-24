@@ -20,7 +20,7 @@
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: Heading)
@@ -53,9 +53,7 @@
 
 @layout(pageTitle = title(form, messages(s"zecUseOutsideSE.title.$userType"))) {
 
-    @if(formHasErrors) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
-    }
+    @errorSummarySection(form, onlyShowFirstError = true)
 
     @formHelper(action = routes.ZecUseOutsideSEController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

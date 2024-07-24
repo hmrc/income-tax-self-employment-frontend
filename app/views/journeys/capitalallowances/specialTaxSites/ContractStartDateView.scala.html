@@ -21,7 +21,7 @@
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukDateInput: GovukDateInput,
         submitButton: SubmitButton)
 
@@ -29,9 +29,7 @@
 
 @layout(pageTitle = title(form, messages("contractStartDate.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
     @formHelper(action = routes.ContractStartDateController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 

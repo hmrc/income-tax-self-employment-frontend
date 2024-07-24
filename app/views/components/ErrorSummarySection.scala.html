@@ -16,9 +16,8 @@
 
 @this(govukErrorSummary: GovukErrorSummary)
 
-@(form: Form[_],
-        errorLinkOverrides: Map[String, String] = Map.empty)(implicit messages: Messages)
+@(form: Form[_], errorLinkOverrides: Map[String, String] = Map.empty, onlyShowFirstError: Boolean = false)(implicit messages: Messages)
 
 @if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = errorLinkOverrides))
+    @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = errorLinkOverrides, onlyShowFirstError = onlyShowFirstError))
 }

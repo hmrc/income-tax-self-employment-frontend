@@ -22,7 +22,7 @@
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton
 )
@@ -31,9 +31,7 @@
 
 @layout(pageTitle = title(form, messages(s"moreThan25Hours.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @formHelper(action = routes.MoreThan25HoursController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
