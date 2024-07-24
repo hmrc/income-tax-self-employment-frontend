@@ -32,7 +32,7 @@
 
     @errorSummarySection(form,  errorLinkOverrides = Map("value" -> "value_0"))
 
-    @formHelper(action = routes.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.TaxiMinicabOrRoadHaulageController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNoVertical(

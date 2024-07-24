@@ -46,7 +46,7 @@
         </ul>
     </div>
 
-    @formHelper(action = routes.DisallowableIrrecoverableDebtsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DisallowableIrrecoverableDebtsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNoVertical(

@@ -68,7 +68,7 @@
         </ul>
     </div>
 
-    @formHelper(action = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.GoodsToSellOrUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(

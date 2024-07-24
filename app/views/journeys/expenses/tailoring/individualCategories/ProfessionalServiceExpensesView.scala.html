@@ -108,7 +108,7 @@
         </div>
     </details>
 
-    @formHelper(action = routes.ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukCheckboxes(
             CheckboxesViewModel(
