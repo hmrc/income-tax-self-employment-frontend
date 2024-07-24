@@ -213,7 +213,8 @@ class MessagesSpec extends SpecBase {
     "wfhFlatRateOrActualCosts.error.required.agent",
     "wfhFlatRateOrActualCosts.subHeading.agent",
     "newTaxSites.emptyList.agent",
-    "checkNetProfitLoss.p1.agent"
+    "checkNetProfitLoss.p1.agent",
+    "goodsAndServicesForYourOwnUse.hint.agent"
   )
 
   "messages must not contain any illegal characters" in {

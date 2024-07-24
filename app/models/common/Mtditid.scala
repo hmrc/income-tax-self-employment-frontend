@@ -16,4 +16,10 @@
 
 package models.common
 
+import play.api.libs.json.{JsString, Writes}
+
 final case class Mtditid(value: String) extends AnyVal
+
+object Mtditid {
+  implicit val writes: Writes[Mtditid] = mtditid => JsString(mtditid.value)
+}

@@ -20,7 +20,7 @@
 
 @this(layout: templates.Layout,
       formHelper: FormWithCSRF,
-      govukErrorSummary: GovukErrorSummary,
+      errorSummarySection: ErrorSummarySection,
       govukRadios: GovukRadios,
       submitButton: SubmitButton,
       heading: Heading)
@@ -29,9 +29,7 @@
 
 @layout(pageTitle = title(form, messages(s"structuresBuildingsPreviousClaimUse.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
     @heading(s"structuresBuildingsEligibleClaim.title.$userType")
 

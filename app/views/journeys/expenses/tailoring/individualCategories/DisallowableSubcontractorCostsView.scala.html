@@ -20,7 +20,7 @@
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: Heading
@@ -30,9 +30,7 @@
 
 @layout(pageTitle = title(form, messages("disallowableSubcontractorCosts.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading("disallowableSubcontractorCosts.title")
 
@@ -42,7 +40,7 @@
         </p>
     </div>
 
-    @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableSubcontractorCostsController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableSubcontractorCostsController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNoVertical(

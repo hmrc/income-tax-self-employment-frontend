@@ -106,7 +106,7 @@ class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers
     connector.getSubmittedAnswers[JsObject](*)(*, *, *) returns submittedAnswersResult
 
     val repo                                                 = StubSessionRepository()
-    val ctx: OptionalDataRequest[_] => JourneyAnswersContext = req => JourneyAnswersContext(taxYear, businessId, req.mtditid, journey)
+    val ctx: OptionalDataRequest[_] => JourneyAnswersContext = req => JourneyAnswersContext(taxYear, req.nino, businessId, req.mtditid, journey)
     val user = User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
 
     val request = OptionalDataRequest[AnyContentAsEmpty.type](FakeRequest(), "userId", user, userAnswers)

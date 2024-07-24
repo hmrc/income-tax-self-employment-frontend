@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukErrorSummary: GovukErrorSummary)
+package models.audit
 
-@(form: Form[_], errorLinkOverrides: Map[String, String] = Map.empty, onlyShowFirstError: Boolean = false)(implicit messages: Messages)
+import enumeratum._
 
-@if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = errorLinkOverrides, onlyShowFirstError = onlyShowFirstError))
+sealed abstract class AuditEventType(override val entryName: String) extends EnumEntry {
+  override def toString: String = entryName
+}
+
+object AuditEventType extends Enum[AuditEventType] with utils.PlayJsonEnum[AuditEventType] {
+  val values = findValues
+
+  final case object CreateOrUpdateNationalInsuranceContributionsAuditType
+      extends AuditEventType("CreateOrUpdateSelfEmploymentNationalInsuranceContributions")
 }

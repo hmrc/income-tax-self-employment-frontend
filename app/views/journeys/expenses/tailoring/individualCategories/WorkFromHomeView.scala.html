@@ -22,7 +22,7 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
+    errorSummarySection: ErrorSummarySection,
     govukRadios: GovukRadios,
     submitButton: SubmitButton
 )
@@ -31,11 +31,9 @@
 
 @layout(pageTitle = title(form, messages(s"workFromHome.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
-    @formHelper(action = routes.WorkFromHomeController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.WorkFromHomeController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNoVertical(

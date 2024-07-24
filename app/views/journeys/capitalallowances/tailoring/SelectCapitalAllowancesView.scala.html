@@ -25,7 +25,7 @@
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukCheckboxes: GovukCheckboxes,
         submitButton: SubmitButton,
         heading: Heading)
@@ -39,13 +39,11 @@
 
 @layout(pageTitle = title(form, messages(s"selectCapitalAllowances.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading(s"selectCapitalAllowances.title.$userType")
 
-    @formHelper(action = routes.SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.SelectCapitalAllowancesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @{
             accountingType match {

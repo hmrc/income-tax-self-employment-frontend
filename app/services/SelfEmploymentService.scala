@@ -30,7 +30,7 @@ import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
-import play.api.libs.json.{Format, Reads, Writes}
+import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
 import play.api.mvc.Result
 import queries.Settable
 import repositories.SessionRepositoryBase
@@ -79,7 +79,8 @@ trait SelfEmploymentService {
 
 class SelfEmploymentServiceImpl @Inject() (
     connector: SelfEmploymentConnector,
-    sessionRepository: SessionRepositoryBase
+    sessionRepository: SessionRepositoryBase,
+    auditService: AuditService
 )(implicit ec: ExecutionContext)
     extends SelfEmploymentService
     with Logging {
@@ -114,7 +115,20 @@ class SelfEmploymentServiceImpl @Inject() (
 
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = {
     val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ context.businessId.value).as[SubsetOfAnswers]
-    connector.submitAnswers(context, journeyAnswers)
+    val journeyJson: JsObject           = Json.toJson(journeyAnswers).as[JsObject]
+
+    val result = connector.submitAnswers(context, journeyAnswers)
+    sendAuditEvents(context, journeyJson, result)
+  }
+
+  private def sendAuditEvents(context: JourneyContext, answersJson: JsObject, resultT: ApiResultT[Unit])(implicit
+      hc: HeaderCarrier): ApiResultT[Unit] = {
+    resultT.value.onComplete {
+      case Success(Right(_)) => auditService.unsafeSendExplicitCYAAuditEvent(context, answersJson, wasSuccessful = true)
+      case _                 => auditService.unsafeSendExplicitCYAAuditEvent(context, answersJson, wasSuccessful = false)
+    }
+
+    resultT
   }
 
   @nowarn("msg=match may not be exhaustive")

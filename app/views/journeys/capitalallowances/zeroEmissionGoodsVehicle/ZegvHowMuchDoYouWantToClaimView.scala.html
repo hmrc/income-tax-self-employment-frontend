@@ -23,7 +23,7 @@
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
         conditionalRadio: ConditionalRadio,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: Heading)
@@ -60,9 +60,7 @@
 
 @layout(pageTitle = title(form, messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType"))) {
 
-    @if(formHasErrors) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, onlyShowFirstError = true))
-    }
+    @errorSummarySection(form, onlyShowFirstError = true)
 
     @heading("capitalAllowance.claimingTheAllowance")
 

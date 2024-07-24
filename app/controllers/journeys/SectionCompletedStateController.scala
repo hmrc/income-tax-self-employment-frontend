@@ -54,7 +54,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
     implicit request =>
       val form: Form[Boolean] = formProvider(page, request.userType, userSpecificRequiredError = false)
       val preparedForm = service
-        .getJourneyStatus(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)))
+        .getJourneyStatus(JourneyAnswersContext.fromNinoDataRequest(taxYear, businessId, request, Journey.withName(journey)))
         .value
         .map(_.fold(_ => form, fill(form, _)))
 
@@ -78,7 +78,7 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, Journey.withName(journey), mode))),
           answer =>
             handleResultT(
-              saveAndRedirect(JourneyAnswersContext(taxYear, businessId, request.mtditid, Journey.withName(journey)), answer)
+              saveAndRedirect(JourneyAnswersContext.fromNinoDataRequest(taxYear, businessId, request, Journey.withName(journey)), answer)
             )
         )
   }

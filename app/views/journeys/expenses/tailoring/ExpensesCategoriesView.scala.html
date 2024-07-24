@@ -22,7 +22,7 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
+    errorSummarySection: ErrorSummarySection,
     govukRadios: GovukRadios,
     submitButton: SubmitButton,
     heading: Heading,
@@ -33,9 +33,7 @@
 
 @layout(pageTitle = title(form, messages(s"expenses.cyaSummary.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading("journeys.expenses-categories")
 
@@ -44,7 +42,7 @@
         <p class="govuk-body govuk-!-margin-top-6">@messages(s"expensesCategories.p4.$userType")</p>
 
 
-        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
             @submitButton()
         }
 
@@ -76,7 +74,7 @@
             }
         </div>
 
-        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
             @govukRadios(
                 RadiosViewModel(

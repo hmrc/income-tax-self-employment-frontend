@@ -22,7 +22,7 @@
         layout: templates.Layout,
         heading: Heading,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton
 )
@@ -31,9 +31,7 @@
 
 @layout(pageTitle = title(form, messages("advertisingOrMarketing.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading("advertisingOrMarketing.title")
 
@@ -55,7 +53,7 @@
         </ul>
     </div>
 
-    @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.AdvertisingOrMarketingController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.AdvertisingOrMarketingController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             RadiosViewModel(

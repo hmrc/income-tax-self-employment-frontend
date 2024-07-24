@@ -84,10 +84,12 @@ class ExpensesTailoringCYAController @Inject() (override val messagesApi: Messag
               val journeyContext = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesTailoring, Some("total"))
               (journeyContext, service.submitAnswers[AsOneTotalAnswers](journeyContext, request.userAnswers))
             case IndividualCategories =>
-              val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("categories"))
+              val journeyContext =
+                JourneyAnswersContext(taxYear, request.nino, businessId, request.mtditid, ExpensesTailoring, Some("categories"))
               (journeyContext, service.submitAnswers[ExpensesTailoringIndividualCategoriesAnswers](journeyContext, request.userAnswers))
             case NoExpenses =>
-              val journeyContext = JourneyAnswersContext(taxYear, businessId, request.mtditid, ExpensesTailoring, Some("none"))
+              val journeyContext =
+                JourneyAnswersContext(taxYear, request.nino, businessId, request.mtditid, ExpensesTailoring, Some("none"))
               (journeyContext, service.submitAnswers[NoExpensesAnswers.type](journeyContext, request.userAnswers))
           }
 

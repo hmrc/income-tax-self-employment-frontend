@@ -21,7 +21,7 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
+    errorSummarySection: ErrorSummarySection,
     govukInput: GovukInput,
     submitButton: SubmitButton
 )
@@ -33,9 +33,7 @@
 
     @formHelper(action = controllers.journeys.expenses.tailoring.simplifiedExpenses.routes.TotalExpensesController.onSubmit(taxYear, businessId, mode)) {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+        @errorSummarySection(form)
 
         @govukInput(
             InputViewModel(

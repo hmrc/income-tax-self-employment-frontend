@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukErrorSummary: GovukErrorSummary)
+package stubs.services
 
-@(form: Form[_], errorLinkOverrides: Map[String, String] = Map.empty, onlyShowFirstError: Boolean = false)(implicit messages: Messages)
+import models.common.JourneyContext
+import play.api.libs.json.JsObject
+import services.AuditService
+import uk.gov.hmrc.http.HeaderCarrier
 
-@if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = errorLinkOverrides, onlyShowFirstError = onlyShowFirstError))
+case class AuditServiceStub() extends AuditService {
+
+  def unsafeSendExplicitCYAAuditEvent(context: JourneyContext, answers: JsObject, wasSuccessful: Boolean)(implicit hc: HeaderCarrier): Unit = ()
 }

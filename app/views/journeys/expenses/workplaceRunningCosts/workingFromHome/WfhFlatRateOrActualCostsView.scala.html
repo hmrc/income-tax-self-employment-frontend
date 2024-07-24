@@ -25,7 +25,7 @@
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: Heading
@@ -42,9 +42,7 @@
 
 @layout(pageTitle = title(form, messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading(s"wfhFlatRateOrActualCosts.title.$userType", Some(flatRateViewModel.flatRate.toString))
 

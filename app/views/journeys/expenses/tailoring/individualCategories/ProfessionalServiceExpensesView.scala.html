@@ -22,7 +22,7 @@
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
+        errorSummarySection: ErrorSummarySection,
         govukCheckboxes: GovukCheckboxes,
         submitButton: SubmitButton,
         heading: Heading
@@ -32,9 +32,7 @@
 
 @layout(pageTitle = title(form, messages("professionalServiceExpenses.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-    }
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @heading("professionalServiceExpenses.title")
 
@@ -110,7 +108,7 @@
         </div>
     </details>
 
-    @formHelper(action = routes.ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ProfessionalServiceExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukCheckboxes(
             CheckboxesViewModel(

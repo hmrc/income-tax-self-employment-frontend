@@ -23,7 +23,7 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
+    errorSummarySection: ErrorSummarySection,
     govukInput: GovukInput,
     submitButton: SubmitButton,
     heading: Heading
@@ -33,9 +33,7 @@
 
 @layout(pageTitle = title(form, messages(s"wfhClaimingAmount.title.$userType"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @errorSummarySection(form)
 
     @heading(s"wfhClaimingAmount.title.$userType")
 

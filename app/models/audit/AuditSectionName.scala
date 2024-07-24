@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukErrorSummary: GovukErrorSummary)
+package models.audit
 
-@(form: Form[_], errorLinkOverrides: Map[String, String] = Map.empty, onlyShowFirstError: Boolean = false)(implicit messages: Messages)
+import play.api.libs.json.{JsString, Writes}
 
-@if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = errorLinkOverrides, onlyShowFirstError = onlyShowFirstError))
+sealed abstract class AuditSectionName(val name: String)
+
+object AuditSectionName {
+  final case object NationalInsuranceContributionsAuditSection extends AuditSectionName("nationalInsuranceContributions")
+
+  implicit val writes: Writes[AuditSectionName] = (sectionName: AuditSectionName) => JsString(sectionName.name)
 }
