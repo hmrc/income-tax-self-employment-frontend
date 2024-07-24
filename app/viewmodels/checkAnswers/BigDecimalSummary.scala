@@ -26,7 +26,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class BigDecimalSummary(page: OneQuestionPage[BigDecimal], callLink: Call) extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers
       .get(page, businessId.some)
       .map(answer => mkBigDecimalSummary(answer, callLink, page, userType))

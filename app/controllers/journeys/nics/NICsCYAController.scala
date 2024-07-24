@@ -24,13 +24,14 @@ import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.Journey.NationalInsuranceContributions
 import models.journeys.nics.Class2NICsAnswers
 import pages.Page
-import pages.nics.Class2NICsPage
+import pages.nics._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.BooleanSummary
+import viewmodels.checkAnswers.nics.{Class4DivingExemptSummary, Class4ExemptionCategorySummary, Class4NonDivingExemptSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -53,7 +54,12 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
     val summaryList = SummaryListCYA.summaryListOpt(
       List(
         new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))
-          .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType)
+          .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
+        new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
+          .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
+        Class4ExemptionCategorySummary.row(request.userAnswers, request.userType, taxYear),
+        Class4DivingExemptSummary.row(request.userAnswers, request.userType, taxYear),
+        Class4NonDivingExemptSummary.row(request.userAnswers, request.userType, taxYear)
       ))
 
     Ok(

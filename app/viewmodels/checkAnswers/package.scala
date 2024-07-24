@@ -44,13 +44,14 @@ package object checkAnswers {
     buildRowString(messages(messageAnswer), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
   }
 
-  def mkBooleanSummary(answer: Boolean, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
+  def mkBooleanSummary(answer: Boolean, callLink: Call, page: Page, userType: UserType, rightTextAlign: Boolean)(implicit
+      messages: Messages): SummaryListRow =
     buildRowBoolean(
       answer,
       callLink,
       messages(s"${page.pageName}.subHeading.cya.$userType"),
       s"${page.pageName}.change.hidden",
-      rightTextAlign = true
+      rightTextAlign
     )
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =

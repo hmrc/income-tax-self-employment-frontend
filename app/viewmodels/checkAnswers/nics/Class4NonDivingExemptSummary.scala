@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.nics
 
-import cats.implicits.catsSyntaxOptionId
+import controllers.journeys.nics.routes
+import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.OneQuestionPage
+import pages.nics.Class4NonDivingExemptPage
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRowString
 
-class BooleanSummary(page: OneQuestionPage[Boolean], callLink: Call) extends AnswerSummary {
+object Class4NonDivingExemptSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(page, businessId.some)
-      .map(answer => mkBooleanSummary(answer, callLink, page, userType, rightTextAlign))
+  def row(answers: UserAnswers, userType: UserType, taxYear: TaxYear)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(Class4NonDivingExemptPage, BusinessId.nationalInsuranceContributions).map { answers =>
+      buildRowString(
+        formatBusinessNamesAnswers(answers),
+        routes.Class4NonDivingExemptController.onPageLoad(taxYear, CheckMode),
+        s"class4NonDivingExempt.title.$userType",
+        "class4NonDivingExempt.change.hidden"
+      )
+    }
 }

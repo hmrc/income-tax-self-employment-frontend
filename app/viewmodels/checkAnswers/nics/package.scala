@@ -16,12 +16,16 @@
 
 package viewmodels.checkAnswers
 
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
+import models.common.BusinessId
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-trait AnswerSummary {
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow]
+package object nics {
+
+  private val differentReasonAnswer = BusinessId("I’m exempt for a different reason")
+
+  private def getTradingNameFromId(id: BusinessId): String = id.value
+
+  def formatBusinessNamesAnswers(answers: List[BusinessId])(implicit messages: Messages): String =
+    if (answers.contains(differentReasonAnswer)) messages("nics.exemptForDifferentReason")
+    else answers.map(id => getTradingNameFromId(id)).mkString(",<br>")
 }

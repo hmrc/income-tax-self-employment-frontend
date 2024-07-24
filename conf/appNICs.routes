@@ -16,15 +16,15 @@ POST        /:taxYear/national-insurance/class-4-exemption-category             
 GET         /:taxYear/national-insurance/change-class-4-exemption-category          controllers.journeys.nics.Class4ExemptionCategoryController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
 POST        /:taxYear/national-insurance/change-class-4-exemption-category          controllers.journeys.nics.Class4ExemptionCategoryController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
 
-GET         /:taxYear/national-insurance/class-4-non-diving-exempt                  controllers.journeys.nics.Class4NonDivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = NormalMode)
-POST        /:taxYear/national-insurance/class-4-non-diving-exempt                  controllers.journeys.nics.Class4NonDivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = NormalMode)
-GET         /:taxYear/national-insurance/change-class-4-non-diving-exempt           controllers.journeys.nics.Class4NonDivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
-POST        /:taxYear/national-insurance/change-class-4-non-diving-exempt           controllers.journeys.nics.Class4NonDivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
-
 GET         /:taxYear/national-insurance/class-4-diving-exempt                      controllers.journeys.nics.Class4DivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = NormalMode)
 POST        /:taxYear/national-insurance/class-4-diving-exempt                      controllers.journeys.nics.Class4DivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = NormalMode)
 GET         /:taxYear/national-insurance/change-class-4-diving-exempt               controllers.journeys.nics.Class4DivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
 POST        /:taxYear/national-insurance/change-class-4-diving-exempt               controllers.journeys.nics.Class4DivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
+
+GET         /:taxYear/national-insurance/class-4-non-diving-exempt                  controllers.journeys.nics.Class4NonDivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = NormalMode)
+POST        /:taxYear/national-insurance/class-4-non-diving-exempt                  controllers.journeys.nics.Class4NonDivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = NormalMode)
+GET         /:taxYear/national-insurance/change-class-4-non-diving-exempt           controllers.journeys.nics.Class4NonDivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
+POST        /:taxYear/national-insurance/change-class-4-non-diving-exempt           controllers.journeys.nics.Class4NonDivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
 
 GET         /:taxYear/national-insurance/check-your-answers                         controllers.journeys.nics.NICsCYAController.onPageLoad(taxYear: TaxYear)
 POST        /:taxYear/national-insurance/check-your-answers                         controllers.journeys.nics.NICsCYAController.onSubmit(taxYear: TaxYear)

@@ -19,6 +19,7 @@ package pages.nics
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
+import queries.Settable
 
 case object Class2NICsPage extends NicsBasePage[Boolean] {
   override def toString: String = "class2NICs"
@@ -28,4 +29,7 @@ case object Class2NICsPage extends NicsBasePage[Boolean] {
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
+    List(Class4NICsPage, Class4ExemptionCategoryPage, Class4DivingExemptPage, Class4NonDivingExemptPage)
 }

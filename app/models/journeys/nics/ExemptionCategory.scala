@@ -25,12 +25,12 @@ sealed trait ExemptionCategory
 
 object ExemptionCategory extends Enumerable.Implicits {
 
+  case object DiverDivingInstructor extends WithName("diverDivingInstructor") with ExemptionCategory
   case object TrusteeExecutorAdmin  extends WithName("trusteeExecutorAdmin") with ExemptionCategory
-  case object DiverDivingInstructor extends WithName("diverDivingInstrcutor") with ExemptionCategory
 
   val values: Seq[ExemptionCategory] = Seq(
-    TrusteeExecutorAdmin,
-    DiverDivingInstructor
+    DiverDivingInstructor,
+    TrusteeExecutorAdmin
   )
 
   def options()(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>

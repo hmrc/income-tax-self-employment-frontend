@@ -16,6 +16,8 @@
 
 package pages.nics
 
+import controllers.journeys.nics.routes
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
@@ -23,8 +25,9 @@ import play.api.mvc.Call
 case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] { // TODO type TBC, we may need a custom FormProvider
   override def toString: String = "class4DivingExempt"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
+    userAnswers.get(this, businessId).isDefined && Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
 }
