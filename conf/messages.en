@@ -2086,7 +2086,6 @@ profitOfLoss.netProfitOrLoss.profit = Net profit
 profitOfLoss.turnover = Turnover
 profitOfLoss.totalExpenses = Total expenses
 profitOfLoss.additions.profit = Additions to net profit
-profitOfLoss.goodsAndServices = Goods and services for your own use
 profitOfLoss.disallowableExpenses = Disallowable expenses
 profitOfLoss.totalAdditions.profit = Total additions to net profit
 profitOfLoss.deductions.profit = Deductions from net profit

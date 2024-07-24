@@ -57,7 +57,7 @@ object NetBusinessProfitOrLossSummary {
 
     val additionsRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("selectCapitalAllowances.balancingCharge", balancingCharge),
-      buildTableAmountRow("profitOfLoss.goodsAndServices", goodsAndServices),
+      buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", goodsAndServices),
       buildTableAmountRow("profitOfLoss.disallowableExpenses", disallowableExpenses),
       buildTableAmountRow(s"profitOfLoss.totalAdditions.$profitOrLoss", totalAdditions)
     )

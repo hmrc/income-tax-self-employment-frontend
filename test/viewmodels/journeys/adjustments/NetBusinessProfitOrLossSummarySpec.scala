@@ -87,7 +87,7 @@ object NetBusinessProfitOrLossSummarySpec {
       headRow = None,
       rows = Seq(
         buildTableAmountRow("selectCapitalAllowances.balancingCharge", defaultAmount),
-        buildTableAmountRow("profitOfLoss.goodsAndServices", defaultAmount),
+        buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", defaultAmount),
         buildTableAmountRow("profitOfLoss.disallowableExpenses", defaultAmount),
         buildTableAmountRow("profitOfLoss.totalAdditions.profit", BigDecimal(600))
       ),
