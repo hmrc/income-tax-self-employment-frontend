@@ -26,7 +26,7 @@ object NetBusinessProfitOrLossSummary {
 
   private val placeholderAmount: BigDecimal = 200 // TODO this value is till SASS-8626 gets all values from backend
 
-  def buildNetProfitTable(profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildNetProfitOrLossTable(profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
 
     val turnover                   = placeholderAmount
     val incomeNotCountedAsTurnover = placeholderAmount
@@ -34,7 +34,7 @@ object NetBusinessProfitOrLossSummary {
     val netProfitOrLoss            = turnover + incomeNotCountedAsTurnover + totalExpenses
     // TODO separate calculations from table building when real values are added SASS-8626
 
-    val netProfitRows: Seq[Seq[TableRow]] = Seq(
+    val netProfitOrLossRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOfLoss.turnover", turnover),
       buildTableAmountRow("incomeNotCountedAsTurnover.title", incomeNotCountedAsTurnover),
       buildTableAmountRow("profitOfLoss.totalExpenses", totalExpenses),
@@ -43,7 +43,7 @@ object NetBusinessProfitOrLossSummary {
 
     buildTable(
       None,
-      netProfitRows,
+      netProfitOrLossRows,
       caption = Some(messages(s"profitOfLoss.netProfitOrLoss.$profitOrLoss")),
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }

@@ -25,7 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatMoney
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitTable}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitOrLossTable}
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 import javax.inject.{Inject, Singleton}
@@ -42,18 +42,18 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val profitOrLoss    = Profit
-    val netAmount       = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
-    val netProfitTable  = buildNetProfitTable(profitOrLoss)
-    val additionsTable  = buildAdditionsTable(profitOrLoss)
-    val deductionsTable = buildDeductionsTable(profitOrLoss)
+    val profitOrLoss         = Profit
+    val netAmount            = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
+    val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLoss)
+    val additionsTable       = buildAdditionsTable(profitOrLoss)
+    val deductionsTable      = buildDeductionsTable(profitOrLoss)
     // TODO SASS-8626 all of these ^^ values will be calculated/created from API data
     Ok(
       view(
         request.userType,
         profitOrLoss,
         netAmount,
-        netProfitTable,
+        netProfitOrLossTable,
         additionsTable,
         deductionsTable,
         routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)

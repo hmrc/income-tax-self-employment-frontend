@@ -48,7 +48,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   forAll(testScenarios) { case (profitOrLoss, expectedProfitTable, expectedAdjustmentsTable, expectedDeductionsTable) =>
     // TODO SASS-8626 maybe change structure and test descriptions if needed when adding more scenarios
     "buildNetProfitTable must create a Table with the correct profit or loss specific content" in {
-      val table = NetBusinessProfitOrLossSummary.buildNetProfitTable(profitOrLoss)(messages)
+      val table = NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(profitOrLoss)(messages)
 
       assertWithClue(result = table, expectedResult = expectedProfitTable)
     }
