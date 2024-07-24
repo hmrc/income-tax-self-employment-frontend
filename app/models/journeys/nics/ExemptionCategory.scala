@@ -26,7 +26,7 @@ sealed trait ExemptionCategory
 object ExemptionCategory extends Enumerable.Implicits {
 
   case object TrusteeExecutorAdmin  extends WithName("trusteeExecutorAdmin") with ExemptionCategory
-  case object DiverDivingInstructor extends WithName("diverDivingInstrcutor") with ExemptionCategory
+  case object DiverDivingInstructor extends WithName("diverDivingInstructor") with ExemptionCategory
 
   val values: Seq[ExemptionCategory] = Seq(
     TrusteeExecutorAdmin,

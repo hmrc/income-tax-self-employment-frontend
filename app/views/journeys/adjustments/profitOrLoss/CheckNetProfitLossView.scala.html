@@ -15,25 +15,43 @@
  *@
 
 @import models.common.UserType
+@import models.journeys.adjustments.ProfitOrLoss
 @import views.html.components._
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
-        govukSummaryList: GovukSummaryList,
+        foldableDetails: FoldableDetails,
+        govukTable: GovukTable,
         submitButton: SubmitButton,
         heading: Heading
 )
 
-@(userType: UserType, summaryList: SummaryList, continueRedirect: Call)(implicit request: Request[_], messages: Messages)
+@(userType: UserType,
+        profitOrLoss: ProfitOrLoss,
+        netAmount: String,
+        netProfitTable: Table,
+        additionsTable: Table,
+        deductionsTable: Table,
+        continueRedirect: Call
+)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$userType"))) {
+@layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$profitOrLoss", netAmount))) {
 
     @formHelper(action = continueRedirect) {
 
-        @heading(s"checkNetProfitLoss.title.$userType")
+        @heading(s"checkNetProfitLoss.title.$profitOrLoss", Some(netAmount))
 
-        @govukSummaryList(summaryList)
+        @foldableDetails(messages("profitOfLoss.showCalculations"), marginBottomThree = false){
+            @govukTable(netProfitTable)
+            @govukTable(additionsTable)
+            @govukTable(deductionsTable)
+            <p class="govuk-body">
+                @{messages(s"profitOfLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{messages("site.poundAmount", netAmount)}</strong>
+            </p>
+        }
+
+        <p class="govuk-body">@messages(s"checkNetProfitLoss.p1.$userType")</p>
 
         @submitButton()
     }
