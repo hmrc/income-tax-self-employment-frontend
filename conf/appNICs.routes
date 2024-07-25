@@ -16,15 +16,15 @@ POST        /:taxYear/national-insurance-contributions/class-4-exemption-reasons
 GET         /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons                                       controllers.journeys.nics.Class4ExemptionCategoryController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
 POST        /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons                                       controllers.journeys.nics.Class4ExemptionCategoryController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
 
-GET         /:taxYear/national-insurance-contributions/class-4-exemption-reasons/trustee-executor-administrator               controllers.journeys.nics.Class4TrusteeOrOtherExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = NormalMode)
-POST        /:taxYear/national-insurance-contributions/class-4-exemption-reasons/trustee-executor-administrator               controllers.journeys.nics.Class4TrusteeOrOtherExemptController.onSubmit(taxYear: TaxYear, mode: Mode = NormalMode)
-GET         /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons/trustee-executor-administrator        controllers.journeys.nics.Class4TrusteeOrOtherExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
-POST        /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons/trustee-executor-administrator        controllers.journeys.nics.Class4TrusteeOrOtherExemptController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
-
 GET         /:taxYear/national-insurance-contributions/class-4-exemption-reasons/diver-diving-supervisor                      controllers.journeys.nics.Class4DivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = NormalMode)
 POST        /:taxYear/national-insurance-contributions/class-4-exemption-reasons/diver-diving-supervisor                      controllers.journeys.nics.Class4DivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = NormalMode)
 GET         /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons/diver-diving-supervisor               controllers.journeys.nics.Class4DivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
 POST        /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons/diver-diving-supervisor               controllers.journeys.nics.Class4DivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
+
+GET         /:taxYear/national-insurance-contributions/class-4-exemption-reasons/trustee-executor-administrator               controllers.journeys.nics.Class4NonDivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = NormalMode)
+POST        /:taxYear/national-insurance-contributions/class-4-exemption-reasons/trustee-executor-administrator               controllers.journeys.nics.Class4NonDivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = NormalMode)
+GET         /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons/trustee-executor-administrator        controllers.journeys.nics.Class4NonDivingExemptController.onPageLoad(taxYear: TaxYear, mode: Mode = CheckMode)
+POST        /:taxYear/national-insurance-contributions/change-class-4-exemption-reasons/trustee-executor-administrator        controllers.journeys.nics.Class4NonDivingExemptController.onSubmit(taxYear: TaxYear, mode: Mode = CheckMode)
 
 GET         /:taxYear/national-insurance-contributions/check-answers                                                          controllers.journeys.nics.NICsCYAController.onPageLoad(taxYear: TaxYear)
 POST        /:taxYear/national-insurance-contributions/check-answers                                                          controllers.journeys.nics.NICsCYAController.onSubmit(taxYear: TaxYear)

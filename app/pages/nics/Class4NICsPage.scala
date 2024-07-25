@@ -42,7 +42,7 @@ case object Class4NICsPage extends NicsBasePage[Boolean] {
   override val dependentPagesWhenNo: List[Settable[_]] =
     List(
       Class4ExemptionCategoryPage,
-      Class4TrusteeOrOtherExemptPage,
+      Class4NonDivingExemptPage,
       Class4DivingExemptPage
     )
 

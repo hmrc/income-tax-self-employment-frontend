@@ -26,13 +26,13 @@ class Class4NICsPageSpec extends AnyWordSpecLike {
     "navigate to CYA page when answer = false" in {
       val answers = setBooleanAnswer(Class4NICsPage, nationalInsuranceContributions, answer = false)
       val result  = Class4NICsPage.nextPageInNormalMode(answers, nationalInsuranceContributions, taxYear)
-      assert(result.url.endsWith(s"/${taxYear}/national-insurance/check-your-answers"))
+      assert(result.url.endsWith(s"/${taxYear}/national-insurance-contributions/check-answers"))
     }
 
     "navigate to the Exemption page when answer = true" in {
       val answers = setBooleanAnswer(Class4NICsPage, nationalInsuranceContributions, answer = true)
       val result  = Class4NICsPage.nextPageInNormalMode(answers, nationalInsuranceContributions, taxYear)
-      assert(result.url.endsWith(s"/${taxYear}/national-insurance/class-4-exemption-category"))
+      assert(result.url.endsWith(s"/${taxYear}/national-insurance-contributions/class-4-exemption-reasons"))
     }
   }
 
