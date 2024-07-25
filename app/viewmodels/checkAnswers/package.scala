@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Key, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
-import utils.MoneyUtils.formatMoney
+import utils.MoneyUtils.{formatMoney, formatPosNegMoneyWithPounds}
 import viewmodels.govuk.all.FluentActionItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -113,10 +113,16 @@ package object checkAnswers {
       )
     )
 
+  def buildTableRow(key: String, answer: String, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
+    Seq(
+      TableRow(content = HtmlContent(messages(key)), classes = classes),
+      TableRow(content = HtmlContent(answer), classes = s"govuk-!-text-align-right $classes")
+    )
+
   def buildTableAmountRow(key: String, answer: BigDecimal, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
     Seq(
       TableRow(content = HtmlContent(messages(key)), classes = classes),
-      TableRow(content = HtmlContent(s"£${formatMoney(answer)}"), classes = s"govuk-!-text-align-right $classes")
+      TableRow(content = HtmlContent(formatPosNegMoneyWithPounds(answer)), classes = s"govuk-!-text-align-right $classes")
     )
 
   def buildTable(headRow: Option[Seq[HeadCell]], rows: Seq[Seq[TableRow]], caption: Option[String] = None, tableClasses: String = ""): Table =

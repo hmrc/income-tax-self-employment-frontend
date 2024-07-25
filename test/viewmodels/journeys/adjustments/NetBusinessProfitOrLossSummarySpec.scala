@@ -17,93 +17,115 @@
 package viewmodels.journeys.adjustments
 
 import base.SpecBase
-import models.journeys.adjustments.ProfitOrLoss.Profit
+import models.journeys.adjustments.ProfitOrLoss
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
+import utils.MoneyUtils.{formatPosNegMoneyWithPounds, formatSumMoneyNoNegative}
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummarySpec.{expectedAdditionsTable, expectedDeductionsTable, expectedNetProfitTable}
 
 class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenPropertyChecks {
 
   private implicit val messages: Messages = messagesStubbed
 
-  private val testScenarios = Table(
-    ("profitOrLoss", "expectedProfitTable", "expectedAdjustmentsTable", "expectedDeductionsTable"),
-    (Profit, expectedNetProfitTable(), expectedAdditionsTable(), expectedDeductionsTable())
-    // TODO SASS-9032 add cases for 'Loss' scenario
-    // TODO SASS-8626 add cases for different amounts from backend (replace 'defaultAmount' in object builders below)
+  // TODO SASS-8626 add cases for different amounts from backend, maybe change structure and test descriptions if needed when adding more scenarios
+  private val netProfitOrLossScenarios = Table(
+    ("profitOrLoss", "turnover", "incomeNotCountedAsTurnover", "totalExpenses"),
+    (ProfitOrLoss.Profit, 200, 0.5, -50),
+    (ProfitOrLoss.Loss, -200, 10.01, 0)
+  )
+  private val additionsScenarios = Table(
+    ("profitOrLoss", "balancingCharge", "goodsAndServices", "disallowableExpenses"),
+    (ProfitOrLoss.Profit, 200, 0.5, -50),
+    (ProfitOrLoss.Loss, -200, 10.01, 0)
+  )
+  private val deductionsScenarios = Table(
+    ("profitOrLoss", "capitalAllowances", "turnoverNotTaxable"),
+    (ProfitOrLoss.Profit, 200, 0.5),
+    (ProfitOrLoss.Loss, -200, 10.01)
   )
 
-  private def assertWithClue(result: Table, expectedResult: Table): scalatest.Assertion = withClue(s"""
+  private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
        |Result:
        |${result.rows.mkString("\n")}
        |did not equal expected result:
-       |${expectedResult.rows.mkString("\n")}
+       |$expectedResult
        |""".stripMargin) {
-    assert(result === expectedResult)
+    assert(result.rows.mkString("\n") === expectedResult)
   }
 
-  forAll(testScenarios) { case (profitOrLoss, expectedProfitTable, expectedAdjustmentsTable, expectedDeductionsTable) =>
-    // TODO SASS-8626 maybe change structure and test descriptions if needed when adding more scenarios
-    "buildNetProfitTable must create a Table with the correct profit or loss specific content" in {
-      val table = NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(profitOrLoss)(messages)
+  "buildNetProfitTable must create a Table with the correct content" - {
+    forAll(netProfitOrLossScenarios) { case (profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses) =>
+      s"when a net $profitOrLoss" in {
+        val table =
+          NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)(messages)
+        val expectedTable = expectedNetProfitTable(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)
 
-      assertWithClue(result = table, expectedResult = expectedProfitTable)
+        assertWithClue(result = table, expectedResult = expectedTable)
+      }
     }
-    "buildAdditionsTable must create a Table with the correct profit or loss specific content" in {
-      val table = NetBusinessProfitOrLossSummary.buildAdditionsTable(profitOrLoss)(messages)
+  }
 
-      assertWithClue(result = table, expectedResult = expectedAdjustmentsTable)
+  "buildAdditionsTable must create a Table with the correct content" - {
+    forAll(additionsScenarios) { case (profitOrLoss, balancingCharge, goodsAndServices, disallowableExpenses) =>
+      s"when a net $profitOrLoss" in {
+        val table =
+          NetBusinessProfitOrLossSummary.buildAdditionsTable(profitOrLoss, balancingCharge, goodsAndServices, disallowableExpenses)(messages)
+        val expectedTable = expectedAdditionsTable(profitOrLoss, balancingCharge, goodsAndServices, disallowableExpenses)
+
+        assertWithClue(result = table, expectedResult = expectedTable)
+      }
     }
-    "buildDeductionsTable must create a Table with the correct profit or loss specific content" in {
-      val table = NetBusinessProfitOrLossSummary.buildDeductionsTable(profitOrLoss)(messages)
+  }
 
-      assertWithClue(result = table, expectedResult = expectedDeductionsTable)
+  "buildDeductionsTable must create a Table with the correct content" - {
+    forAll(deductionsScenarios) { case (profitOrLoss, capitalAllowances, turnoverNotTaxable) =>
+      s"when a net $profitOrLoss" in {
+        val table =
+          NetBusinessProfitOrLossSummary.buildDeductionsTable(profitOrLoss, capitalAllowances, turnoverNotTaxable)(messages)
+        val expectedTable = expectedDeductionsTable(profitOrLoss, capitalAllowances, turnoverNotTaxable)
+
+        assertWithClue(result = table, expectedResult = expectedTable)
+      }
     }
   }
 }
 
 object NetBusinessProfitOrLossSummarySpec {
 
-  private val defaultAmount: BigDecimal = 200
+  def expectedNetProfitTable(profitOrLoss: ProfitOrLoss,
+                             turnover: BigDecimal,
+                             incomeNotCountedAsTurnover: BigDecimal,
+                             totalExpenses: BigDecimal): String =
+    s"""|List(TableRow(HtmlContent(profitOfLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(incomeNotCountedAsTurnover.title),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(profitOfLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         totalExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(profitOfLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
+         List(turnover, incomeNotCountedAsTurnover, totalExpenses))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
-  def expectedNetProfitTable()(implicit messages: Messages): Table =
-    buildTable(
-      headRow = None,
-      rows = Seq(
-        buildTableAmountRow("profitOfLoss.turnover", defaultAmount),
-        buildTableAmountRow("incomeNotCountedAsTurnover.title", defaultAmount),
-        buildTableAmountRow("profitOfLoss.totalExpenses", defaultAmount),
-        buildTableAmountRow("profitOfLoss.netProfitOrLoss.profit", BigDecimal(600))
-      ),
-      caption = Some(messages("profitOfLoss.netProfitOrLoss.profit")),
-      "govuk-!-margin-top-6 govuk-!-margin-bottom-9"
-    )
+  def expectedAdditionsTable(profitOrLoss: ProfitOrLoss,
+                             balancingCharge: BigDecimal,
+                             goodsAndServices: BigDecimal,
+                             disallowableExpenses: BigDecimal): String =
+    s"""|List(TableRow(HtmlContent(selectCapitalAllowances.balancingCharge),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         balancingCharge)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(goodsAndServicesForYourOwnUse.title.individual),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         goodsAndServices)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(profitOfLoss.disallowableExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         disallowableExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(profitOfLoss.totalAdditions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
+         List(balancingCharge, goodsAndServices, disallowableExpenses))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
-  def expectedAdditionsTable()(implicit messages: Messages): Table =
-    buildTable(
-      headRow = None,
-      rows = Seq(
-        buildTableAmountRow("selectCapitalAllowances.balancingCharge", defaultAmount),
-        buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", defaultAmount),
-        buildTableAmountRow("profitOfLoss.disallowableExpenses", defaultAmount),
-        buildTableAmountRow("profitOfLoss.totalAdditions.profit", BigDecimal(600))
-      ),
-      caption = Some(messages("profitOfLoss.additions.profit")),
-      "govuk-!-margin-bottom-9"
-    )
-
-  def expectedDeductionsTable()(implicit messages: Messages): Table =
-    buildTable(
-      headRow = None,
-      rows = Seq(
-        buildTableAmountRow("journeys.capital-allowances", defaultAmount),
-        buildTableAmountRow("profitOfLoss.turnoverNotTaxable.profit", defaultAmount),
-        buildTableAmountRow("profitOfLoss.totalDeductions.profit", BigDecimal(400))
-      ),
-      caption = Some(messages("profitOfLoss.deductions.profit"))
-    )
+  def expectedDeductionsTable(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal): String =
+    s"""|List(TableRow(HtmlContent(journeys.capital-allowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         capitalAllowances)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(profitOfLoss.turnoverNotTaxable),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         turnoverNotTaxable)}),None,govuk-!-text-align-right ,None,None,Map()))
+      |List(TableRow(HtmlContent(profitOfLoss.totalDeductions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
+         List(capitalAllowances, turnoverNotTaxable))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
 }

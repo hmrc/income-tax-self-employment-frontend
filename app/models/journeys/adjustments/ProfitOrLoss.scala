@@ -29,4 +29,6 @@ object ProfitOrLoss extends Enum[ProfitOrLoss] with utils.PlayJsonEnum[ProfitOrL
 
   case object Loss extends ProfitOrLoss("loss")
 
+  def returnProfitOrLoss(netAmount: BigDecimal): ProfitOrLoss = if (netAmount < 0) ProfitOrLoss.Loss else ProfitOrLoss.Profit
+
 }

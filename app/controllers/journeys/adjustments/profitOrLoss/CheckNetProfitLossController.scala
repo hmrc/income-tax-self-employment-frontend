@@ -19,12 +19,12 @@ package controllers.journeys.adjustments.profitOrLoss
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common._
-import models.journeys.adjustments.ProfitOrLoss.Profit
+import models.journeys.adjustments.ProfitOrLoss.returnProfitOrLoss
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatMoney
+import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitOrLossTable}
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
@@ -42,17 +42,18 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val profitOrLoss         = Profit
-    val netAmount            = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
-    val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLoss)
-    val additionsTable       = buildAdditionsTable(profitOrLoss)
-    val deductionsTable      = buildDeductionsTable(profitOrLoss)
-    // TODO SASS-8626 all of these ^^ values will be calculated/created from API data
+    val netAmount            = BigDecimal(-200)
+    val profitOrLoss         = returnProfitOrLoss(netAmount)
+    val formattedNetAmount   = formatSumMoneyNoNegative(List(netAmount))
+    val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLoss, 3000, 0.05, -3100)
+    val additionsTable       = buildAdditionsTable(profitOrLoss, 0, -0.05, 100.20)
+    val deductionsTable      = buildDeductionsTable(profitOrLoss, 200, -200.1)
+    // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
     Ok(
       view(
         request.userType,
         profitOrLoss,
-        netAmount,
+        formattedNetAmount,
         netProfitOrLossTable,
         additionsTable,
         deductionsTable,
