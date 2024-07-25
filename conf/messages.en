@@ -2134,6 +2134,16 @@ checkNetProfitLoss.p1.profit.agent = We’re now going to ask you about any fina
 checkNetProfitLoss.p1.loss.individual = We’re now going to ask you about any final adjustments to your net business loss. This will give you your total taxable profit or loss.
 checkNetProfitLoss.p1.loss.agent = We’re now going to ask you about any final adjustments to your client’s net business loss. This will give you their total taxable profit or loss.
 
+previousUnusedLosses.title.individual = Did {0} have any unused losses in previous years?
+previousUnusedLosses.subHeading.individual = These are unused losses that you have told us about in previous tax returns and chose to carry forward.
+previousUnusedLosses.subHeading.agent = These are losses that your client told us about in previous tax returns and chose to carry forward.
+previousUnusedLosses.error.required.individual = Select yes if your business made any unused losses in previous years
+previousUnusedLosses.error.required.agent = Select yes if your client’s business made any unused losses in previous years
+
+unusedLossAmount.title.individual = Enter the total amount of unused loss
+unusedLossAmount.error.required.individual = Enter the total amount of unused loss
+unusedLossAmount.error.noDecimals.individual = The total amount of unused loss can only include pounds and pence
+
 ########## National Insurance Contributions ##########
 
 nics.exemptForDifferentReason = I’m exempt for a different reason

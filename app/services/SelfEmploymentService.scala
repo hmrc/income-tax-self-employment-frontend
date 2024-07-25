@@ -27,7 +27,7 @@ import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError.NotFoundError
 import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
-import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
+import pages.{OneQuestionPage, QuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
 import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
@@ -54,7 +54,7 @@ trait SelfEmploymentService {
                                           taxYear: TaxYear,
                                           mode: Mode): Future[Result]
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
-  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers]
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers]
   def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
                                                        businessId: BusinessId,
                                                        userAnswers: UserAnswers,
@@ -132,13 +132,15 @@ class SelfEmploymentServiceImpl @Inject() (
   }
 
   @nowarn("msg=match may not be exhaustive")
-  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers] =
     pairedIdsAndAccounting match {
       case Nil =>
         Future(userAnswers)
-      case (accountingType: AccountingType, businessId: BusinessId) :: tail =>
+      case (tradingName: TradingName, accountingType: AccountingType, businessId: BusinessId) :: tail =>
         persistAnswer(businessId, userAnswers, accountingType, TradeAccountingType) flatMap { updatedUserAnswers: UserAnswers =>
-          setAccountingTypeForIds(updatedUserAnswers, tail)
+          persistAnswer(businessId, updatedUserAnswers, tradingName, TradingNameKey) flatMap { updatedUserAnswers: UserAnswers =>
+            setAccountingTypeForIds(updatedUserAnswers, tail)
+          }
         }
     }
 

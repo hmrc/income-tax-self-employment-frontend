@@ -36,7 +36,7 @@ class PreviousUnusedLossesControllerSpec extends BooleanGetAndPostQuestionBaseSp
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[PreviousUnusedLossesView]
-    view(form, scenario.taxYear, scenario.businessId, scenario.userType, NormalMode).toString()
+    view(form, scenario.taxYear, scenario.businessId, scenario.tradingName, scenario.userType, NormalMode).toString()
   }
 
 }
