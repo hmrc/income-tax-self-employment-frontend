@@ -22,6 +22,8 @@ import play.api.i18n.Messages
 
 package object nics {
 
+  // TODO these will be used/changed when the CYA content is added for multiple businesses
+
   private val differentReasonAnswer = BusinessId("I’m exempt for a different reason")
 
   private def getTradingNameFromId(id: BusinessId, businesses: Seq[BusinessData]): String =

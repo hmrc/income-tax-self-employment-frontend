@@ -31,6 +31,7 @@ site.months = months
 site.enterTheAmount = Enter the amount
 site.includesTheCostOf = This includes the cost of:
 site.pound = £
+site.poundAmount = £{0}
 site.percentage = %
 site.tenPercent = 10%
 site.twentyFivePercent = 25%
@@ -2080,16 +2081,17 @@ newSpecialTaxSites.change.hidden =
 
 ########## Profit or Loss ##########
 
-goodsAndServicesAmount.title.individual = What was the market value of the goods and services you provided?
-goodsAndServicesAmount.title.agent = What was the market value of the goods and services your client provided?
-goodsAndServicesAmount.title.cash.individual = How much did you spend on goods and services for your own use?
-goodsAndServicesAmount.title.cash.agent = How much did your client spend on goods and services for their own use?
-goodsAndServicesAmount.caption.individual = Enter the cost to you.
-goodsAndServicesAmount.caption.agent = Enter the cost to your client.
-goodsAndServicesAmount.error.required.individual = Enter the market value of the goods and services you provided
-goodsAndServicesAmount.error.required.agent = Enter the market value of the goods and services your client provided
-goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
-goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
+profitOfLoss.showCalculations = Show calculations
+profitOfLoss.netProfitOrLoss.profit = Net profit
+profitOfLoss.turnover = Turnover
+profitOfLoss.totalExpenses = Total expenses
+profitOfLoss.additions.profit = Additions to net profit
+profitOfLoss.disallowableExpenses = Disallowable expenses
+profitOfLoss.totalAdditions.profit = Total additions to net profit
+profitOfLoss.deductions.profit = Deductions from net profit
+profitOfLoss.turnoverNotTaxable.profit = Turnover not taxable as business profit
+profitOfLoss.totalDeductions.profit = Total deductions from net profit
+profitOfLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
@@ -2107,11 +2109,28 @@ goodsAndServicesForYourOwnUse.hint.agent = If you have already included this amo
 goodsAndServicesForYourOwnUse.error.required.individual = Select yes if you took goods out of your business or provided business services to family and friends
 goodsAndServicesForYourOwnUse.error.required.agent = Select yes if your client took goods out of their business or provided business services to family and friends
 
-########## National Insurance Contributions - Class 2 ##########
+goodsAndServicesAmount.title.individual = What was the market value of the goods and services you provided?
+goodsAndServicesAmount.title.agent = What was the market value of the goods and services your client provided?
+goodsAndServicesAmount.title.cash.individual = How much did you spend on goods and services for your own use?
+goodsAndServicesAmount.title.cash.agent = How much did your client spend on goods and services for their own use?
+goodsAndServicesAmount.caption.individual = Enter the cost to you.
+goodsAndServicesAmount.caption.agent = Enter the cost to your client.
+goodsAndServicesAmount.error.required.individual = Enter the market value of the goods and services you provided
+goodsAndServicesAmount.error.required.agent = Enter the market value of the goods and services your client provided
+goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
+goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
+
+checkNetProfitLoss.title.profit = Net business profit: £{0}
+checkNetProfitLoss.p1.individual = We’re now going to ask you about any final adjustments to your your net business profit. This will give you your your total taxable profit or loss.
+checkNetProfitLoss.p1.agent = We’re now going to ask you about any final adjustments to your client’s your net business profit. This will give you their your total taxable profit or loss.
+
+########## National Insurance Contributions ##########
 
 nics.exemptForDifferentReason = I’m exempt for a different reason
-nics.diverDivingInstructor = Your client is a diver or diving supervisor
-nics.trusteeExecutorAdmin = You are the trustee, executor or administrator but only in some cases
+nics.diverDivingInstructor.individual = You are a diver or diving supervisor
+nics.diverDivingInstructor.agent = Your client is a diver or diving supervisor
+nics.trusteeExecutorAdmin.individual = You are the trustee, executor or administrator but only in some cases
+nics.trusteeExecutorAdmin.agent = Your client is the trustee, executor or administrator but only in some cases
 
 class2NICs.title = Voluntary Class 2 National Insurance contributions
 class2NICs.p1.individual = As your adjustable taxable profit is less than £{0} you do not need to make Class 2 National Insurance contributions.

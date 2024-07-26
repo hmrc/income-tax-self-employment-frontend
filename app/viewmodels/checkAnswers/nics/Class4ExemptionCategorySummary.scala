@@ -30,7 +30,7 @@ object Class4ExemptionCategorySummary {
   def row(answers: UserAnswers, userType: UserType, taxYear: TaxYear)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(Class4ExemptionCategoryPage, BusinessId.nationalInsuranceContributions).map { answer =>
       buildRowString(
-        messages(s"nics.$answer"),
+        messages(s"nics.$answer.$userType"),
         routes.Class4ExemptionCategoryController.onPageLoad(taxYear, CheckMode),
         s"class4ExemptionCategory.title.$userType",
         "class4ExemptionCategory.change.hidden"

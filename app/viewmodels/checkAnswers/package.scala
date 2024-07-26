@@ -120,8 +120,8 @@ package object checkAnswers {
       TableRow(content = HtmlContent(s"£${formatMoney(answer)}"), classes = s"govuk-!-text-align-right $classes")
     )
 
-  def buildTable(headRow: Option[Seq[HeadCell]], rows: Seq[Seq[TableRow]]): Table =
-    Table(rows, headRow)
+  def buildTable(headRow: Option[Seq[HeadCell]], rows: Seq[Seq[TableRow]], caption: Option[String] = None, tableClasses: String = ""): Table =
+    Table(rows, headRow, caption, classes = tableClasses)
 
   def formatAnswer(answer: String)(implicit messages: Messages): String =
     answer match {

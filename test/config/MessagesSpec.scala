@@ -213,6 +213,7 @@ class MessagesSpec extends SpecBase {
     "wfhFlatRateOrActualCosts.error.required.agent",
     "wfhFlatRateOrActualCosts.subHeading.agent",
     "newTaxSites.emptyList.agent",
+    "checkNetProfitLoss.p1.agent",
     "goodsAndServicesForYourOwnUse.hint.agent"
   )
 

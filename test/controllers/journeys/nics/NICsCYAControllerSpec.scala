@@ -22,7 +22,7 @@ import models.CheckMode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.database.UserAnswers
 import pages.Page
-import pages.nics.Class2NICsPage
+import pages.nics.{Class2NICsPage, Class4NICsPage}
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -34,7 +34,7 @@ import views.html.standard.CheckYourAnswersView
 
 class NICsCYAControllerSpec extends ControllerSpec {
 
-  def userAnswers: UserAnswers = buildUserAnswers(Json.obj("class2NICs" -> true))
+  def userAnswers: UserAnswers = buildUserAnswers(Json.obj("class4NICs" -> true, "class4ExemptionCategory" -> "trusteeExecutorAdmin"))
 
   def onPageLoad: String = routes.NICsCYAController.onPageLoad(taxYear).url
 
@@ -50,7 +50,11 @@ class NICsCYAControllerSpec extends ControllerSpec {
           rows = List(
             new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))
               .row(userAnswers, taxYear, nationalInsuranceContributions, userType, rightTextAlign = false)
-              .value),
+              .value,
+            new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
+              .row(userAnswers, taxYear, nationalInsuranceContributions, userType, rightTextAlign = false)
+              .value
+          ),
           classes = "govuk-!-margin-bottom-7"
         )
 
