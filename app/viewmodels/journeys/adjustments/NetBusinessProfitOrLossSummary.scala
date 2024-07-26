@@ -17,6 +17,7 @@
 package viewmodels.journeys.adjustments
 
 import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
@@ -25,8 +26,11 @@ import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
 
 object NetBusinessProfitOrLossSummary {
 
-  def buildNetProfitOrLossTable(profitOrLoss: ProfitOrLoss, turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: BigDecimal)(
-      implicit messages: Messages): Table = {
+  def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOfLoss.additions.$profitOrLoss"
+  def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOfLoss.deductions.$profitOrLoss"
+
+  def buildTable1(profitOrLoss: ProfitOrLoss, turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: BigDecimal)(implicit
+      messages: Messages): Table = {
 
     val netProfitOrLoss = formatSumMoneyNoNegative(List(turnover, incomeNotCountedAsTurnover, totalExpenses))
 
@@ -44,8 +48,8 @@ object NetBusinessProfitOrLossSummary {
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildAdditionsTable(profitOrLoss: ProfitOrLoss, balancingCharge: BigDecimal, goodsAndServices: BigDecimal, disallowableExpenses: BigDecimal)(
-      implicit messages: Messages): Table = {
+  def buildTable2(profitOrLoss: ProfitOrLoss, balancingCharge: BigDecimal, goodsAndServices: BigDecimal, disallowableExpenses: BigDecimal)(implicit
+      messages: Messages): Table = {
 
     val totalAdditions = formatSumMoneyNoNegative(List(balancingCharge, goodsAndServices, disallowableExpenses))
 
@@ -56,11 +60,14 @@ object NetBusinessProfitOrLossSummary {
       buildTableRow(s"profitOfLoss.totalAdditions.$profitOrLoss", totalAdditions)
     )
 
-    buildTable(None, additionsRows, caption = Some(messages(s"profitOfLoss.additions.$profitOrLoss")), "govuk-!-margin-bottom-9")
+    buildTable(
+      None,
+      additionsRows,
+      caption = Some(messages(if (profitOrLoss == Profit) additionsCaption(Profit) else deductionsCaption(Loss))),
+      "govuk-!-margin-bottom-9")
   }
 
-  def buildDeductionsTable(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal)(implicit
-      messages: Messages): Table = {
+  def buildTable3(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal)(implicit messages: Messages): Table = {
 
     val totalDeductions = formatSumMoneyNoNegative(List(capitalAllowances, turnoverNotTaxable))
 
@@ -70,7 +77,7 @@ object NetBusinessProfitOrLossSummary {
       buildTableRow(s"profitOfLoss.totalDeductions.$profitOrLoss", totalDeductions)
     )
 
-    buildTable(None, deductionsRows, caption = Some(messages(s"profitOfLoss.deductions.$profitOrLoss")))
+    buildTable(None, deductionsRows, caption = Some(messages(if (profitOrLoss == Profit) deductionsCaption(Profit) else additionsCaption(Loss))))
   }
 
 }

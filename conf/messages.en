@@ -2093,6 +2093,7 @@ profitOfLoss.totalAdditions.profit = Total additions to net profit
 profitOfLoss.totalAdditions.loss = Total additions to net loss
 profitOfLoss.deductions.profit = Deductions from net profit
 profitOfLoss.deductions.loss = Deductions from net loss
+profitOfLoss.capitalAllowances = Capital allowances
 profitOfLoss.turnoverNotTaxable = Turnover not taxable as business profit
 profitOfLoss.totalDeductions.profit = Total deductions from net profit
 profitOfLoss.totalDeductions.loss = Total deductions from net loss

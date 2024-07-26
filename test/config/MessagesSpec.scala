@@ -166,7 +166,8 @@ class MessagesSpec extends SpecBase {
     "wdaMainRateClaimAmount.l3",
     "structuresBuildingsQualifyingUseDate.error.inFuture",
     "prepop.useReportingSoftware",
-    "wdaMainRateClaimAmount.p4.agent"
+    "wdaMainRateClaimAmount.p4.agent",
+    "profitOfLoss.capitalAllowances"
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(

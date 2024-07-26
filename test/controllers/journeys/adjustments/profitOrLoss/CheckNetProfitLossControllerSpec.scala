@@ -28,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
 import utils.Assertions.assertEqualWithDiff
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitOrLossTable}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildTable1, buildTable2, buildTable3}
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 class CheckNetProfitLossControllerSpec extends ControllerSpec {
@@ -49,17 +49,17 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
       profitOrLossCases.foreach { profitOrLoss =>
         userTypeCases.foreach { userType =>
           s"when net $profitOrLoss and user is an $userType" in {
-            val application          = buildAppFromUserType(userType, Some(userAnswers))
-            implicit val msg         = SpecBase.messages(application)
-            val result               = route(application, onPageLoadRequest).value
-            val netAmount            = formatSumMoneyNoNegative(List(defaultNetAmount))
-            val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLoss, 3000, 0.05, -3100)
-            val additionsTable       = buildAdditionsTable(profitOrLoss, 0, -0.05, 100.20)
-            val deductionsTable      = buildDeductionsTable(profitOrLoss, 200, -200.1)
+            val application  = buildAppFromUserType(userType, Some(userAnswers))
+            implicit val msg = SpecBase.messages(application)
+            val result       = route(application, onPageLoadRequest).value
+            val netAmount    = formatSumMoneyNoNegative(List(defaultNetAmount))
+            val table1       = buildTable1(profitOrLoss, 3000, 0.05, -3100)
+            val table2       = buildTable2(profitOrLoss, 0, -0.05, 100.20)
+            val table3       = buildTable3(profitOrLoss, 200, -200.1)
 
             val expectedView: String = {
               val view = application.injector.instanceOf[CheckNetProfitLossView]
-              view(userType, profitOrLoss, netAmount, netProfitOrLossTable, additionsTable, deductionsTable, onwardRoute)(onPageLoadRequest, msg)
+              view(userType, profitOrLoss, netAmount, table1, table2, table3, onwardRoute)(onPageLoadRequest, msg)
                 .toString()
             }
 

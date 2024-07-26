@@ -25,7 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitOrLossTable}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildTable1, buildTable2, buildTable3}
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 import javax.inject.{Inject, Singleton}
@@ -42,21 +42,21 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val netAmount            = BigDecimal(-200)
-    val profitOrLoss         = returnProfitOrLoss(netAmount)
-    val formattedNetAmount   = formatSumMoneyNoNegative(List(netAmount))
-    val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLoss, 3000, 0.05, -3100)
-    val additionsTable       = buildAdditionsTable(profitOrLoss, 0, -0.05, 100.20)
-    val deductionsTable      = buildDeductionsTable(profitOrLoss, 200, -200.1)
+    val netAmount          = BigDecimal(-200)
+    val profitOrLoss       = returnProfitOrLoss(netAmount)
+    val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+    val table1             = buildTable1(profitOrLoss, 3000, 0.05, -3100)
+    val table2             = buildTable2(profitOrLoss, 0, -0.05, 100.20)
+    val table3             = buildTable3(profitOrLoss, 200, -200.1)
     // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
     Ok(
       view(
         request.userType,
         profitOrLoss,
         formattedNetAmount,
-        netProfitOrLossTable,
-        additionsTable,
-        deductionsTable,
+        table1,
+        table2,
+        table3,
         routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
       )
     ) // TODO if no losses this year go to PreviousUnusedLossesPage instead of CurrentYearLossesPage
