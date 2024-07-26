@@ -20,6 +20,7 @@ import controllers.journeys.nics.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.domain.BusinessData
 import pages.nics.Class4DivingExemptPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,10 +28,11 @@ import viewmodels.checkAnswers.buildRowString
 
 object Class4DivingExemptSummary {
 
-  def row(answers: UserAnswers, userType: UserType, taxYear: TaxYear)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, businesses: Seq[BusinessData], userType: UserType, taxYear: TaxYear)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers.get(Class4DivingExemptPage, BusinessId.nationalInsuranceContributions).map { answers =>
       buildRowString(
-        formatBusinessNamesAnswers(answers),
+        formatBusinessNamesAnswers(answers, businesses),
         routes.Class4DivingExemptController.onPageLoad(taxYear, CheckMode),
         s"class4DivingExempt.title.$userType",
         "class4DivingExempt.change.hidden"

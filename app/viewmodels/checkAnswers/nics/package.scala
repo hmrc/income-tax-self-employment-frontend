@@ -17,15 +17,17 @@
 package viewmodels.checkAnswers
 
 import models.common.BusinessId
+import models.domain.BusinessData
 import play.api.i18n.Messages
 
 package object nics {
 
   private val differentReasonAnswer = BusinessId("I’m exempt for a different reason")
 
-  private def getTradingNameFromId(id: BusinessId): String = id.value
+  private def getTradingNameFromId(id: BusinessId, businesses: Seq[BusinessData]): String =
+    businesses.find(_.businessId == id.value).flatMap(business => business.tradingName).getOrElse(id.value)
 
-  def formatBusinessNamesAnswers(answers: List[BusinessId])(implicit messages: Messages): String =
+  def formatBusinessNamesAnswers(answers: List[BusinessId], businesses: Seq[BusinessData])(implicit messages: Messages): String =
     if (answers.contains(differentReasonAnswer)) messages("nics.exemptForDifferentReason")
-    else answers.map(id => getTradingNameFromId(id)).mkString(",<br>")
+    else answers.map(id => getTradingNameFromId(id, businesses)).mkString(",<br>")
 }
