@@ -17,10 +17,9 @@
 package utils
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpec
 
-class MoneyUtilsSpec extends AnyWordSpec with TableDrivenPropertyChecks with Matchers with MoneyUtils {
+class MoneyUtilsSpec extends AnyWordSpec with Matchers with MoneyUtils {
 
   "formatMoney" when {
     "intent is to retain integers" should {
@@ -70,19 +69,19 @@ class MoneyUtilsSpec extends AnyWordSpec with TableDrivenPropertyChecks with Mat
 
   "formatPosNegMoneyWithPounds" should {
     "convert a BigDecimal amount to a String, prefixed with a '£' symbol" when {
-      "the amount is a non-negative number" should {
+      "the amount is zero or greater" should {
         "be shown with no decimal places when an amount is whole number" in {
           assert(formatPosNegMoneyWithPounds(0) == "£0")
           assert(formatPosNegMoneyWithPounds(-0) == "£0")
           assert(formatPosNegMoneyWithPounds(100.00) == "£100")
         }
         "be shown to two decimal places when an amount has pence" in {
-          assert(formatPosNegMoneyWithPounds(100.202) == "£100.20")
-          assert(formatPosNegMoneyWithPounds(01.01) == "£1.01")
+          assert(formatPosNegMoneyWithPounds(100.2) == "£100.20")
+          assert(formatPosNegMoneyWithPounds(01.011) == "£1.01")
         }
       }
       "the amount is a negative number" should {
-        "be wrapped in brackets" in {
+        "be wrapped in brackets, without the minus symbol" in {
           assert(formatPosNegMoneyWithPounds(-20) == "(£20)")
           assert(formatPosNegMoneyWithPounds(-02.02) == "(£2.02)")
           assert(formatPosNegMoneyWithPounds(-200.2) == "(£200.20)")
