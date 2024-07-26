@@ -23,13 +23,14 @@ import forms.standard.EnumerableFormProvider
 import models.Mode
 import models.common.{BusinessId, Enumerable, TaxYear, UserType}
 import models.database.UserAnswers
+import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import play.api.Application
-import play.api.data.Form
+import play.api.data.{Form, FormBinding}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Reads, Writes}
-import play.api.mvc.Results.Redirect
+import play.api.mvc.Results.{SeeOther, BadRequest, Redirect}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -96,7 +97,6 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
             status(result) mustEqual OK
             contentAsString(result) mustEqual expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
           }
-
         }
       }
 
@@ -111,9 +111,13 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
 
         "Return a Bad Request when invalid data is submitted" in new TestScenario(userType, Some(filledUserAnswers)) {
           running(application) {
-            val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-            val result    = route(application, request).value
-            val boundForm = createForm(this.userType).bind(Map("value" -> "invalid value"))
+            val request           = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm         = createForm(this.userType).bind(Map("value" -> "invalid value"))
+            val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
+            mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
+
+            val result = route(application, request).value
+
             status(result) mustEqual BAD_REQUEST
             contentAsString(result) mustEqual expectedView(boundForm, this)(request, messages(application), application)
           }
@@ -121,9 +125,11 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
 
         "Redirect to the next page on submit" in new TestScenario(userType, Some(filledUserAnswers)) {
           running(application) {
-            val result                     = route(application, postRequest).value
-            val redirectMatchesOnwardRoute = onwardRoute.url.endsWith(redirectLocation(result).value)
+            mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
 
+            val result = route(application, postRequest).value
+
+            val redirectMatchesOnwardRoute = onwardRoute.url.endsWith(redirectLocation(result).value)
             status(result) mustEqual SEE_OTHER
             assert(redirectMatchesOnwardRoute)
           }
