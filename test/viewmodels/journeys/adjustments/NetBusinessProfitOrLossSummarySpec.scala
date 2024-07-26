@@ -18,11 +18,13 @@ package viewmodels.journeys.adjustments
 
 import base.SpecBase
 import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import utils.MoneyUtils.{formatPosNegMoneyWithPounds, formatSumMoneyNoNegative}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
 
 class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenPropertyChecks {
 
@@ -31,18 +33,18 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   // TODO SASS-8626 add cases for different amounts from backend, maybe change structure and test descriptions if needed when adding more scenarios
   private val table1Scenarios = Table(
     ("profitOrLoss", "turnover", "incomeNotCountedAsTurnover", "totalExpenses"),
-    (ProfitOrLoss.Profit, 200, 0.5, -50),
-    (ProfitOrLoss.Loss, -200, 10.01, 0)
+    (Profit, 200, 0.5, -50),
+    (Loss, -200, 10.01, 0)
   )
   private val table2Scenarios = Table(
     ("profitOrLoss", "balancingCharge", "goodsAndServices", "disallowableExpenses"),
-    (ProfitOrLoss.Profit, 200, 0.5, -50),
-    (ProfitOrLoss.Loss, -200, 10.01, 0)
+    (Profit, 200, 0.5, -50),
+    (Loss, -200, 10.01, 0)
   )
   private val table3Scenarios = Table(
     ("profitOrLoss", "capitalAllowances", "turnoverNotTaxable"),
-    (ProfitOrLoss.Profit, 200, 0.5),
-    (ProfitOrLoss.Loss, -200, 10.01)
+    (Profit, 200, 0.5),
+    (Loss, -200, 10.01)
   )
 
   private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
@@ -59,8 +61,10 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       s"when a net $profitOrLoss" in {
         val table =
           NetBusinessProfitOrLossSummary.buildTable1(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)(messages)
-        val expectedTable = expectedTable1(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)
+        val expectedTable   = expectedTable1(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)
+        val expectedCaption = Some(s"profitOfLoss.netProfitOrLoss.$profitOrLoss")
 
+        assert(table.caption == expectedCaption)
         assertWithClue(result = table, expectedResult = expectedTable)
       }
     }
@@ -71,8 +75,10 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       s"when a net $profitOrLoss" in {
         val table =
           NetBusinessProfitOrLossSummary.buildTable2(profitOrLoss, balancingCharge, goodsAndServices, disallowableExpenses)(messages)
-        val expectedTable = expectedTable2(profitOrLoss, balancingCharge, goodsAndServices, disallowableExpenses)
+        val expectedTable   = expectedTable2(profitOrLoss, balancingCharge, goodsAndServices, disallowableExpenses)
+        val expectedCaption = Some(if (profitOrLoss == Profit) additionsCaption(Profit) else deductionsCaption(Loss))
 
+        assert(table.caption == expectedCaption)
         assertWithClue(result = table, expectedResult = expectedTable)
       }
     }
@@ -83,8 +89,10 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       s"when a net $profitOrLoss" in {
         val table =
           NetBusinessProfitOrLossSummary.buildTable3(profitOrLoss, capitalAllowances, turnoverNotTaxable)(messages)
-        val expectedTable = expectedTable3(profitOrLoss, capitalAllowances, turnoverNotTaxable)
+        val expectedTable   = expectedTable3(profitOrLoss, capitalAllowances, turnoverNotTaxable)
+        val expectedCaption = Some(if (profitOrLoss == Profit) deductionsCaption(Profit) else additionsCaption(Loss))
 
+        assert(table.caption == expectedCaption)
         assertWithClue(result = table, expectedResult = expectedTable)
       }
     }
@@ -114,7 +122,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
          List(balancingCharge, goodsAndServices, disallowableExpenses))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
   def expectedTable3(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(journeys.capital-allowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+    s"""|List(TableRow(HtmlContent(profitOfLoss.capitalAllowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          capitalAllowances)}),None,govuk-!-text-align-right ,None,None,Map()))
       |List(TableRow(HtmlContent(profitOfLoss.turnoverNotTaxable),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          turnoverNotTaxable)}),None,govuk-!-text-align-right ,None,None,Map()))

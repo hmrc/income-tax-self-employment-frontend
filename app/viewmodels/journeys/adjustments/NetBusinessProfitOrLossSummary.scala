@@ -72,7 +72,7 @@ object NetBusinessProfitOrLossSummary {
     val totalDeductions = formatSumMoneyNoNegative(List(capitalAllowances, turnoverNotTaxable))
 
     val deductionsRows: Seq[Seq[TableRow]] = Seq(
-      buildTableAmountRow("journeys.capital-allowances", capitalAllowances),
+      buildTableAmountRow("profitOfLoss.capitalAllowances", capitalAllowances),
       buildTableAmountRow("profitOfLoss.turnoverNotTaxable", turnoverNotTaxable),
       buildTableRow(s"profitOfLoss.totalDeductions.$profitOrLoss", totalDeductions)
     )
