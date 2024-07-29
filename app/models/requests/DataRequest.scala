@@ -21,7 +21,7 @@ import controllers.standard
 import models.common._
 import models.database.UserAnswers
 import models.journeys.Journey
-import pages.TradeAccountingType
+import pages.{TradeAccountingType, TradingNameKey}
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
@@ -59,6 +59,8 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
 
   def getAccountingType(businessId: BusinessId): Option[AccountingType] =
     userAnswers.get(TradeAccountingType, Some(businessId))
+
+  def getTraderName(businessId: BusinessId): Option[TradingName] = userAnswers.get(TradingNameKey, Some(businessId))
 
   def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
     getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))

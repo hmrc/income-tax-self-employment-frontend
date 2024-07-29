@@ -41,6 +41,6 @@ class UnusedLossAmountControllerSpec extends BigDecimalGetAndPostQuestionBaseSpe
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[UnusedLossAmountView]
-    view(form, scenario.taxYear, scenario.businessId, scenario.userType, NormalMode).toString()
+    view(form, scenario.taxYear, scenario.businessId, NormalMode).toString()
   }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, TradingName}
+import models.common.{BusinessId, TaxYear}
 import pages.adjustments.profitOrLoss.PreviousUnusedLossesPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,14 +50,14 @@ class PreviousUnusedLossesController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val tradingName = request.userAnswers.getTraderName(businessId).getOrElse(TradingName.empty)
+      val tradingName = request.userAnswers.getTraderName(businessId)
       val filledForm  = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(view(filledForm, taxYear, businessId, tradingName, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val tradingName                                  = request.userAnswers.getTraderName(businessId).getOrElse(TradingName.empty)
+      val tradingName                                  = request.userAnswers.getTraderName(businessId)
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, tradingName, request.userType, mode))
       def handleSuccess(answer: Boolean): Future[Result] =
         service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)

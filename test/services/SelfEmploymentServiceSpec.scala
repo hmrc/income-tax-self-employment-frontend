@@ -160,7 +160,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   "setAccountingTypeForIds" - {
     "should set the AccountingType of each supplied BusinessId to the UserAnswers, returning the updated UserAnswers when" - {
-      "supplied a valid sequence of BusinessIds and AccountingTypes" in new ServiceWithStubs {
+      "supplied a valid sequence of TradingName, BusinessIds and AccountingTypes" in new ServiceWithStubs {
         val testList: Seq[(TradingName, WithName with AccountingType, BusinessId)] = Seq(
           (TradingName("Circus Performer1"), AccountingType.Accrual, BusinessId("testId1")),
           (TradingName("Circus Performer2"), AccountingType.Cash, BusinessId("testId2")),

@@ -37,13 +37,13 @@
     </label>
 }
 
-@layout(pageTitle = title(form, messages(s"previousUnusedLosses.title.$userType", tradingName))) {
+@layout(pageTitle = title(form, messages("previousUnusedLosses.title", tradingName))) {
 
     @errorSummarySection(form)
 
     @formHelper(action = routes.PreviousUnusedLossesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(s"previousUnusedLosses.title.$userType", Some(tradingName.value))
+        @heading("previousUnusedLosses.title", Some(tradingName.value))
 
         @twoRadios(form, "PreviousUnusedLosses", userType, taxYear, inline = true, legend = Some(legend))
 

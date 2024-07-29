@@ -38,7 +38,7 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 
   def getAccountingType(businessId: BusinessId): AccountingType = get(TradeAccountingType, businessId.some).head
 
-  def getTraderName(businessId: BusinessId): Option[TradingName] = get(TradingNameKey, businessId.some)
+  def getTraderName(businessId: BusinessId): TradingName = get(TradingNameKey, businessId.some).getOrElse(TradingName.empty)
 
   def set[A](page: Settable[A], value: A, businessId: Option[BusinessId] = None)(implicit writes: Writes[A]): Try[UserAnswers] = {
 

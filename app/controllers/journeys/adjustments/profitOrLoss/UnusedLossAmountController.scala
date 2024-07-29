@@ -48,12 +48,12 @@ class UnusedLossAmountController @Inject() (override val messagesApi: MessagesAp
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val filledForm = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(filledForm, taxYear, businessId, request.userType, mode))
+      Ok(view(filledForm, taxYear, businessId, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, mode))
 
       selfEmploymentService.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
   }
