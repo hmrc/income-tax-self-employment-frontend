@@ -28,7 +28,8 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowString, formatAnswer}
 
 object ZegvOnlyForSelfEmploymentSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZegvOnlyForSelfEmploymentPage, businessId.some)
       .map { answer =>
@@ -37,7 +38,7 @@ object ZegvOnlyForSelfEmploymentSummary extends AnswerSummary {
           routes.ZegvOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"zecOnlyForSelfEmployment.title.$userType"),
           "zegvOnlyForSelfEmployment.change.hidden",
-          rightTextAlign = true
+          rightTextAlign
         )
       }
 }

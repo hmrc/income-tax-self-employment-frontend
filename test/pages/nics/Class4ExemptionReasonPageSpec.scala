@@ -48,15 +48,30 @@ class Class4ExemptionReasonPageSpec extends AnyWordSpecLike {
       assert(result === false)
     }
 
-    "return true if answer = TrusteeExecutorAdmin" in {
-      val answers = emptyUserAnswers.set(Class4ExemptionReasonPage, TrusteeExecutorAdmin, Some(nationalInsuranceContributions)).success.value
-      val result  = Class4ExemptionReasonPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
+    "return true if answer = TrusteeExecutorAdmin and Class4NonDivingExemptPage has all further answers" in {
+      val answers = emptyUserAnswers
+        .set(Class4ExemptionReasonPage, TrusteeExecutorAdmin, Some(nationalInsuranceContributions))
+        .success
+        .value
+        .set(Class4NonDivingExemptPage, List(businessId), Some(nationalInsuranceContributions))
+        .success
+        .value
+      val result = Class4ExemptionReasonPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
       assert(result === true)
     }
 
-    "return true if answer = DiverDivingInstructor" in {
-      val answers = emptyUserAnswers.set(Class4ExemptionReasonPage, DiverDivingInstructor, Some(nationalInsuranceContributions)).success.value
-      val result  = Class4ExemptionReasonPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
+    "return true if answer = DiverDivingInstructor and Class4DivingExemptPage has all further answers" in {
+      val answers = emptyUserAnswers
+        .set(Class4ExemptionReasonPage, DiverDivingInstructor, Some(nationalInsuranceContributions))
+        .success
+        .value
+        .set(Class4NonDivingExemptPage, List(businessId), Some(nationalInsuranceContributions))
+        .success
+        .value
+        .set(Class4DivingExemptPage, List(businessId), Some(nationalInsuranceContributions))
+        .success
+        .value
+      val result = Class4ExemptionReasonPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
       assert(result === true)
     }
   }

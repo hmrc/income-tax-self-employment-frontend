@@ -31,7 +31,7 @@ class packageSpec extends AnyWordSpecLike {
   "mkBooleanSummary" should {
     List(true, false).foreach { answer =>
       s"build boolean summary row for answer=$answer" in {
-        val result = mkBooleanSummary(answer = answer, call, StubPage, Individual)(messagesStubbed)
+        val result = mkBooleanSummary(answer = answer, call, StubPage, Individual, true)(messagesStubbed)
         assert(result.key.content.asHtml.toString() === "stubPage.subHeading.cya.individual")
         assert(result.value.content.asHtml.toString() === s"site.${if (answer) "yes" else "no"}")
       }

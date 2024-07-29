@@ -17,7 +17,9 @@
 package pages.nics
 
 import base.SpecBase._
+import cats.implicits.catsSyntaxOptionId
 import models.common.BusinessId.nationalInsuranceContributions
+import models.journeys.nics.ExemptionReason.TrusteeExecutorAdmin
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class Class4NICsPageSpec extends AnyWordSpecLike {
@@ -44,7 +46,13 @@ class Class4NICsPageSpec extends AnyWordSpecLike {
 
     "return true if answer = true" in {
       val answers = setBooleanAnswer(Class4NICsPage, nationalInsuranceContributions, answer = true)
-      val result  = Class4NICsPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
+        .set(Class4ExemptionReasonPage, TrusteeExecutorAdmin, nationalInsuranceContributions.some)
+        .success
+        .value
+        .set(Class4NonDivingExemptPage, List(businessId), nationalInsuranceContributions.some)
+        .success
+        .value
+      val result = Class4NICsPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
       assert(result === true)
     }
 

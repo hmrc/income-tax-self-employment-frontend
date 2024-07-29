@@ -28,7 +28,8 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowString, formatAnswer}
 
 object ZegvAllowanceSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZegvAllowancePage, businessId.some)
       .map { answer =>
@@ -37,7 +38,7 @@ object ZegvAllowanceSummary extends AnswerSummary {
           routes.ZegvAllowanceController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"zeroEmission.subHeading.$userType"),
           "zeroEmission.change.hidden",
-          rightTextAlign = true
+          rightTextAlign
         )
       }
 }

@@ -49,9 +49,7 @@ class Class4ExemptionReasonController @Inject() (override val messagesApi: Messa
   private val page = Class4ExemptionReasonPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val existingAnswer = request.getValue(page, nationalInsuranceContributions)
-    val form           = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
-    val preparedForm   = existingAnswer.fold(form)(form.fill)
+    val preparedForm = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
     Ok(view(preparedForm, taxYear, request.userType, mode))
   }
 

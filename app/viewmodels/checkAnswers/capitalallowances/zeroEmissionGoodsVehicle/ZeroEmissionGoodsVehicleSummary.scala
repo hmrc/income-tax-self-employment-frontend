@@ -28,7 +28,8 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowBoolean}
 
 object ZeroEmissionGoodsVehicleSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZeroEmissionGoodsVehiclePage, businessId.some)
       .map { answer =>
@@ -37,7 +38,7 @@ object ZeroEmissionGoodsVehicleSummary extends AnswerSummary {
           routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, CheckMode),
           messages(s"zeroEmissionGoodsVehicle.subHeading.cya.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
           "zeroEmissionGoodsVehicle.change.hidden",
-          rightTextAlign = true
+          rightTextAlign
         )
       }
 }

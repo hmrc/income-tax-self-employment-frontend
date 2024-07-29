@@ -24,23 +24,21 @@ import models.database.UserAnswers
 import models.journeys.nics.ExemptionReason
 import models.journeys.nics.ExemptionReason.{DiverDivingInstructor, TrusteeExecutorAdmin}
 import play.api.mvc.Call
-import queries.Settable
-
-import scala.collection.immutable._
 
 case object Class4ExemptionReasonPage extends NicsBasePage[ExemptionReason] {
   override def toString: String = "class4ExemptionReason"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     userAnswers.get(this, businessId) match {
-      case Some(TrusteeExecutorAdmin)  => routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
       case Some(DiverDivingInstructor) => routes.Class4DivingExemptController.onPageLoad(taxYear, NormalMode)
+      case Some(TrusteeExecutorAdmin)  => routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
       case None                        => standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined
-
-  override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
-    List(Class4NonDivingExemptPage, Class4DivingExemptPage)
+    userAnswers.get(this, businessId) match {
+      case Some(DiverDivingInstructor) => Class4DivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+      case Some(TrusteeExecutorAdmin)  => Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+      case None                        => false
+    }
 }

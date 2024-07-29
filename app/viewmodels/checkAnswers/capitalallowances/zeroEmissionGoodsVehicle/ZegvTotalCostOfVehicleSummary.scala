@@ -28,7 +28,8 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowBigDecimal}
 
 object ZegvTotalCostOfVehicleSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZegvTotalCostOfVehiclePage, businessId.some)
       .map { answer =>

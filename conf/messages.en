@@ -2136,6 +2136,12 @@ checkNetProfitLoss.p1.loss.agent = We’re now going to ask you about any final 
 
 ########## National Insurance Contributions ##########
 
+nics.exemptForDifferentReason = I’m exempt for a different reason
+nics.diverDivingInstructor.individual = You are a diver or diving supervisor
+nics.diverDivingInstructor.agent = Your client is a diver or diving supervisor
+nics.trusteeExecutorAdmin.individual = You are the trustee, executor or administrator but only in some cases
+nics.trusteeExecutorAdmin.agent = Your client is the trustee, executor or administrator but only in some cases
+
 class2NICs.title = Voluntary Class 2 National Insurance contributions
 class2NICs.p1.individual = As your adjustable taxable profit is less than £{0} you do not need to make Class 2 National Insurance contributions.
 class2NICs.p1.agent = As your client’s adjustable taxable profit is less than £{0} they do not need to make Class 2 National Insurance contributions.
@@ -2164,14 +2170,22 @@ class4NICs.l4.individual = You are a diver or diving instructor and have paid Cl
 class4NICs.l4.agent = They are a diver or diving instructor and have paid Class 1 National Insurance contributions on their earnings
 class4NICs.subHeading.individual = Are you exempt from paying Class 4 National Insurance contributions?
 class4NICs.subHeading.agent = Is your client exempt from paying Class 4 National Insurance contributions?
+class4NICs.subHeading.cya.individual = Are you exempt from paying Class 4 National Insurance contributions?
+class4NICs.subHeading.cya.agent = Is your client exempt from paying Class 4 National Insurance contributions?
 class4NICs.error.required.individual = Select yes if you are exempt from making Class 4 National Insurance contributions
 class4NICs.error.required.agent = Select yes if your client is exempt from making Class 4 National Insurance contributions
 
-class4ExemptionReason.subHeading.individual = Why are you exempt from making these contributions?
-class4ExemptionReason.subHeading.agent = Why is your client exempt from making these contributions?
+class4ExemptionReason.title.individual = Why are you exempt from making these contributions?
+class4ExemptionReason.title.agent = Why is your client exempt from making these contributions?
 class4ExemptionReason.trusteeExecutorAdmin.individual = You have received profits in your capacity as a trustee, executor or administrator
 class4ExemptionReason.trusteeExecutorAdmin.agent = Your client has received profits in their capacity as a trustee, executor or administrator
 class4ExemptionReason.diverDivingInstructor.individual = You are a diver or diving instructor and have paid Class 1 National Insurance contributions on your earnings
 class4ExemptionReason.diverDivingInstructor.agent = Your client is a diver or diving instructor and has paid Class 1 National Insurance contributions on their earnings
 class4ExemptionReason.error.required.individual = Select reason if you’re exempt from making Class 4 National Insurance contributions
 class4ExemptionReason.error.required.agent = Select reason if your client is exempt from making Class 4 National Insurance contributions
+
+class4DivingExempt.title.individual = For which self employment businesses are you a diver or diving supervisor?
+class4DivingExempt.title.agent = For which self employment businesses is your client a diver or diving supervisor?
+
+class4NonDivingExempt.title.individual = For which self employment businesses are you a trustee, executor or administrator?
+class4NonDivingExempt.title.agent = For which self employment businesses is your client a trustee, executor or administrator?
