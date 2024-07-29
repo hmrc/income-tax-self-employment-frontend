@@ -21,15 +21,15 @@ import controllers.standard
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.nics.ExemptionCategory
-import models.journeys.nics.ExemptionCategory.{DiverDivingInstructor, TrusteeExecutorAdmin}
+import models.journeys.nics.ExemptionReason
+import models.journeys.nics.ExemptionReason.{DiverDivingInstructor, TrusteeExecutorAdmin}
 import play.api.mvc.Call
 import queries.Settable
 
 import scala.collection.immutable._
 
-case object Class4ExemptionCategoryPage extends NicsBasePage[ExemptionCategory] {
-  override def toString: String = "class4ExemptionCategory"
+case object Class4ExemptionReasonPage extends NicsBasePage[ExemptionReason] {
+  override def toString: String = "class4ExemptionReason"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     userAnswers.get(this, businessId) match {
