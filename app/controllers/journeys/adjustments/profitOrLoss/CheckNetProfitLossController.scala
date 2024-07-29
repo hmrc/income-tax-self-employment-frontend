@@ -19,13 +19,13 @@ package controllers.journeys.adjustments.profitOrLoss
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common._
-import models.journeys.adjustments.ProfitOrLoss.Profit
+import models.journeys.adjustments.ProfitOrLoss.returnProfitOrLoss
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatMoney
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildAdditionsTable, buildDeductionsTable, buildNetProfitOrLossTable}
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildTable1, buildTable2, buildTable3}
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 import javax.inject.{Inject, Singleton}
@@ -42,20 +42,21 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val profitOrLoss         = Profit
-    val netAmount            = formatMoney(BigDecimal(5000), addDecimalForWholeNumbers = false)
-    val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLoss)
-    val additionsTable       = buildAdditionsTable(profitOrLoss)
-    val deductionsTable      = buildDeductionsTable(profitOrLoss)
-    // TODO SASS-8626 all of these ^^ values will be calculated/created from API data
+    val netAmount          = BigDecimal(-200)
+    val profitOrLoss       = returnProfitOrLoss(netAmount)
+    val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+    val table1             = buildTable1(profitOrLoss, 3000, 0.05, -3100)
+    val table2             = buildTable2(profitOrLoss, 0, -0.05, 100.20)
+    val table3             = buildTable3(profitOrLoss, 200, -200.1)
+    // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
     Ok(
       view(
         request.userType,
         profitOrLoss,
-        netAmount,
-        netProfitOrLossTable,
-        additionsTable,
-        deductionsTable,
+        formattedNetAmount,
+        table1,
+        table2,
+        table3,
         routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
       )
     ) // TODO if no losses this year go to PreviousUnusedLossesPage instead of CurrentYearLossesPage

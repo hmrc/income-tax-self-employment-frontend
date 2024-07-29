@@ -17,28 +17,28 @@
 package viewmodels.journeys.adjustments
 
 import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
 
 object NetBusinessProfitOrLossSummary {
 
-  private val placeholderAmount: BigDecimal = 200 // TODO this value is till SASS-8626 gets all values from backend
+  def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOfLoss.additions.$profitOrLoss"
+  def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOfLoss.deductions.$profitOrLoss"
 
-  def buildNetProfitOrLossTable(profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildTable1(profitOrLoss: ProfitOrLoss, turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: BigDecimal)(implicit
+      messages: Messages): Table = {
 
-    val turnover                   = placeholderAmount
-    val incomeNotCountedAsTurnover = placeholderAmount
-    val totalExpenses              = placeholderAmount
-    val netProfitOrLoss            = turnover + incomeNotCountedAsTurnover + totalExpenses
-    // TODO separate calculations from table building when real values are added SASS-8626
+    val netProfitOrLoss = formatSumMoneyNoNegative(List(turnover, incomeNotCountedAsTurnover, totalExpenses))
 
     val netProfitOrLossRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOfLoss.turnover", turnover),
       buildTableAmountRow("incomeNotCountedAsTurnover.title", incomeNotCountedAsTurnover),
       buildTableAmountRow("profitOfLoss.totalExpenses", totalExpenses),
-      buildTableAmountRow(s"profitOfLoss.netProfitOrLoss.$profitOrLoss", netProfitOrLoss)
+      buildTableRow(s"profitOfLoss.netProfitOrLoss.$profitOrLoss", netProfitOrLoss)
     )
 
     buildTable(
@@ -48,36 +48,36 @@ object NetBusinessProfitOrLossSummary {
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildAdditionsTable(profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildTable2(profitOrLoss: ProfitOrLoss, balancingCharge: BigDecimal, goodsAndServices: BigDecimal, disallowableExpenses: BigDecimal)(implicit
+      messages: Messages): Table = {
 
-    val balancingCharge      = placeholderAmount
-    val goodsAndServices     = placeholderAmount
-    val disallowableExpenses = placeholderAmount
-    val totalAdditions       = balancingCharge + goodsAndServices + disallowableExpenses
+    val totalAdditions = formatSumMoneyNoNegative(List(balancingCharge, goodsAndServices, disallowableExpenses))
 
     val additionsRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("selectCapitalAllowances.balancingCharge", balancingCharge),
       buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", goodsAndServices),
       buildTableAmountRow("profitOfLoss.disallowableExpenses", disallowableExpenses),
-      buildTableAmountRow(s"profitOfLoss.totalAdditions.$profitOrLoss", totalAdditions)
+      buildTableRow(s"profitOfLoss.totalAdditions.$profitOrLoss", totalAdditions)
     )
 
-    buildTable(None, additionsRows, caption = Some(messages(s"profitOfLoss.additions.$profitOrLoss")), "govuk-!-margin-bottom-9")
+    buildTable(
+      None,
+      additionsRows,
+      caption = Some(messages(if (profitOrLoss == Profit) additionsCaption(Profit) else deductionsCaption(Loss))),
+      "govuk-!-margin-bottom-9")
   }
 
-  def buildDeductionsTable(profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildTable3(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal)(implicit messages: Messages): Table = {
 
-    val capitalAllowances  = placeholderAmount
-    val turnoverNotTaxable = placeholderAmount
-    val totalDeductions    = capitalAllowances + turnoverNotTaxable
+    val totalDeductions = formatSumMoneyNoNegative(List(capitalAllowances, turnoverNotTaxable))
 
     val deductionsRows: Seq[Seq[TableRow]] = Seq(
-      buildTableAmountRow("journeys.capital-allowances", capitalAllowances),
-      buildTableAmountRow(s"profitOfLoss.turnoverNotTaxable.$profitOrLoss", turnoverNotTaxable),
-      buildTableAmountRow(s"profitOfLoss.totalDeductions.$profitOrLoss", totalDeductions)
+      buildTableAmountRow("profitOfLoss.capitalAllowances", capitalAllowances),
+      buildTableAmountRow("profitOfLoss.turnoverNotTaxable", turnoverNotTaxable),
+      buildTableRow(s"profitOfLoss.totalDeductions.$profitOrLoss", totalDeductions)
     )
 
-    buildTable(None, deductionsRows, caption = Some(messages(s"profitOfLoss.deductions.$profitOrLoss")))
+    buildTable(None, deductionsRows, caption = Some(messages(if (profitOrLoss == Profit) deductionsCaption(Profit) else additionsCaption(Loss))))
   }
 
 }

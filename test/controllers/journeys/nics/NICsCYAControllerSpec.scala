@@ -19,10 +19,11 @@ package controllers.journeys.nics
 import base.{ControllerSpec, SpecBase}
 import common.TestApp.buildAppFromUserType
 import models.CheckMode
+import models.common.BusinessId
 import models.common.BusinessId.nationalInsuranceContributions
 import models.database.UserAnswers
 import pages.Page
-import pages.nics.{Class2NICsPage, Class4NICsPage}
+import pages.nics.Class4NICsPage
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -30,11 +31,14 @@ import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_A
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import utils.Assertions.assertEqualWithDiff
 import viewmodels.checkAnswers.BooleanSummary
+import viewmodels.checkAnswers.nics.Class4ExemptionReasonSummary
 import views.html.standard.CheckYourAnswersView
 
 class NICsCYAControllerSpec extends ControllerSpec {
 
-  def userAnswers: UserAnswers = buildUserAnswers(Json.obj("class4NICs" -> true, "class4ExemptionCategory" -> "trusteeExecutorAdmin"))
+  def userAnswers: UserAnswers = UserAnswers(
+    userAnswersId,
+    Json.obj(BusinessId.nationalInsuranceContributions.value -> Json.obj("class4NICs" -> true, "class4ExemptionReason" -> "trusteeExecutorAdmin")))
 
   def onPageLoad: String = routes.NICsCYAController.onPageLoad(taxYear).url
 
@@ -48,12 +52,10 @@ class NICsCYAControllerSpec extends ControllerSpec {
         val result       = route(application, onPageLoadRequest).value
         val summaryList = SummaryList(
           rows = List(
-            new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))
-              .row(userAnswers, taxYear, nationalInsuranceContributions, userType, rightTextAlign = false)
-              .value,
             new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
               .row(userAnswers, taxYear, nationalInsuranceContributions, userType, rightTextAlign = false)
-              .value
+              .value,
+            Class4ExemptionReasonSummary.row(userAnswers, userType, taxYear).value
           ),
           classes = "govuk-!-margin-bottom-7"
         )

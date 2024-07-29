@@ -36,7 +36,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
   private implicit val messages: Messages = messagesStubbed
 
   private val canNotStartUrl = "#"
-  private val nicUrl         = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
+  private val nicUrl         = nics.routes.Class4NICsController.onPageLoad(taxYear, NormalMode).url
   private val nicCyaUrl      = nics.routes.NICsCYAController.onPageLoad(taxYear).url
 
   private val nicNotStartedStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.NotStarted))

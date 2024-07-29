@@ -31,7 +31,7 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.BooleanSummary
-import viewmodels.checkAnswers.nics.Class4ExemptionCategorySummary
+import viewmodels.checkAnswers.nics.Class4ExemptionReasonSummary
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -59,7 +59,7 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
           .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
         new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
           .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
-        Class4ExemptionCategorySummary.row(request.userAnswers, request.userType, taxYear)
+        Class4ExemptionReasonSummary.row(request.userAnswers, request.userType, taxYear)
 //          Class4DivingExemptSummary.row(request.userAnswers, businesses, request.userType, taxYear),
 //          Class4NonDivingExemptSummary.row(request.userAnswers, businesses, request.userType, taxYear)
       ))

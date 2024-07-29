@@ -20,20 +20,20 @@ import controllers.journeys.nics.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.nics.Class4ExemptionCategoryPage
+import pages.nics.Class4ExemptionReasonPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 
-object Class4ExemptionCategorySummary {
+object Class4ExemptionReasonSummary {
 
   def row(answers: UserAnswers, userType: UserType, taxYear: TaxYear)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(Class4ExemptionCategoryPage, BusinessId.nationalInsuranceContributions).map { answer =>
+    answers.get(Class4ExemptionReasonPage, BusinessId.nationalInsuranceContributions).map { answer =>
       buildRowString(
         messages(s"nics.$answer.$userType"),
-        routes.Class4ExemptionCategoryController.onPageLoad(taxYear, CheckMode),
-        s"class4ExemptionCategory.title.$userType",
-        "class4ExemptionCategory.change.hidden"
+        routes.Class4ExemptionReasonController.onPageLoad(taxYear, CheckMode),
+        s"class4ExemptionReason.title.$userType",
+        "class4ExemptionReason.change.hidden"
       )
     }
 

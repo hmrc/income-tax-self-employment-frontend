@@ -22,40 +22,40 @@ import forms.standard.EnumerableFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.TaxYear
-import models.journeys.nics.ExemptionCategory
-import pages.nics.Class4ExemptionCategoryPage
+import models.journeys.nics.ExemptionReason
+import pages.nics.Class4ExemptionReasonPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.nics.Class4ExemptionCategoryView
+import views.html.journeys.nics.Class4ExemptionReasonView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class Class4ExemptionCategoryController @Inject() (override val messagesApi: MessagesApi,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: EnumerableFormProvider,
-                                                   service: SelfEmploymentService,
-                                                   view: Class4ExemptionCategoryView)
+class Class4ExemptionReasonController @Inject() (override val messagesApi: MessagesApi,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: EnumerableFormProvider,
+                                                 service: SelfEmploymentService,
+                                                 view: Class4ExemptionReasonView)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = Class4ExemptionCategoryPage
+  private val page = Class4ExemptionReasonPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
-    Ok(view(form, taxYear, request.userType, mode))
+    val preparedForm = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
+    Ok(view(preparedForm, taxYear, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async { implicit request =>
     def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, request.userType, mode))
-    def handleSuccess(answer: ExemptionCategory): Future[Result] =
+    def handleSuccess(answer: ExemptionReason): Future[Result] =
       service.submitGatewayQuestionAndRedirect(page, nationalInsuranceContributions, request.userAnswers, answer, taxYear, mode)
 
     service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)

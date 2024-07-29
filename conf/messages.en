@@ -2083,15 +2083,22 @@ newSpecialTaxSites.change.hidden =
 
 profitOfLoss.showCalculations = Show calculations
 profitOfLoss.netProfitOrLoss.profit = Net profit
+profitOfLoss.netProfitOrLoss.loss = Net loss
 profitOfLoss.turnover = Turnover
 profitOfLoss.totalExpenses = Total expenses
 profitOfLoss.additions.profit = Additions to net profit
+profitOfLoss.additions.loss = Additions to net loss
 profitOfLoss.disallowableExpenses = Disallowable expenses
 profitOfLoss.totalAdditions.profit = Total additions to net profit
+profitOfLoss.totalAdditions.loss = Total additions to net loss
 profitOfLoss.deductions.profit = Deductions from net profit
-profitOfLoss.turnoverNotTaxable.profit = Turnover not taxable as business profit
+profitOfLoss.deductions.loss = Deductions from net loss
+profitOfLoss.capitalAllowances = Capital allowances
+profitOfLoss.turnoverNotTaxable = Turnover not taxable as business profit
 profitOfLoss.totalDeductions.profit = Total deductions from net profit
+profitOfLoss.totalDeductions.loss = Total deductions from net loss
 profitOfLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
+profitOfLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
@@ -2120,9 +2127,12 @@ goodsAndServicesAmount.error.required.agent = Enter the market value of the good
 goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
 goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
 
-checkNetProfitLoss.title.profit = Net business profit: £{0}
-checkNetProfitLoss.p1.individual = We’re now going to ask you about any final adjustments to your your net business profit. This will give you your your total taxable profit or loss.
-checkNetProfitLoss.p1.agent = We’re now going to ask you about any final adjustments to your client’s your net business profit. This will give you their your total taxable profit or loss.
+checkNetProfitLoss.title.profit = Net business profit: {0}
+checkNetProfitLoss.title.loss = Net business loss: {0}
+checkNetProfitLoss.p1.profit.individual = We’re now going to ask you about any final adjustments to your net business profit. This will give you your total taxable profit or loss.
+checkNetProfitLoss.p1.profit.agent = We’re now going to ask you about any final adjustments to your client’s net business profit. This will give you their total taxable profit or loss.
+checkNetProfitLoss.p1.loss.individual = We’re now going to ask you about any final adjustments to your net business loss. This will give you your total taxable profit or loss.
+checkNetProfitLoss.p1.loss.agent = We’re now going to ask you about any final adjustments to your client’s net business loss. This will give you their total taxable profit or loss.
 
 ########## National Insurance Contributions ##########
 
@@ -2165,11 +2175,17 @@ class4NICs.subHeading.cya.agent = Is your client exempt from paying Class 4 Nati
 class4NICs.error.required.individual = Select yes if you are exempt from making Class 4 National Insurance contributions
 class4NICs.error.required.agent = Select yes if your client is exempt from making Class 4 National Insurance contributions
 
-class4ExemptionCategory.title.individual = Why are you exempt from making these contributions?
-class4ExemptionCategory.title.agent = Why is your client exempt from making these contributions?
+class4ExemptionReason.title.individual = Why are you exempt from making these contributions?
+class4ExemptionReason.title.agent = Why is your client exempt from making these contributions?
+class4ExemptionReason.trusteeExecutorAdmin.individual = You have received profits in your capacity as a trustee, executor or administrator
+class4ExemptionReason.trusteeExecutorAdmin.agent = Your client has received profits in their capacity as a trustee, executor or administrator
+class4ExemptionReason.diverDivingInstructor.individual = You are a diver or diving instructor and have paid Class 1 National Insurance contributions on your earnings
+class4ExemptionReason.diverDivingInstructor.agent = Your client is a diver or diving instructor and has paid Class 1 National Insurance contributions on their earnings
+class4ExemptionReason.error.required.individual = Select reason if you’re exempt from making Class 4 National Insurance contributions
+class4ExemptionReason.error.required.agent = Select reason if your client is exempt from making Class 4 National Insurance contributions
 
 class4DivingExempt.title.individual = For which self employment businesses are you a diver or diving supervisor?
 class4DivingExempt.title.agent = For which self employment businesses is your client a diver or diving supervisor?
 
 class4NonDivingExempt.title.individual = For which self employment businesses are you a trustee, executor or administrator?
-class4NonDivingExempt.title.agent = For which self employment businesses are you a trustee, executor or administrator?
+class4NonDivingExempt.title.agent = For which self employment businesses is your client a trustee, executor or administrator?

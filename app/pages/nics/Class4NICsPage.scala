@@ -32,14 +32,15 @@ case object Class4NICsPage extends NicsBasePage[Boolean] {
       this,
       userAnswers,
       businessId,
-      onTrue = routes.Class4ExemptionCategoryController.onPageLoad(taxYear, NormalMode),
+      // TODO skip ExemptionReason page if multiple businesses (https://jira.tools.tax.service.gov.uk/browse/SASS-8736)
+      onTrue = routes.Class4ExemptionReasonController.onPageLoad(taxYear, NormalMode),
       onFalse = cyaPage(taxYear, businessId)
     )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).exists(!_ || Class4ExemptionCategoryPage.hasAllFurtherAnswers(businessId, userAnswers))
+    userAnswers.get(this, businessId).exists(!_ || Class4ExemptionReasonPage.hasAllFurtherAnswers(businessId, userAnswers))
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
-    List(Class2NICsPage, Class4ExemptionCategoryPage, Class4DivingExemptPage, Class4NonDivingExemptPage)
+    List(Class2NICsPage, Class4ExemptionReasonPage, Class4DivingExemptPage, Class4NonDivingExemptPage)
 
 }

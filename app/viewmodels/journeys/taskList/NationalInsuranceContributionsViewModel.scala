@@ -49,7 +49,7 @@ object NationalInsuranceContributionsViewModel {
 
     val keyString = messages(s"journeys.$NationalInsuranceContributions")
     val href = determineJourneyStartOrCyaUrl(
-      nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url,
+      nics.routes.Class4NICsController.onPageLoad(taxYear, NormalMode).url,
       nics.routes.NICsCYAController.onPageLoad(taxYear).url
     )(status)
     buildSummaryRow(href, keyString, status)

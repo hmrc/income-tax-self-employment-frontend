@@ -32,6 +32,16 @@ trait MoneyUtils {
     }
   }
 
+  private def swapMinusForBrackets(amount: String): String = s"(${amount.replace("-", "")})"
+
+  def formatPosNegMoneyWithPounds(amount: BigDecimal): String = {
+    val formattedAmount = s"£${formatMoney(amount, addDecimalForWholeNumbers = false)}"
+    if (amount < 0) swapMinusForBrackets(formattedAmount) else formattedAmount
+  }
+
+  def formatSumMoneyNoNegative(amounts: List[BigDecimal]): String =
+    s"£${formatMoney(amounts.sum, addDecimalForWholeNumbers = false).replace("-", "")}"
+
 }
 
 object MoneyUtils extends MoneyUtils
