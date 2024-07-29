@@ -172,10 +172,10 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
       true)
   )
 
-  "isAdjustmentsAnswered" - {
+  "areAdjustmentsAnswered" - {
     "should return true when there are Adjustment journey statuses saved, that are all 'Completed'" in {
       forAll(adjustmentTestScenarios) { case (businessStatuses, expectedResult) =>
-        val result = NationalInsuranceContributionsViewModel.isAdjustmentsAnswered(businessStatuses)
+        val result = NationalInsuranceContributionsViewModel.areAdjustmentsAnswered(businessStatuses)
 
         withClue(s"""
                     |Result:
