@@ -18,6 +18,8 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
 
+@import models.common.TradingName
+
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -27,17 +29,23 @@
         heading: Heading
 )
 
-@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, tradingName: TradingName ,userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"previousUnusedLosses.title.$userType"))) {
+@legend= {
+    <label class="govuk-hint">
+    @messages(s"previousUnusedLosses.subHeading.$userType")
+    </label>
+}
+
+@layout(pageTitle = title(form, messages("previousUnusedLosses.title", tradingName))) {
 
     @errorSummarySection(form)
 
     @formHelper(action = routes.PreviousUnusedLossesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(s"previousUnusedLosses.title.$userType")
+        @heading("previousUnusedLosses.title", Some(tradingName.value))
 
-        @twoRadios(form, "PreviousUnusedLosses", userType, taxYear, inline = false)
+        @twoRadios(form, "PreviousUnusedLosses", userType, taxYear, inline = true, legend = Some(legend))
 
         @submitButton()
     }

@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import pages.adjustments.profitOrLoss.UnusedLossAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,19 +44,18 @@ class UnusedLossAmountController @Inject() (override val messagesApi: MessagesAp
     with I18nSupport {
 
   private val page = UnusedLossAmountPage
-  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some("unusedLossAmount"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm = fillForm(page, businessId, form(request.userType))
-      Ok(view(filledForm, taxYear, businessId, request.userType, mode))
+      val filledForm = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(filledForm, taxYear, businessId, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, mode))
 
-      selfEmploymentService.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleError)
+      selfEmploymentService.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }

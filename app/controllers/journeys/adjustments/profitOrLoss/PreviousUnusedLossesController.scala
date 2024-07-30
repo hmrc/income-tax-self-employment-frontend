@@ -50,13 +50,15 @@ class PreviousUnusedLossesController @Inject() (override val messagesApi: Messag
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(filledForm, taxYear, businessId, request.userType, mode))
+      val tradingName = request.userAnswers.getTraderName(businessId)
+      val filledForm  = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(filledForm, taxYear, businessId, tradingName, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
+      val tradingName                                  = request.userAnswers.getTraderName(businessId)
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, tradingName, request.userType, mode))
       def handleSuccess(answer: Boolean): Future[Result] =
         service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
 

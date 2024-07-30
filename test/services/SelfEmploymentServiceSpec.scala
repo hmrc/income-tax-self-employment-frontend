@@ -160,21 +160,23 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   "setAccountingTypeForIds" - {
     "should set the AccountingType of each supplied BusinessId to the UserAnswers, returning the updated UserAnswers when" - {
-      "supplied a valid sequence of BusinessIds and AccountingTypes" in new ServiceWithStubs {
-        val testList = Seq(
-          (AccountingType.Accrual, BusinessId("testId1")),
-          (AccountingType.Cash, BusinessId("testId2")),
-          (AccountingType.Accrual, BusinessId("testId3")))
-        val result = await(service.setAccountingTypeForIds(emptyUserAnswers, testList)).data
-        val expectedResult = Json.obj(
-          "testId1" -> Json.obj("accountingType" -> "ACCRUAL"),
-          "testId2" -> Json.obj("accountingType" -> "CASH"),
-          "testId3" -> Json.obj("accountingType" -> "ACCRUAL"))
+      "supplied a valid sequence of TradingName, BusinessIds and AccountingTypes" in new ServiceWithStubs {
+        val testList: Seq[(TradingName, WithName with AccountingType, BusinessId)] = Seq(
+          (TradingName("Circus Performer1"), AccountingType.Accrual, BusinessId("testId1")),
+          (TradingName("Circus Performer2"), AccountingType.Cash, BusinessId("testId2")),
+          (TradingName("Circus Performer3"), AccountingType.Accrual, BusinessId("testId3"))
+        )
+        val result: JsObject = await(service.setAccountingTypeForIds(emptyUserAnswers, testList)).data
+        val expectedResult: JsObject = Json.obj(
+          "testId1" -> Json.obj("accountingType" -> "ACCRUAL", "tradingName" -> "Circus Performer1"),
+          "testId2" -> Json.obj("accountingType" -> "CASH", "tradingName" -> "Circus Performer2"),
+          "testId3" -> Json.obj("accountingType" -> "ACCRUAL", "tradingName" -> "Circus Performer3")
+        )
 
         result shouldBe expectedResult
       }
       "input sequence is empty" in new ServiceWithStubs {
-        val result = await(service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty)).data
+        val result: JsObject = await(service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty)).data
 
         result shouldBe Json.obj()
       }

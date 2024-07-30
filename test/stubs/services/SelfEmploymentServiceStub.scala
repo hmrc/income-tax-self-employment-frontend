@@ -67,7 +67,7 @@ case class SelfEmploymentServiceStub(
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](setJourneyStatusResult)
 
-  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(AccountingType, BusinessId)]): Future[UserAnswers] =
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers] =
     Future(getUserAnswersWithAccrual)
 
   def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
