@@ -2140,7 +2140,7 @@ previousUnusedLosses.subHeading.agent = These are losses that your client told u
 previousUnusedLosses.error.required.individual = Select yes if your business made any unused losses in previous years
 previousUnusedLosses.error.required.agent = Select yes if your client’s business made any unused losses in previous years
 
-unusedLossAmount.title = Enter the total amount of unused loss
+unusedLossAmount.title = What is the total amount of unused losses for this business?
 unusedLossAmount.error.required.individual = Enter the total amount of unused loss
 
 ########## National Insurance Contributions ##########
