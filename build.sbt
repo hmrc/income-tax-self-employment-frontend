@@ -7,7 +7,7 @@ ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "2.13.12"
 Global / excludeLintKeys += majorVersion // suppress 'ThisBuild / majorVersion key unused' warning
 
-val additionalScalacOptions = if (sys.props.getOrElse("PLAY_ENV", "") == "Dev") Seq() else Seq("-Xfatal-warnings")
+val additionalScalacOptions = if (sys.props.getOrElse("PLAY_ENV", "") == "CI") Seq("-Xfatal-warnings") else Seq()
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
