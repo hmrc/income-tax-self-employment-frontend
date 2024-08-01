@@ -21,16 +21,24 @@
 
 @(form: Form[_])(content: Html)(implicit messages: Messages)
 
-<div class="govuk-form-group">
-    @govukInput(
-        InputViewModel(
-            field = form("value"),
-            label = LabelViewModel(
-              HtmlContent(content)
+@defining(form("value").value.map(v =>
+    try {
+        BigDecimal(v).bigDecimal.toPlainString()
+    } catch {
+        case _: NumberFormatException => v
+    })) { formattedValue =>
+
+    <div class="govuk-form-group">
+        @govukInput(
+            InputViewModel(
+                field = form("value").copy(value = formattedValue),
+                label = LabelViewModel(
+                    HtmlContent(content)
+                )
             )
+            .asNumeric()
+            .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
-        .asNumeric()
-        .withWidth(Fixed10)
-        .withPrefix(PrefixOrSuffix(content = Text("£")))
-    )
-</div>
+    </div>
+}
