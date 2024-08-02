@@ -17,6 +17,7 @@
 package models.errors
 
 import cats.implicits._
+import models.common.BusinessId
 import models.errors.HttpErrorBody.SingleErrorBody
 import play.api.libs.json.{JsPath, JsonValidationError}
 import play.mvc.Http.Status
@@ -53,4 +54,7 @@ object ServiceError {
       extends ServiceError(Status.INTERNAL_SERVER_ERROR, s"Cannot upsert to mongo: ${reason.getMessage}".asRight)
 
   final case class NotFoundError(reason: String) extends ServiceError(Status.NOT_FOUND, reason.asRight)
+
+  final case class BusinessNotFoundError(businessId: BusinessId)
+      extends ServiceError(Status.NOT_FOUND, s"Unable to find business with Id: $businessId".asRight)
 }

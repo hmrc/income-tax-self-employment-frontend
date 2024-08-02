@@ -89,10 +89,7 @@ class SelfEmploymentServiceImpl @Inject() (
     connector.getBusinesses(nino, mtditid)
 
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData] =
-    connector.getBusiness(nino, businessId, mtditid).map(_.headOption).subflatMap {
-      case Some(value) => value.asRight
-      case None        => NotFoundError(s"Unable to find business with ID: $businessId").asLeft
-    }
+    connector.getBusiness(nino, businessId, mtditid)
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
     connector.getJourneyState(ctx.businessId, ctx.journey, ctx.taxYear, ctx.mtditid).map(_.journeyStatus)

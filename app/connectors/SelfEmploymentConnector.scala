@@ -21,12 +21,15 @@ import config.FrontendAppConfig
 import connectors.httpParser.HttpParser.StringWrites
 import models.common._
 import models.domain.{ApiResultT, BusinessData}
+import models.errors.ServiceError
+import models.errors.ServiceError.BusinessNotFoundError
 import models.journeys.{Journey, JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import utils.EitherTOps.EitherTExtensions
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
   private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
@@ -47,10 +50,14 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
 
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Seq[BusinessData]] = {
+      ec: ExecutionContext): ApiResultT[BusinessData] = {
     val url      = buildUrl(s"individuals/business/details/${nino.value}/${businessId.value}")
-    val response = get[Seq[BusinessData]](http, url, mtditid)
-    EitherT(response)
+    val response = getOpt[BusinessData](http, url, mtditid)
+
+    for {
+      maybeBusiness <- EitherT(response)
+      business      <- EitherT.fromOption[Future](maybeBusiness, BusinessNotFoundError(businessId)).leftAs[ServiceError]
+    } yield business
   }
 
   def getJourneyState(businessId: BusinessId, journey: Journey, taxYear: TaxYear, mtditid: Mtditid)(implicit

@@ -16,6 +16,7 @@
 
 import models.common.Mtditid
 import models.errors.ServiceError
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -65,7 +66,9 @@ package object connectors {
 
   def isSuccess(status: Int): Boolean = status >= 200 && status <= 299
 
-  def isNoContent(status: Int): Boolean = status == 204
+  def isNoContent(status: Int): Boolean = status == NO_CONTENT
+
+  def isNotFound(status: Int): Boolean = status == NOT_FOUND
 
   private def addExtraHeaders(hc: HeaderCarrier, mtditid: Mtditid) =
     hc.withExtraHeaders(headers = "mtditid" -> mtditid.value)
