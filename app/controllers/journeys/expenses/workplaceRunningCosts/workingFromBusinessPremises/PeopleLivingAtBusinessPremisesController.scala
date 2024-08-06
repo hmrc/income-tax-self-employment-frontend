@@ -31,7 +31,7 @@ import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import play.api.data.Form
 import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentService
+import services.{BusinessService, SelfEmploymentService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.PeopleLivingAtBusinessPremisesView
@@ -42,6 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesApi: MessagesApi,
                                                           service: SelfEmploymentService,
+                                                          businessService: BusinessService,
                                                           navigator: WorkplaceRunningCostsNavigator,
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
@@ -54,7 +55,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business =>
+      val result = businessService.getBusiness(request.nino, businessId, request.mtditid) map { business =>
         getFilledFormAndMaxMonths(request, business, businessId, taxYear) match {
           case Left(redirectError) => redirectError
           case Right((filledForm: Form[PeopleLivingAtBusinessPremisesFormModel], maxMonths: Int)) =>
@@ -84,7 +85,7 @@ class PeopleLivingAtBusinessPremisesController @Inject() (override val messagesA
         } yield result
 
       val result: EitherT[Future, ServiceError, Result] =
-        service.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
+        businessService.getBusiness(request.nino, businessId, request.mtditid) flatMap (business =>
           getMaxMonthsWithinTaxYearOrRedirect(business, taxYear) match {
             case Left(redirect: Result) => EitherT.right[ServiceError](Future.successful(redirect))
             case Right(maxMonths: Int)  => EitherT.right[ServiceError](handleForm(maxMonths))

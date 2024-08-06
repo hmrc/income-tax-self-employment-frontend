@@ -19,9 +19,8 @@ package controllers.journeys.prepop
 import base.SpecBase
 import cats.data.EitherT
 import controllers.actions.AuthenticatedIdentifierAction.User
-import controllers.journeys.prepop.routes._
-import controllers.journeys.routes
-import controllers.standard.routes._
+import controllers.journeys.{prepop, routes}
+import controllers.standard
 import models.NormalMode
 import models.common.BusinessId
 import models.common.UserType.Individual
@@ -35,7 +34,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SelfEmploymentService
+import services.BusinessService
 import uk.gov.hmrc.auth.core.AffinityGroup
 import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
 import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView
@@ -43,7 +42,7 @@ import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView
 class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val nino = "AA370343B"
-  val user = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
+  val user: User = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   val aBusinessData: BusinessData = BusinessData(
     businessId = "businessId",
@@ -65,7 +64,7 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
     businessAddressCountryCode = "GB"
   )
 
-  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val mockService: BusinessService = mock[BusinessService]
 
   "PrepopCheckYourSelfEmploymentDetails Controller" - {
 
@@ -74,7 +73,7 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
       "must return OK with the correct view content" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .overrides(bind[BusinessService].toInstance(mockService))
           .build()
 
         val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, Individual)(messages(application))
@@ -84,7 +83,7 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
 
           when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(aBusinessData)
 
-          val request = FakeRequest(GET, PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
+          val request = FakeRequest(GET, prepop.routes.PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
           val result = route(application, request).value
 
@@ -98,7 +97,7 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
       "must redirect to the journey recovery page when an invalid business ID returns an error from the backend" in {
 
         val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SelfEmploymentService].toInstance(mockService))
+          .overrides(bind[BusinessService].toInstance(mockService))
           .build()
 
         running(application) {
@@ -107,12 +106,12 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
           when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.leftT(
             NotFoundError(s"Unable to find business with ID: $businessId"))
 
-          val request = FakeRequest(GET, PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
+          val request = FakeRequest(GET, prepop.routes.PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }

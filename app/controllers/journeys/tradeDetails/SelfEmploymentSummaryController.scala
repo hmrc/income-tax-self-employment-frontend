@@ -24,7 +24,7 @@ import models.domain.BusinessData
 import pages.tradeDetails.SelfEmploymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.BusinessService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -38,7 +38,7 @@ import scala.concurrent.ExecutionContext
 class SelfEmploymentSummaryController @Inject() (override val messagesApi: MessagesApi,
                                                  identify: IdentifierAction,
                                                  getData: DataRetrievalAction,
-                                                 service: SelfEmploymentService,
+                                                 businessService: BusinessService,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: SelfEmploymentSummaryView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -46,7 +46,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
     with Logging {
 
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
+    val result = businessService.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
       val viewModel = generateRowList(taxYear, businesses.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
       val nextRoute = SelfEmploymentSummaryPage.nextPage(taxYear, BusinessId.tradeDetailsId).url
       Ok(view(viewModel, nextRoute))

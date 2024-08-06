@@ -23,14 +23,13 @@ import controllers.redirectJourneyRecovery
 import models.Mode
 import models.common._
 import models.database.UserAnswers
-import models.domain.{ApiResultT, BusinessData}
-import models.errors.ServiceError.NotFoundError
+import models.domain.ApiResultT
 import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
-import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc.Result
 import queries.Settable
 import repositories.SessionRepositoryBase
@@ -42,8 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 trait SelfEmploymentService {
-  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]]
-  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData]
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
@@ -84,15 +81,6 @@ class SelfEmploymentServiceImpl @Inject() (
 )(implicit ec: ExecutionContext)
     extends SelfEmploymentService
     with Logging {
-
-  def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
-    connector.getBusinesses(nino, mtditid)
-
-  def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData] =
-    connector.getBusiness(nino, businessId, mtditid).map(_.headOption).subflatMap {
-      case Some(value) => value.asRight
-      case None        => NotFoundError(s"Unable to find business with ID: $businessId").asLeft
-    }
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
     connector.getJourneyState(ctx.businessId, ctx.journey, ctx.taxYear, ctx.mtditid).map(_.journeyStatus)

@@ -23,7 +23,7 @@ import models.domain.BusinessData
 import pages.tradeDetails.CheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.BusinessService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentDetailsViewModel
@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext
 class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesApi: MessagesApi,
                                                           identify: IdentifierAction,
                                                           getData: DataRetrievalAction,
-                                                          service: SelfEmploymentService,
+                                                          businessService: BusinessService,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           view: CheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
@@ -44,7 +44,7 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
+    val result = businessService.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
       val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
       val nextRoute             = CheckYourSelfEmploymentDetailsPage.nextPage(taxYear).url
       Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))

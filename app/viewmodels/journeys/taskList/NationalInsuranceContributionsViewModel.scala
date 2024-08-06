@@ -21,7 +21,6 @@ import models.NormalMode
 import models.common.{JourneyStatus, TaxYear}
 import models.journeys.Journey.{NationalInsuranceContributions, ProfitOrLoss}
 import models.journeys.JourneyNameAndStatus
-import models.journeys.nics.ExemptionCategory
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -69,10 +68,10 @@ object NationalInsuranceContributionsViewModel {
 
     val class4: Boolean = class4Eligible(taxableProfits)
 
-    val exmeptionReasons =
-      if (ageBetween16AndStatePension(userDoB, ageAtStartOfTaxYear = false))
-        ExemptionCategory.values    // If between, there may be more than two reasons in future
-      else ExemptionCategory.values // If not between, show only these two reasons
+//    val exemptionReasons =
+//      if (ageBetween16AndStatePension(userDoB, ageAtStartOfTaxYear = false))
+//        ExemptionCategory.values    // If between, there may be more than two reasons in future
+//      else ExemptionCategory.values // If not between, show only these two reasons
 
     // Class 4 takes priority, then Class 2, what if neither?
     val firstPageHref = if (class4) class4Href(taxYear) else if (class2) class2Href(taxYear) else notEligible

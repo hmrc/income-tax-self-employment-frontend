@@ -20,11 +20,12 @@ import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.httpParser.HttpParser.StringWrites
 import models.common._
-import models.domain.{ApiResultT, BusinessData}
+import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.journeys.{Journey, JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -82,6 +83,20 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def submitAnswers[A: Writes](context: JourneyContext, answers: A)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
     val url      = buildUrl(context.answersUrl)
     val response = post(http, url, context.mtditid, answers)
+    EitherT(response)
+  }
+
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[LocalDate] = {
+    val url      = buildUrl(s"/user-dob/$nino")
+    val response = get[LocalDate](http, url, mtditid)
+    EitherT(response)
+  }
+
+  def getBusinessIncomeSourcesSummary(taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): ApiResultT[BusinessIncomeSourcesSummary] = {
+    val url      = buildUrl(s"/$taxYear/$businessId/business-income-sources-summary/$nino")
+    val response = get[BusinessIncomeSourcesSummary](http, url, mtditid)
     EitherT(response)
   }
 }

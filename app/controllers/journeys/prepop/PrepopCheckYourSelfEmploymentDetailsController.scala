@@ -23,7 +23,7 @@ import models.domain.BusinessData
 import pages.prepop.PrepopCheckYourSelfEmploymentDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
+import services.BusinessService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext
 class PrepopCheckYourSelfEmploymentDetailsController @Inject() (override val messagesApi: MessagesApi,
                                                                 identify: IdentifierAction,
                                                                 getData: DataRetrievalAction,
-                                                                service: SelfEmploymentService,
+                                                                businessService: BusinessService,
                                                                 val controllerComponents: MessagesControllerComponents,
                                                                 view: PrepopCheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
@@ -44,7 +44,7 @@ class PrepopCheckYourSelfEmploymentDetailsController @Inject() (override val mes
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
+    val result = businessService.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
       val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
       val nextRoute             = PrepopCheckYourSelfEmploymentDetailsPage.nextPage(taxYear, businessId).url
 
