@@ -28,7 +28,7 @@
         heading: Heading
 )
 
-@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode, undefinedLossValue: BigDecimal)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"whichYearIsLossReported.title.$userType"))) {
 
@@ -38,10 +38,15 @@
 
         @heading(s"whichYearIsLossReported.title.$userType")
 
+        <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+            <p>@messages(s"whichYearIsLossReported.p1.loss.$userType")<p>
+            <p>@messages(s"whichYearIsLossReported.p2.loss.$userType")<p>
+        </div>
+
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"whichYearIsLossReported.subHeading.$userType"))
+                legend = LegendViewModel(messages(s"whichYearIsLossReported.subHeading.$userType", undefinedLossValue))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
                 items  = WhichYearIsLossReported.options()
             )
