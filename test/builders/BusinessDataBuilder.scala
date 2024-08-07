@@ -18,6 +18,7 @@ package builders
 
 import models.domain.BusinessData
 import models.domain.BusinessData.{AccountingPeriod, LatencyDetails}
+import models.journeys.nics.TaxableProfitAndLoss
 
 object BusinessDataBuilder {
 
@@ -84,4 +85,8 @@ object BusinessDataBuilder {
       businessAddressCountryCode = "GB"
     )
 
+  val withLossesTaxableProfitAndLoss   = List(TaxableProfitAndLoss(100, 0), TaxableProfitAndLoss(100, 50))
+  val smallProfitTaxableProfitAndLoss  = List(TaxableProfitAndLoss(100, 0), TaxableProfitAndLoss(100, 0))
+  val mediumProfitTaxableProfitAndLoss = List(TaxableProfitAndLoss(6800, 0))
+  val largeProfitTaxableProfitAndLoss  = List(TaxableProfitAndLoss(14000, 0))
 }

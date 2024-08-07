@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package builders
+package utils
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import uk.gov.hmrc.auth.core.AffinityGroup
+import java.time.{LocalDate, Month}
 
-import java.time.LocalDate
+object TaxYearUtils { // TODO combine this and NICsThresholds into a TaxYearConstants object if possible
 
-object UserBuilder {
-  val aNoddyUser      = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
-  val aNoddyAgentUser = User("mtdItId", arn = Some(""), "nino", AffinityGroup.Agent.toString)
+  val dateNow = LocalDate.now()
 
-  val aUserDateOfBirth = LocalDate.of(1997, 7, 30)
+  val currentTaxYearStartDate =
+    if (dateNow.isBefore(LocalDate.of(dateNow.getYear, Month.APRIL, 6))) LocalDate.of(dateNow.getYear - 1, Month.APRIL, 6)
+    else LocalDate.of(dateNow.getYear, Month.APRIL, 6)
+
 }
