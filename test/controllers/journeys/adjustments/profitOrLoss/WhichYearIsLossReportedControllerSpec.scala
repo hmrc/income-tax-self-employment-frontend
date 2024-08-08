@@ -25,6 +25,7 @@ import pages.adjustments.profitOrLoss.{UnusedLossAmountPage, WhichYearIsLossRepo
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request}
 import views.html.journeys.adjustments.profitOrLoss.WhichYearIsLossReportedView
 
@@ -42,7 +43,8 @@ class WhichYearIsLossReportedControllerSpec
   override def onwardRoute: Call = routes.ProfitOrLossCYAController.onPageLoad(taxYear, businessId)
 
   override def validAnswer: WhichYearIsLossReported = WhichYearIsLossReported.Year2022to2023
-  override def baseAnswers: UserAnswers             = emptyUserAnswers.set(UnusedLossAmountPage, validCurrencyAmount, Some(businessId)).success.value
+
+  override def baseAnswers: UserAnswers = buildUserAnswers(Json.obj(UnusedLossAmountPage.toString -> validCurrencyAmount.toString))
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
