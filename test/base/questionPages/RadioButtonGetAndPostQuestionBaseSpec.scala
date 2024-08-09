@@ -115,6 +115,11 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
             val boundForm         = createForm(this.userType).bind(Map("value" -> "invalid value"))
             val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
             mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
+            mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
+              *[DataRequest[_]],
+              *[FormBinding],
+              *[Writes[Any]]
+            ) returns BadRequest(expectedErrorView).asFuture
 
             val result = route(application, request).value
 
@@ -126,6 +131,11 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
         "Redirect to the next page on submit" in new TestScenario(userType, Some(filledUserAnswers)) {
           running(application) {
             mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
+            mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
+              *[DataRequest[_]],
+              *[FormBinding],
+              *[Writes[Any]]
+            ) returns SeeOther(onwardRoute.url).asFuture
 
             val result = route(application, postRequest).value
 

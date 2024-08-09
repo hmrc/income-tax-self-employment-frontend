@@ -21,7 +21,7 @@ import controllers.journeys.fillForm
 import forms.standard.EnumerableFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.adjustments.profitOrLoss.WhichYearIsLossReportedPage
+import pages.adjustments.profitOrLoss.{UnusedLossAmountPage, WhichYearIsLossReportedPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -31,6 +31,7 @@ import utils.Logging
 import views.html.journeys.adjustments.profitOrLoss.WhichYearIsLossReportedView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class WhichYearIsLossReportedController @Inject() (override val messagesApi: MessagesApi,
@@ -40,7 +41,7 @@ class WhichYearIsLossReportedController @Inject() (override val messagesApi: Mes
                                                    requireData: DataRequiredAction,
                                                    service: SelfEmploymentService,
                                                    formProvider: EnumerableFormProvider,
-                                                   view: WhichYearIsLossReportedView)
+                                                   view: WhichYearIsLossReportedView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -49,15 +50,26 @@ class WhichYearIsLossReportedController @Inject() (override val messagesApi: Mes
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val filledForm = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(filledForm, taxYear, businessId, request.userType, mode))
+      request
+        .valueOrRedirectDefault(UnusedLossAmountPage, businessId)
+        .map { value =>
+          val filledForm = fillForm(page, businessId, formProvider(page, request.userType))
+          Ok(view(filledForm, taxYear, businessId, request.userType, mode, value))
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
+      request
+        .valueOrFutureRedirectDefault(UnusedLossAmountPage, businessId)
+        .map { value =>
+          def handleError(formWithErrors: Form[_]): Result =
+            BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode, value))
 
-      service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
+          service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
+        }
+        .merge
+
   }
-
 }

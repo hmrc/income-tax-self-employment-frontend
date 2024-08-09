@@ -2143,6 +2143,22 @@ previousUnusedLosses.error.required.agent = Select yes if your client’s busine
 unusedLossAmount.title = What is the total amount of unused losses for this business?
 unusedLossAmount.error.required.individual = Enter the total amount of unused loss
 
+whichYearIsLossReported.title.individual = When you reported the loss
+whichYearIsLossReported.title.agent = When your client reported the loss
+whichYearIsLossReported.p1.loss.individual = Select the tax year you most recently told us about the unused loss in your tax return.
+whichYearIsLossReported.p1.loss.agent = Select the tax year your client most recently told us about the unused loss in their tax return.
+whichYearIsLossReported.p2.loss.individual = For example, you report a loss in your 2021 to 2022 tax return. You then choose to carry it forward and include it again in your 2022 to 2023 return. This means you should select the 2022 to 2023 tax year as it’s the most recent tax year you reported the loss.
+whichYearIsLossReported.p2.loss.agent = For example, your client reports a loss in their 2021 to 2022 tax return. They then choose to carry it forward and include it again in their 2022 to 2023 return. This means you should select the 2022 to 2023 tax year as it’s the most recent tax year your client reported the loss.
+whichYearIsLossReported.subHeading.individual = In which tax year did you most recently report the £{0} loss?
+whichYearIsLossReported.subHeading.agent = In which tax year did your client most recently report the £{0} loss?
+whichYearIsLossReported.2018to2019 = 2018 to 2019
+whichYearIsLossReported.2019to2020 = 2019 to 2020
+whichYearIsLossReported.2020to2021 = 2020 to 2021
+whichYearIsLossReported.2021to2022 = 2021 to 2022
+whichYearIsLossReported.2022to2023 = 2022 to 2023
+whichYearIsLossReported.error.required.individual = Select the tax year you most recently reported the unused loss in your tax return
+whichYearIsLossReported.error.required.agent = Select the tax year your client most recently reported the unused loss in your tax return
+
 ########## National Insurance Contributions ##########
 
 nics.exemptForDifferentReason = I’m exempt for a different reason
