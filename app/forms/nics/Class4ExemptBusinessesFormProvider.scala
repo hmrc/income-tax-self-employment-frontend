@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package pages.nics
+package forms.nics
 
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.journeys.nics.ExemptionReason
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import models.common.{BusinessId, UserType}
+import pages.OneQuestionPage
+import play.api.data.Form
+import play.api.data.Forms.list
 
-case object Class4ExemptionReasonPage extends NicsBasePage[ExemptionReason] {
-  override def toString: String = "class4ExemptionReason"
+import javax.inject.Inject
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    cyaPage(taxYear, BusinessId.nationalInsuranceContributions)
+class Class4ExemptBusinessesFormProvider @Inject() extends Mappings {
 
+  def apply(page: OneQuestionPage[_], userType: UserType): Form[List[BusinessId]] =
+    Form(
+      "value" -> list(BusinessId.businessIdMapping)
+        .verifying(nonEmptySeq(s"${page.pageName}.error.required.$userType"))
+    )
 }

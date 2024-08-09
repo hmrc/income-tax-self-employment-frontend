@@ -16,6 +16,8 @@
 
 package models.common
 
+import play.api.data.Forms.text
+import play.api.data.Mapping
 import play.api.libs.json.{Format, Json}
 import play.api.mvc.PathBindable
 
@@ -39,5 +41,7 @@ object BusinessId {
 
   }
 
-  implicit val format: Format[BusinessId] = Json.valueFormat[BusinessId]
+  implicit val format: Format[BusinessId]    = Json.valueFormat[BusinessId]
+  val businessIdMapping: Mapping[BusinessId] = text.transform[BusinessId](value => BusinessId(value), _.value)
+
 }

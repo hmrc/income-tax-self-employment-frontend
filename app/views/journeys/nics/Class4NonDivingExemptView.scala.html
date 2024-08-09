@@ -15,51 +15,35 @@
  *@
 
 @import controllers.journeys.nics.routes
-@import models.common.{TaxYear, UserType}
+@import models.common.{TaxYear, UserType, Business}
+@import viewmodels.journeys.nics.Class4ExemptBusinesses
 @import views.html.components._
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        govukCheckboxes: GovukCheckboxes,
+        checkboxes: CheckboxesWithExclusive,
         submitButton: SubmitButton
 )
 
-@(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode, businesses: List[Business])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"class4NonDivingExempt.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"class4NonDivingExempt.subHeading.$userType"))) {
 
     @errorSummarySection(form)
 
     @formHelper(action = routes.Class4NonDivingExemptController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-    @govukCheckboxes(
-            CheckboxesViewModel(
+           @checkboxes(
                 form = form,
-                name = "value",
-                items = Seq( // TODO implement dynamic businesses fetching
-                      CheckboxItem(
-                        content = Text("Business 1"),
-                        value = ""
-                      ),
-                      CheckboxItem(
-                        content = Text("Business 2"),
-                        value = ""
-                      )
-                ),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                ${messages(s"class4NonDivingExempt.subHeading.$userType")}
-                            </legend>
-                        </div>
-                    """
-                )).withCssClass("no-margin-bottom")
+                page = "class4NonDivingExempt",
+                userType,
+                items = Class4ExemptBusinesses.buildCheckboxes(businesses),
+                hint = Some(Hint(content = Text(messages("site.selectAllThatApply")))),
+                exclusiveCheckboxText = Some("class4ExemptBusinesses.none")
             )
-        )
 
-        @submitButton()
+            @submitButton()
     }
 }

@@ -27,15 +27,19 @@ import queries.Settable
 case object Class4NICsPage extends NicsBasePage[Boolean] {
   override def toString: String = "class4NICs"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
+    val multipleSeBusinesses = userAnswers.getBusinesses.size > 1
+
     redirectOnBoolean(
       this,
       userAnswers,
       businessId,
-      // TODO skip ExemptionReason page if multiple businesses (https://jira.tools.tax.service.gov.uk/browse/SASS-8736)
-      onTrue = routes.Class4ExemptionReasonController.onPageLoad(taxYear, NormalMode),
+      onTrue =
+        if (multipleSeBusinesses) routes.Class4DivingExemptController.onPageLoad(taxYear, NormalMode)
+        else routes.Class4ExemptionReasonController.onPageLoad(taxYear, NormalMode),
       onFalse = cyaPage(taxYear, businessId)
     )
+  }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).exists(!_ || Class4ExemptionReasonPage.hasAllFurtherAnswers(businessId, userAnswers))

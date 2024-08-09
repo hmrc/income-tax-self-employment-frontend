@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-package pages.nics
+package models.common
 
-import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
-import models.journeys.nics.ExemptionReason
-import play.api.mvc.Call
-
-case object Class4ExemptionReasonPage extends NicsBasePage[ExemptionReason] {
-  override def toString: String = "class4ExemptionReason"
-
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    cyaPage(taxYear, BusinessId.nationalInsuranceContributions)
-
-}
+case class Business(businessId: BusinessId, tradingName: TradingName)

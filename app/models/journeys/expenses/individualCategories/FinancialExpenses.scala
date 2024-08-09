@@ -30,7 +30,7 @@ object FinancialExpenses extends Enumerable.Implicits {
   case object OtherFinancialCharges extends WithName("otherFinancialCharges") with FinancialExpenses
   case object IrrecoverableDebts    extends WithName("irrecoverableDebts") with FinancialExpenses
   case object NoFinancialExpenses   extends WithName("noFinancialExpenses") with FinancialExpenses
-  case object CheckboxDivider       extends WithName("or") with FinancialExpenses
+  case object CheckboxDivider       extends WithName("or") with FinancialExpenses // TODO why is the divider a case object of FinancialExpenses?
 
   val values: Seq[FinancialExpenses] = Seq(
     Interest,

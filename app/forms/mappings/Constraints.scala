@@ -65,6 +65,14 @@ trait Constraints {
         Invalid(errorKey)
     }
 
+  def nonEmptySeq(errorKey: String): Constraint[Seq[_]] =
+    Constraint { seq =>
+      if (seq.nonEmpty)
+        Valid
+      else
+        Invalid(errorKey)
+    }
+
 }
 
 object Constraints extends Constraints

@@ -17,10 +17,11 @@
 package controllers.journeys.nics
 
 import controllers.actions._
-import forms.standard.BooleanFormProvider
+import forms.nics.Class4ExemptBusinessesFormProvider
 import models.Mode
 import models.common.BusinessId.nationalInsuranceContributions
-import models.common.{BusinessId, TaxYear}
+import models.common.TaxYear
+import models.requests.DataRequest
 import pages.nics.Class4DivingExemptPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.nics.Class4DivingExemptView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class Class4DivingExemptController @Inject() (override val messagesApi: MessagesApi,
@@ -36,28 +38,30 @@ class Class4DivingExemptController @Inject() (override val messagesApi: Messages
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: BooleanFormProvider,
+                                              formProvider: Class4ExemptBusinessesFormProvider,
                                               service: SelfEmploymentService,
                                               view: Class4DivingExemptView)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = Class4DivingExemptPage
+  private val page                                                  = Class4DivingExemptPage
+  private def businesses(implicit request: DataRequest[AnyContent]) = request.userAnswers.getBusinesses
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val form = formProvider(page, request.userType)
-    Ok(view(form, taxYear, request.userType, mode))
+    Ok(view(form, taxYear, request.userType, mode, businesses))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    service.persistAnswerAndRedirect(
-      page,
-      nationalInsuranceContributions,
-      request,
-      List(BusinessId("business1")),
-      taxYear,
-      mode
-    ) // TODO: Proper impl will be in next story
+    formProvider(page, request.userType)
+      .bindFromRequest()
+      .fold(
+        formErrors => Future.successful(BadRequest(view(formErrors, taxYear, request.userType, mode, businesses))),
+        answer => {
+          val filteredAnswer = if (answer.head.value.isEmpty) List.empty else answer
+          service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, filteredAnswer, taxYear, mode)
+        }
+      )
   }
 
 }
