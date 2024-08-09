@@ -23,25 +23,14 @@ case class BusinessIncomeSourcesSummary(incomeSourceId: String,
                                         totalExpenses: BigDecimal,
                                         netProfit: BigDecimal,
                                         netLoss: BigDecimal,
-                                        totalAdditions: BigDecimal,
-                                        totalDeductions: BigDecimal,
-                                        accountingAdjustments: BigDecimal,
+                                        totalAdditions: Option[BigDecimal],
+                                        totalDeductions: Option[BigDecimal],
+                                        accountingAdjustments: Option[BigDecimal],
                                         taxableProfit: BigDecimal,
                                         taxableLoss: BigDecimal)
 
 object BusinessIncomeSourcesSummary {
   implicit val format: OFormat[BusinessIncomeSourcesSummary] = Json.format[BusinessIncomeSourcesSummary]
 
-  val empty: BusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
-    "",
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-  )
+  val empty: BusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary("", 0, 0, 0, 0, None, None, None, 0, 0)
 }

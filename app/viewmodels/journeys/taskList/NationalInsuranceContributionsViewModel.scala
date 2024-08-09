@@ -36,6 +36,7 @@ object NationalInsuranceContributionsViewModel {
 
   private val class2Href = (taxYear: TaxYear) => nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
   private val class4Href = (taxYear: TaxYear) => nics.routes.Class4NICsController.onPageLoad(taxYear, NormalMode).url
+  private val cyaHref    = (taxYear: TaxYear) => nics.routes.NICsCYAController.onPageLoad(taxYear).url
 
   def areAdjustmentsAnswered(tradeStatuses: List[TradesJourneyStatuses]): Boolean =
     tradeStatuses.nonEmpty && tradeStatuses.forall(s => JourneyStatus.getJourneyStatus(ProfitOrLoss, s.journeyStatuses).isCompleted)
@@ -52,9 +53,8 @@ object NationalInsuranceContributionsViewModel {
     val classTwoOrFourEligibility = returnClassTwoOrFourEligible(taxableProfitsAndLosses, userDoB, taxYear)
 
     def buildRow(firstPageHref: String): Option[SummaryListRow] = {
-      val cyaHref     = nics.routes.NICsCYAController.onPageLoad(taxYear).url
-      val correctHref = determineJourneyStartOrCyaUrl(firstPageHref, cyaHref)(updatedStatus)
-      buildSummaryRow(correctHref, messages(s"journeys.$NationalInsuranceContributions"), updatedStatus).some
+      val getCorrectHref = determineJourneyStartOrCyaUrl(firstPageHref, cyaHref(taxYear))(updatedStatus)
+      buildSummaryRow(getCorrectHref, messages(s"journeys.$NationalInsuranceContributions"), updatedStatus).some
     }
 
     SummaryListCYA.summaryListOpt(List(classTwoOrFourEligibility match {
