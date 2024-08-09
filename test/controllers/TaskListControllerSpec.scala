@@ -35,8 +35,10 @@ import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
+import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import utils.TaxYearUtils.dateNow
 import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
 import views.html.journeys.TaskListView
 
@@ -44,19 +46,27 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   val nino       = "AA370343B"
   val user: User = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
-  private val stubService = StubSubmittedDataRetrievalActionProvider()
+  private val stubActionProvider = StubSubmittedDataRetrievalActionProvider()
+  private val stubService        = SelfEmploymentServiceStub()
 
   private def nationalInsuranceEmptySummary(messages: Messages): SummaryList =
-    NationalInsuranceContributionsViewModel.buildSummaryList(None, List(anEmptyTadesJourneyStatusesModel), taxYear)(messages)
+    NationalInsuranceContributionsViewModel.buildSummaryList(
+      None,
+      List(anEmptyTadesJourneyStatusesModel),
+      dateNow.minusYears(16),
+      List.empty,
+      taxYear)(messages)
 
   "onPageLoad" should {
 
     "must return OK and display Self-employments when review of trade details has been completed" in {
       val application = createApp(
-        stubService.copy(
+        stubActionProvider.copy(
           loadTaskListRes =
             taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, aSequenceTadesJourneyStatusesModel).asRight
-        ))
+        ),
+        stubService
+      )
 
       val selfEmploymentList =
         aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswersAccrual))(messages(application)))
@@ -77,9 +87,10 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
       val application = createApp(
-        stubService.copy(
+        stubActionProvider.copy(
           loadTaskListRes = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, Nil).asRight
-        ))
+        ),
+        stubService)
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -93,9 +104,10 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
     "must return OK and display no Self-employments when the review of trade details has not been completed" in {
       val application = createApp(
-        stubService.copy(
+        stubActionProvider.copy(
           loadTaskListRes = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.InProgress).some, Nil).asRight
-        ))
+        ),
+        stubService)
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -112,9 +124,11 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
     "must return OK and display no Self-employments when the review of trade details has not been started" in {
       val application = createApp(
-        stubService.copy(
+        stubActionProvider.copy(
           loadTaskListRes = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.CheckOurRecords).some, Nil).asRight
-        ))
+        ),
+        stubService
+      )
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
       val view    = application.injector.instanceOf[TaskListView]
@@ -132,10 +146,12 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
   "must redirect to Journey Recovery when an error response is returned" should {
     "from the service" in {
       val application = createApp(
-        stubService.copy(
+        stubActionProvider.copy(
           loadTaskListRes =
             ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))).asLeft
-        ))
+        ),
+        stubService
+      )
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value

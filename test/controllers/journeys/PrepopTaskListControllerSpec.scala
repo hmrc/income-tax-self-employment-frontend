@@ -33,6 +33,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
+import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import views.html.journeys.PrepopTaskListView
 
@@ -49,7 +50,9 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
         stubService.copy(
           loadTaskListRes =
             taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, aSequenceTadesJourneyStatusesModel).asRight
-        ))
+        ),
+        SelfEmploymentServiceStub()
+      )
 
       val selfEmploymentList =
         aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toPrepopViewModel(_, taxYear)(messages(application)))
@@ -69,7 +72,9 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val application = createApp(
         stubService.copy(
           loadTaskListRes = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.Completed).some, Nil).asRight
-        ))
+        ),
+        SelfEmploymentServiceStub()
+      )
 
       val request = FakeRequest(GET, routes.PrepopTaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -82,7 +87,9 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val application = createApp(
         stubService.copy(
           loadTaskListRes = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.InProgress).some, Nil).asRight
-        ))
+        ),
+        SelfEmploymentServiceStub()
+      )
 
       val request = FakeRequest(GET, routes.PrepopTaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -95,7 +102,9 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val application = createApp(
         stubService.copy(
           loadTaskListRes = taskListRequest(JourneyNameAndStatus(TradeDetails, JourneyStatus.CheckOurRecords).some, Nil).asRight
-        ))
+        ),
+        SelfEmploymentServiceStub()
+      )
       val request = FakeRequest(GET, routes.PrepopTaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
       val view    = application.injector.instanceOf[PrepopTaskListView]
@@ -113,7 +122,9 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
         stubService.copy(
           loadTaskListRes =
             ConnectorResponseError("method", "url", HttpError(BAD_REQUEST, HttpErrorBody.SingleErrorBody("500", "Server Error"))).asLeft
-        ))
+        ),
+        SelfEmploymentServiceStub()
+      )
 
       val request = FakeRequest(GET, routes.PrepopTaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value

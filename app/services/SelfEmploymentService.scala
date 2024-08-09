@@ -24,18 +24,19 @@ import models.Mode
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData}
-import models.errors.ServiceError.NotFoundError
+import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
-import play.api.libs.json.{Format, JsObject, Json, Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc.Result
 import queries.Settable
 import repositories.SessionRepositoryBase
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.annotation.{nowarn, tailrec}
 import scala.concurrent.{ExecutionContext, Future}
@@ -75,6 +76,9 @@ trait SelfEmploymentService {
       taxYear: TaxYear,
       mode: Mode,
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate]
+  def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -194,6 +198,14 @@ class SelfEmploymentServiceImpl @Inject() (
 
     handleForm(form, handleError, defaultHandleSuccess)
   }
+
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate] =
+    connector.getUserDateOfBirth(nino, mtditid)
+
+  def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
+    connector.getAllBusinessIncomeSourcesSummaries(taxYear, nino, mtditid).map(_.map(TaxableProfitAndLoss.fromBusinessIncomeSourcesSummary))
+
 }
 
 object SelfEmploymentService {

@@ -22,16 +22,19 @@ import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleResultT
 import models.common.JourneyStatus._
-import models.common.{TaxYear, TradingName}
+import models.common.{JourneyStatus, TaxYear, TradingName}
+import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.TaskList
-import models.requests.TradesJourneyStatuses
+import models.journeys.{TaskList, TaskListWithRequest}
+import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
+import viewmodels.journeys.taskList.{NationalInsuranceContributionsViewModel, TradeJourneyStatusesViewModel}
 import views.html.journeys.TaskListView
 
 import javax.inject.Singleton
@@ -52,24 +55,51 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit originalRequest =>
     val result = for {
       taskListWithRequest <- answerLoader.loadTaskList(taxYear, originalRequest)
-      taskList              = taskListWithRequest.taskList
-      updatedRequest        = taskListWithRequest.request
-      completedTrades       = getViewModelList(taskList)
-      message               = messagesApi.preferred(updatedRequest)
-      tradeDetailsStatus    = taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
-      idsWithAccountingType = completedTrades.map(t => (t.tradingName.getOrElse(TradingName.empty), t.accountingType, t.businessId))
-      updatedUserAnswers <- EitherT.right[ServiceError](service.setAccountingTypeForIds(updatedRequest.answers, idsWithAccountingType))
-      viewModelList             = completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedUserAnswers.some)(message))
-      nationalInsuranceStatuses = taskList.nationalInsuranceContributions
-      nationalInsuranceSummary = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatuses, completedTrades, taxYear)(
-        message)
-    } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, viewModelList, nationalInsuranceSummary)(updatedRequest, message))
+      updatedRequest     = taskListWithRequest.request
+      messages           = messagesApi.preferred(updatedRequest)
+      tradeDetailsStatus = getTradeDetailsStatus(taskListWithRequest)
+      completedTrades    = getTradesIfDetailsAreCompleted(taskListWithRequest.taskList)
+      businessSummaryList      <- getBusinessSummaries(completedTrades, updatedRequest, taxYear, messages)
+      nationalInsuranceSummary <- getNationalInsuranceSummary(taskListWithRequest, completedTrades, taxYear, messages)
+    } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, businessSummaryList, nationalInsuranceSummary)(updatedRequest, messages))
     handleResultT(result)
   }
 
-  private def getViewModelList(taskList: TaskList): List[TradesJourneyStatuses] =
+  private def getTradesIfDetailsAreCompleted(taskList: TaskList): List[TradesJourneyStatuses] =
     taskList.tradeDetails.map(_.journeyStatus).fold[List[TradesJourneyStatuses]](Nil) {
       case Completed                                                  => taskList.businesses
       case CheckOurRecords | InProgress | CannotStartYet | NotStarted => Nil
     }
+
+  private def getTradeDetailsStatus(taskListWithRequest: TaskListWithRequest): JourneyStatus =
+    taskListWithRequest.taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
+
+  private def getBusinessSummaries(completedTrades: List[TradesJourneyStatuses],
+                                   request: OptionalDataRequest[_],
+                                   taxYear: TaxYear,
+                                   messages: Messages): ApiResultT[Seq[TradeJourneyStatusesViewModel]] = {
+    val matchIdsWithAccountingType = completedTrades.map(t => (t.tradingName.getOrElse(TradingName.empty), t.accountingType, t.businessId))
+
+    EitherT.right[ServiceError](service.setAccountingTypeForIds(request.answers, matchIdsWithAccountingType)).map { updatedUserAnswers =>
+      completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedUserAnswers.some)(messages))
+    }
+  }
+
+  private def getNationalInsuranceSummary(taskListWithRequest: TaskListWithRequest,
+                                          completedTrades: List[TradesJourneyStatuses],
+                                          taxYear: TaxYear,
+                                          messages: Messages)(implicit hc: HeaderCarrier): ApiResultT[SummaryList] = {
+    val nino    = taskListWithRequest.request.nino
+    val mtditid = taskListWithRequest.request.mtditid
+    for {
+      userDateOfBirth            <- service.getUserDateOfBirth(nino, mtditid)
+      allBusinessesProfitAndLoss <- service.getAllBusinessesTaxableProfitAndLoss(taxYear, nino, mtditid)
+      nationalInsuranceStatuses = taskListWithRequest.taskList.nationalInsuranceContributions
+    } yield NationalInsuranceContributionsViewModel.buildSummaryList(
+      nationalInsuranceStatuses,
+      completedTrades,
+      userDateOfBirth,
+      allBusinessesProfitAndLoss,
+      taxYear)(messages)
+  }
 }
