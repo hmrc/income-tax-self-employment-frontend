@@ -42,7 +42,7 @@ class WhichYearIsLossReportedControllerSpec
 
   override def onwardRoute: Call = routes.ProfitOrLossCYAController.onPageLoad(taxYear, businessId)
 
-  override def validAnswer: WhichYearIsLossReported = WhichYearIsLossReported.Year2022to2023
+  override def validAnswer: WhichYearIsLossReported = WhichYearIsLossReported.currentTaxYear
 
   override def baseAnswers: UserAnswers = buildUserAnswers(Json.obj(UnusedLossAmountPage.toString -> validCurrencyAmount.toString))
 
