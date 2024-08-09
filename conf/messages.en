@@ -2193,7 +2193,6 @@ class4ExemptionReason.diverDivingInstructor.agent = Your client is a diver or di
 class4ExemptionReason.error.required.individual = Select reason if you’re exempt from making Class 4 National Insurance contributions
 class4ExemptionReason.error.required.agent = Select reason if your client is exempt from making Class 4 National Insurance contributions
 
-class4ExemptBusinesses.none = I’m exempt for a different reason
 class4DivingExempt.subHeading.individual = For which self employment businesses are you a diver or diving instructor and have paid Class 1 National Insurance on your earnings?
 class4DivingExempt.subHeading.agent = For which self employment businesses is your client a diver or diving instructor and has paid Class 1 National Insurance on their earnings?
 class4DivingExempt.error.required.individual = Select all your self employment businesses where you are a diver or diving instructor

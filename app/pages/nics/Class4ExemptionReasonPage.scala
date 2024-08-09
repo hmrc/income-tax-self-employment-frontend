@@ -27,4 +27,6 @@ case object Class4ExemptionReasonPage extends NicsBasePage[ExemptionReason] {
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     cyaPage(taxYear, BusinessId.nationalInsuranceContributions)
 
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(this, businessId).isDefined
 }
