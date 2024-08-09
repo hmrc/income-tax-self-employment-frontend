@@ -17,10 +17,13 @@
 package models.journeys.nics
 
 import models.common.TaxYear
+import utils.TaxYearUtils.{currentTaxYearStartDate, dateNow}
 
 import java.text.NumberFormat
+import java.time.{LocalDate, Period}
 
 // TODO refactor to combine with other year-dependent config into one place
+//  get data from a centralised config when available rather than hardcoded
 //  also use richer types rather than Int and String if this is to remain
 
 object NICsThresholds {
@@ -42,17 +45,18 @@ object NICsThresholds {
       2025 -> Class4Limits(12570, 50270, 6, 2)
     )
 
-    def getFiguresForTaxYear(taxYear: TaxYear, figureType: String): String = {
+    def getFiguresForTaxYear(taxYear: TaxYear, figureType: String): Double = {
       val class4Figures = getFiguresForYear(taxYear.endYear, taxYearFiguresMap)
-      val figure = figureType match {
+      figureType match {
         case "lowerProfitsLimit"   => class4Figures.lowerProfitsLimit
         case "upperProfitsLimit"   => class4Figures.upperProfitsLimit
         case "rateBetweenLimits"   => class4Figures.rateBetweenLimits
         case "rateAboveUpperLimit" => class4Figures.rateAboveUpperLimit
         case _                     => throw new IllegalArgumentException(s"Invalid figure name: $figureType")
       }
-      formatter(figure)
     }
+
+    def getFiguresForTaxYearFormatted(taxYear: TaxYear, figureType: String): String = formatter(getFiguresForTaxYear(taxYear, figureType))
   }
 
   object Class2NICsThresholds {
@@ -64,9 +68,29 @@ object NICsThresholds {
       2025 -> 6725
     )
 
-    def getThresholdForTaxYear(taxYear: TaxYear): String = {
-      val class2Threshold = getFiguresForYear(taxYear.endYear, taxYearSmallProfitsThresholdMap)
-      formatter(class2Threshold)
+    def getThresholdForTaxYear(taxYear: TaxYear): Int = getFiguresForYear(taxYear.endYear, taxYearSmallProfitsThresholdMap)
+
+    def getThresholdForTaxYearFormatted(taxYear: TaxYear): String = formatter(getThresholdForTaxYear(taxYear))
+  }
+
+  object StatePensionAgeThresholds {
+    private val taxYearStatePensionAgeThresholdMap: Map[Int, Int] = Map(
+      2021 -> 66,
+      2022 -> 66,
+      2023 -> 66,
+      2024 -> 66,
+      2025 -> 66
+    )
+
+    def getThresholdForTaxYear(taxYear: TaxYear): Int = getFiguresForYear(taxYear.endYear, taxYearStatePensionAgeThresholdMap)
+
+    def ageIsBetween16AndStatePension(userDoB: LocalDate, taxYear: TaxYear, ageAtStartOfTaxYear: Boolean): Boolean = {
+      val comparisonDayMonth   = if (ageAtStartOfTaxYear) currentTaxYearStartDate else dateNow
+      val comparisonDate       = LocalDate.of(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
+      val age: Int             = Period.between(userDoB, comparisonDate).getYears
+      val statePensionAge: Int = StatePensionAgeThresholds.getThresholdForTaxYear(taxYear)
+
+      16 <= age && age < statePensionAge
     }
   }
 }

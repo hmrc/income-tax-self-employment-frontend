@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package utils
+package models.journeys.nics
 
-import java.time.{LocalDate, Month}
+sealed trait NicClassExemption
 
-object TaxYearUtils {
-
-  val dateNow = LocalDate.now()
-
-  val currentTaxYearStartDate =
-    if (dateNow.isBefore(LocalDate.of(dateNow.getYear, Month.APRIL, 6))) LocalDate.of(dateNow.getYear - 1, Month.APRIL, 6)
-    else LocalDate.of(dateNow.getYear, Month.APRIL, 6)
-
-}
+case object Class2      extends NicClassExemption
+case object Class4      extends NicClassExemption
+case object NotEligible extends NicClassExemption

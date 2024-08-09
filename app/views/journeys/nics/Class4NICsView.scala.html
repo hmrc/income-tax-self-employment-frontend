@@ -39,12 +39,12 @@
     @heading(s"class4NICs.title")
 
     <div class="govuk-body govuk-!-margin-bottom-6">
-        <p>@messages(s"class4NICs.p1.$userType", getFiguresForTaxYear(taxYear, "lowerProfitsLimit"))</p>
+        <p>@messages(s"class4NICs.p1.$userType", getFiguresForTaxYearFormatted(taxYear, "lowerProfitsLimit"))</p>
         <p>
             @messages(s"class4NICs.p2.$userType", taxYear.startYear.toString, taxYear.toString)
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>@messages(s"class4NICs.l1", getFiguresForTaxYear(taxYear, "rateBetweenLimits"), getFiguresForTaxYear(taxYear, "lowerProfitsLimit"), getFiguresForTaxYear(taxYear, "upperProfitsLimit"))</li>
-                    <li>@messages(s"class4NICs.l2", getFiguresForTaxYear(taxYear, "rateAboveUpperLimit"), getFiguresForTaxYear(taxYear, "upperProfitsLimit"))</li>
+                    <li>@messages(s"class4NICs.l1", getFiguresForTaxYearFormatted(taxYear, "rateBetweenLimits"), getFiguresForTaxYearFormatted(taxYear, "lowerProfitsLimit"), getFiguresForTaxYearFormatted(taxYear, "upperProfitsLimit"))</li>
+                    <li>@messages(s"class4NICs.l2", getFiguresForTaxYearFormatted(taxYear, "rateAboveUpperLimit"), getFiguresForTaxYearFormatted(taxYear, "upperProfitsLimit"))</li>
                 </ul>
         </p>
         <p>

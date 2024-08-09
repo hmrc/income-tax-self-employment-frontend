@@ -16,8 +16,13 @@
 
 package models.journeys.nics
 
+import models.common.TaxYear
 import models.domain.BusinessIncomeSourcesSummary
+import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
+import models.journeys.nics.NICsThresholds.{Class2NICsThresholds, Class4NICsFigures}
 import play.api.libs.json.{Format, Json}
+
+import java.time.LocalDate
 
 case class TaxableProfitAndLoss(taxableProfit: BigDecimal, taxableLoss: BigDecimal)
 
@@ -26,4 +31,24 @@ object TaxableProfitAndLoss {
 
   def fromBusinessIncomeSourcesSummary(biss: BusinessIncomeSourcesSummary): TaxableProfitAndLoss =
     TaxableProfitAndLoss(biss.taxableProfit, biss.taxableLoss)
+
+  def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], userDoB: LocalDate, taxYear: TaxYear): NicClassExemption = {
+
+    def class2Eligible: Boolean = {
+      val class2Threshold       = Class2NICsThresholds.getThresholdForTaxYear(taxYear)
+      val profitsUnderThreshold = taxableProfitsAndLosses.map(_.taxableProfit).sum < BigDecimal(class2Threshold)
+      val hasAnyLosses          = taxableProfitsAndLosses.map(_.taxableLoss).sum != 0
+      val ageIsValid            = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = false)
+      ageIsValid && (profitsUnderThreshold || hasAnyLosses)
+    }
+
+    def class4Eligible: Boolean = {
+      val class4Threshold      = Class4NICsFigures.getFiguresForTaxYear(taxYear, figureType = "lowerProfitsLimit")
+      val profitsOverThreshold = taxableProfitsAndLosses.map(_.taxableProfit).sum > BigDecimal(class4Threshold)
+      val ageIsValid           = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
+      ageIsValid && profitsOverThreshold
+    }
+
+    if (class4Eligible) Class4 else if (class2Eligible) Class2 else NotEligible
+  }
 }

@@ -17,12 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import builders.BusinessDataBuilder.{
-  largeProfitTaxableProfitAndLoss,
-  mediumProfitTaxableProfitAndLoss,
-  smallProfitTaxableProfitAndLoss,
-  withLossesTaxableProfitAndLoss
-}
+import builders.BusinessDataBuilder.smallProfitTaxableProfitAndLoss
 import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import controllers.journeys._
 import models.NormalMode
@@ -33,10 +28,9 @@ import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
-import utils.TaxYearUtils.{currentTaxYearStartDate, dateNow}
+import utils.TaxYearUtils.dateNow
 import viewmodels.NationalInsuranceContributionsViewModelSpec.expectedRow
 import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
-import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel.statePensionAge
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
 
 class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDrivenPropertyChecks {
@@ -52,8 +46,6 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
   private val nicInProgressStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.InProgress))
 
   private val nicCompleteStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.Completed))
-
-  private val validDoB = dateNow.minusYears(20)
 
   private val testScenarios = Table(
     ("nationalInsuranceStatus", "businessStatuses", "expected"),
@@ -208,50 +200,6 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
                     |""".stripMargin) {
           assert(result === expectedResult)
         }
-      }
-    }
-  }
-
-  private val checkClass2Scenarios = Table(
-    ("taxableProfitsAndLosses", "dateOfBirth", "expectedResult"),
-    (withLossesTaxableProfitAndLoss, validDoB, true),
-    (withLossesTaxableProfitAndLoss, dateNow.minusYears(15), false),
-    (withLossesTaxableProfitAndLoss, dateNow.minusYears(statePensionAge), false),
-    (smallProfitTaxableProfitAndLoss, validDoB, true),
-    (smallProfitTaxableProfitAndLoss, dateNow.minusYears(15), false),
-    (smallProfitTaxableProfitAndLoss, dateNow.minusYears(statePensionAge), false),
-    (mediumProfitTaxableProfitAndLoss, validDoB, false),
-    (mediumProfitTaxableProfitAndLoss, dateNow.minusYears(15), false),
-    (mediumProfitTaxableProfitAndLoss, dateNow.minusYears(statePensionAge), false)
-  )
-
-  "checkClass2" - {
-    "should return true when user is of eligible age and either has taxable losses or profits less than threshold" in {
-      forAll(checkClass2Scenarios) { case (taxableProfitsAndLosses, dateOfBirth, expectedResult) =>
-        val result = NationalInsuranceContributionsViewModel.checkClass2(taxableProfitsAndLosses, dateOfBirth)
-
-        assert(result === expectedResult)
-      }
-    }
-  }
-
-  private val checkClass4Scenarios = Table(
-    ("taxableProfitsAndLosses", "dateOfBirth", "expectedResult"),
-    (mediumProfitTaxableProfitAndLoss, validDoB, false),
-    (mediumProfitTaxableProfitAndLoss, currentTaxYearStartDate.minusYears(15), false),
-    (mediumProfitTaxableProfitAndLoss, currentTaxYearStartDate.minusYears(statePensionAge), false),
-    (largeProfitTaxableProfitAndLoss, validDoB, true),
-    (largeProfitTaxableProfitAndLoss, currentTaxYearStartDate.minusYears(15), false),
-    (largeProfitTaxableProfitAndLoss, currentTaxYearStartDate.minusYears(statePensionAge), false),
-    (largeProfitTaxableProfitAndLoss, dateNow.minusYears(statePensionAge), true)
-  )
-
-  "checkClass4" - {
-    "should return true when user is of eligible age at the start of the tax year, and has taxable profits greater than the threshold" in {
-      forAll(checkClass4Scenarios) { case (taxableProfitsAndLosses, dateOfBirth, expectedResult) =>
-        val result = NationalInsuranceContributionsViewModel.checkClass4(taxableProfitsAndLosses, dateOfBirth)
-
-        assert(result === expectedResult)
       }
     }
   }
