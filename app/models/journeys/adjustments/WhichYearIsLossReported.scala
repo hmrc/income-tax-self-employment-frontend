@@ -27,10 +27,16 @@ object WhichYearIsLossReported extends Enumerable.Implicits {
 
   case object Year2018to2019 extends WithName("2018to2019") with WhichYearIsLossReported
   case object Year2019to2020 extends WithName("2019to2020") with WhichYearIsLossReported
+  case object Year2020to2021 extends WithName("2020to2021") with WhichYearIsLossReported
+  case object Year2021to2022 extends WithName("2021to2022") with WhichYearIsLossReported
+  case object Year2022to2023 extends WithName("2022to2023") with WhichYearIsLossReported
 
   val values: Seq[WhichYearIsLossReported] = Seq(
     Year2018to2019,
-    Year2019to2020
+    Year2019to2020,
+    Year2020to2021,
+    Year2021to2022,
+    Year2022to2023
   )
 
   def options()(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>

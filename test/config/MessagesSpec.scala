@@ -220,7 +220,8 @@ class MessagesSpec extends SpecBase {
     "newTaxSites.emptyList.agent",
     "goodsAndServicesForYourOwnUse.hint.agent",
     "checkNetProfitLoss.p1.profit.agent",
-    "checkNetProfitLoss.p1.loss.agent"
+    "checkNetProfitLoss.p1.loss.agent",
+    "whichYearIsLossReported.p2.loss.agent"
   )
 
   "messages must not contain any illegal characters" in {
@@ -357,7 +358,7 @@ class MessagesSpec extends SpecBase {
       val hasNoMissingAgentVersionMessageValues = missingAgentVersionMessages.isEmpty
       assert(
         hasNoMissingAgentVersionMessageValues,
-        "Perhaps missing the agent version of the message. Add to the userSpecificMessagesWithoutAgentVersionsexception list if not true. " +
+        "Perhaps missing the agent version of the message. Add to the userSpecificMessagesWithoutAgentVersionsException list if not true. " +
           "See the console for details which keys are affected."
       )
 
