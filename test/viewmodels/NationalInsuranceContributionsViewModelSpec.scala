@@ -22,13 +22,13 @@ import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmpt
 import controllers.journeys._
 import models.NormalMode
 import models.common.JourneyStatus._
+import models.common.TaxYear.dateNow
 import models.common._
 import models.journeys.Journey._
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
-import utils.TaxYearUtils.dateNow
 import viewmodels.NationalInsuranceContributionsViewModelSpec.expectedRow
 import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow

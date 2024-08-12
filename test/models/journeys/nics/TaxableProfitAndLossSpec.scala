@@ -18,10 +18,11 @@ package models.journeys.nics
 
 import base.SpecBase.taxYear
 import builders.BusinessDataBuilder._
+import models.common.TaxYear.{currentTaxYearStartDate, dateNow}
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.getThresholdForTaxYear
+import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import utils.TaxYearUtils.{currentTaxYearStartDate, dateNow}
 
 class TaxableProfitAndLossSpec extends AnyFreeSpec with ScalaCheckPropertyChecks {
 

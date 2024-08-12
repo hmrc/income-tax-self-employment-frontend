@@ -18,6 +18,8 @@ package models.journeys.nics
 
 sealed trait NicClassExemption
 
-case object Class2      extends NicClassExemption
-case object Class4      extends NicClassExemption
-case object NotEligible extends NicClassExemption
+object NicClassExemption {
+  case object Class2      extends NicClassExemption
+  case object Class4      extends NicClassExemption
+  case object NotEligible extends NicClassExemption
+}

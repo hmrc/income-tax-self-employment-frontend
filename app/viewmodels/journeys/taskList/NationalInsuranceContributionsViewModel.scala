@@ -22,8 +22,9 @@ import models.NormalMode
 import models.common.{JourneyStatus, TaxYear}
 import models.journeys.Journey.{NationalInsuranceContributions, ProfitOrLoss}
 import models.journeys.JourneyNameAndStatus
+import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
+import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.nics.TaxableProfitAndLoss.returnClassTwoOrFourEligible
-import models.journeys.nics.{Class2, Class4, NotEligible, TaxableProfitAndLoss}
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}

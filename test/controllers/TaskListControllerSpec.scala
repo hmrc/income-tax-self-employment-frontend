@@ -24,6 +24,7 @@ import controllers.TaskListControllerSpec._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
 import models.common.JourneyStatus
+import models.common.TaxYear.dateNow
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.Journey.TradeDetails
@@ -38,7 +39,6 @@ import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
 import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import utils.TaxYearUtils.dateNow
 import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
 import views.html.journeys.TaskListView
 

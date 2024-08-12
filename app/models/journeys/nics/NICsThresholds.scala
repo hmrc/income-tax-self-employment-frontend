@@ -17,7 +17,7 @@
 package models.journeys.nics
 
 import models.common.TaxYear
-import utils.TaxYearUtils.{currentTaxYearStartDate, dateNow}
+import models.common.TaxYear.{currentTaxYearStartDate, dateNow}
 
 import java.text.NumberFormat
 import java.time.{LocalDate, Period}
