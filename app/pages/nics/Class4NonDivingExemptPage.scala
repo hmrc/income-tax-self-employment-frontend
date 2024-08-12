@@ -16,11 +16,12 @@
 
 package pages.nics
 
-import models.common.{BusinessId, TaxYear}
+import models.common.BusinessId.nationalInsuranceContributions
+import models.common.{Business, BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-case object Class4NonDivingExemptPage extends NicsBasePage[List[BusinessId]] { // TODO type TBC, we may need a custom FormProvider
+case object Class4NonDivingExemptPage extends NicsBasePage[List[BusinessId]] {
   override def toString: String = "class4NonDivingExempt"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
@@ -28,4 +29,10 @@ case object Class4NonDivingExemptPage extends NicsBasePage[List[BusinessId]] { /
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  def remainingBusinesses(userAnswers: UserAnswers): List[Business] = {
+    val previouslySelected = userAnswers.get(Class4DivingExemptPage, nationalInsuranceContributions).getOrElse(List.empty)
+
+    userAnswers.getBusinesses.filterNot(business => previouslySelected.contains(business.businessId))
+  }
 }

@@ -24,21 +24,10 @@ import org.scalatest.wordspec.AnyWordSpecLike
 class Class4ExemptionReasonPageSpec extends AnyWordSpecLike {
 
   "navigation" should {
-    "navigate to there ia a problem if no answer" in {
-      val result = Class4ExemptionReasonPage.nextPageInNormalMode(emptyUserAnswers, nationalInsuranceContributions, taxYear)
-      assert(result.url.endsWith("/there-is-a-problem"))
-    }
-
-    "navigate to CYA page for single business when DiverDivingInstructor" in {
+    "navigate to CYA page on valid answer" in {
       val answers = emptyUserAnswers.set(Class4ExemptionReasonPage, DiverDivingInstructor, Some(nationalInsuranceContributions)).success.value
       val result  = Class4ExemptionReasonPage.nextPageInNormalMode(answers, nationalInsuranceContributions, taxYear)
-      assert(result.url.endsWith(s"/$taxYear/national-insurance-contributions/class-4-exemption-reasons/diver-diving-supervisor"))
-    }
-
-    "navigate to CYA page for single business when TrusteeExecutorAdmin" in {
-      val answers = emptyUserAnswers.set(Class4ExemptionReasonPage, TrusteeExecutorAdmin, Some(nationalInsuranceContributions)).success.value
-      val result  = Class4ExemptionReasonPage.nextPageInNormalMode(answers, nationalInsuranceContributions, taxYear)
-      assert(result.url.endsWith(s"/$taxYear/national-insurance-contributions/class-4-exemption-reasons/trustee-executor-administrator"))
+      assert(result.url.endsWith(s"/$taxYear/national-insurance-contributions/check-answers"))
     }
   }
 

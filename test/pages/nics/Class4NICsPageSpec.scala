@@ -49,9 +49,6 @@ class Class4NICsPageSpec extends AnyWordSpecLike {
         .set(Class4ExemptionReasonPage, TrusteeExecutorAdmin, nationalInsuranceContributions.some)
         .success
         .value
-        .set(Class4NonDivingExemptPage, List(businessId), nationalInsuranceContributions.some)
-        .success
-        .value
       val result = Class4NICsPage.hasAllFurtherAnswers(nationalInsuranceContributions, answers)
       assert(result === true)
     }

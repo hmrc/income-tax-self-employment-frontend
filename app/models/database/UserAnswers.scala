@@ -18,7 +18,7 @@ package models.database
 
 import cats.implicits.catsSyntaxOptionId
 import models.RichJsObject
-import models.common.{AccountingType, BusinessId, TradingName, UserId}
+import models.common._
 import pages.{TradeAccountingType, TradingNameKey}
 import play.api.libs.json._
 import queries.{Gettable, Settable}
@@ -39,6 +39,24 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
   def getAccountingType(businessId: BusinessId): AccountingType = get(TradeAccountingType, businessId.some).head
 
   def getTraderName(businessId: BusinessId): TradingName = get(TradingNameKey, businessId.some).getOrElse(TradingName.empty)
+
+  def getBusinesses: List[Business] = {
+    val keyValuePairs = data
+      .as[JsObject]
+      .value
+      .view
+      .toMap
+      .flatMap { case (key, jsObject) =>
+        (jsObject \ "tradingName")
+          .asOpt[String]
+          // TODO refactor once the Business confirm action when tradingName = ""
+          .map(tradingName => (key, if (tradingName.nonEmpty) tradingName else " "))
+      }
+
+    keyValuePairs.map { case (id, name) =>
+      Business(BusinessId(id), TradingName(name))
+    }.toList
+  }
 
   def set[A](page: Settable[A], value: A, businessId: Option[BusinessId] = None)(implicit writes: Writes[A]): Try[UserAnswers] = {
 

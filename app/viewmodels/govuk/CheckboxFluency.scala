@@ -65,6 +65,9 @@ trait CheckboxFluency {
 
     def describedBy(value: String): Checkboxes =
       checkboxes.copy(describedBy = Some(value))
+
+    def withHint(hint: Option[Hint]): Checkboxes =
+      hint.fold(checkboxes)(hint => checkboxes.copy(hint = Some(hint)))
   }
 
   object CheckboxItemViewModel {

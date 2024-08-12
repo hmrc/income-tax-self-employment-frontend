@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package models.common
+package viewmodels.journeys.nics
 
-final case class BusinessName(value: String) extends AnyVal {
-  override def toString: String = value
+import models.common.Business
+import uk.gov.hmrc.govukfrontend.views.Aliases.{CheckboxItem, Text}
+import viewmodels.govuk.all.CheckboxItemViewModel
+
+object Class4ExemptBusinesses {
+  def buildCheckboxes(businesses: List[Business]): Seq[CheckboxItem] =
+    businesses.zipWithIndex.map { case (business, index) =>
+      CheckboxItemViewModel(
+        content = Text(business.tradingName.toString),
+        fieldId = "value",
+        index = index,
+        value = business.businessId.toString
+      )
+    }
 }

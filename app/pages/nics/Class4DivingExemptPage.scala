@@ -22,11 +22,13 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
 
-case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] { // TODO type TBC, we may need a custom FormProvider
+case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] {
   override def toString: String = "class4DivingExempt"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
+    if (Class4NonDivingExemptPage.remainingBusinesses(userAnswers).isEmpty)
+      routes.NICsCYAController.onPageLoad(taxYear)
+    else routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
