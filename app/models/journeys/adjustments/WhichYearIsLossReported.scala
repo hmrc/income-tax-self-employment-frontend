@@ -21,24 +21,22 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-import java.time.Year
-
 sealed trait WhichYearIsLossReported
 
 object WhichYearIsLossReported extends Enumerable.Implicits {
 
-  case object currentTaxYearMinusFour  extends WithName(generateYears().last) with WhichYearIsLossReported
-  case object currentTaxYearMinusThree extends WithName(generateYears()(3)) with WhichYearIsLossReported
-  case object currentTaxYearMinusTwo   extends WithName(generateYears()(2)) with WhichYearIsLossReported
-  case object currentTaxYearMinusOne   extends WithName(generateYears()(1)) with WhichYearIsLossReported
-  case object currentTaxYear           extends WithName(generateYears().head) with WhichYearIsLossReported
+  case object Year2018to2019 extends WithName("2018to2019") with WhichYearIsLossReported
+  case object Year2019to2020 extends WithName("2019to2020") with WhichYearIsLossReported
+  case object Year2020to2021 extends WithName("2020to2021") with WhichYearIsLossReported
+  case object Year2021to2022 extends WithName("2021to2022") with WhichYearIsLossReported
+  case object Year2022to2023 extends WithName("2022to2023") with WhichYearIsLossReported
 
   val values: Seq[WhichYearIsLossReported] = Seq(
-    currentTaxYearMinusFour,
-    currentTaxYearMinusThree,
-    currentTaxYearMinusTwo,
-    currentTaxYearMinusOne,
-    currentTaxYear
+    Year2018to2019,
+    Year2019to2020,
+    Year2020to2021,
+    Year2021to2022,
+    Year2022to2023
   )
 
   def options()(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
@@ -51,15 +49,5 @@ object WhichYearIsLossReported extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[WhichYearIsLossReported] =
     Enumerable(values.map(v => v.toString -> v): _*)
-
-  private def generateYears(upTo: Int = 5): Seq[String] = {
-    val currentTaxYear   = Year.now.getValue
-    val taxYearMinusFive = currentTaxYear - upTo + 1
-
-    val yearRange = for {
-      year <- taxYearMinusFive to currentTaxYear
-    } yield s"${year - 2}to${year - 1}"
-    yearRange.toList
-  }
 
 }
