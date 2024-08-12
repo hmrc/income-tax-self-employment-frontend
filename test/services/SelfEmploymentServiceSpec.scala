@@ -17,6 +17,7 @@
 package services
 
 import base.{ControllerTestScenarioSpec, SpecBase}
+import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
 import connectors.SelfEmploymentConnector
@@ -27,9 +28,11 @@ import models.NormalMode
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
+import models.domain.BusinessIncomeSourcesSummary
 import models.errors.ServiceError
 import models.journeys.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDoYouWantToClaim, ZegvUseOutsideSE}
+import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -274,6 +277,27 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     }
   }
 
+  "getUserDateOfBirth" - {
+    "should return a user's date of birth" in new ServiceWithStubs {
+      mockConnector.getUserDateOfBirth(any[Nino], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](aUserDateOfBirth)
+
+      val result = service.getUserDateOfBirth(nino, mtditid).value.futureValue
+
+      result shouldBe aUserDateOfBirth.asRight
+    }
+  }
+
+  "getAllBusinessesTaxableProfitAndLoss" - {
+    "should return a list of any businesses' taxable profits and losses" in new ServiceWithStubs {
+      mockConnector.getAllBusinessIncomeSourcesSummaries(any[TaxYear], any[Nino], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](List.empty[BusinessIncomeSourcesSummary])
+
+      val result = service.getAllBusinessesTaxableProfitAndLoss(taxYear, nino, mtditid).value.futureValue
+
+      result shouldBe List.empty[TaxableProfitAndLoss].asRight
+    }
+  }
 }
 
 trait ServiceWithStubs {

@@ -124,9 +124,10 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       .overrides(bind[SelfEmploymentService].toInstance(stub))
       .build()
 
-  def createApp(stub: StubSubmittedDataRetrievalActionProvider) =
+  def createApp(stubActionProvider: StubSubmittedDataRetrievalActionProvider, stubSelfEmploymentService: SelfEmploymentServiceStub) =
     applicationBuilder(userAnswers = Some(emptyUserAnswers))
-      .overrides(bind[SubmittedDataRetrievalActionProvider].toInstance(stub))
+      .overrides(bind[SubmittedDataRetrievalActionProvider].toInstance(stubActionProvider))
+      .overrides(bind[SelfEmploymentService].toInstance(stubSelfEmploymentService))
       .build()
 
   implicit class ToFutureOps[A](value: A) {

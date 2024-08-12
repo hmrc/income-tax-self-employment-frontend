@@ -20,12 +20,15 @@ import base.IntegrationBaseSpec
 import cats.implicits._
 import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.{JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
-import models.journeys.{Journey, JourneyNameAndStatus, TaskList}
+import models.domain.BusinessIncomeSourcesSummary
 import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
+import models.journeys.{Journey, JourneyNameAndStatus, TaskList}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
+
+import java.time.LocalDate
 
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
@@ -36,6 +39,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private def downstreamUrl(journey: Journey)     = s"/income-tax-self-employment/$taxYear/$businessId/$journey/answers"
   private def statusUrl(journey: Journey)         = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
   private val taskListUrl                         = s"/income-tax-self-employment/$taxYear/$nino/task-list"
+  private val dateOfBirthUrl                      = s"/income-tax-self-employment/user-date-of-birth/$nino"
+  private val businessSummariesUrl                = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
@@ -113,6 +118,30 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.getSubmittedAnswers[JsObject](journeyCtx(ExpensesTailoring)).value.futureValue
       result shouldBe parsingError("GET", "http://localhost:11111/income-tax-self-employment/2024/someBusinessId/expenses-categories/answers").asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
+    }
+  }
+
+  "getUserDateOfBirth" must {
+    "return a user's date of birth" in {
+      val userDateOfBirth = LocalDate.of(1997, 7, 30)
+      val body            = Json.stringify(Json.toJson(userDateOfBirth))
+      stubGetWithResponseBody(dateOfBirthUrl, OK, body, headersSentToBE)
+
+      val result = connector.getUserDateOfBirth(nino, mtditid).value.futureValue
+
+      result shouldBe userDateOfBirth.asRight
+    }
+  }
+
+  "getAllBusinessIncomeSourcesSummaries" must {
+    "return the summaries of any user businesses" in {
+      val summariesList = List.empty[BusinessIncomeSourcesSummary]
+      val body          = Json.stringify(Json.toJson(summariesList))
+      stubGetWithResponseBody(businessSummariesUrl, OK, body, headersSentToBE)
+
+      val result = connector.getAllBusinessIncomeSourcesSummaries(taxYear, nino, mtditid).value.futureValue
+
+      result shouldBe summariesList.asRight
     }
   }
 

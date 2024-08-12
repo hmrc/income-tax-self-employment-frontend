@@ -19,6 +19,8 @@ package models.common
 import play.api.libs.json.{JsString, Writes}
 import play.api.mvc.PathBindable
 
+import java.time.{LocalDate, Month}
+
 final case class TaxYear(endYear: Int) extends AnyVal {
   override def toString: String = endYear.toString
 
@@ -26,6 +28,12 @@ final case class TaxYear(endYear: Int) extends AnyVal {
 }
 
 object TaxYear {
+
+  def dateNow: LocalDate = LocalDate.now()
+
+  def currentTaxYearStartDate: LocalDate =
+    if (dateNow.isBefore(LocalDate.of(dateNow.getYear, Month.APRIL, 6))) LocalDate.of(dateNow.getYear - 1, Month.APRIL, 6)
+    else LocalDate.of(dateNow.getYear, Month.APRIL, 6)
 
   implicit def pathBindable(implicit intBinder: PathBindable[Int]): PathBindable[TaxYear] = new PathBindable[TaxYear] {
 

@@ -18,12 +18,14 @@ package stubs.services
 
 import base.SpecBase._
 import builders.BusinessDataBuilder.aBusinessData
+import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import models.Mode
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
+import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
 import pages.{OneQuestionPage, QuestionPage}
@@ -34,6 +36,7 @@ import play.api.mvc.Results.Redirect
 import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
@@ -46,7 +49,9 @@ case class SelfEmploymentServiceStub(
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
     getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL"))),
     getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
-    submitAnswerAndRedirectResult: Result = Redirect(onwardRoute))
+    submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
+    getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
+    getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -103,4 +108,11 @@ case class SelfEmploymentServiceStub(
       mode: Mode,
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
     Future(submitAnswerAndRedirectResult)
+
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate] =
+    EitherT.fromEither[Future](getUserDateOfBirthResult)
+
+  def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
+    EitherT.fromEither[Future](getAllBusinessesTaxableProfitAndLossResult)
 }

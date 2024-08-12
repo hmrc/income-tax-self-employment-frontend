@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package builders
+package models.journeys.nics
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import uk.gov.hmrc.auth.core.AffinityGroup
+sealed trait NicClassExemption
 
-import java.time.LocalDate
-
-object UserBuilder {
-  val aNoddyUser      = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
-  val aNoddyAgentUser = User("mtdItId", arn = Some(""), "nino", AffinityGroup.Agent.toString)
-
-  val aUserDateOfBirth = LocalDate.of(1997, 7, 30)
+object NicClassExemption {
+  case object Class2      extends NicClassExemption
+  case object Class4      extends NicClassExemption
+  case object NotEligible extends NicClassExemption
 }

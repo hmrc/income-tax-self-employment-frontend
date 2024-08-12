@@ -17,16 +17,18 @@
 package viewmodels
 
 import base.SpecBase
+import builders.BusinessDataBuilder.smallProfitTaxableProfitAndLoss
 import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import controllers.journeys._
 import models.NormalMode
 import models.common.JourneyStatus._
+import models.common.TaxYear.dateNow
 import models.common._
 import models.journeys.Journey._
 import models.journeys.{Journey, JourneyNameAndStatus}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.NationalInsuranceContributionsViewModelSpec.expectedRow
 import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
@@ -36,7 +38,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
   private implicit val messages: Messages = messagesStubbed
 
   private val canNotStartUrl = "#"
-  private val nicUrl         = nics.routes.Class4NICsController.onPageLoad(taxYear, NormalMode).url
+  private val nicUrl         = nics.routes.Class2NICsController.onPageLoad(taxYear, NormalMode).url
   private val nicCyaUrl      = nics.routes.NICsCYAController.onPageLoad(taxYear).url
 
   private val nicNotStartedStatus: Option[JourneyNameAndStatus] = Some(JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.NotStarted))
@@ -122,7 +124,12 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
   "buildSummaryList" - {
     "must create a SummaryList with the correct amount of rows, URLs and journey statuses when" in {
       forAll(testScenarios) { case (nationalInsuranceStatus, businessStatuses, expectedRows) =>
-        val result = NationalInsuranceContributionsViewModel.buildSummaryList(nationalInsuranceStatus, businessStatuses, taxYear)(messages)
+        val result = NationalInsuranceContributionsViewModel.buildSummaryList(
+          nationalInsuranceStatus,
+          businessStatuses,
+          dateNow.minusYears(20),
+          smallProfitTaxableProfitAndLoss,
+          taxYear)(messages)
 
         withClue(s"""
              |Result:
@@ -133,6 +140,14 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
           assert(result.rows === expectedRows)
         }
       }
+    }
+    "must return an empty summary list when user is ineligible for Class 2 or Class 4" in {
+      val result =
+        NationalInsuranceContributionsViewModel.buildSummaryList(None, List.empty, dateNow.minusYears(15), smallProfitTaxableProfitAndLoss, taxYear)(
+          messages)
+      val emptySummaryList = SummaryList(List.empty[SummaryListRow], None, "govuk-!-margin-bottom-7")
+
+      assert(result === emptySummaryList)
     }
   }
 
@@ -172,10 +187,10 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
       true)
   )
 
-  "isAdjustmentsAnswered" - {
+  "areAdjustmentsAnswered" - {
     "should return true when there are Adjustment journey statuses saved, that are all 'Completed'" in {
       forAll(adjustmentTestScenarios) { case (businessStatuses, expectedResult) =>
-        val result = NationalInsuranceContributionsViewModel.isAdjustmentsAnswered(businessStatuses)
+        val result = NationalInsuranceContributionsViewModel.areAdjustmentsAnswered(businessStatuses)
 
         withClue(s"""
                     |Result:
