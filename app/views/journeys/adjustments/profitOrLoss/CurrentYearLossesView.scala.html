@@ -37,7 +37,17 @@
 
         @heading(s"currentYearLosses.title.$userType")
 
-        @twoRadios(form, "CurrentYearLosses", userType, taxYear, inline = false)
+        <div class="govuk-body">
+            <p>@messages(s"currentYearLosses.p1.$userType")</p>
+            <p>@messages(s"currentYearLosses.p2.$userType")</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages(s"currentYearLosses.l1.$userType")</li>
+                <li>@messages(s"currentYearLosses.l2.$userType")</li>
+            </ul>
+        </div>
+
+        @twoRadios(form, "currentYearLosses", userType, taxYear, inline = false)
 
         @submitButton()
     }

@@ -19,7 +19,7 @@ package controllers.journeys.adjustments.profitOrLoss
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.NormalMode
 import models.common._
-import models.journeys.adjustments.ProfitOrLoss.returnProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit, returnProfitOrLoss}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,6 +48,11 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     val table1             = buildTable1(profitOrLoss, 3000, 0.05, -3100)
     val table2             = buildTable2(profitOrLoss, 0, -0.05, 100.20)
     val table3             = buildTable3(profitOrLoss, 200, -200.1)
+
+    val redirectLocation = profitOrLoss match {
+      case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
+      case Loss => routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
+    }
     // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
     Ok(
       view(
@@ -57,9 +62,8 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         table1,
         table2,
         table3,
-        routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
+        redirectLocation
       )
-    ) // TODO if no losses this year go to PreviousUnusedLossesPage instead of CurrentYearLossesPage
+    )
   }
-
 }

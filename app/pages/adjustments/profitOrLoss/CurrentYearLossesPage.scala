@@ -20,13 +20,21 @@ import controllers.journeys.adjustments.profitOrLoss.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import pages.redirectOnBoolean
 import play.api.mvc.Call
 
-case object CurrentYearLossesPage extends AdjustmentsBasePage[Boolean] { // TODO change this type if required to String/Enum/List
+case object CurrentYearLossesPage extends AdjustmentsBasePage[Boolean] {
   override def toString: String = "currentYearLosses"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
+    redirectOnBoolean(
+      this,
+      userAnswers,
+      businessId,
+      onTrue = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode), //TODO should go to different page in SASS-8633
+      onFalse = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
+    )
+  }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
