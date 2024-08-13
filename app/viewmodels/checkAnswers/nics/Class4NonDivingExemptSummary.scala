@@ -35,7 +35,7 @@ object Class4NonDivingExemptSummary {
         formatBusinessTradingNameAnswers(idList, businesses),
         routes.Class4NonDivingExemptController.onPageLoad(taxYear, CheckMode),
         s"class4NonDivingExempt.subHeading.cya.$userType",
-        "class4NonDivingExempt.change.hidden" // change messages
+        "class4NonDivingExempt.change.hidden"
       )
     }
 }
