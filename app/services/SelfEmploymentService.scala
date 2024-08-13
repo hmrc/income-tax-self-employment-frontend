@@ -23,7 +23,7 @@ import controllers.redirectJourneyRecovery
 import models.Mode
 import models.common._
 import models.database.UserAnswers
-import models.domain.{ApiResultT, BusinessData}
+import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
@@ -79,6 +79,9 @@ trait SelfEmploymentService {
   def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate]
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
+
+  def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -205,6 +208,10 @@ class SelfEmploymentServiceImpl @Inject() (
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
     connector.getAllBusinessIncomeSourcesSummaries(taxYear, nino, mtditid).map(_.map(TaxableProfitAndLoss.fromBusinessIncomeSourcesSummary))
+
+  def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
+    connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid)
 
 }
 

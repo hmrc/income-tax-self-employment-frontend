@@ -106,4 +106,12 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     val response = get[List[BusinessIncomeSourcesSummary]](http, url, mtditid)
     EitherT(response)
   }
+
+  def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): ApiResultT[BusinessIncomeSourcesSummary] = {
+    val url      = buildUrl(s"$taxYear/business-income-sources-summary/$nino/$businessId")
+    val response = get[BusinessIncomeSourcesSummary](http, url, mtditid)
+    EitherT(response)
+  }
 }
