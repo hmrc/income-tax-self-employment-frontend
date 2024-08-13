@@ -18,12 +18,13 @@ package stubs.services
 
 import base.SpecBase._
 import builders.BusinessDataBuilder.aBusinessData
+import builders.BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummary
 import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import models.Mode
 import models.common._
 import models.database.UserAnswers
-import models.domain.{ApiResultT, BusinessData}
+import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
 import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{TaskList, TaskListWithRequest}
@@ -51,7 +52,8 @@ case class SelfEmploymentServiceStub(
     getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
     submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
     getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
-    getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]))
+    getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
+    getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -115,4 +117,8 @@ case class SelfEmploymentServiceStub(
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
     EitherT.fromEither[Future](getAllBusinessesTaxableProfitAndLossResult)
+
+  def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
+    EitherT.fromEither[Future](getBusinessIncomeSourcesSummaryResult)
 }

@@ -17,6 +17,7 @@
 package services
 
 import base.{ControllerTestScenarioSpec, SpecBase}
+import builders.BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummary
 import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
@@ -296,6 +297,17 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       val result = service.getAllBusinessesTaxableProfitAndLoss(taxYear, nino, mtditid).value.futureValue
 
       result shouldBe List.empty[TaxableProfitAndLoss].asRight
+    }
+  }
+
+  "getBusinessIncomeSourcesSummary" - {
+    "should return a business income sources summary for a given business id" in new ServiceWithStubs {
+      mockConnector.getBusinessIncomeSourcesSummary(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](aBusinessIncomeSourcesSummary)
+
+      val result = service.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe aBusinessIncomeSourcesSummary.asRight
     }
   }
 }

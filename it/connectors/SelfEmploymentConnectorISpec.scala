@@ -41,6 +41,20 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val taskListUrl                         = s"/income-tax-self-employment/$taxYear/$nino/task-list"
   private val dateOfBirthUrl                      = s"/income-tax-self-employment/user-date-of-birth/$nino"
   private val businessSummariesUrl                = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
+  private val businessSummaryUrl                  = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
+
+  val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
+    businessId.value,
+    100,
+    100,
+    100,
+    100,
+    Some(100),
+    Some(100),
+    Some(100),
+    100,
+    100
+  )
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
 
@@ -145,4 +159,15 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     }
   }
 
+  "getBusinessIncomeSourcesSummary" must {
+    "return the summary of a user business" in {
+      val summary = aBusinessIncomeSourcesSummary
+      val body    = Json.stringify(Json.toJson(summary))
+      stubGetWithResponseBody(businessSummaryUrl, OK, body, headersSentToBE)
+
+      val result = connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe summary.asRight
+    }
+  }
 }
