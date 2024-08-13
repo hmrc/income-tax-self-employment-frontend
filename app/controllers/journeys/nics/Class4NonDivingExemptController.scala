@@ -19,7 +19,7 @@ package controllers.journeys.nics
 import controllers.actions._
 import forms.nics.Class4ExemptBusinessesFormProvider
 import models.Mode
-import models.common.BusinessId.nationalInsuranceContributions
+import models.common.BusinessId.{classFourOtherExemption, nationalInsuranceContributions}
 import models.common.TaxYear
 import pages.nics.Class4NonDivingExemptPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -56,7 +56,7 @@ class Class4NonDivingExemptController @Inject() (override val messagesApi: Messa
       .fold(
         formErrors => Future.successful(BadRequest(view(formErrors, taxYear, request.userType, mode, page.remainingBusinesses(request.userAnswers)))),
         answer => {
-          val filteredAnswer = if (answer.head.value.isEmpty) List.empty else answer
+          val filteredAnswer = if (answer.head.value.isEmpty) List(classFourOtherExemption) else answer
           service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, filteredAnswer, taxYear, mode)
         }
       )

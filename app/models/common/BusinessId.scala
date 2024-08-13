@@ -30,6 +30,7 @@ object BusinessId {
   /** Special BusinessIds for business-agnostic journeys */
   val tradeDetailsId: BusinessId                 = BusinessId("trade-details")
   val nationalInsuranceContributions: BusinessId = BusinessId("national-insurance-contributions")
+  val classFourOtherExemption: BusinessId        = BusinessId("class-four-other-exemption")
 
   implicit def pathBindable(implicit strBinder: PathBindable[String]): PathBindable[BusinessId] = new PathBindable[BusinessId] {
 

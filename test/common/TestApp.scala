@@ -30,8 +30,12 @@ import stubs.services.SelfEmploymentServiceStub
 
 object TestApp {
 
-  def buildApp(accountingType: AccountingType, userType: UserType, userAnswers: Option[UserAnswers] = None): Application = {
-    val selfEmploymentService = SelfEmploymentServiceStub(accountingType = Right(accountingType), saveAnswerResult = emptyUserAnswers)
+  def buildApp(accountingType: AccountingType,
+               userType: UserType,
+               userAnswers: Option[UserAnswers] = None,
+               serviceStub: Option[SelfEmploymentServiceStub] = None): Application = {
+    val selfEmploymentService =
+      serviceStub.getOrElse(SelfEmploymentServiceStub(accountingType = Right(accountingType), saveAnswerResult = emptyUserAnswers))
     SpecBase
       .applicationBuilder(userAnswers, userType)
       .overrides(
@@ -41,8 +45,10 @@ object TestApp {
       .build()
   }
 
-  def buildAppFromUserType(userType: UserType, userAnswers: Option[UserAnswers] = None): Application =
-    buildApp(AccountingType.Cash, userType, userAnswers)
+  def buildAppFromUserType(userType: UserType,
+                           userAnswers: Option[UserAnswers] = None,
+                           serviceStub: Option[SelfEmploymentServiceStub] = None): Application =
+    buildApp(AccountingType.Cash, userType, userAnswers, serviceStub)
 
   def buildAppFromUserAnswers(userAnswers: UserAnswers): Application =
     buildApp(AccountingType.Cash, UserType.Individual, Some(userAnswers))
