@@ -57,7 +57,9 @@
             @govukSummaryList(selfEmployment.statusList)
         }
 
-        <h2 class="app-task-list__section">@messages("taskList.nationalInsuranceContributions")</h2>
+        @if(nationalInsuranceSummaryList.rows.nonEmpty) {
+            <h2 class="app-task-list__section">@messages("taskList.nationalInsuranceContributions")</h2>
+        }
 
         @govukSummaryList(nationalInsuranceSummaryList)
 
