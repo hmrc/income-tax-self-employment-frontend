@@ -19,31 +19,33 @@
 @this(govukCheckboxes: GovukCheckboxes)
 
 @(form: Form[_],
-    page: String,
-    userType: UserType,
-    items: Seq[CheckboxItem],
-    hint: Option[Hint] = None,
-    exclusiveCheckboxText: Option[String] = None
+        page: String,
+        userType: UserType,
+        items: Seq[CheckboxItem],
+        hint: Option[Hint] = None,
+        exclusiveCheckboxText: Option[String] = None,
+        exclusiveCheckboxValue: Option[String] = None
 )(implicit messages: Messages)
 
- @govukCheckboxes(
+@govukCheckboxes(
     CheckboxesViewModel(
         form = form,
         name = "value",
         items = items ++
-        Seq(
-            CheckboxItem(divider = Some(messages("site.or"))),
-            CheckboxItem(
-                content = exclusiveCheckboxText.fold(Text(messages("site.none")))(text => Text(messages(text))),
-                id = Some("value_none"),
-                name = Some("value[0]"),
-                behaviour = Some(ExclusiveCheckbox)
-            )
-        ),
+                Seq(
+                    CheckboxItem(divider = Some(messages("site.or"))),
+                    CheckboxItem(
+                        content = exclusiveCheckboxText.fold(Text(messages("site.none")))(text => Text(messages(text))),
+                        id = Some("value_none"),
+                        name = Some("value[0]"),
+                        value = exclusiveCheckboxValue.getOrElse(""),
+                        behaviour = Some(ExclusiveCheckbox)
+                    )
+                ),
         legend = Legend(
-                content = Text(messages(s"$page.subHeading.$userType")),
-                classes = "govuk-fieldset__legend--l",
-                isPageHeading = true
-                )
+            content = Text(messages(s"$page.subHeading.$userType")),
+            classes = "govuk-fieldset__legend--l",
+            isPageHeading = true
+        )
     ).withHint(hint)
 )
