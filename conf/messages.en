@@ -2139,8 +2139,9 @@ currentYearLosses.p1.individual = If you make a loss, you can claim a loss relie
 currentYearLosses.p2.individual = You can claim a loss relief in two ways:
 currentYearLosses.l1.individual = carry your loss forward to a future tax year
 currentYearLosses.l2.individual = deduct the loss from other types of taxable income
-currentYearLosses.h2.individual = Do you want to claim a loss relief?
 currentYearLosses.subHeading.individual = Do you want to claim a loss relief?
+currentYearLosses.error.required.individual = Select yes if you want to claim a loss relief
+currentYearLosses.error.required.agent = Select yes if your client wants to claim a loss relief
 
 previousUnusedLosses.title = Did {0} have any unused losses in previous years?
 previousUnusedLosses.subHeading.individual = These are unused losses that you have told us about in previous tax returns and chose to carry forward.
