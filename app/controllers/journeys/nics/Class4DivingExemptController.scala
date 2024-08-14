@@ -19,7 +19,7 @@ package controllers.journeys.nics
 import controllers.actions._
 import forms.nics.Class4ExemptBusinessesFormProvider
 import models.Mode
-import models.common.BusinessId.{classFourOtherExemption, nationalInsuranceContributions}
+import models.common.BusinessId.{classFourOtherExemption, emptyBusinessId, nationalInsuranceContributions}
 import models.common.TaxYear
 import models.requests.DataRequest
 import pages.nics.Class4DivingExemptPage
@@ -59,7 +59,7 @@ class Class4DivingExemptController @Inject() (override val messagesApi: Messages
       .fold(
         formErrors => Future.successful(BadRequest(view(formErrors, taxYear, request.userType, mode, businesses))),
         answer => {
-          val filteredAnswer = if (answer.head.value.isEmpty) List(classFourOtherExemption) else answer
+          val filteredAnswer = if (answer.contains(emptyBusinessId)) List(classFourOtherExemption) else answer
           service.submitGatewayQuestionAndRedirect(page, nationalInsuranceContributions, request.userAnswers, filteredAnswer, taxYear, mode)
         }
       )
