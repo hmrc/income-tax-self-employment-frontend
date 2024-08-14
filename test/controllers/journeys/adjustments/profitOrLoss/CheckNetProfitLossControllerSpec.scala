@@ -17,6 +17,7 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.{ControllerSpec, SpecBase}
+import builders.BusinessIncomeSourcesSummaryBuilder
 import common.TestApp.buildAppFromUserType
 import models.NormalMode
 import models.database.UserAnswers
@@ -26,6 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
+import stubs.services.SelfEmploymentServiceStub
 import utils.Assertions.assertEqualWithDiff
 import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildTable1, buildTable2, buildTable3}
@@ -35,37 +37,56 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
 
   def userAnswers: UserAnswers = buildUserAnswers(Json.obj())
 
-  def onPageLoad: String = routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId).url
-  def onwardRoute: Call  = routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
+  def onPageLoad: String      = routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId).url
+  def onwardLossRoute: Call   = routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
+  def onwardProfitRoute: Call = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
 
   def onPageLoadRequest = FakeRequest(GET, onPageLoad)
 
-  // TODO SASS-8626 replace with 'ProfitOrLoss.values' to test profit and loss scenarios when controller is dynamic
-  val profitOrLossCases = List(ProfitOrLoss.Loss)
-  val defaultNetAmount  = BigDecimal(-200) // TODO SASS-8626 remove and add tests for different API values
-
   "onPageLoad" - {
     "should return Ok and render correct view" - {
-      profitOrLossCases.foreach { profitOrLoss =>
-        userTypeCases.foreach { userType =>
-          s"when net $profitOrLoss and user is an $userType" in {
-            val application  = buildAppFromUserType(userType, Some(userAnswers))
-            implicit val msg = SpecBase.messages(application)
-            val result       = route(application, onPageLoadRequest).value
-            val netAmount    = formatSumMoneyNoNegative(List(defaultNetAmount))
-            val table1       = buildTable1(profitOrLoss, 3000, 0.05, -3100)
-            val table2       = buildTable2(profitOrLoss, 0, -0.05, 100.20)
-            val table3       = buildTable3(profitOrLoss, 200, -200.1)
+      userTypeCases.foreach { userType =>
+        s"when net loss and user is an $userType" in {
+          val incomeSummary      = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
+          val stubService        = SelfEmploymentServiceStub(getBusinessIncomeSourcesSummaryResult = Right(incomeSummary))
+          val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg       = SpecBase.messages(application)
+          val result             = route(application, onPageLoadRequest).value
+          val netAmount          = incomeSummary.returnNetBusinessProfitForTaxPurposes()
+          val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+          val table1             = buildTable1(ProfitOrLoss.Loss, 3000, 0.05, -3100)
+          val table2             = buildTable2(ProfitOrLoss.Loss, 0, -0.05, 100.20)
+          val table3             = buildTable3(ProfitOrLoss.Loss, 200, -200.1)
 
-            val expectedView: String = {
-              val view = application.injector.instanceOf[CheckNetProfitLossView]
-              view(userType, profitOrLoss, netAmount, table1, table2, table3, onwardRoute)(onPageLoadRequest, msg)
-                .toString()
-            }
-
-            status(result) mustBe OK
-            assertEqualWithDiff(contentAsString(result), expectedView)
+          val expectedView: String = {
+            val view = application.injector.instanceOf[CheckNetProfitLossView]
+            view(userType, ProfitOrLoss.Loss, formattedNetAmount, table1, table2, table3, onwardLossRoute)(onPageLoadRequest, msg)
+              .toString()
           }
+
+          status(result) mustBe OK
+          assertEqualWithDiff(contentAsString(result), expectedView)
+        }
+        s"when net profit and user is an $userType" in {
+          val incomeSummary = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
+          val stubService = SelfEmploymentServiceStub(getBusinessIncomeSourcesSummaryResult = Right(incomeSummary))
+          val application = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg = SpecBase.messages(application)
+          val result = route(application, onPageLoadRequest).value
+          val netAmount = incomeSummary.returnNetBusinessProfitForTaxPurposes()
+          val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+          val table1 = buildTable1(ProfitOrLoss.Profit, 3000, 0.05, -3100)
+          val table2 = buildTable2(ProfitOrLoss.Profit, 0, -0.05, 100.20)
+          val table3 = buildTable3(ProfitOrLoss.Profit, 200, -200.1)
+
+          val expectedView: String = {
+            val view = application.injector.instanceOf[CheckNetProfitLossView]
+            view(userType, ProfitOrLoss.Profit, formattedNetAmount, table1, table2, table3, onwardProfitRoute)(onPageLoadRequest, msg)
+              .toString()
+          }
+
+          status(result) mustBe OK
+          assertEqualWithDiff(contentAsString(result), expectedView)
         }
       }
     }

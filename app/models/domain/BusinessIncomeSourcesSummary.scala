@@ -16,6 +16,8 @@
 
 package models.domain
 
+import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.libs.json.{Json, OFormat}
 
 case class BusinessIncomeSourcesSummary(incomeSourceId: String,
@@ -27,7 +29,11 @@ case class BusinessIncomeSourcesSummary(incomeSourceId: String,
                                         totalDeductions: Option[BigDecimal],
                                         accountingAdjustments: Option[BigDecimal],
                                         taxableProfit: BigDecimal,
-                                        taxableLoss: BigDecimal)
+                                        taxableLoss: BigDecimal) {
+  // TODO returnNetBusinessProfitForTaxPurposes logic is a placeholder, real value will be calculated in SASS-8626
+  def returnNetBusinessProfitForTaxPurposes(): BigDecimal = if (netLoss != 0) -netLoss else netProfit
+  def returnProfitOrLoss(): ProfitOrLoss                  = if (returnNetBusinessProfitForTaxPurposes < 0) Loss else Profit
+}
 
 object BusinessIncomeSourcesSummary {
   implicit val format: OFormat[BusinessIncomeSourcesSummary] = Json.format[BusinessIncomeSourcesSummary]

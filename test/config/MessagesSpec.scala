@@ -167,7 +167,7 @@ class MessagesSpec extends SpecBase {
     "structuresBuildingsQualifyingUseDate.error.inFuture",
     "prepop.useReportingSoftware",
     "wdaMainRateClaimAmount.p4.agent",
-    "profitOfLoss.capitalAllowances",
+    "profitOrLoss.capitalAllowances",
     "class4NICs.l4.individual",
     "unusedLossAmount.title.individual",
     "unusedLossAmount.error.required.individual",

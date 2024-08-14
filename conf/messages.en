@@ -2081,24 +2081,24 @@ newSpecialTaxSites.change.hidden =
 
 ########## Profit or Loss ##########
 
-profitOfLoss.showCalculations = Show calculations
-profitOfLoss.netProfitOrLoss.profit = Net profit
-profitOfLoss.netProfitOrLoss.loss = Net loss
-profitOfLoss.turnover = Turnover
-profitOfLoss.totalExpenses = Total expenses
-profitOfLoss.additions.profit = Additions to net profit
-profitOfLoss.additions.loss = Additions to net loss
-profitOfLoss.disallowableExpenses = Disallowable expenses
-profitOfLoss.totalAdditions.profit = Total additions to net profit
-profitOfLoss.totalAdditions.loss = Total additions to net loss
-profitOfLoss.deductions.profit = Deductions from net profit
-profitOfLoss.deductions.loss = Deductions from net loss
-profitOfLoss.capitalAllowances = Capital allowances
-profitOfLoss.turnoverNotTaxable = Turnover not taxable as business profit
-profitOfLoss.totalDeductions.profit = Total deductions from net profit
-profitOfLoss.totalDeductions.loss = Total deductions from net loss
-profitOfLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
-profitOfLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
+profitOrLoss.showCalculations = Show calculations
+profitOrLoss.netProfitOrLoss.profit = Net profit
+profitOrLoss.netProfitOrLoss.loss = Net loss
+profitOrLoss.turnover = Turnover
+profitOrLoss.totalExpenses = Total expenses
+profitOrLoss.additions.profit = Additions to net profit
+profitOrLoss.additions.loss = Additions to net loss
+profitOrLoss.disallowableExpenses = Disallowable expenses
+profitOrLoss.totalAdditions.profit = Total additions to net profit
+profitOrLoss.totalAdditions.loss = Total additions to net loss
+profitOrLoss.deductions.profit = Deductions from net profit
+profitOrLoss.deductions.loss = Deductions from net loss
+profitOrLoss.capitalAllowances = Capital allowances
+profitOrLoss.turnoverNotTaxable = Turnover not taxable as business profit
+profitOrLoss.totalDeductions.profit = Total deductions from net profit
+profitOrLoss.totalDeductions.loss = Total deductions from net loss
+profitOrLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
+profitOrLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use

@@ -26,15 +26,14 @@ import play.api.mvc.Call
 case object CurrentYearLossesPage extends AdjustmentsBasePage[Boolean] {
   override def toString: String = "currentYearLosses"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       this,
       userAnswers,
       businessId,
-      onTrue = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode), //TODO should go to different page in SASS-8633
+      onTrue = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode), // TODO should go to different page in SASS-8633
       onFalse = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
     )
-  }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)

@@ -62,7 +62,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
         val table =
           NetBusinessProfitOrLossSummary.buildTable1(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)(messages)
         val expectedTable   = expectedTable1(profitOrLoss, turnover, incomeNotCountedAsTurnover, totalExpenses)
-        val expectedCaption = Some(s"profitOfLoss.netProfitOrLoss.$profitOrLoss")
+        val expectedCaption = Some(s"profitOrLoss.netProfitOrLoss.$profitOrLoss")
 
         assert(table.caption == expectedCaption)
         assertWithClue(result = table, expectedResult = expectedTable)
@@ -99,13 +99,13 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   }
 
   def expectedTable1(profitOrLoss: ProfitOrLoss, turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(profitOfLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+    s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
       |List(TableRow(HtmlContent(incomeNotCountedAsTurnover.title),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
-      |List(TableRow(HtmlContent(profitOfLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+      |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          totalExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
-      |List(TableRow(HtmlContent(profitOfLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
+      |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
          List(turnover, incomeNotCountedAsTurnover, totalExpenses))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
   def expectedTable2(profitOrLoss: ProfitOrLoss,
@@ -116,17 +116,17 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
          balancingCharge)}),None,govuk-!-text-align-right ,None,None,Map()))
       |List(TableRow(HtmlContent(goodsAndServicesForYourOwnUse.title.individual),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          goodsAndServices)}),None,govuk-!-text-align-right ,None,None,Map()))
-      |List(TableRow(HtmlContent(profitOfLoss.disallowableExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+      |List(TableRow(HtmlContent(profitOrLoss.disallowableExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          disallowableExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
-      |List(TableRow(HtmlContent(profitOfLoss.totalAdditions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
+      |List(TableRow(HtmlContent(profitOrLoss.totalAdditions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
          List(balancingCharge, goodsAndServices, disallowableExpenses))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
   def expectedTable3(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(profitOfLoss.capitalAllowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+    s"""|List(TableRow(HtmlContent(profitOrLoss.capitalAllowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          capitalAllowances)}),None,govuk-!-text-align-right ,None,None,Map()))
-      |List(TableRow(HtmlContent(profitOfLoss.turnoverNotTaxable),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+      |List(TableRow(HtmlContent(profitOrLoss.turnoverNotTaxable),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          turnoverNotTaxable)}),None,govuk-!-text-align-right ,None,None,Map()))
-      |List(TableRow(HtmlContent(profitOfLoss.totalDeductions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
+      |List(TableRow(HtmlContent(profitOrLoss.totalDeductions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatSumMoneyNoNegative(
          List(capitalAllowances, turnoverNotTaxable))}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
 
 }
