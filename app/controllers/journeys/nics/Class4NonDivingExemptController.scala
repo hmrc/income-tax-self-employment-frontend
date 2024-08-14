@@ -17,13 +17,15 @@
 package controllers.journeys.nics
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.nics.Class4ExemptBusinessesFormProvider
 import models.Mode
-import models.common.BusinessId.{classFourOtherExemption, emptyBusinessId, nationalInsuranceContributions}
-import models.common.TaxYear
+import models.common.BusinessId.nationalInsuranceContributions
+import models.common.{BusinessId, TaxYear}
 import pages.nics.Class4NonDivingExemptPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.nics.Class4NonDivingExemptView
@@ -46,19 +48,16 @@ class Class4NonDivingExemptController @Inject() (override val messagesApi: Messa
   private val page = Class4NonDivingExemptPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val form = formProvider(page, request.userType)
-    Ok(view(form, taxYear, request.userType, mode, page.remainingBusinesses(request.userAnswers)))
+    val preparedForm = fillForm(page, nationalInsuranceContributions, formProvider(page, request.userType))
+    Ok(view(preparedForm, taxYear, request.userType, mode, page.remainingBusinesses(request.userAnswers)))
   }
 
   def onSubmit(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    formProvider(page, request.userType)
-      .bindFromRequest()
-      .fold(
-        formErrors => Future.successful(BadRequest(view(formErrors, taxYear, request.userType, mode, page.remainingBusinesses(request.userAnswers)))),
-        answer => {
-          val filteredAnswer = if (answer.contains(emptyBusinessId)) List(classFourOtherExemption) else answer
-          service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, filteredAnswer, taxYear, mode)
-        }
-      )
+    def handleError(formWithErrors: Form[_]): Result =
+      BadRequest(view(formWithErrors, taxYear, request.userType, mode, page.remainingBusinesses(request.userAnswers)))
+    def handleSuccess(answer: List[BusinessId]): Future[Result] =
+      service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, answer, taxYear, mode)
+
+    service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
 }

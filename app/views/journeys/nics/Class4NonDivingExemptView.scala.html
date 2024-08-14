@@ -15,7 +15,8 @@
  *@
 
 @import controllers.journeys.nics.routes
-@import models.common.{TaxYear, UserType, Business}
+@import models.common.BusinessId.classFourOtherExemption
+@import models.common.{Business, TaxYear, UserType}
 @import viewmodels.journeys.nics.Class4ExemptBusinesses
 @import views.html.components._
 
@@ -35,15 +36,16 @@
 
     @formHelper(action = routes.Class4NonDivingExemptController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
-           @checkboxes(
-                form = form,
-                page = "class4NonDivingExempt",
-                userType,
-                items = Class4ExemptBusinesses.buildCheckboxes(businesses),
-                hint = Some(Hint(content = Text(messages("site.selectAllThatApply")))),
-                exclusiveCheckboxText = Some("nics.exemptForDifferentReason")
-            )
+        @checkboxes(
+            form = form,
+            page = "class4NonDivingExempt",
+            userType,
+            items = Class4ExemptBusinesses.buildCheckboxes(businesses),
+            hint = Some(Hint(content = Text(messages("site.selectAllThatApply")))),
+            exclusiveCheckboxText = Some("nics.exemptForDifferentReason"),
+            exclusiveCheckboxValue = Some(classFourOtherExemption.value)
+        )
 
-            @submitButton()
+        @submitButton()
     }
 }
