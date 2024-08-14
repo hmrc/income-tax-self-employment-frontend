@@ -56,7 +56,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         table1 = buildTable1(profitOrLoss, 3000, 0.05, -3100)
         table2 = buildTable2(profitOrLoss, 0, -0.05, 100.20)
         table3 = buildTable3(profitOrLoss, 200, -200.1)
-        //TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
+        // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
         redirectLocation = profitOrLoss match {
           case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           case Loss   => routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)

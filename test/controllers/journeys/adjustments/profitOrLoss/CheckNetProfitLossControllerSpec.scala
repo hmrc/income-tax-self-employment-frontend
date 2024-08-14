@@ -68,16 +68,16 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           assertEqualWithDiff(contentAsString(result), expectedView)
         }
         s"when net profit and user is an $userType" in {
-          val incomeSummary = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
-          val stubService = SelfEmploymentServiceStub(getBusinessIncomeSourcesSummaryResult = Right(incomeSummary))
-          val application = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
-          implicit val msg = SpecBase.messages(application)
-          val result = route(application, onPageLoadRequest).value
-          val netAmount = incomeSummary.returnNetBusinessProfitForTaxPurposes()
+          val incomeSummary      = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
+          val stubService        = SelfEmploymentServiceStub(getBusinessIncomeSourcesSummaryResult = Right(incomeSummary))
+          val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg       = SpecBase.messages(application)
+          val result             = route(application, onPageLoadRequest).value
+          val netAmount          = incomeSummary.returnNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val table1 = buildTable1(ProfitOrLoss.Profit, 3000, 0.05, -3100)
-          val table2 = buildTable2(ProfitOrLoss.Profit, 0, -0.05, 100.20)
-          val table3 = buildTable3(ProfitOrLoss.Profit, 200, -200.1)
+          val table1             = buildTable1(ProfitOrLoss.Profit, 3000, 0.05, -3100)
+          val table2             = buildTable2(ProfitOrLoss.Profit, 0, -0.05, 100.20)
+          val table3             = buildTable3(ProfitOrLoss.Profit, 200, -200.1)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
