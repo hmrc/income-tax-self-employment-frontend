@@ -35,7 +35,11 @@ case class BusinessData(businessId: String,
                         businessAddressLineThree: Option[String],
                         businessAddressLineFour: Option[String],
                         businessAddressPostcode: Option[String],
-                        businessAddressCountryCode: String)
+                        businessAddressCountryCode: String) {
+
+  // TODO refactor once the Business confirm action when tradingName = None
+  def getOptTradingName: String = tradingName.getOrElse(" ")
+}
 
 object BusinessData {
   implicit val businessFormat: OFormat[BusinessData] = Json.format[BusinessData]

@@ -17,10 +17,11 @@
 package controllers.journeys.nics
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.handleSubmitAnswersResult
+import controllers.{handleResultT, handleSubmitAnswersResult}
 import models.CheckMode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.domain.BusinessData
 import models.journeys.Journey.NationalInsuranceContributions
 import models.journeys.nics.Class2NICsAnswers
 import pages.Page
@@ -31,7 +32,7 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.BooleanSummary
-import viewmodels.checkAnswers.nics.Class4ExemptionReasonSummary
+import viewmodels.checkAnswers.nics.{Class4DivingExemptSummary, Class4ExemptionReasonSummary, Class4NonDivingExemptSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -50,32 +51,23 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
     with I18nSupport
     with Logging {
 
-  // TODO uncomment onPageLoad lines when implementing the CYA content for multiple businesses
-  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) { implicit request =>
-//    val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))
-          .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
-        new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
-          .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
-        Class4ExemptionReasonSummary.row(request.userAnswers, request.userType, taxYear)
-//          Class4DivingExemptSummary.row(request.userAnswers, businesses, request.userType, taxYear),
-//          Class4NonDivingExemptSummary.row(request.userAnswers, businesses, request.userType, taxYear)
-      ))
+  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) async { implicit request =>
+    val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
+      val summaryList = SummaryListCYA.summaryListOpt(
+        List(
+          new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))
+            .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
+          new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
+            .row(request.userAnswers, taxYear, nationalInsuranceContributions, request.userType, rightTextAlign = false),
+          Class4ExemptionReasonSummary.row(request.userAnswers, request.userType, taxYear),
+          Class4DivingExemptSummary.row(request.userAnswers, businesses, request.userType, taxYear),
+          Class4NonDivingExemptSummary.row(request.userAnswers, businesses, request.userType, taxYear)
+        ))
 
-    Ok(
-      view(
-        Page.cyaCheckYourAnswersHeading,
-        taxYear,
-        request.userType,
-        summaryList,
-        routes.NICsCYAController.onSubmit(taxYear)
-      )
-    )
-//    }
-//
-//    handleResultT(result)
+      Ok(view(Page.cyaCheckYourAnswersHeading, taxYear, request.userType, summaryList, routes.NICsCYAController.onSubmit(taxYear)))
+    }
+
+    handleResultT(result)
   }
 
   def onSubmit(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) async { implicit request =>

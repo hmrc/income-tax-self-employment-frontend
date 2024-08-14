@@ -49,7 +49,7 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
       .flatMap { case (key, jsObject) =>
         (jsObject \ "tradingName")
           .asOpt[String]
-          // TODO refactor once the Business confirm action when tradingName = ""
+          // TODO refactor once the Business confirm action when tradingName = None
           .map(tradingName => (key, if (tradingName.nonEmpty) tradingName else " "))
       }
 

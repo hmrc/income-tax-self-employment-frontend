@@ -21,6 +21,7 @@ import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
+import queries.Settable
 
 case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] {
   override def toString: String = "class4DivingExempt"
@@ -32,4 +33,6 @@ case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] {
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(Class4NonDivingExemptPage)
 }

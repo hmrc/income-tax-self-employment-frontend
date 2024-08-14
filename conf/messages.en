@@ -2199,6 +2199,7 @@ class4NICs.subHeading.cya.individual = Are you exempt from paying Class 4 Nation
 class4NICs.subHeading.cya.agent = Is your client exempt from paying Class 4 National Insurance contributions?
 class4NICs.error.required.individual = Select yes if you are exempt from making Class 4 National Insurance contributions
 class4NICs.error.required.agent = Select yes if your client is exempt from making Class 4 National Insurance contributions
+class4NICs.change.hidden = Change if you are exempt from making Class 4 National Insurance Contributions
 
 class4ExemptionReason.title.individual = Why are you exempt from making these contributions?
 class4ExemptionReason.title.agent = Why is your client exempt from making these contributions?
@@ -2208,13 +2209,20 @@ class4ExemptionReason.diverDivingInstructor.individual = You are a diver or divi
 class4ExemptionReason.diverDivingInstructor.agent = Your client is a diver or diving instructor and has paid Class 1 National Insurance contributions on their earnings
 class4ExemptionReason.error.required.individual = Select reason if you’re exempt from making Class 4 National Insurance contributions
 class4ExemptionReason.error.required.agent = Select reason if your client is exempt from making Class 4 National Insurance contributions
+class4ExemptionReason.change.hidden = Change why you are exempt from making these contributions
 
 class4DivingExempt.subHeading.individual = For which self employment businesses are you a diver or diving instructor and have paid Class 1 National Insurance on your earnings?
 class4DivingExempt.subHeading.agent = For which self employment businesses is your client a diver or diving instructor and has paid Class 1 National Insurance on their earnings?
+class4DivingExempt.subHeading.cya.individual = For which self employment businesses are you a diver or diving supervisor?
+class4DivingExempt.subHeading.cya.agent = For which self employment businesses is your client a diver or diving instructor?
 class4DivingExempt.error.required.individual = Select all your self employment businesses where you are a diver or diving instructor
 class4DivingExempt.error.required.agent = Select all your client’s self employment businesses where they are a diver or diving instructor
+class4DivingExempt.change.hidden = Change which self employment businesses you are a diver or diving instructor for
 
 class4NonDivingExempt.subHeading.individual = For which self employment businesses did you receive profits in your capacity as a trustee, executor or administrator?
 class4NonDivingExempt.subHeading.agent = For which self employment businesses did your client receive profits in their capacity as a trustee, executor or administrator?
+class4NonDivingExempt.subHeading.cya.individual = For which self employment businesses are you a trustee, executor or administrator?
+class4NonDivingExempt.subHeading.cya.agent = For which self employment businesses is your client a trustee, executor or administrator?
 class4NonDivingExempt.error.required.individual = Select all your self employment businesses where you are a trustee, executor or administrator
 class4NonDivingExempt.error.required.agent = Select all your client’s self employment businesses where they are a trustee, executor or administrator
+class4NonDivingExempt.change.hidden = Change which self employment businesses you are a trustee, executor or administrator for

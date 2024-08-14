@@ -30,11 +30,11 @@ object Class4DivingExemptSummary {
 
   def row(answers: UserAnswers, businesses: Seq[BusinessData], userType: UserType, taxYear: TaxYear)(implicit
       messages: Messages): Option[SummaryListRow] =
-    answers.get(Class4DivingExemptPage, BusinessId.nationalInsuranceContributions).map { answers =>
+    answers.get(Class4DivingExemptPage, BusinessId.nationalInsuranceContributions).map { idList =>
       buildRowString(
-        formatBusinessNamesAnswers(answers, businesses),
+        formatBusinessTradingNameAnswers(idList, businesses),
         routes.Class4DivingExemptController.onPageLoad(taxYear, CheckMode),
-        s"class4DivingExempt.title.$userType",
+        s"class4DivingExempt.subHeading.cya.$userType",
         "class4DivingExempt.change.hidden"
       )
     }

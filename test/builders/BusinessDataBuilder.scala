@@ -66,7 +66,7 @@ object BusinessDataBuilder {
 
   val aBusinessDataCashAccounting: BusinessData =
     BusinessData(
-      businessId = "businessId-1",
+      businessId = "businessId-1-cash",
       typeOfBusiness = "self-employment",
       tradingName = Some("Trade one"),
       yearOfMigration = Some("2022"),

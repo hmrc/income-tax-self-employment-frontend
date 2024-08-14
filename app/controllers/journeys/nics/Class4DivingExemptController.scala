@@ -19,7 +19,7 @@ package controllers.journeys.nics
 import controllers.actions._
 import forms.nics.Class4ExemptBusinessesFormProvider
 import models.Mode
-import models.common.BusinessId.nationalInsuranceContributions
+import models.common.BusinessId.{classFourOtherExemption, emptyBusinessId, nationalInsuranceContributions}
 import models.common.TaxYear
 import models.requests.DataRequest
 import pages.nics.Class4DivingExemptPage
@@ -44,7 +44,8 @@ class Class4DivingExemptController @Inject() (override val messagesApi: Messages
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page                                                  = Class4DivingExemptPage
+  private val page = Class4DivingExemptPage
+
   private def businesses(implicit request: DataRequest[AnyContent]) = request.userAnswers.getBusinesses
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
@@ -58,8 +59,8 @@ class Class4DivingExemptController @Inject() (override val messagesApi: Messages
       .fold(
         formErrors => Future.successful(BadRequest(view(formErrors, taxYear, request.userType, mode, businesses))),
         answer => {
-          val filteredAnswer = if (answer.head.value.isEmpty) List.empty else answer
-          service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, filteredAnswer, taxYear, mode)
+          val filteredAnswer = if (answer.contains(emptyBusinessId)) List(classFourOtherExemption) else answer
+          service.submitGatewayQuestionAndRedirect(page, nationalInsuranceContributions, request.userAnswers, filteredAnswer, taxYear, mode)
         }
       )
   }
