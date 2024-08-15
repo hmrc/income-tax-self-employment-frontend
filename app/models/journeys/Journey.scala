@@ -49,6 +49,7 @@ import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
+import pages.nics._
 import play.api.mvc.PathBindable
 
 sealed abstract class Journey(override val entryName: String) extends EnumEntry {
@@ -307,7 +308,8 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override def toString: String = entryName
   }
   case object NationalInsuranceContributions extends NationalInsuranceBaseJourney("national-insurance-contributions") {
-    override val pageKeys: List[PageName] = List.empty
+    override val pageKeys: List[PageName] =
+      List(Class2NICsPage, Class4NICsPage, Class4ExemptionReasonPage, Class4DivingExemptPage, Class4NonDivingExemptPage).map(_.pageName)
   }
 
   sealed abstract class AdjustmentsBaseJourney(override val entryName: String) extends Journey(entryName) {
