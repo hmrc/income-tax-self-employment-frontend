@@ -2134,12 +2134,16 @@ checkNetProfitLoss.p1.profit.agent = We’re now going to ask you about any fina
 checkNetProfitLoss.p1.loss.individual = We’re now going to ask you about any final adjustments to your net business loss. This will give you your total taxable profit or loss.
 checkNetProfitLoss.p1.loss.agent = We’re now going to ask you about any final adjustments to your client’s net business loss. This will give you their total taxable profit or loss.
 
-currentYearLosses.title.individual = Claim a loss relief
+currentYearLosses.title = Claim a loss relief
 currentYearLosses.p1.individual = If you make a loss, you can claim a loss relief to reduce the amount of tax you may need to pay now or in a future tax year.
+currentYearLosses.p1.agent = If your client makes a loss, they can claim a loss relief to reduce the amount of tax they may need to pay now or in a future tax year.
 currentYearLosses.p2.individual = You can claim a loss relief in two ways:
+currentYearLosses.p2.agent = Your client can claim a loss relief in two ways:
 currentYearLosses.l1.individual = carry your loss forward to a future tax year
-currentYearLosses.l2.individual = deduct the loss from other types of taxable income
+currentYearLosses.l1.agent = carry their loss forward to a future tax year
+currentYearLosses.l2 = deduct the loss from other types of taxable income
 currentYearLosses.subHeading.individual = Do you want to claim a loss relief?
+currentYearLosses.subHeading.agent = Does your client want to claim a loss relief?
 currentYearLosses.error.required.individual = Select yes if you want to claim a loss relief
 currentYearLosses.error.required.agent = Select yes if your client wants to claim a loss relief
 
