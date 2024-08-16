@@ -29,15 +29,25 @@
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"currentYearLosses.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"currentYearLosses.title"))) {
 
     @errorSummarySection(form)
 
     @formHelper(action = routes.CurrentYearLossesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(s"currentYearLosses.title.$userType")
+        @heading(s"currentYearLosses.title")
 
-        @twoRadios(form, "CurrentYearLosses", userType, taxYear, inline = false)
+        <div class="govuk-body">
+            <p>@messages(s"currentYearLosses.p1.$userType")</p>
+            <p>@messages(s"currentYearLosses.p2.$userType")</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages(s"currentYearLosses.l1.$userType")</li>
+                <li>@messages(s"currentYearLosses.l2")</li>
+            </ul>
+        </div>
+
+        @twoRadios(form, "currentYearLosses", userType, taxYear, inline = false)
 
         @submitButton()
     }

@@ -2081,24 +2081,24 @@ newSpecialTaxSites.change.hidden =
 
 ########## Profit or Loss ##########
 
-profitOfLoss.showCalculations = Show calculations
-profitOfLoss.netProfitOrLoss.profit = Net profit
-profitOfLoss.netProfitOrLoss.loss = Net loss
-profitOfLoss.turnover = Turnover
-profitOfLoss.totalExpenses = Total expenses
-profitOfLoss.additions.profit = Additions to net profit
-profitOfLoss.additions.loss = Additions to net loss
-profitOfLoss.disallowableExpenses = Disallowable expenses
-profitOfLoss.totalAdditions.profit = Total additions to net profit
-profitOfLoss.totalAdditions.loss = Total additions to net loss
-profitOfLoss.deductions.profit = Deductions from net profit
-profitOfLoss.deductions.loss = Deductions from net loss
-profitOfLoss.capitalAllowances = Capital allowances
-profitOfLoss.turnoverNotTaxable = Turnover not taxable as business profit
-profitOfLoss.totalDeductions.profit = Total deductions from net profit
-profitOfLoss.totalDeductions.loss = Total deductions from net loss
-profitOfLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
-profitOfLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
+profitOrLoss.showCalculations = Show calculations
+profitOrLoss.netProfitOrLoss.profit = Net profit
+profitOrLoss.netProfitOrLoss.loss = Net loss
+profitOrLoss.turnover = Turnover
+profitOrLoss.totalExpenses = Total expenses
+profitOrLoss.additions.profit = Additions to net profit
+profitOrLoss.additions.loss = Additions to net loss
+profitOrLoss.disallowableExpenses = Disallowable expenses
+profitOrLoss.totalAdditions.profit = Total additions to net profit
+profitOrLoss.totalAdditions.loss = Total additions to net loss
+profitOrLoss.deductions.profit = Deductions from net profit
+profitOrLoss.deductions.loss = Deductions from net loss
+profitOrLoss.capitalAllowances = Capital allowances
+profitOrLoss.turnoverNotTaxable = Turnover not taxable as business profit
+profitOrLoss.totalDeductions.profit = Total deductions from net profit
+profitOrLoss.totalDeductions.loss = Total deductions from net loss
+profitOrLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
+profitOrLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
@@ -2133,6 +2133,19 @@ checkNetProfitLoss.p1.profit.individual = We’re now going to ask you about any
 checkNetProfitLoss.p1.profit.agent = We’re now going to ask you about any final adjustments to your client’s net business profit. This will give you their total taxable profit or loss.
 checkNetProfitLoss.p1.loss.individual = We’re now going to ask you about any final adjustments to your net business loss. This will give you your total taxable profit or loss.
 checkNetProfitLoss.p1.loss.agent = We’re now going to ask you about any final adjustments to your client’s net business loss. This will give you their total taxable profit or loss.
+
+currentYearLosses.title = Claim a loss relief
+currentYearLosses.p1.individual = If you make a loss, you can claim a loss relief to reduce the amount of tax you may need to pay now or in a future tax year.
+currentYearLosses.p1.agent = If your client makes a loss, they can claim a loss relief to reduce the amount of tax they may need to pay now or in a future tax year.
+currentYearLosses.p2.individual = You can claim a loss relief in two ways:
+currentYearLosses.p2.agent = Your client can claim a loss relief in two ways:
+currentYearLosses.l1.individual = carry your loss forward to a future tax year
+currentYearLosses.l1.agent = carry their loss forward to a future tax year
+currentYearLosses.l2 = deduct the loss from other types of taxable income
+currentYearLosses.subHeading.individual = Do you want to claim a loss relief?
+currentYearLosses.subHeading.agent = Does your client want to claim a loss relief?
+currentYearLosses.error.required.individual = Select yes if you want to claim a loss relief
+currentYearLosses.error.required.agent = Select yes if your client wants to claim a loss relief
 
 previousUnusedLosses.title = Did {0} have any unused losses in previous years?
 previousUnusedLosses.subHeading.individual = These are unused losses that you have told us about in previous tax returns and chose to carry forward.
