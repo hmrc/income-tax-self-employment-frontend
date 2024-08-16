@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleResultT
 import models.NormalMode
 import models.common._
-import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit, returnProfitOrLoss}
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -49,14 +49,14 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
     implicit request =>
       val result = for {
         incomeSummary <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
-        netAmount          = incomeSummary.returnNetBusinessProfitForTaxPurposes()
+        netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
 
         table1 = buildTable1(profitOrLoss, 3000, 0.05, -3100)
         table2 = buildTable2(profitOrLoss, 0, -0.05, 100.20)
         table3 = buildTable3(profitOrLoss, 200, -200.1)
-        // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data
+        // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data, and consider renaming table values to be descriptive
         redirectLocation = profitOrLoss match {
           case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           case Loss   => routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)

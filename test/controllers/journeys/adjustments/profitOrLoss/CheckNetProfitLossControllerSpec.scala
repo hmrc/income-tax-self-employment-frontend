@@ -52,7 +52,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg       = SpecBase.messages(application)
           val result             = route(application, onPageLoadRequest).value
-          val netAmount          = incomeSummary.returnNetBusinessProfitForTaxPurposes()
+          val netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
           val table1             = buildTable1(ProfitOrLoss.Loss, 3000, 0.05, -3100)
           val table2             = buildTable2(ProfitOrLoss.Loss, 0, -0.05, 100.20)
@@ -73,7 +73,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg       = SpecBase.messages(application)
           val result             = route(application, onPageLoadRequest).value
-          val netAmount          = incomeSummary.returnNetBusinessProfitForTaxPurposes()
+          val netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
           val table1             = buildTable1(ProfitOrLoss.Profit, 3000, 0.05, -3100)
           val table2             = buildTable2(ProfitOrLoss.Profit, 0, -0.05, 100.20)
