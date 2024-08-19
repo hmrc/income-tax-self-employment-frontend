@@ -55,7 +55,7 @@ package object checkAnswers {
     )
 
   def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
-    buildRowString(s"£${formatMoney(answer)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
+    buildRowString(s"£${formatMoney(answer, addDecimalForWholeNumbers = false)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
 
   def mkBigDecimalSummary(answer: BigDecimal, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
     buildRowBigDecimal(

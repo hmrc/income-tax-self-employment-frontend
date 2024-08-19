@@ -37,7 +37,7 @@ class IrrecoverableDebtsDisallowableAmountSummarySpec extends SummaryBaseSpec("I
   override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"irrecoverableDebtsDisallowableAmount.title.$userType", amount))
-  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount, addDecimalForWholeNumbers = false)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     IrrecoverableDebtsDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

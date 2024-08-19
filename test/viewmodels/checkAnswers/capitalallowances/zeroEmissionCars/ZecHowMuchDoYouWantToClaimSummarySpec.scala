@@ -30,7 +30,7 @@ class ZecHowMuchDoYouWantToClaimSummarySpec extends SummaryBaseSpec("ZecHowMuchD
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"zecHowMuchDoYouWantToClaim.subHeading.$userType"))
 
-  override val testValue: HtmlContent = HtmlContent("£400.00")
+  override val testValue: HtmlContent = HtmlContent("£400")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ZecHowMuchDoYouWantToClaimSummary.row(userAnswers, taxYear, businessId, userType)(messages)
