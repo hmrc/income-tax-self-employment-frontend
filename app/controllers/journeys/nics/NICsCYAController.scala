@@ -23,7 +23,7 @@ import models.common.BusinessId.nationalInsuranceContributions
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.domain.BusinessData
 import models.journeys.Journey.NationalInsuranceContributions
-import models.journeys.nics.Class2NICsAnswers
+import models.journeys.nics.NICsJourneyAnswers
 import pages.Page
 import pages.nics._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,7 +52,7 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen getJourneyAnswers[Class2NICsAnswers](req =>
+  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen getJourneyAnswers[NICsJourneyAnswers](req =>
     req.mkJourneyNinoContext(taxYear, nationalInsuranceContributions, NationalInsuranceContributions)) andThen requireData) async {
     implicit request =>
       val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
@@ -74,9 +74,11 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
   }
 
   def onSubmit(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) async { implicit request =>
+    val maybeSingleBusinessId: Option[BusinessId] = request.userAnswers.getBusinesses.headOption.map(_.businessId)
+    val idForContext: BusinessId                  = maybeSingleBusinessId.getOrElse(BusinessId.nationalInsuranceContributions)
     val context =
-      JourneyContextWithNino(taxYear, request.nino, BusinessId.nationalInsuranceContributions, request.mtditid, NationalInsuranceContributions)
-    val result = service.submitAnswers[Class2NICsAnswers](context, request.userAnswers)
+      JourneyContextWithNino(taxYear, request.nino, idForContext, request.mtditid, NationalInsuranceContributions)
+    val result = service.submitAnswers[NICsJourneyAnswers](context, request.userAnswers)
     handleSubmitAnswersResult(context, result)
   }
 }
