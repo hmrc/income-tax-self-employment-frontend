@@ -30,4 +30,7 @@ case object DepreciationDisallowableAmountPage extends OneQuestionPage[BigDecima
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
 }
