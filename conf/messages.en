@@ -2115,6 +2115,9 @@ goodsAndServicesForYourOwnUse.hint.individual = If you have already included thi
 goodsAndServicesForYourOwnUse.hint.agent = If you have already included this amount in the question about their turnover, select ‘no’.
 goodsAndServicesForYourOwnUse.error.required.individual = Select yes if you took goods out of your business or provided business services to family and friends
 goodsAndServicesForYourOwnUse.error.required.agent = Select yes if your client took goods out of their business or provided business services to family and friends
+goodsAndServicesForYourOwnUse.subHeading.cya.individual = Did you take goods out of your business or provide business services to family and friends?
+goodsAndServicesForYourOwnUse.subHeading.cya.agent = Did your client take goods from their business or provide business services to family and friends?
+goodsAndServicesForYourOwnUse.change.hidden = Change if you took goods out of your business or provided business services to family and friends
 
 goodsAndServicesAmount.title.individual = What was the market value of the goods and services you provided?
 goodsAndServicesAmount.title.agent = What was the market value of the goods and services your client provided?
@@ -2126,6 +2129,12 @@ goodsAndServicesAmount.error.required.individual = Enter the market value of the
 goodsAndServicesAmount.error.required.agent = Enter the market value of the goods and services your client provided
 goodsAndServicesAmount.error.required.cash.individual = Enter the cost of the goods and services you provided
 goodsAndServicesAmount.error.required.cash.agent = Enter the cost of the goods and services your client provided
+goodsAndServicesAmount.subHeading.cya.individual = What was the market value of the goods and services you provided?
+goodsAndServicesAmount.subHeading.cya.agent = What was the market value of the goods and services your client provided?
+goodsAndServicesAmount.subHeading.cya.cash.individual = How much did you spend on goods and services for your own use?
+goodsAndServicesAmount.subHeading.cya.cash.agent = How much did your client spend on goods and services for their own use?
+goodsAndServicesAmount.change.hidden = Change the market value of the goods and services you provided
+goodsAndServicesAmount.change.cash.hidden = Change the amount you spent on goods and services for your own use
 
 checkNetProfitLoss.title.profit = Net business profit: {0}
 checkNetProfitLoss.title.loss = Net business loss: {0}
@@ -2152,9 +2161,15 @@ previousUnusedLosses.subHeading.individual = These are unused losses that you ha
 previousUnusedLosses.subHeading.agent = These are losses that your client told us about in previous tax returns and chose to carry forward.
 previousUnusedLosses.error.required.individual = Select yes if your business made any unused losses in previous years
 previousUnusedLosses.error.required.agent = Select yes if your client’s business made any unused losses in previous years
+previousUnusedLosses.subHeading.cya.individual = Did {0} have any unused losses in previous years?
+previousUnusedLosses.subHeading.cya.agent = Did {0} have any unused losses in previous years?
+previousUnusedLosses.change.hidden = Change if {0} has any unused losses in previous years
 
 unusedLossAmount.title = What is the total amount of unused losses for this business?
 unusedLossAmount.error.required.individual = Enter the total amount of unused loss
+unusedLossAmount.subHeading.cya.individual = Enter the total amount of unused loss
+unusedLossAmount.subHeading.cya.agent = Enter the total amount of unused loss
+unusedLossAmount.change.hidden = Change the total amount of unused loss
 
 whichYearIsLossReported.title.individual = When you reported the loss
 whichYearIsLossReported.title.agent = When your client reported the loss
@@ -2171,6 +2186,9 @@ whichYearIsLossReported.2021to2022 = 2021 to 2022
 whichYearIsLossReported.2022to2023 = 2022 to 2023
 whichYearIsLossReported.error.required.individual = Select the tax year you most recently reported the unused loss in your tax return
 whichYearIsLossReported.error.required.agent = Select the tax year your client most recently reported the unused loss in your tax return
+whichYearIsLossReported.checkYourAnswersLabel.individual = In which tax year did you most recently report the £{0} loss?
+whichYearIsLossReported.checkYourAnswersLabel.agent = In which tax year did your client report most recently report the £{0} loss?
+whichYearIsLossReported.change.hidden = Change in which tax year you most recently reported the £{0} loss
 
 ########## National Insurance Contributions ##########
 

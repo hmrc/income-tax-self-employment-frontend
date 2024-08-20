@@ -44,25 +44,38 @@ package object checkAnswers {
     buildRowString(messages(messageAnswer), callLink, keyMessage, changeMessage, rightTextAlign, flipKeyToValueWidthRatio)
   }
 
-  def mkBooleanSummary(answer: Boolean, callLink: Call, page: Page, userType: UserType, rightTextAlign: Boolean)(implicit
-      messages: Messages): SummaryListRow =
+  def mkBooleanSummary(answer: Boolean,
+                       callLink: Call,
+                       page: Page,
+                       userType: UserType,
+                       rightTextAlign: Boolean,
+                       overrideKeyMessage: Option[String] = None,
+                       overrideChangeMessage: Option[String] = None)(implicit messages: Messages): SummaryListRow =
     buildRowBoolean(
       answer,
       callLink,
-      messages(s"${page.pageName}.subHeading.cya.$userType"),
-      s"${page.pageName}.change.hidden",
+      overrideKeyMessage.fold(messages(s"${page.pageName}.subHeading.cya.$userType"))(newKey => newKey),
+      overrideChangeMessage.fold(messages(s"${page.pageName}.change.hidden"))(newKey => newKey),
       rightTextAlign
     )
 
-  def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =
-    buildRowString(s"£${formatMoney(answer, addDecimalForWholeNumbers = false)}", callLink, keyMessage, changeMessage, rightTextAlign = true)
+  def buildRowBigDecimal(answer: BigDecimal, callLink: Call, keyMessage: String, changeMessage: String, rightTextAlign: Boolean = true)(implicit
+      messages: Messages): SummaryListRow =
+    buildRowString(s"£${formatMoney(answer, addDecimalForWholeNumbers = false)}", callLink, keyMessage, changeMessage, rightTextAlign)
 
-  def mkBigDecimalSummary(answer: BigDecimal, callLink: Call, page: Page, userType: UserType)(implicit messages: Messages): SummaryListRow =
+  def mkBigDecimalSummary(answer: BigDecimal,
+                          callLink: Call,
+                          page: Page,
+                          userType: UserType,
+                          rightTextAlign: Boolean,
+                          overrideKeyMessage: Option[String] = None,
+                          overrideChangeMessage: Option[String] = None)(implicit messages: Messages): SummaryListRow =
     buildRowBigDecimal(
       answer,
       callLink,
-      messages(s"${page.pageName}.subHeading.cya.$userType"),
-      s"${page.pageName}.change.hidden"
+      overrideKeyMessage.fold(messages(s"${page.pageName}.subHeading.cya.$userType"))(newKey => newKey),
+      overrideChangeMessage.fold(messages(s"${page.pageName}.change.hidden"))(newKey => newKey),
+      rightTextAlign
     )
 
   def buildRowInt(answer: Int, callLink: Call, keyMessage: String, changeMessage: String)(implicit messages: Messages): SummaryListRow =

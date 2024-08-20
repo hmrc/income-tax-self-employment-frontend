@@ -26,9 +26,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class BooleanSummary(page: OneQuestionPage[Boolean], callLink: Call) extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers,
+          taxYear: TaxYear,
+          businessId: BusinessId,
+          userType: UserType,
+          rightTextAlign: Boolean = true,
+          overrideKeyMessage: Option[String] = None,
+          overrideChangeMessage: Option[String] = None)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(page, businessId.some)
-      .map(answer => mkBooleanSummary(answer, callLink, page, userType, rightTextAlign))
+      .map(answer => mkBooleanSummary(answer, callLink, page, userType, rightTextAlign, overrideKeyMessage, overrideChangeMessage))
 }

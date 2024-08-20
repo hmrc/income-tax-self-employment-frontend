@@ -26,7 +26,7 @@ import viewmodels.journeys.SummaryListCYA.summaryListOpt
 
 case class SummaryListCYA(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages) {
   def mkSummaryList(rows: List[AnswerSummary]): SummaryList =
-    summaryListOpt(rows.map(_.row(userAnswers, taxYear, businessId, userType)))
+    summaryListOpt(rows.map(_.row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = None)))
 }
 
 object SummaryListCYA {
