@@ -28,6 +28,7 @@ import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.Journey
+import models.journeys.Journey.NationalInsuranceContributions
 import models.requests.OptionalDataRequest
 import play.api.libs.json.Format
 import play.api.libs.json.JsObject
@@ -72,7 +73,10 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
   private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
     val result: ApiResultT[UserAnswers] = for {
       answers <- getSubmittedAnswers(ctx)(hc(request))
-      updatedAnswers = answers.map(a => existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a)))
+      updatedAnswers = answers.map { a =>
+        if (ctx.journey == NationalInsuranceContributions) existingAnswers.upsertFragmentNICs(ctx.businessId, ContentHttpReads.asJsonUnsafe(a))
+        else existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a))
+      }
       _ <- EitherT.right[ServiceError](updatedAnswers.fold(Future.successful(()))(sessionRepository.set(_).void))
     } yield updatedAnswers.getOrElse(existingAnswers)
 
