@@ -37,7 +37,7 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
@@ -74,11 +74,20 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
   }
 
   def onSubmit(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen requireData) async { implicit request =>
-    val maybeSingleBusinessId: Option[BusinessId] = request.userAnswers.getBusinesses.headOption.map(_.businessId)
-    val idForContext: BusinessId                  = maybeSingleBusinessId.getOrElse(BusinessId.nationalInsuranceContributions)
-    val context =
-      JourneyContextWithNino(taxYear, request.nino, idForContext, request.mtditid, NationalInsuranceContributions)
-    val result = service.submitAnswers[NICsJourneyAnswers](context, request.userAnswers)
-    handleSubmitAnswersResult(context, result)
+    val userAnswers = request.userAnswers
+
+    NICsJourneyAnswers.buildFromUserAnswers(userAnswers) match {
+      case Left(errorRedirect) => Future(errorRedirect)
+      case Right(journeyAnswers) =>
+        val businessIds = userAnswers.getBusinesses.map(_.businessId)
+        val idForContext = businessIds match {
+          case singleId :: Nil if journeyAnswers.isClass4 => singleId
+          case _                                          => BusinessId.nationalInsuranceContributions
+        }
+        val context =
+          JourneyContextWithNino(taxYear, request.nino, idForContext, request.mtditid, NationalInsuranceContributions)
+        val result = service.submitAnswers[NICsJourneyAnswers](context, userAnswers, declareJourneyAnswers = Some(journeyAnswers))
+        handleSubmitAnswersResult(context, result)
+    }
   }
 }

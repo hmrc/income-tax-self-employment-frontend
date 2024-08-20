@@ -54,7 +54,9 @@ trait SelfEmploymentService {
                                           value: A,
                                           taxYear: TaxYear,
                                           mode: Mode): Future[Result]
-  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit]
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext,
+                                             userAnswers: UserAnswers,
+                                             declareJourneyAnswers: Option[SubsetOfAnswers] = None)(implicit hc: HeaderCarrier): ApiResultT[Unit]
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers]
   def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
                                                        businessId: BusinessId,
@@ -117,9 +119,12 @@ class SelfEmploymentServiceImpl @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
 
-  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] = {
-    val journeyAnswers: SubsetOfAnswers = (userAnswers.data \ context.businessId.value).as[SubsetOfAnswers]
-    val journeyJson: JsObject           = Json.toJson(journeyAnswers).as[JsObject]
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext,
+                                             userAnswers: UserAnswers,
+                                             declareJourneyAnswers: Option[SubsetOfAnswers] = None)(implicit hc: HeaderCarrier): ApiResultT[Unit] = {
+    val journeyAnswers: SubsetOfAnswers =
+      declareJourneyAnswers.fold((userAnswers.data \ context.businessId.value).as[SubsetOfAnswers])(answers => answers)
+    val journeyJson: JsObject = Json.toJson(journeyAnswers).as[JsObject]
 
     val result = connector.submitAnswers(context, journeyAnswers)
     sendAuditEvents(context, journeyJson, result)
