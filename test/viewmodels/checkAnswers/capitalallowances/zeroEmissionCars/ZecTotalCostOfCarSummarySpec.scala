@@ -30,7 +30,7 @@ class ZecTotalCostOfCarSummarySpec extends SummaryBaseSpec("ZecTotalCostOfCarSum
 
   override val testKey: UserType => Text = (_: UserType) => Text(messages("zecTotalCostOfCar.title.cya"))
 
-  override val testValue: HtmlContent = HtmlContent("£20.00")
+  override val testValue: HtmlContent = HtmlContent("£20")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ZecTotalCostOfCarSummary.row(userAnswers, taxYear, businessId)(messages)

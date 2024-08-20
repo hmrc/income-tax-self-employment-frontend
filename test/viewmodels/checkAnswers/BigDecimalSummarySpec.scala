@@ -37,7 +37,7 @@ class BigDecimalSummarySpec extends AnyWordSpecLike {
 
         val result = summary.row(answers, taxYear, businessId, userType)(messagesStubbed).value
         assert(result.key.content.asHtml.toString() === s"someBigDecimalPage.subHeading.cya.$userType")
-        assert(result.value.content.asHtml.toString() === "£12,344,321.00")
+        assert(result.value.content.asHtml.toString() === "£12,344,321")
       }
     }
   }

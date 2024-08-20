@@ -33,7 +33,7 @@ class AnnualInvestmentAllowanceAmountSummarySpec extends SummaryBaseSpec("Annual
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"annualInvestmentAllowanceAmount.title.$userType"))
 
-  override val testValue: HtmlContent = HtmlContent(s"£${formatMoney(amount)}")
+  override val testValue: HtmlContent = HtmlContent(s"£${formatMoney(amount, addDecimalForWholeNumbers = false)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     AnnualInvestmentAllowanceAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

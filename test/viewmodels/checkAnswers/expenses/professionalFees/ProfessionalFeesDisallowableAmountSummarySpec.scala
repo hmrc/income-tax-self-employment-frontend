@@ -37,7 +37,7 @@ class ProfessionalFeesDisallowableAmountSummarySpec extends SummaryBaseSpec("Pro
   override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"professionalFeesDisallowableAmount.title.$userType", amount))
-  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount, addDecimalForWholeNumbers = false)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     ProfessionalFeesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

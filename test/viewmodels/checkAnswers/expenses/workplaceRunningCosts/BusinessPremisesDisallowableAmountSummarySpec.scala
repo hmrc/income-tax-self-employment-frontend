@@ -36,7 +36,7 @@ class BusinessPremisesDisallowableAmountSummarySpec extends SummaryBaseSpec("Bus
   override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"businessPremisesDisallowableAmount.title.$userType")
-  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount, addDecimalForWholeNumbers = false)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     BusinessPremisesDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)
@@ -64,7 +64,7 @@ class BusinessPremisesDisallowableAmountSummarySpec extends SummaryBaseSpec("Bus
     "return non empty row if allowable and disallowable amount" in {
       val answers = buildUserAnswers(validData)
       val actual  = BusinessPremisesDisallowableAmountSummary.row(answers, taxYear, businessId, UserType.Individual)
-      assert(actual.map(_.value.content) === Some(HtmlContent(s"£$disallowableAmount.00")))
+      assert(actual.map(_.value.content) === Some(HtmlContent(s"£$disallowableAmount")))
     }
 
   }

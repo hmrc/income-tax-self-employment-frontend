@@ -30,7 +30,7 @@ class AmountSpentOnEvcpSummarySpec extends SummaryBaseSpec("AmountSpentOnEvcpSum
 
   override val testKey: UserType => Text = (_: UserType) => Text(messages("amountSpentOnEvcp.title.cya"))
 
-  override val testValue: HtmlContent = HtmlContent("£20.00")
+  override val testValue: HtmlContent = HtmlContent("£20")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     AmountSpentOnEvcpSummary.row(userAnswers, taxYear, businessId)(messages)

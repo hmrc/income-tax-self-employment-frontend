@@ -42,7 +42,7 @@ class packageSpec extends AnyWordSpecLike {
     "build big decimal summary row" in {
       val result = mkBigDecimalSummary(answer = BigDecimal(10.0), call, StubPage, Individual)(messagesStubbed)
       assert(result.key.content.asHtml.toString() === "stubPage.subHeading.cya.individual")
-      assert(result.value.content.asHtml.toString() === "£10.00")
+      assert(result.value.content.asHtml.toString() === "£10")
     }
   }
 

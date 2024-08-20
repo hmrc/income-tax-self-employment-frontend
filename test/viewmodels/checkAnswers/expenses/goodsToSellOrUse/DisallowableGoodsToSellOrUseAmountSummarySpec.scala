@@ -36,7 +36,7 @@ class DisallowableGoodsToSellOrUseAmountSummarySpec extends SpecBase {
 
             result.get mustBe a[SummaryListRow]
             result.get.key.content mustBe Text(s"disallowableGoodsToSellOrUseAmount.title.$userType")
-            result.get.value.content mustBe HtmlContent("£100.00")
+            result.get.value.content mustBe HtmlContent("£100")
           }
         }
 
