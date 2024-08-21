@@ -29,7 +29,7 @@ case object InterestAmountPage extends OneQuestionPage[BigDecimal] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     if (hasDisallowable(businessId, userAnswers)) routes.InterestDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-    else routes.InterestCYAController.onPageLoad(taxYear, businessId)
+    else cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined &&
@@ -37,4 +37,7 @@ case object InterestAmountPage extends OneQuestionPage[BigDecimal] {
 
   private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(DisallowableInterestPage, businessId).getOrElse(false)
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.InterestCYAController.onPageLoad(taxYear, businessId)
 }
