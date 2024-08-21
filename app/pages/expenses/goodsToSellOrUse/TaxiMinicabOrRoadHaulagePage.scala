@@ -31,4 +31,7 @@ case object TaxiMinicabOrRoadHaulagePage extends OneQuestionPage[Boolean] {
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && GoodsToSellOrUseAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId)
 }

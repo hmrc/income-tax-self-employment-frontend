@@ -26,8 +26,11 @@ case object ProfessionalFeesDisallowableAmountPage extends OneQuestionPage[BigDe
   override def toString: String = "professionalFeesDisallowableAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
+    cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.ProfessionalFeesCYAController.onPageLoad(taxYear, businessId)
 }

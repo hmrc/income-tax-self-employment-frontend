@@ -59,7 +59,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       messages           = messagesApi.preferred(updatedRequest)
       tradeDetailsStatus = getTradeDetailsStatus(taskListWithRequest)
       completedTrades    = getTradesIfDetailsAreCompleted(taskListWithRequest.taskList)
-      businessSummaryList      <- getBusinessSummaries(completedTrades, updatedRequest, taxYear, messages)
+      businessSummaryList      <- saveAndGetBusinessSummaries(completedTrades, updatedRequest, taxYear, messages)
       nationalInsuranceSummary <- getNationalInsuranceSummary(taskListWithRequest, completedTrades, taxYear, messages)
     } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, businessSummaryList, nationalInsuranceSummary)(updatedRequest, messages))
     handleResultT(result)
@@ -74,10 +74,10 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
   private def getTradeDetailsStatus(taskListWithRequest: TaskListWithRequest): JourneyStatus =
     taskListWithRequest.taskList.tradeDetails.map(_.journeyStatus).getOrElse(CheckOurRecords)
 
-  private def getBusinessSummaries(completedTrades: List[TradesJourneyStatuses],
-                                   request: OptionalDataRequest[_],
-                                   taxYear: TaxYear,
-                                   messages: Messages): ApiResultT[Seq[TradeJourneyStatusesViewModel]] = {
+  private def saveAndGetBusinessSummaries(completedTrades: List[TradesJourneyStatuses],
+                                          request: OptionalDataRequest[_],
+                                          taxYear: TaxYear,
+                                          messages: Messages): ApiResultT[Seq[TradeJourneyStatusesViewModel]] = {
     val matchIdsWithAccountingType = completedTrades.map(t => (t.tradingName.getOrElse(TradingName.empty), t.accountingType, t.businessId))
 
     EitherT.right[ServiceError](service.setAccountingTypeForIds(request.answers, matchIdsWithAccountingType)).map { updatedUserAnswers =>

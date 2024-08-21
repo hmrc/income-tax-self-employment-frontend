@@ -26,8 +26,11 @@ case object AdvertisingOrMarketingDisallowableAmountPage extends OneQuestionPage
   override def toString: String = "advertisingOrMarketingDisallowableAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+    cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
 }

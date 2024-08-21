@@ -26,8 +26,11 @@ case object OfficeSuppliesDisallowableAmountPage extends OneQuestionPage[BigDeci
   override def toString: String = "officeSuppliesDisallowableAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
+    cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.OfficeSuppliesCYAController.onPageLoad(taxYear, businessId)
 }

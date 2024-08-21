@@ -30,7 +30,7 @@ case object AdvertisingOrMarketingAmountPage extends OneQuestionPage[BigDecimal]
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     if (hasDisallowable(businessId, userAnswers)) routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
-    else routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+    else cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined &&
@@ -38,4 +38,8 @@ case object AdvertisingOrMarketingAmountPage extends OneQuestionPage[BigDecimal]
 
   private def hasDisallowable(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(AdvertisingOrMarketingPage, businessId).contains(AdvertisingOrMarketing.YesDisallowable)
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.AdvertisingCYAController.onPageLoad(taxYear, businessId)
+
 }

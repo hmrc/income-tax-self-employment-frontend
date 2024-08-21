@@ -59,7 +59,7 @@ class ExpensesCategoriesControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ExpensesCategoriesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, incomeIsOverThreshold).toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, incomeIsOverThreshold, "85,000").toString()
   }
 
 }
