@@ -28,8 +28,13 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowBoolean}
 
 object ZeroEmissionGoodsVehicleSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers,
+          taxYear: TaxYear,
+          businessId: BusinessId,
+          userType: UserType,
+          rightTextAlign: Boolean = true,
+          overrideKeyMessage: Option[String] = None,
+          overrideChangeMessage: Option[String] = None)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZeroEmissionGoodsVehiclePage, businessId.some)
       .map { answer =>

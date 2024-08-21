@@ -17,12 +17,16 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.common.{BusinessId, TaxYear}
+import models.common.{AccountingType, BusinessId, TaxYear}
 import pages.Page
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.CheckMode
+import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import viewmodels.checkAnswers.adjustments.WhichYearIsLossReportedSummary
+import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -41,7 +45,44 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData) {
     implicit request =>
-      val summaryList = SummaryListCYA.summaryListOpt(List())
+      val accountingType                      = request.userAnswers.getAccountingType(businessId)
+      val accountingTypePrefix                = if (accountingType == AccountingType.Cash) ".cash" else ""
+      val goodsAndServicesAmountKeyMessage    = Messages(s"goodsAndServicesAmount.subHeading.cya$accountingTypePrefix.${request.userType}")
+      val goodsAndServicesAmountChangeMessage = Messages(s"goodsAndServicesAmount.change$accountingTypePrefix.hidden")
+
+      val previousUnusedLossesSummaryKeyMessage =
+        Messages(s"previousUnusedLosses.subHeading.cya.${request.userType}", request.userAnswers.getTraderName(businessId).value)
+      val previousUnusedLossesSummaryChangeMessage =
+        Messages(s"previousUnusedLosses.change.hidden", request.userAnswers.getTraderName(businessId).value)
+
+      val summaryList = SummaryListCYA.summaryListOpt(
+        List(
+          new BooleanSummary(
+            GoodsAndServicesForYourOwnUsePage,
+            routes.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(request.userAnswers, taxYear, businessId, request.userType),
+          new BigDecimalSummary(GoodsAndServicesAmountPage, routes.GoodsAndServicesAmountController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(
+              request.userAnswers,
+              taxYear,
+              businessId,
+              request.userType,
+              overrideKeyMessage = Some(goodsAndServicesAmountKeyMessage),
+              overrideChangeMessage = Some(goodsAndServicesAmountChangeMessage)
+            ),
+          new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(
+              request.userAnswers,
+              taxYear,
+              businessId,
+              request.userType,
+              overrideKeyMessage = Some(previousUnusedLossesSummaryKeyMessage),
+              overrideChangeMessage = Some(previousUnusedLossesSummaryChangeMessage)
+            ),
+          new BigDecimalSummary(UnusedLossAmountPage, routes.UnusedLossAmountController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(request.userAnswers, taxYear, businessId, request.userType),
+          WhichYearIsLossReportedSummary.row(request.userAnswers, request.userType, taxYear, businessId)
+        ))
 
       Ok(
         view(

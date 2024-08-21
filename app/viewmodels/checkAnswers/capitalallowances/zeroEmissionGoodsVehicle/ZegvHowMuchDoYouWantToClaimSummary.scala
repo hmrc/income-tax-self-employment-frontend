@@ -27,8 +27,13 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowBigDecimal}
 
 object ZegvHowMuchDoYouWantToClaimSummary extends AnswerSummary {
 
-  def row(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow] =
+  def row(userAnswers: UserAnswers,
+          taxYear: TaxYear,
+          businessId: BusinessId,
+          userType: UserType,
+          rightTextAlign: Boolean = true,
+          overrideKeyMessage: Option[String] = None,
+          overrideChangeMessage: Option[String] = None)(implicit messages: Messages): Option[SummaryListRow] =
     userAnswers.get(ZegvClaimAmountPage, Some(businessId)) map { totalCost =>
       buildRowBigDecimal(
         totalCost,
