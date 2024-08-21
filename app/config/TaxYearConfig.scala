@@ -20,7 +20,8 @@ import models.journeys.nics.NICsThresholds.Class4Limits
 
 /** Put tax year specific configs in this package.
   *
-  * IMPORTANT: It is essential to understand how many tax year we are supporting. And providing different values depends on the tax year
+  * IMPORTANT: It is essential to understand how many tax years we are supporting. Each new tax year we need to update the below values with correct
+  * values.
   */
 object TaxYearConfig {
 
