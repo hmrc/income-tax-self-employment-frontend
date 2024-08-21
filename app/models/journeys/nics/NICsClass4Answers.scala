@@ -16,10 +16,14 @@
 
 package models.journeys.nics
 
+import models.common.BusinessId
 import play.api.libs.json.{Format, Json}
 
-case class Class2NICsAnswers(class2NICs: Boolean)
+case class NICsClass4Answers(class4NICs: Boolean,
+                             class4ExemptionReason: Option[ExemptionReason],
+                             class4DivingExempt: Option[List[BusinessId]],
+                             class4NonDivingExempt: Option[List[BusinessId]])
 
-object Class2NICsAnswers {
-  implicit val formats: Format[Class2NICsAnswers] = Json.format[Class2NICsAnswers]
+object NICsClass4Answers {
+  implicit val formats: Format[NICsClass4Answers] = Json.format[NICsClass4Answers]
 }

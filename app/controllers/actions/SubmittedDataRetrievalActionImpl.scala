@@ -18,29 +18,23 @@ package controllers.actions
 
 import cats.data.EitherT
 import cats.implicits._
-import connectors.ContentHttpReads
-import connectors.SelfEmploymentConnector
+import connectors.{ContentHttpReads, SelfEmploymentConnector}
 import controllers.handleApiResult
-import models.common.BusinessId
-import models.common.JourneyContext
-import models.common.UserId
+import models.common.{BusinessId, JourneyContext, UserId}
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.Journey
+import models.journeys.Journey.NationalInsuranceContributions
 import models.requests.OptionalDataRequest
-import play.api.libs.json.Format
-import play.api.libs.json.JsObject
-import play.api.libs.json.Json
-import play.api.mvc.ActionTransformer
-import play.api.mvc.Request
+import play.api.libs.json.{Format, JsObject, Json}
+import play.api.mvc.{ActionTransformer, Request}
 import repositories.SessionRepositoryBase
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 import utils.Logging
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait SubmittedDataRetrievalAction extends ActionTransformer[OptionalDataRequest, OptionalDataRequest] {
   def execute[A](request: OptionalDataRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
@@ -72,7 +66,10 @@ class SubmittedDataRetrievalActionImpl[SubsetOfAnswers: Format](journeyContext: 
   private def upsertJourneyAnswers[A](ctx: JourneyContext, request: Request[A], existingAnswers: UserAnswers): Future[UserAnswers] = {
     val result: ApiResultT[UserAnswers] = for {
       answers <- getSubmittedAnswers(ctx)(hc(request))
-      updatedAnswers = answers.map(a => existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a)))
+      updatedAnswers = answers.map { a =>
+        if (ctx.journey == NationalInsuranceContributions) existingAnswers.upsertFragmentNICs(ctx.businessId, ContentHttpReads.asJsonUnsafe(a))
+        else existingAnswers.upsertFragment(ctx.businessId, ContentHttpReads.asJsonUnsafe(a))
+      }
       _ <- EitherT.right[ServiceError](updatedAnswers.fold(Future.successful(()))(sessionRepository.set(_).void))
     } yield updatedAnswers.getOrElse(existingAnswers)
 

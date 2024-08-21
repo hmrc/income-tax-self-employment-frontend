@@ -65,7 +65,9 @@ case class SelfEmploymentServiceStub(
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers] =
     Future.successful(saveAnswerResult)
 
-  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
+  def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext,
+                                             userAnswers: UserAnswers,
+                                             declareJourneyAnswers: Option[SubsetOfAnswers] = None)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.pure[Future, ServiceError](())
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =

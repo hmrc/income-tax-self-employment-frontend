@@ -79,6 +79,14 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
     copy(data = updatedData, lastUpdated = Instant.now)
   }
 
+  def upsertFragmentNICs(businessId: BusinessId, dataFragment: JsObject): UserAnswers = {
+    val maybeClass2Answers = (dataFragment \ "class2Answers").asOpt[JsObject].getOrElse(Json.obj())
+    val maybeClass4Answers = (dataFragment \ "class4Answers").asOpt[JsObject].getOrElse(Json.obj())
+    val existingAnswerData = (data \ businessId.value).asOpt[JsObject].getOrElse(JsObject.empty)
+    val updatedData        = data + (businessId.value -> (existingAnswerData ++ maybeClass2Answers ++ maybeClass4Answers))
+    copy(data = updatedData, lastUpdated = Instant.now)
+  }
+
   def remove[A](page: Settable[A], businessId: Option[BusinessId] = None): Try[UserAnswers] = {
 
     val updatedData = data.removeObject(page.path(businessId)) match {

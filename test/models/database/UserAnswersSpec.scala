@@ -54,7 +54,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
       )
     }
 
-    "merge two jsons if they DOES NOT have mutually exclusive keys" in {
+    "merge two jsons if they DO NOT have mutually exclusive keys" in {
       val existingData: JsObject = Json.obj(
         "businessId" -> Json.obj(
           "key1" -> "value1",
@@ -94,6 +94,89 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers {
         "businessId_A" -> Json.obj(
           "key1" -> "value1",
           "key2" -> "valueUpdated"
+        ),
+        "businessId_B" -> Json.obj(
+          "key1" -> "value1",
+          "key2" -> "value2"
+        )
+      )
+    }
+
+  }
+
+  "upsertFragmentNICs" should {
+    "set a new value" in {
+      val userAnswers = UserAnswers("userId")
+      val result = userAnswers.upsertFragmentNICs(
+        businessId,
+        Json.obj("class2Answers" -> Json.obj("class2NICs" -> true), "class4Answers" -> Json.obj("class4NICs" -> false)))
+      result.data shouldBe Json.obj(
+        businessId.value -> Json.obj("class2NICs" -> true, "class4NICs" -> false)
+      )
+    }
+
+    "merge two jsons if they have mutually exclusive keys" in {
+      val existingData: JsObject = Json.obj(
+        "businessId" -> Json.obj(
+          "key1" -> "value1",
+          "key2" -> "value2"
+        )
+      )
+
+      val userAnswers = UserAnswers("userId", existingData)
+
+      val result = userAnswers.upsertFragmentNICs(businessId, Json.obj("class2Answers" -> Json.obj("class2NICs" -> true)))
+
+      result.data shouldBe Json.obj(
+        businessId.value -> Json.obj(
+          "key1"       -> "value1",
+          "key2"       -> "value2",
+          "class2NICs" -> true
+        )
+      )
+    }
+
+    "merge two jsons if they DO NOT have mutually exclusive keys" in {
+      val existingData: JsObject = Json.obj(
+        "businessId" -> Json.obj(
+          "key1"       -> "value1",
+          "class4NICs" -> true
+        )
+      )
+
+      val userAnswers = UserAnswers("userId", existingData)
+
+      val result = userAnswers.upsertFragmentNICs(businessId, Json.obj("class4Answers" -> Json.obj("class4NICs" -> false)))
+
+      result.data shouldBe Json.obj(
+        businessId.value -> Json.obj(
+          "key1"       -> "value1",
+          "class4NICs" -> false
+        )
+      )
+    }
+
+    "merge two jsons with the businessId if many businessIds present" in {
+      val existingData: JsObject = Json.obj(
+        "national-insurance-contributions" -> Json.obj(
+          "class2NICs" -> true,
+          "class4NICs" -> true
+        ),
+        "businessId_B" -> Json.obj(
+          "key1" -> "value1",
+          "key2" -> "value2"
+        )
+      )
+
+      val userAnswers = UserAnswers("userId", existingData)
+
+      val result =
+        userAnswers.upsertFragmentNICs(BusinessId.nationalInsuranceContributions, Json.obj("class4Answers" -> Json.obj("class4NICs" -> false)))
+
+      result.data shouldBe Json.obj(
+        "national-insurance-contributions" -> Json.obj(
+          "class2NICs" -> true,
+          "class4NICs" -> false
         ),
         "businessId_B" -> Json.obj(
           "key1" -> "value1",

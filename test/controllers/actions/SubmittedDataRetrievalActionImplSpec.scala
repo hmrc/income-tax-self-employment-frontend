@@ -27,6 +27,8 @@ import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.Journey
 import models.requests.OptionalDataRequest
+import org.mockito.ArgumentMatchersSugar._
+import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.MockitoSugar
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -35,8 +37,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import stubs.repositories.StubSessionRepository
 import uk.gov.hmrc.auth.core._
-import org.mockito.ArgumentMatchersSugar._
-import org.mockito.IdiomaticMockito.StubbingOps
+
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -53,17 +54,35 @@ class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers
       result shouldBe request
     }
 
-    "persist journey answers as user answers if no user answers exist" in new SubmittedTestData {
-      def userAnswers         = None
-      def submittedUerAnswers = Json.obj("anyOtherIncome" -> "foo")
-      def journey             = Journey.Income
+    "persist journey answers as user answers if no user answers exist" when {
+      "NationalInsuranceContributions journey, removing the Class 2 or Class 4 answers from the NICsAnswers wrapper" in new SubmittedTestData {
+        def userAnswers = None
 
-      val result = underTest.transform(request).futureValue
+        def submittedUerAnswers = Json.obj("class2Answers" -> Json.obj("class2NICs" -> true), "class4Answers" -> Json.obj("class4NICs" -> false))
 
-      assertOptionalDataRequest(
-        result,
-        request.copy(userAnswers = UserAnswers("userId", Json.obj("SJPR05893938418" -> Json.obj("anyOtherIncome" -> "foo"))).some)
-      )
+        def journey = Journey.NationalInsuranceContributions
+
+        val result = underTest.transform(request).futureValue
+
+        assertOptionalDataRequest(
+          result,
+          request.copy(userAnswers = UserAnswers("userId", Json.obj("SJPR05893938418" -> Json.obj("class2NICs" -> true, "class4NICs" -> false))).some)
+        )
+      }
+      "a non-NationalInsuranceContributions journey" in new SubmittedTestData {
+        def userAnswers = None
+
+        def submittedUerAnswers = Json.obj("anyOtherIncome" -> "foo")
+
+        def journey = Journey.Income
+
+        val result = underTest.transform(request).futureValue
+
+        assertOptionalDataRequest(
+          result,
+          request.copy(userAnswers = UserAnswers("userId", Json.obj("SJPR05893938418" -> Json.obj("anyOtherIncome" -> "foo"))).some)
+        )
+      }
     }
 
     "persist journey answers as user answers if user answers exist but without the specific journey" in new SubmittedTestData {
