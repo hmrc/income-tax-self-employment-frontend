@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.tailoring
 
 import cats.data.EitherT
+import config.TaxYearConfig
 import controllers.actions._
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
@@ -35,6 +36,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
 import javax.inject.{Inject, Singleton}
@@ -56,7 +58,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
     with I18nSupport {
   private val page = ExpensesCategoriesPage
 
-  private val incomeThreshold: BigDecimal = 85000
+  private val incomeThreshold: BigDecimal = TaxYearConfig.incomeThreshold
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
@@ -67,14 +69,17 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)
         preparedForm          = existingAnswer.fold(form)(form.fill)
-      } yield Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold))).merge
+      } yield {
+        val formattedThreshold = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold, formattedThreshold))
+      }).merge
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_], userType: UserType, incomeIsOverThreshold: Boolean): Future[Result] =
+      def handleError(formWithErrors: Form[_], userType: UserType, incomeIsOverThreshold: Boolean, formattedThreshold: String): Future[Result] =
         Future.successful(
-          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, incomeIsOverThreshold))
+          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, incomeIsOverThreshold, formattedThreshold))
         )
 
       def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring): Future[Result] = {
@@ -87,14 +92,18 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         } yield result
       }
 
-      def handleForm(form: Form[ExpensesTailoring], userType: UserType, userAnswers: UserAnswers, incomeIsOverThreshold: Boolean): Future[Result] =
+      def handleForm(form: Form[ExpensesTailoring],
+                     userType: UserType,
+                     userAnswers: UserAnswers,
+                     incomeIsOverThreshold: Boolean,
+                     formattedThreshold: String): Future[Result] =
         if (incomeIsOverThreshold) {
           handleSuccess(userAnswers, IndividualCategories)
         } else {
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => handleError(formWithErrors, userType, incomeIsOverThreshold),
+              formWithErrors => handleError(formWithErrors, userType, incomeIsOverThreshold, formattedThreshold),
               value => handleSuccess(userAnswers, value)
             )
         }
@@ -110,7 +119,8 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         userType              = request.userType
         userAnswers           = request.userAnswers
         form                  = formProvider(userType)
-        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, incomeIsOverThreshold))
+        formattedThreshold    = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
+        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, incomeIsOverThreshold, formattedThreshold))
       } yield finalResult
 
       result.merge

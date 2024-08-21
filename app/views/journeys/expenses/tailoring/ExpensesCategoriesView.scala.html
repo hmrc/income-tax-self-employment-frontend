@@ -29,7 +29,7 @@
     foldableDetails: FoldableDetails
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, incomeIsOverThreshold: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, incomeIsOverThreshold: Boolean, incomeThreshold: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"expenses.cyaSummary.$userType"))) {
 
@@ -39,7 +39,7 @@
 
     @if(incomeIsOverThreshold){
 
-        <p class="govuk-body govuk-!-margin-top-6">@messages(s"expensesCategories.p4.$userType")</p>
+        <p class="govuk-body govuk-!-margin-top-6">@messages(s"expensesCategories.p4.$userType", incomeThreshold)</p>
 
 
         @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

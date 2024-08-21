@@ -32,7 +32,6 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
   // TODO Remove ??? once all pages use this pattern
   def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = ???
 
-  // TODO Remove ??? once all pages use this pattern
   def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
 
   private def recoveryPage: Call = standard.routes.JourneyRecoveryController.onPageLoad()

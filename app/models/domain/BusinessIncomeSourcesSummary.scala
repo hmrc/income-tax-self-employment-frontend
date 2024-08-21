@@ -32,7 +32,7 @@ case class BusinessIncomeSourcesSummary(incomeSourceId: String,
                                         taxableLoss: BigDecimal) {
   // TODO getNetBusinessProfitForTaxPurposes logic is a placeholder, real value will be calculated in SASS-8626
   def getNetBusinessProfitForTaxPurposes(): BigDecimal = if (netLoss != 0) -netLoss else netProfit
-  def returnProfitOrLoss(): ProfitOrLoss               = if (getNetBusinessProfitForTaxPurposes < 0) Loss else Profit
+  def returnProfitOrLoss(): ProfitOrLoss               = if (getNetBusinessProfitForTaxPurposes() < 0) Loss else Profit
 }
 
 object BusinessIncomeSourcesSummary {
