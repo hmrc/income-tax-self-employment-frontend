@@ -79,13 +79,8 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
     NICsJourneyAnswers.buildFromUserAnswers(userAnswers) match {
       case Left(errorRedirect) => Future(errorRedirect)
       case Right(journeyAnswers) =>
-        val businessIds = userAnswers.getBusinesses.map(_.businessId)
-        val idForContext = businessIds match {
-          case singleId :: Nil if journeyAnswers.isClass4 => singleId
-          case _                                          => BusinessId.nationalInsuranceContributions
-        }
         val context =
-          JourneyContextWithNino(taxYear, request.nino, idForContext, request.mtditid, NationalInsuranceContributions)
+          JourneyContextWithNino(taxYear, request.nino, BusinessId.nationalInsuranceContributions, request.mtditid, NationalInsuranceContributions)
         val result = service.submitAnswers[NICsJourneyAnswers](context, userAnswers, declareJourneyAnswers = Some(journeyAnswers))
         handleSubmitAnswersResult(context, result)
     }

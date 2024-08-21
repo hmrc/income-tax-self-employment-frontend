@@ -24,9 +24,7 @@ import play.api.libs.json.{Format, Json}
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
-case class NICsJourneyAnswers(class2Answers: Option[NICsClass2Answers], class4Answers: Option[NICsClass4Answers]) {
-  def isClass4: Boolean = class4Answers.isDefined
-}
+case class NICsJourneyAnswers(class2Answers: Option[NICsClass2Answers], class4Answers: Option[NICsClass4Answers])
 
 object NICsJourneyAnswers {
   implicit val formats: Format[NICsJourneyAnswers] = Json.format[NICsJourneyAnswers]
