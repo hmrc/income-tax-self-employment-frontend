@@ -16,7 +16,9 @@
 
 package config
 
-/** Put tax year speficic values here. This file will have to be updated every year for the new tax year requirements.
+import models.journeys.nics.NICsThresholds.Class4Limits
+
+/** Put tax year specific configs in this package.
   *
   * IMPORTANT: It is essential to understand how many tax year we are supporting. And providing different values depends on the tax year
   */
@@ -24,4 +26,29 @@ object TaxYearConfig {
 
   /** if turnover > incomeThreshold, then the user must use catagories for expeness */
   val incomeThreshold: BigDecimal = 85000
+
+  val taxYearFiguresClass4NicsMap: Map[Int, Class4Limits] = Map(
+    2021 -> Class4Limits(9500, 50000, 9, 2),
+    2022 -> Class4Limits(9568, 50270, 9, 2),
+    2023 -> Class4Limits(11908, 50270, 9.73, 2.73),
+    2024 -> Class4Limits(12570, 50270, 9, 2),
+    2025 -> Class4Limits(12570, 50270, 6, 2)
+  )
+
+  val taxYearSmallProfitsThresholdClass2Map: Map[Int, Int] = Map(
+    2021 -> 6475,
+    2022 -> 6515,
+    2023 -> 6725,
+    2024 -> 6725,
+    2025 -> 6725
+  )
+
+  val taxYearStatePensionAgeThresholdMap: Map[Int, Int] = Map(
+    2021 -> 66,
+    2022 -> 66,
+    2023 -> 66,
+    2024 -> 66,
+    2025 -> 66
+  )
+
 }

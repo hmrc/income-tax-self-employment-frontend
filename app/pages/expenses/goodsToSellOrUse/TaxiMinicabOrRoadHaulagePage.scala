@@ -17,7 +17,6 @@
 package pages.expenses.goodsToSellOrUse
 
 import controllers.journeys.expenses.goodsToSellOrUse.routes
-import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.OneQuestionPage
