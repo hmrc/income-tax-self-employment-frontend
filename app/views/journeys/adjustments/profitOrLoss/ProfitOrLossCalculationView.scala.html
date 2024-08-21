@@ -14,24 +14,48 @@
  * limitations under the License.
  *@
 
-@import models.common.UserType
+@import models.common.{TaxYear, UserType}
 @import views.html.components._
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
+        govukTable: GovukTable,
+        foldableDetails: FoldableDetails,
         submitButton: SubmitButton,
-        heading: Heading
+        heading: Heading,
+        caption: CaptionWithTaxYear
 )
 
-@(userType: UserType, summaryList: SummaryList, continueRedirect: Call)(implicit request: Request[_], messages: Messages)
+@(userType: UserType,
+        netAmount: String,
+        taxYear: TaxYear,
+        summaryList: SummaryList,
+        yourAdjustedProfitTable: Table,
+        netProfitTable: Table,
+        additionsToNetProfitTable: Table,
+        capitalAllowanceTable: Table,
+        adjustmentsTable: Table,
+        continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$userType"))) {
+@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$userType", netAmount))) {
 
     @formHelper(action = continueRedirect) {
 
-        @heading(s"profitOrLossCalculation.title.$userType")
+        @caption(taxYear)
+        @heading(s"profitOrLossCalculation.title.$userType", Some(netAmount))
+
+        @govukTable(yourAdjustedProfitTable)
+        @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){
+            @govukTable(netProfitTable)
+            @govukTable(additionsToNetProfitTable)
+            @govukTable(capitalAllowanceTable)
+            <p class="govuk-body">@{messages("profitOrLoss.netForTaxPurposes.profit")} <strong>@{netAmount}</strong></p>
+            @govukTable(adjustmentsTable)
+            <p class="govuk-body"><strong>@{messages("profitOrLossCalculation.adjustedTable.taxableProfit", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</strong></p>
+
+        }
 
         @govukSummaryList(summaryList)
 
