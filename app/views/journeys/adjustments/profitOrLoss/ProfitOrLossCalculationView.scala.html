@@ -39,12 +39,12 @@
         adjustmentsTable: Table,
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$userType", netAmount))) {
+@layout(pageTitle = titleNoForm(messages("profitOrLossCalculation.title", netAmount))) {
 
     @formHelper(action = continueRedirect) {
 
         @caption(taxYear)
-        @heading(s"profitOrLossCalculation.title.$userType", Some(netAmount))
+        @heading("profitOrLossCalculation.title", Some(netAmount))
 
         @govukTable(yourAdjustedProfitTable)
         @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){

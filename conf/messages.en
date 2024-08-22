@@ -2102,7 +2102,7 @@ profitOrLoss.totalDeductions.loss = Total deductions from net loss
 profitOrLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
 profitOrLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
 
-profitOrLossCalculation.title.individual = Adjusted taxable profit: {0}
+profitOrLossCalculation.title = Adjusted taxable profit: {0}
 profitOrLossCalculation.adjustedTable.profit = Adjusted taxable profit for {0} to {1}
 profitOrLossCalculation.adjustedTable.taxableProfit = Taxable profit for {0} to {1}: {2}
 
