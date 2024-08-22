@@ -38,7 +38,7 @@ class OfficeSuppliesDisallowableAmountSummarySpec extends SpecBase {
 
             result.get shouldBe a[SummaryListRow]
             result.get.key.content shouldBe Text(s"officeSuppliesDisallowableAmount.title.$userType")
-            result.get.value.content shouldBe HtmlContent("£100.00")
+            result.get.value.content shouldBe HtmlContent("£100")
           }
         }
         "user answers do not exist for OfficeSuppliesDisallowableAmountPage" - {

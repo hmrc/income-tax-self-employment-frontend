@@ -30,7 +30,7 @@ class EvcpHowMuchDoYouWantToClaimSummarySpec extends SummaryBaseSpec("EvcpHowMuc
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"evcpHowMuchDoYouWantToClaim.subHeading.$userType"))
 
-  override val testValue: HtmlContent = HtmlContent("£400.00")
+  override val testValue: HtmlContent = HtmlContent("£400")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     EvcpHowMuchDoYouWantToClaimSummary.row(userAnswers, taxYear, businessId, userType)(messages)

@@ -28,8 +28,13 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowString, formatAnswer}
 
 object ZegvAllowanceSummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers,
+          taxYear: TaxYear,
+          businessId: BusinessId,
+          userType: UserType,
+          rightTextAlign: Boolean = true,
+          overrideKeyMessage: Option[String] = None,
+          overrideChangeMessage: Option[String] = None)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(ZegvAllowancePage, businessId.some)
       .map { answer =>

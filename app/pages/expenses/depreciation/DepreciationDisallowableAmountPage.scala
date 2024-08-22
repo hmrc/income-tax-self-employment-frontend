@@ -26,8 +26,11 @@ case object DepreciationDisallowableAmountPage extends OneQuestionPage[BigDecima
   override def toString: String = "depreciationDisallowableAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
+    cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.DepreciationCYAController.onPageLoad(taxYear, businessId)
 }

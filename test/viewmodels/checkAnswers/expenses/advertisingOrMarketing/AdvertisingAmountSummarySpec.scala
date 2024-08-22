@@ -35,7 +35,7 @@ class AdvertisingAmountSummarySpec extends SummaryBaseSpec("AdvertisingAmountSum
   override val invalidData: JsObject = Json.obj("otherPage" -> amount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(s"advertisingAmount.title.$userType")
-  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(amount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(amount, addDecimalForWholeNumbers = false)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     AdvertisingAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

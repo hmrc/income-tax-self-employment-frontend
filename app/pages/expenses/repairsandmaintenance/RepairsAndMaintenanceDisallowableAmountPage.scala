@@ -26,8 +26,12 @@ case object RepairsAndMaintenanceDisallowableAmountPage extends OneQuestionPage[
   override def toString: String = "repairsAndMaintenanceDisallowableAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
+    cyaPage(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined
+
+  override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.RepairsAndMaintenanceCostsCYAController.onPageLoad(taxYear, businessId)
+
 }

@@ -25,12 +25,13 @@ import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
+import utils.Logging
 
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
-package object controllers {
+package object controllers extends Logging {
   def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
@@ -40,19 +41,10 @@ package object controllers {
   def returnAccountingType(businessId: BusinessId)(implicit request: DataRequest[_]): AccountingType =
     request.userAnswers.getAccountingType(businessId)
 
-  def handleResult(result: Future[Either[ServiceError, Result]])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
-    handleResultT(EitherT(result))
-
   def handleApiResult[A](result: ApiResultT[A])(implicit ec: ExecutionContext): Future[A] =
     result.value.flatMap {
       case Left(error) => Future.failed(error.httpError.internalReason.getOrElse(new RuntimeException(error.httpError.toString)))
       case Right(v)    => Future.successful(v)
-    }
-
-  def handleServiceCall[A](result: Future[Either[ServiceError, A]])(implicit ec: ExecutionContext, logger: Logger): EitherT[Future, Result, A] =
-    EitherT(result).leftMap { error =>
-      logger.error(s"ServiceError encountered: $error")
-      redirectJourneyRecovery()
     }
 
   def handleResultT(resultT: EitherT[Future, ServiceError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
@@ -72,6 +64,7 @@ package object controllers {
     val taxYearCutoffDate = LocalDate.parse(s"${taxYear.endYear}-04-05")
     val defaultMaxMonths  = 12
     business.commencementDate.fold[Either[Result, Int]] {
+      logger.error(s"Business businessId=${business.businessId} does not have a commencement date. Redirecting to journey recovery.")
       Left(redirectJourneyRecovery())
     } { date =>
       val startDate: LocalDate                 = LocalDate.parse(date)

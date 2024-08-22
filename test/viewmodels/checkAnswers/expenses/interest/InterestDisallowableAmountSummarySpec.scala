@@ -37,7 +37,7 @@ class InterestDisallowableAmountSummarySpec extends SummaryBaseSpec("InterestDis
   override val invalidData: JsObject = Json.obj("otherPage" -> disallowableAmount)
 
   override val testKey: UserType => Text = (userType: UserType) => Text(messages(s"interestDisallowableAmount.title.$userType", amount))
-  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount)}")
+  override val testValue: HtmlContent    = HtmlContent(s"£${formatMoney(disallowableAmount, addDecimalForWholeNumbers = false)}")
 
   override def buildSummaryListRow(userAnswers: UserAnswers, userType: UserType): Option[SummaryListRow] =
     InterestDisallowableAmountSummary.row(userAnswers, taxYear, businessId, userType)(messages)

@@ -42,11 +42,11 @@
 
         @heading(s"checkNetProfitLoss.title.$profitOrLoss", Some(netAmount))
 
-        @foldableDetails(messages("profitOfLoss.showCalculations"), marginBottomThree = false){
+        @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){
             @govukTable(netProfitTable)
             @govukTable(additionsTable)
             @govukTable(deductionsTable)
-            <p class="govuk-body">@{messages(s"profitOfLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
+            <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
         }
 
         <p class="govuk-body">@messages(s"checkNetProfitLoss.p1.$profitOrLoss.$userType")</p>

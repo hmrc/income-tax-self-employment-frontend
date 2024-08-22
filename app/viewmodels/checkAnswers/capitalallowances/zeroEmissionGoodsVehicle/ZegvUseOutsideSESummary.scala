@@ -29,8 +29,13 @@ import viewmodels.checkAnswers.{AnswerSummary, buildRowString}
 
 object ZegvUseOutsideSESummary extends AnswerSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, rightTextAlign: Boolean = true)(implicit
-      messages: Messages): Option[SummaryListRow] = {
+  def row(answers: UserAnswers,
+          taxYear: TaxYear,
+          businessId: BusinessId,
+          userType: UserType,
+          rightTextAlign: Boolean = true,
+          overrideKeyMessage: Option[String] = None,
+          overrideChangeMessage: Option[String] = None)(implicit messages: Messages): Option[SummaryListRow] = {
     def buildRow(answer: String) = buildRowString(
       answer,
       routes.ZegvUseOutsideSEController.onPageLoad(taxYear, businessId, CheckMode),

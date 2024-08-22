@@ -50,7 +50,7 @@ class checkAnswersSpec extends AnyWordSpecLike {
   "buildRowBigDecimal" should {
     "return a SummaryListRow with formatted money aligned right" in new TestCase {
       val result = buildRowBigDecimal(1.0, emptyCall, "keyMessage", "changeMessage")
-      assert(result === expectedRow("£1.00", rightTextAlign = true))
+      assert(result === expectedRow("£1", rightTextAlign = true))
     }
   }
 

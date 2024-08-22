@@ -31,7 +31,7 @@ class packageSpec extends AnyWordSpecLike {
   "mkBooleanSummary" should {
     List(true, false).foreach { answer =>
       s"build boolean summary row for answer=$answer" in {
-        val result = mkBooleanSummary(answer = answer, call, StubPage, Individual, true)(messagesStubbed)
+        val result = mkBooleanSummary(answer = answer, call, StubPage, Individual, rightTextAlign = true)(messagesStubbed)
         assert(result.key.content.asHtml.toString() === "stubPage.subHeading.cya.individual")
         assert(result.value.content.asHtml.toString() === s"site.${if (answer) "yes" else "no"}")
       }
@@ -40,9 +40,9 @@ class packageSpec extends AnyWordSpecLike {
 
   "mkBigDecimalSummary" should {
     "build big decimal summary row" in {
-      val result = mkBigDecimalSummary(answer = BigDecimal(10.0), call, StubPage, Individual)(messagesStubbed)
+      val result = mkBigDecimalSummary(answer = BigDecimal(10.0), call, StubPage, Individual, rightTextAlign = true)(messagesStubbed)
       assert(result.key.content.asHtml.toString() === "stubPage.subHeading.cya.individual")
-      assert(result.value.content.asHtml.toString() === "£10.00")
+      assert(result.value.content.asHtml.toString() === "£10")
     }
   }
 
