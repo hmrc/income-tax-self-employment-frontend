@@ -31,7 +31,6 @@
 @(userType: UserType,
         netAmount: String,
         taxYear: TaxYear,
-        summaryList: SummaryList,
         yourAdjustedProfitTable: Table,
         netProfitTable: Table,
         additionsToNetProfitTable: Table,
@@ -56,8 +55,6 @@
             <p class="govuk-body"><strong>@{messages("profitOrLossCalculation.adjustedTable.taxableProfit", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</strong></p>
 
         }
-
-        @govukSummaryList(summaryList)
 
         @submitButton()
     }

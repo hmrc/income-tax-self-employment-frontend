@@ -25,7 +25,7 @@ object AdjustedTaxableProfitSummary {
 
   // TODO all of the following hardcoded values will be replaced with API data from different places based on the calculations (SASS-9523)
 
-  def buildTable1(taxYear: TaxYear)(implicit messages: Messages): Table = {
+  def buildYourAdjustedProfitTable(taxYear: TaxYear)(implicit messages: Messages): Table = {
 
     val startYear = taxYear.startYear.toString
     val endYear   = taxYear.endYear.toString
@@ -34,7 +34,7 @@ object AdjustedTaxableProfitSummary {
       buildTableAmountRow("profitOrLoss.netProfitOrLoss.profit", 4400.00),
       buildTableAmountRow("profitOrLoss.additions.profit", 200.00),
       buildTableAmountRow("profitOrLoss.deductions.profit", 0.00),
-      buildTableAmountRow("profitOrLoss.netForTaxPurposes.profit", 4600.00),
+      buildTableAmountRow("profitOrLoss.netForTaxPurposes.profit.tableValue", 4600.00),
       buildTableAmountRow("journeys.adjustments", 0.00),
       buildTableAmountRow(
         "profitOrLossCalculation.adjustedTable.profit",
@@ -45,7 +45,7 @@ object AdjustedTaxableProfitSummary {
     buildTable(None, adjustableTaxableProfitRows)
   }
 
-  def buildTable2()(implicit messages: Messages): Table = {
+  def buildNetProfitTable()(implicit messages: Messages): Table = {
 
     val netProfit = Seq(
       buildTableAmountRow("profitOrLoss.turnover", 5000.00),
@@ -53,10 +53,10 @@ object AdjustedTaxableProfitSummary {
       buildTableAmountRow("profitOrLoss.totalExpenses", -600.00),
       buildTableAmountRow("profitOrLoss.netProfitOrLoss.profit", 4400.25)
     )
-    buildTable(None, netProfit, caption = Some(messages(s"profitOrLoss.netProfitOrLoss.profit")), "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
+    buildTable(None, netProfit, caption = Some(messages("profitOrLoss.netProfitOrLoss.profit")), "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildTable3()(implicit messages: Messages): Table = {
+  def buildAdditionsToNetProfitTable()(implicit messages: Messages): Table = {
 
     val additionsToNetProfitTable = Seq(
       buildTableAmountRow("selectCapitalAllowances.balancingCharge", 0.00),
@@ -67,11 +67,11 @@ object AdjustedTaxableProfitSummary {
     buildTable(
       None,
       additionsToNetProfitTable,
-      caption = Some(messages(s"profitOrLoss.additions.profit")),
+      caption = Some(messages("profitOrLoss.additions.profit")),
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildTable4()(implicit messages: Messages): Table = {
+  def buildCapitalAllowanceTable()(implicit messages: Messages): Table = {
 
     val capitalAllowanceTable = Seq(
       buildTableAmountRow("profitOrLoss.capitalAllowances", 0.00),
@@ -81,11 +81,11 @@ object AdjustedTaxableProfitSummary {
     buildTable(
       None,
       capitalAllowanceTable,
-      caption = Some(messages(s"profitOrLoss.deductions.profit")),
+      caption = Some(messages("profitOrLoss.deductions.profit")),
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildTable5()(implicit messages: Messages): Table = {
+  def buildAdjustmentsTable()(implicit messages: Messages): Table = {
 
     val adjustmentsTable = Seq(
       buildTableAmountRow("adjustments.anyOtherBusinessIncome", 0.00),

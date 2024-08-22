@@ -2099,6 +2099,7 @@ profitOrLoss.capitalAllowances = Capital allowances
 profitOrLoss.turnoverNotTaxable = Turnover not taxable as business profit
 profitOrLoss.totalDeductions.profit = Total deductions from net profit
 profitOrLoss.totalDeductions.loss = Total deductions from net loss
+profitOrLoss.netForTaxPurposes.profit.tableValue = Net business profit for tax purposes
 profitOrLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
 profitOrLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
 

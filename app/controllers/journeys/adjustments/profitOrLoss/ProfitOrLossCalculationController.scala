@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.SummaryListCYA
 import viewmodels.journeys.adjustments.AdjustedTaxableProfitSummary._
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
@@ -44,20 +43,18 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList               = SummaryListCYA.summaryListOpt(List())
-    val netAmount                 = BigDecimal(4600)
+    val netAmount                 = BigDecimal(4600.00)
     val formattedNetAmount        = formatSumMoneyNoNegative(List(netAmount))
-    val yourAdjustedProfitTable   = buildTable1(taxYear)
-    val netProfitTable            = buildTable2()
-    val additionsToNetProfitTable = buildTable3()
-    val capitalAllowanceTable     = buildTable4()
-    val adjustmentsTable          = buildTable5()
+    val yourAdjustedProfitTable   = buildYourAdjustedProfitTable(taxYear)
+    val netProfitTable            = buildNetProfitTable()
+    val additionsToNetProfitTable = buildAdditionsToNetProfitTable()
+    val capitalAllowanceTable     = buildCapitalAllowanceTable()
+    val adjustmentsTable          = buildAdjustmentsTable()
     Ok(
       view(
         request.userType,
         formattedNetAmount,
         taxYear,
-        summaryList,
         yourAdjustedProfitTable,
         netProfitTable,
         additionsToNetProfitTable,
