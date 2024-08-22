@@ -15,7 +15,7 @@
  *@
 
 @import models.common.{BusinessId, TaxYear}
-@import models.journeys.Journey
+@import models.common.Journey
 @import views.html.components._
 
 @this(
@@ -30,7 +30,7 @@
 
 @layout(pageTitle = title(form, messages("sectionCompletedState.title"))) {
 
-    @formHelper(action = controllers.journeys.routes.SectionCompletedStateController.onSubmit(taxYear, businessId, journey.entryName, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.journeys.routes.SectionCompletedStateController.onSubmit(taxYear, businessId, journey, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 

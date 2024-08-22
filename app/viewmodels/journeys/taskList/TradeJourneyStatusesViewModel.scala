@@ -21,8 +21,8 @@ import models._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey._
+import models.common.Journey
+import models.common.Journey._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

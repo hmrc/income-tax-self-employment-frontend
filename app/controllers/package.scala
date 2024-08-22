@@ -20,7 +20,7 @@ import models.NormalMode
 import models.common.{AccountingType, BusinessId, JourneyContext, TaxYear}
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
-import models.journeys.Journey
+import models.common.Journey
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.Result
@@ -35,7 +35,7 @@ package object controllers extends Logging {
   def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
-    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.entryName, NormalMode)
+    journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode)
   )
 
   def returnAccountingType(businessId: BusinessId)(implicit request: DataRequest[_]): AccountingType =

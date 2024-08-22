@@ -20,10 +20,10 @@ import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances
 import models.NormalMode
 import models.common.AccountingType.Cash
+import models.common.Journey._
 import models.common.JourneyStatus.Completed
 import models.common.{BusinessId, JourneyStatus, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey._
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.TradesJourneyStatuses
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage

@@ -19,8 +19,8 @@ package controllers.journeys.expenses.irrecoverableDebts
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
-import models.journeys.Journey
-import models.journeys.Journey.ExpensesIrrecoverableDebts
+import models.common.Journey
+import models.common.Journey.ExpensesIrrecoverableDebts
 import models.journeys.expenses.irrecoverableDebts.IrrecoverableDebtsJourneyAnswers
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

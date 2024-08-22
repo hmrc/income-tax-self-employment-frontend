@@ -20,8 +20,8 @@ import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBase
 import controllers.journeys.income
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.Income
+import models.common.Journey
+import models.common.Journey.Income
 import pages.income.IncomeCYAPage
 import play.api.Application
 import play.api.i18n.Messages

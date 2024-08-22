@@ -24,8 +24,8 @@ import models.common.{BusinessId, JourneyContext, UserId}
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.Journey
-import models.journeys.Journey.NationalInsuranceContributions
+import models.common.Journey
+import models.common.Journey.NationalInsuranceContributions
 import models.requests.OptionalDataRequest
 import play.api.libs.json.{Format, JsObject, Json}
 import play.api.mvc.{ActionTransformer, Request}

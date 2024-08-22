@@ -21,7 +21,7 @@ import cats.implicits._
 import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.{JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
 import models.domain.BusinessIncomeSourcesSummary
-import models.journeys.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
+import models.common.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
 import models.journeys.{Journey, JourneyNameAndStatus, TaskList}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._

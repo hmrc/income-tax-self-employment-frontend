@@ -26,15 +26,15 @@ import controllers.actions.SubmittedDataRetrievalActionProvider
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import forms.standard.BooleanFormProvider
 import models.NormalMode
+import models.common.Journey.ExpensesGoodsToSellOrUse
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
 import models.domain.BusinessIncomeSourcesSummary
 import models.errors.ServiceError
-import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.journeys.JourneyNameAndStatus
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDoYouWantToClaim, ZegvUseOutsideSE}
 import models.journeys.nics.TaxableProfitAndLoss
-import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper

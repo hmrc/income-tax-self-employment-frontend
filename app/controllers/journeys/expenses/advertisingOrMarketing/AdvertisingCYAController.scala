@@ -19,7 +19,7 @@ package controllers.journeys.expenses.advertisingOrMarketing
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesAdvertisingOrMarketing
+import models.common.Journey.ExpensesAdvertisingOrMarketing
 import models.journeys.expenses.advertisingOrMarketing.AdvertisingOrMarketingJourneyAnswers
 import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

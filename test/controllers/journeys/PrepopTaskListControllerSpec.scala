@@ -25,7 +25,7 @@ import controllers.actions.AuthenticatedIdentifierAction.User
 import models.common.JourneyStatus
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import models.journeys.Journey.TradeDetails
+import models.common.Journey.TradeDetails
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec

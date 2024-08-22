@@ -16,7 +16,7 @@
 
 package models.journeys
 
-import models.common.JourneyStatus
+import models.common.{Journey, JourneyStatus}
 import play.api.libs.json.{Json, OFormat}
 
 final case class JourneyNameAndStatus(name: Journey, journeyStatus: JourneyStatus)

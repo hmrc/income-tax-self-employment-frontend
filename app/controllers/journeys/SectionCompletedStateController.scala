@@ -21,8 +21,7 @@ import controllers.actions._
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.JourneyStatus._
-import models.common.{BusinessId, JourneyAnswersContext, JourneyStatus, TaxYear}
-import models.journeys.Journey
+import models.common._
 import pages.SectionCompletedStatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,16 +49,17 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
 
   val page = SectionCompletedStatePage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       val form: Form[Boolean] = formProvider(page, request.userType, userSpecificRequiredError = false)
+      val updatedBusinessId   = businessId.checkToUpdateBusinessIdWithMtditid(journey, request.mtditid)
       val preparedForm = service
-        .getJourneyStatus(JourneyAnswersContext.fromNinoDataRequest(taxYear, businessId, request, Journey.withName(journey)))
+        .getJourneyStatus(JourneyAnswersContext.fromNinoDataRequest(taxYear, updatedBusinessId, request, journey))
         .value
         .map(_.fold(_ => form, fill(form, _)))
 
       preparedForm map { form =>
-        Ok(view(form, taxYear, businessId, Journey.withName(journey), mode))
+        Ok(view(form, taxYear, updatedBusinessId, journey, mode))
       }
   }
 
@@ -70,15 +70,15 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
       case NotStarted | CheckOurRecords | CannotStartYet => form
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       formProvider(page, request.userType, userSpecificRequiredError = false)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, Journey.withName(journey), mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, journey, mode))),
           answer =>
             handleResultT(
-              saveAndRedirect(JourneyAnswersContext.fromNinoDataRequest(taxYear, businessId, request, Journey.withName(journey)), answer)
+              saveAndRedirect(JourneyAnswersContext.fromNinoDataRequest(taxYear, businessId, request, journey), answer)
             )
         )
   }

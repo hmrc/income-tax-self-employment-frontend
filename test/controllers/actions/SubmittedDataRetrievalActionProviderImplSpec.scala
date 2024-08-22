@@ -21,9 +21,9 @@ import builders.TradesJourneyStatusesBuilder._
 import cats.data.EitherT
 import cats.implicits._
 import connectors.SelfEmploymentConnector
-import models.common.{JourneyAnswersContext, Mtditid, Nino, TaxYear}
+import models.common._
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
-import models.journeys.{Journey, TaskList, TaskListWithRequest}
+import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchersSugar._
 import org.mockito.IdiomaticMockito.StubbingOps

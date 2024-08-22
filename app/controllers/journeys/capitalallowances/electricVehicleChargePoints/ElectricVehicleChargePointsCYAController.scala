@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.electricVehicleChargePoints
 import models.common._
-import models.journeys.Journey.CapitalAllowancesElectricVehicleChargePoints
+import models.common.Journey.CapitalAllowancesElectricVehicleChargePoints
 import models.journeys.capitalallowances.electricVehicleChargePoints.ElectricVehicleChargePointsAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

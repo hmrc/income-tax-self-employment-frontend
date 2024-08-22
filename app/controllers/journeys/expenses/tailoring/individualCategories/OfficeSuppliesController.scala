@@ -22,7 +22,7 @@ import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import models.journeys.Journey
+import models.common.Journey
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import models.journeys.expenses.individualCategories.OfficeSupplies.enumerable
 import navigation.ExpensesTailoringNavigator

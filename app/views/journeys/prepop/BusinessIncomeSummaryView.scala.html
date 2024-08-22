@@ -16,7 +16,7 @@
 
 @import controllers.journeys
 @import models.common.{BusinessId, TaxYear, UserType}
-@import models.journeys.Journey.IncomePrepop
+@import models.common.Journey.IncomePrepop
 @import views.html.components.{Button, CaptionWithTaxYear, Heading, Subheading}
 
 @this(layout: templates.Layout,
@@ -40,7 +40,7 @@
     @govukTable(incomeTable)
 
     <div class="govuk-!-margin-top-7">
-        @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, IncomePrepop.entryName, NormalMode).url, "site.continue")
+        @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, IncomePrepop, NormalMode).url, "site.continue")
     </div>
 
 }

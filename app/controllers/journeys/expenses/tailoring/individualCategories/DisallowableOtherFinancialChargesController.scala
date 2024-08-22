@@ -21,7 +21,7 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.Journey
+import models.common.Journey
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableOtherFinancialChargesPage
 import play.api.i18n.{I18nSupport, MessagesApi}

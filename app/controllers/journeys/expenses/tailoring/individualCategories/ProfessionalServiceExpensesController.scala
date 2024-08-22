@@ -23,7 +23,7 @@ import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpenses
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.common.Journey
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
 import navigation.ExpensesTailoringNavigator

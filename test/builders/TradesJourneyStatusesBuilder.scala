@@ -18,7 +18,7 @@ package builders
 
 import base.SpecBase.businessId
 import models.common.{AccountingType, JourneyStatus, TradingName, TypeOfBusiness}
-import models.journeys.Journey._
+import models.common.Journey._
 import models.journeys.{JourneyNameAndStatus, TaskList}
 import models.requests.TradesJourneyStatuses
 

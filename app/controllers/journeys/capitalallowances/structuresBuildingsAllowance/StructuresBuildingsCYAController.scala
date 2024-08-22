@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import models.common._
-import models.journeys.Journey.CapitalAllowancesStructuresBuildings
+import models.common.Journey.CapitalAllowancesStructuresBuildings
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
