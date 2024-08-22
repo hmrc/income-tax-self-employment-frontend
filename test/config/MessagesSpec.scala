@@ -271,29 +271,6 @@ class MessagesSpec extends SpecBase {
       duplicateKeys mustBe Nil
     }
   }
-  "make sure user specific messages have also agent version" in {
-    val missingAgentVersionMessages = english.toList
-      .filterNot(_._1.endsWith("hidden"))
-      .filterNot { case (msgKey, _) =>
-        userSpecificMessagesWithoutAgentVersions.contains(msgKey)
-      }
-      .filter { case (msgKey, msgValue) =>
-        msgValue.toLowerCase.contains(" you ") && !msgKey.contains(".individual")
-      }
-      .sortBy(_._1)
-
-    missingAgentVersionMessages.foreach { case (msgKey, msgValue) =>
-      println(s"$msgKey=$msgValue")
-    }
-
-    val hasNoMissingAgentVersionMessageValues = missingAgentVersionMessages.isEmpty
-    assert(
-      hasNoMissingAgentVersionMessageValues,
-      "Perhaps missing the agent version of the message. Add to the userSpecificMessagesWithoutAgentVersionsException list if not true. " +
-        "See the console for details which keys are affected."
-    )
-
-  }
 
   "make sure user specific messages have also agent version" in {
     val missingAgentVersionMessages = english.toList
