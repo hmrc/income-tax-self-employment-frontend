@@ -48,7 +48,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec {
       userTypeCases.foreach { userType =>
         s"when net profit and user is an $userType" in {
           val application               = buildAppFromUserType(userType, Some(userAnswers))
-          implicit val msg: Messages = SpecBase.messages(application)
+          implicit val msg: Messages    = SpecBase.messages(application)
           val result                    = route(application, onPageLoadRequest).value
           val netAmount                 = BigDecimal(4600.00)
           val formattedNetAmount        = formatSumMoneyNoNegative(List(netAmount))
