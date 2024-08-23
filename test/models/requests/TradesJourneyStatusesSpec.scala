@@ -19,8 +19,8 @@ package models.requests
 import base.SpecBase._
 import cats.implicits._
 import models.common.AccountingType.Accrual
-import models.common.JourneyStatus
-import models.journeys.{Journey, JourneyNameAndStatus}
+import models.common.{Journey, JourneyStatus}
+import models.journeys.JourneyNameAndStatus
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class TradesJourneyStatusesSpec extends AnyWordSpecLike {

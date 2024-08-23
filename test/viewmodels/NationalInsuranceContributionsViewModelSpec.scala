@@ -21,11 +21,11 @@ import builders.BusinessDataBuilder.smallProfitTaxableProfitAndLoss
 import builders.TradesJourneyStatusesBuilder.{aTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import controllers.journeys._
 import models.NormalMode
+import models.common.Journey._
 import models.common.JourneyStatus._
 import models.common.TaxYear.dateNow
 import models.common._
-import models.journeys.Journey._
-import models.journeys.{Journey, JourneyNameAndStatus}
+import models.journeys.JourneyNameAndStatus
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}

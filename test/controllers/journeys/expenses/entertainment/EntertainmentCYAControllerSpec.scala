@@ -19,8 +19,8 @@ package controllers.journeys.expenses.entertainment
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.ExpensesEntertainment
+import models.common.Journey
+import models.common.Journey.ExpensesEntertainment
 import pages.expenses.entertainment.EntertainmentCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

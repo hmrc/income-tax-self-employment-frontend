@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.annualInvestmentAllowance
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.CapitalAllowancesAnnualInvestmentAllowance
+import models.common.Journey
+import models.common.Journey.CapitalAllowancesAnnualInvestmentAllowance
 import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

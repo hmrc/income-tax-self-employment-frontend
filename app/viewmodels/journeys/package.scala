@@ -17,9 +17,9 @@
 package viewmodels
 
 import models.common.JourneyStatus.{CannotStartYet, CheckOurRecords, Completed, InProgress, NotStarted}
-import models.common.{BusinessId, JourneyStatus}
+import models.common.{BusinessId, Journey, JourneyStatus}
 import models.database.UserAnswers
-import models.journeys.{Journey, JourneyNameAndStatus}
+import models.journeys.JourneyNameAndStatus
 import models.requests.TradesJourneyStatuses
 import pages.OneQuestionPage
 import play.api.libs.json.Reads

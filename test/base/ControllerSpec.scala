@@ -20,7 +20,7 @@ import builders.UserBuilder
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.common.Journey
 import models.{Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchersSugar

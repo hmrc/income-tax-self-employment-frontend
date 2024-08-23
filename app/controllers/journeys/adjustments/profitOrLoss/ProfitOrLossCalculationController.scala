@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.journeys
 import models.NormalMode
 import models.common._
-import models.journeys.Journey.ProfitOrLoss
+import models.common.Journey.ProfitOrLoss
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -60,7 +60,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         additionsToNetProfitTable,
         capitalAllowanceTable,
         adjustmentsTable,
-        journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss.entryName, NormalMode)
+        journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
       ))
   }
 }

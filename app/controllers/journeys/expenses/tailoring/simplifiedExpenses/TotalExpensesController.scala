@@ -22,7 +22,7 @@ import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
-import models.journeys.Journey
+import models.common.Journey
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -271,6 +271,7 @@ class MessagesSpec extends SpecBase {
       duplicateKeys mustBe Nil
     }
   }
+
   "make sure user specific messages have also agent version" in {
     val missingAgentVersionMessages = english.toList
       .filterNot(_._1.endsWith("hidden"))

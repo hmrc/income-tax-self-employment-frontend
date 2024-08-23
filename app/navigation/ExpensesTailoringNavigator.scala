@@ -22,7 +22,7 @@ import controllers.standard.routes._
 import controllers.{journeys, standard}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey.ExpensesTailoring
+import models.common.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring._
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
@@ -163,9 +163,7 @@ class ExpensesTailoringNavigator @Inject() {
     case OtherExpensesPage => _ => (taxYear, businessId) => tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
     case ExpensesTailoringCYAPage =>
-      _ =>
-        (taxYear, businessId) =>
-          journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring.toString, NormalMode)
+      _ => (taxYear, businessId) => journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring, NormalMode)
 
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }

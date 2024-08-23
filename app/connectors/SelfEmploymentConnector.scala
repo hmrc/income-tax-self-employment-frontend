@@ -23,7 +23,7 @@ import models.common._
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
 import models.errors.ServiceError.BusinessNotFoundError
-import models.journeys.{Journey, JourneyNameAndStatus, JourneyStatusData, TaskList}
+import models.journeys.{JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import utils.EitherTOps.EitherTExtensions

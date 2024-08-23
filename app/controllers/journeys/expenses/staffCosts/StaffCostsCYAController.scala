@@ -19,7 +19,7 @@ package controllers.journeys.expenses.staffCosts
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesStaffCosts
+import models.common.Journey.ExpensesStaffCosts
 import models.journeys.expenses.staffCosts.StaffCostsJourneyAnswers
 import pages.expenses.staffCosts.StaffCostsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

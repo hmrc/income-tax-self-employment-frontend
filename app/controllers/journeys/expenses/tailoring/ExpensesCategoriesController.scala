@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.common.Journey
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
 import models.{Mode, NormalMode}

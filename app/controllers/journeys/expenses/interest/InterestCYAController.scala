@@ -19,7 +19,7 @@ package controllers.journeys.expenses.interest
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesInterest
+import models.common.Journey.ExpensesInterest
 import models.journeys.expenses.interest.InterestJourneyAnswers
 import pages.expenses.interest.InterestCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

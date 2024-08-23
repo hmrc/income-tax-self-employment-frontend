@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.specialTaxSites
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
+import models.common.Journey.CapitalAllowancesSpecialTaxSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

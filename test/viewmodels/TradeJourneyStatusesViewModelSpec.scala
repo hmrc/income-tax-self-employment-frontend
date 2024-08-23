@@ -21,14 +21,14 @@ import cats.implicits._
 import controllers.journeys._
 import models._
 import models.common.AccountingType.Accrual
+import models.common.Journey._
 import models.common.JourneyStatus._
-import models.common.{JourneyStatus, TradingName, TypeOfBusiness}
+import models.common.{Journey, JourneyStatus, TradingName, TypeOfBusiness}
 import models.database.UserAnswers
-import models.journeys.Journey._
+import models.journeys.JourneyNameAndStatus
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
-import models.journeys.{Journey, JourneyNameAndStatus}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.TryValues._
 import org.scalatest.prop.TableDrivenPropertyChecks

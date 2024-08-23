@@ -20,8 +20,8 @@ import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBase
 import controllers.journeys.expenses.otherExpenses.routes._
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.ExpensesOtherExpenses
+import models.common.Journey
+import models.common.Journey.ExpensesOtherExpenses
 import pages.expenses.otherExpenses.OtherExpensesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

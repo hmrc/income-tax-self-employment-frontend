@@ -23,7 +23,7 @@ import controllers.journeys.expenses.tailoring.simplifiedExpenses
 import controllers.journeys.routes._
 import controllers.standard.routes._
 import models._
-import models.journeys.Journey.ExpensesTailoring
+import models.common.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
@@ -403,7 +403,7 @@ class ExpensesTailoringNavigatorSpec extends SpecBase {
       "Expenses CYA page must go to the Section Completed page with Income journey" in {
 
         navigator.nextPage(ExpensesTailoringCYAPage, NormalMode, emptyUserAnswers, taxYear, businessId) mustBe
-          SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring.toString, NormalMode)
+          SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTailoring, NormalMode)
       }
 
       "must go from a page that doesn't exist in the route map to the Journey Recovery page" in {

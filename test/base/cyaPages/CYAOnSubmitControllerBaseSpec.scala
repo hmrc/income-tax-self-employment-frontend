@@ -23,7 +23,7 @@ import models.NormalMode
 import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
-import models.journeys.Journey
+import models.common.Journey
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.libs.json.JsObject
@@ -51,7 +51,7 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
         status(result) shouldBe 303
 
         redirectLocation(result).value shouldBe journeys.routes.SectionCompletedStateController
-          .onPageLoad(taxYear, businessId, journey.toString, NormalMode)
+          .onPageLoad(taxYear, businessId, journey, NormalMode)
           .url
       }
     }

@@ -21,7 +21,7 @@ import common.TestApp.buildAppFromUserType
 import controllers.journeys
 import models.NormalMode
 import models.database.UserAnswers
-import models.journeys.Journey.ProfitOrLoss
+import models.common.Journey.ProfitOrLoss
 import play.api.http.Status.OK
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -41,7 +41,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec {
 
   def onPageLoad: String = routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId).url
 
-  def onwardRoute: Call = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss.entryName, NormalMode)
+  def onwardRoute: Call = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
 
   "onPageLoad" - {
     "should return OK and render correct view" - {

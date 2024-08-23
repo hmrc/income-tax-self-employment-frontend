@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 import models.common._
-import models.journeys.Journey.CapitalAllowancesZeroEmissionGoodsVehicle
+import models.common.Journey.CapitalAllowancesZeroEmissionGoodsVehicle
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

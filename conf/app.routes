@@ -25,10 +25,10 @@ GET         /unauthorised                                                       
 GET         /:taxYear/task-list                                                     controllers.journeys.TaskListController.onPageLoad(taxYear: TaxYear)
 GET         /:taxYear/task-list-prepop                                              controllers.journeys.PrepopTaskListController.onPageLoad(taxYear: TaxYear)
 
-GET         /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/:journey/details/change-completed-section         controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/:journey/details/change-completed-section         controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: String, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/:journey/details/completed-section                controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/:journey/details/change-completed-section         controllers.journeys.SectionCompletedStateController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/:journey/details/change-completed-section         controllers.journeys.SectionCompletedStateController.onSubmit(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode = CheckMode)
 
 ########## Trade-details Journey ##########
 

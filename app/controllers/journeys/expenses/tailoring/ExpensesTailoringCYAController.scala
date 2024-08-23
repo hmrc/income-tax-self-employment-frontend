@@ -21,8 +21,8 @@ import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.tailoring
 import models.CheckMode
 import models.common._
-import models.journeys.Journey
-import models.journeys.Journey.ExpensesTailoring
+import models.common.Journey
+import models.common.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers._

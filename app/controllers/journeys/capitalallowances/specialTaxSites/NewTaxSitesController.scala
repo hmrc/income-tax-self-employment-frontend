@@ -21,7 +21,7 @@ import controllers.{journeys, redirectJourneyRecovery}
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common._
-import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
+import models.common.Journey.CapitalAllowancesSpecialTaxSites
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite.returnTotalIfMultipleSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
 import pages.capitalallowances.specialTaxSites._

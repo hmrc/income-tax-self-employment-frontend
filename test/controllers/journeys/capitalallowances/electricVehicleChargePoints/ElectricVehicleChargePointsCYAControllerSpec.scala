@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.electricVehicleChargePoints
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.CapitalAllowancesElectricVehicleChargePoints
+import models.common.Journey
+import models.common.Journey.CapitalAllowancesElectricVehicleChargePoints
 import models.journeys.capitalallowances.electricVehicleChargePoints._
 import pages.Page
 import play.api.i18n.Messages

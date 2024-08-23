@@ -19,7 +19,7 @@ package controllers.journeys.expenses.professionalFees
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesProfessionalFees
+import models.common.Journey.ExpensesProfessionalFees
 import models.journeys.expenses.professionalFees.ProfessionalFeesJourneyAnswers
 import pages.expenses.professionalFees.ProfessionalFeesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

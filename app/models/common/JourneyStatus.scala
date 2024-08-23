@@ -17,7 +17,7 @@
 package models.common
 
 import enumeratum._
-import models.journeys.{Journey, JourneyNameAndStatus}
+import models.journeys.JourneyNameAndStatus
 
 sealed abstract class JourneyStatus(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName

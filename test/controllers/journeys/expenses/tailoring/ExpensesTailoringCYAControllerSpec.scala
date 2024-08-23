@@ -21,7 +21,7 @@ import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.common.Journey
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import pages.expenses.tailoring._
 import play.api.Application

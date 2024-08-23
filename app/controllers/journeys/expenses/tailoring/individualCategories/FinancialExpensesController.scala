@@ -23,7 +23,7 @@ import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvid
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.common.Journey
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
 import navigation.ExpensesTailoringNavigator
