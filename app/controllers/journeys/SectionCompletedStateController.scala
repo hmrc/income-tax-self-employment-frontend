@@ -52,14 +52,13 @@ class SectionCompletedStateController @Inject() (override val messagesApi: Messa
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, journey: Journey, mode: Mode): Action[AnyContent] = (identify andThen getData) async {
     implicit request =>
       val form: Form[Boolean] = formProvider(page, request.userType, userSpecificRequiredError = false)
-      val updatedBusinessId   = businessId.checkToUpdateBusinessIdWithMtditid(journey, request.mtditid)
       val preparedForm = service
-        .getJourneyStatus(JourneyAnswersContext.fromNinoDataRequest(taxYear, updatedBusinessId, request, journey))
+        .getJourneyStatus(JourneyAnswersContext.fromNinoDataRequest(taxYear, businessId, request, journey))
         .value
         .map(_.fold(_ => form, fill(form, _)))
 
       preparedForm map { form =>
-        Ok(view(form, taxYear, updatedBusinessId, journey, mode))
+        Ok(view(form, taxYear, businessId, journey, mode))
       }
   }
 

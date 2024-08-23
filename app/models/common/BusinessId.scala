@@ -16,8 +16,6 @@
 
 package models.common
 
-import models.common.Journey
-import models.common.Journey.{NationalInsuranceContributions, TradeDetails}
 import play.api.data.Forms.text
 import play.api.data.Mapping
 import play.api.libs.json.{Format, Json}
@@ -25,11 +23,6 @@ import play.api.mvc.PathBindable
 
 final case class BusinessId(value: String) extends AnyVal {
   override def toString: String = value
-
-  def checkToUpdateBusinessIdWithMtditid(journey: Journey, mtditid: Mtditid): BusinessId = journey match {
-    case TradeDetails | NationalInsuranceContributions => BusinessId(s"$value-${mtditid.value}")
-    case _                                             => this
-  }
 }
 
 object BusinessId {
