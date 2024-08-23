@@ -20,8 +20,8 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResult
 import models.common._
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.Income
+import models.common.Journey
+import models.common.Journey.Income
 import models.journeys.income.IncomeJourneyAnswers
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

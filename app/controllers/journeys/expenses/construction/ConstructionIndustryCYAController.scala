@@ -19,7 +19,7 @@ package controllers.journeys.expenses.construction
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesConstruction
+import models.common.Journey.ExpensesConstruction
 import models.journeys.expenses.construction.ConstructionJourneyAnswers
 import pages.expenses.construction.ConstructionIndustryCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -19,7 +19,7 @@ package controllers.journeys.expenses.goodsToSellOrUse
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.ExpensesGoodsToSellOrUse
+import models.common.Journey.ExpensesGoodsToSellOrUse
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import pages.expenses.goodsToSellOrUse.GoodsToSellOrUseCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

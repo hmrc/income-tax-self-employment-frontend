@@ -19,12 +19,12 @@ package models.requests
 import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
-import models.journeys.{Journey, JourneyNameAndStatus}
+import models.journeys.JourneyNameAndStatus
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import viewmodels.journeys.taskList.PrepopTradeJourneyStatusesViewModel.buildPrepopSummaryList
-import viewmodels.journeys.taskList.{PrepopTradeJourneyStatusesViewModel, TradeJourneyStatusesViewModel}
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryList
+import viewmodels.journeys.taskList.{PrepopTradeJourneyStatusesViewModel, TradeJourneyStatusesViewModel}
 
 case class TradesJourneyStatuses(businessId: BusinessId,
                                  tradingName: Option[TradingName],

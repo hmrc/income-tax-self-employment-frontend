@@ -18,15 +18,15 @@ package controllers.actions
 
 import cats.data.EitherT
 import connectors.SelfEmploymentConnector
-import models.common.{JourneyContext, TaxYear}
+import models.common.{Journey, JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
+import models.journeys.TaskListWithRequest
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
-import models.journeys.{Journey, TaskListWithRequest}
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.libs.json.Format
 import play.api.mvc.AnyContent

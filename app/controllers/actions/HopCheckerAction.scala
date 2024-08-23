@@ -18,7 +18,7 @@ package controllers.actions
 
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.Journey
+import models.common.Journey
 import models.requests.DataRequest
 import pages.Page
 import play.api.mvc.ActionFilter

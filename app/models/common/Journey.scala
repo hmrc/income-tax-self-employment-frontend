@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.journeys
+package models.common
 
 import controllers.journeys.expenses
 import enumeratum._
 import models.NormalMode
-import models.common.{BusinessId, PageName, TaxYear}
 import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
 import pages.adjustments.profitOrLoss._

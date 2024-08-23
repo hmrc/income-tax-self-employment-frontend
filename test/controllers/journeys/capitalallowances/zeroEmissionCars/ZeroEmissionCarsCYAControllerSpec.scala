@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.zeroEmissionCars
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.CapitalAllowancesZeroEmissionCars
+import models.common.Journey
+import models.common.Journey.CapitalAllowancesZeroEmissionCars
 import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

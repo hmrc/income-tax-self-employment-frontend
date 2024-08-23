@@ -24,7 +24,7 @@ import models.common._
 import models.database.UserAnswers
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import models.journeys.Journey
+import models.common.Journey
 import models.requests.{DataRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}

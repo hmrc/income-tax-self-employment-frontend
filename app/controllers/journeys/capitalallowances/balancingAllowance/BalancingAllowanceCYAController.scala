@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.balancingAllowance
 import models.common._
-import models.journeys.Journey.CapitalAllowancesBalancingAllowance
+import models.common.Journey.CapitalAllowancesBalancingAllowance
 import models.journeys.capitalallowances.balancingAllowance.BalancingAllowanceAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -19,7 +19,7 @@ package controllers.journeys.capitalallowances.tailoring
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import models.common._
-import models.journeys.Journey.CapitalAllowancesTailoring
+import models.common.Journey.CapitalAllowancesTailoring
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

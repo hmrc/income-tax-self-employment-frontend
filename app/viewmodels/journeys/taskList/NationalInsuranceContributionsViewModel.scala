@@ -19,8 +19,8 @@ package viewmodels.journeys.taskList
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.nics
 import models.NormalMode
+import models.common.Journey.{NationalInsuranceContributions, ProfitOrLoss}
 import models.common.{JourneyStatus, TaxYear}
-import models.journeys.Journey.{NationalInsuranceContributions, ProfitOrLoss}
 import models.journeys.JourneyNameAndStatus
 import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
 import models.journeys.nics.TaxableProfitAndLoss

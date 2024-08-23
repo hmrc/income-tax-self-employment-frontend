@@ -22,7 +22,7 @@ import models.NormalMode
 import models.common.JourneyStatus
 import models.common.UserType.Individual
 import models.errors.ServiceError
-import models.journeys.Journey
+import models.common.Journey
 import org.scalatest.prop.TableDrivenPropertyChecks
 import pages.SectionCompletedStatePage
 import play.api.data.Form
@@ -41,7 +41,7 @@ class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPrope
   val form: Form[Boolean] = formProvider(SectionCompletedStatePage, Individual)
 
   lazy val sectionCompletedStateRoute: String =
-    routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey.entryName, NormalMode).url
+    routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url
   lazy val journeyRecoveryRoute: String = controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
   lazy val journeyRecoveryCall: Call    = Call("GET", journeyRecoveryRoute)
   lazy val taskListRoute: String        = routes.TaskListController.onPageLoad(taxYear).url

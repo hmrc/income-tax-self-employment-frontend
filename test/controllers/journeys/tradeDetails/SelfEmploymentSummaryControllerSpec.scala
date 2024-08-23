@@ -23,6 +23,7 @@ import controllers.journeys.tradeDetails
 import controllers.journeys.tradeDetails.SelfEmploymentSummaryController.generateRowList
 import models.NormalMode
 import models.common.BusinessId
+import models.common.Journey.TradeDetails
 import models.database.UserAnswers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
@@ -43,7 +44,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
     "onPageLoad" - {
 
-      def nextRoute = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, "trade-details", NormalMode).url
+      def nextRoute = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, TradeDetails, NormalMode).url
 
       "must return OK and the correct view when there are no self-employments" in {
 

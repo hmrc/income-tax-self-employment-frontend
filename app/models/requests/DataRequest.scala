@@ -20,7 +20,7 @@ import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.standard
 import models.common._
 import models.database.UserAnswers
-import models.journeys.Journey
+import models.common.Journey
 import pages.{TradeAccountingType, TradingNameKey}
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect

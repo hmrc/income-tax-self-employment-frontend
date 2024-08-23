@@ -18,11 +18,10 @@ package viewmodels.journeys.taskList
 
 import controllers.journeys.expenses
 import models.NormalMode
+import models.common.Journey._
 import models.common.JourneyStatus.{CheckOurRecords, Completed, InProgress, NotStarted}
-import models.common.{BusinessId, JourneyStatus, TaxYear}
+import models.common.{BusinessId, Journey, JourneyStatus, TaxYear}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey._
 import models.journeys.expenses.individualCategories._
 import models.journeys.income.TradingAllowance
 import models.requests.TradesJourneyStatuses

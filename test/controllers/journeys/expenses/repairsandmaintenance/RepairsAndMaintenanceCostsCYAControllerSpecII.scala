@@ -20,8 +20,8 @@ import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBase
 import builders.UserBuilder.{aNoddyAgentUser, aNoddyUser}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.ExpensesRepairsAndMaintenance
+import models.common.Journey
+import models.common.Journey.ExpensesRepairsAndMaintenance
 import models.requests.DataRequest
 import pages.expenses.repairsandmaintenance.RepairsAndMaintenanceCostsCYAPage
 import play.api.i18n.Messages

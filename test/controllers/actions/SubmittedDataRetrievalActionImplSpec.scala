@@ -25,7 +25,7 @@ import models.common.JourneyAnswersContext
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.journeys.Journey
+import models.common.Journey
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchersSugar._
 import org.mockito.IdiomaticMockito.StubbingOps

@@ -20,8 +20,8 @@ import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBase
 import controllers.journeys.expenses.depreciation
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.ExpensesDepreciation
+import models.common.Journey
+import models.common.Journey.ExpensesDepreciation
 import pages.expenses.depreciation.DepreciationCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

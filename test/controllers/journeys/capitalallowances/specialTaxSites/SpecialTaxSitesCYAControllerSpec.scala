@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.specialTaxSites
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import models.journeys.Journey
-import models.journeys.Journey.CapitalAllowancesSpecialTaxSites
+import models.common.Journey
+import models.common.Journey.CapitalAllowancesSpecialTaxSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSiteLocation
 import pages.Page
 import play.api.i18n.Messages

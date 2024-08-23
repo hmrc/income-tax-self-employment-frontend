@@ -22,7 +22,7 @@ import models.CheckMode
 import models.common.BusinessId.nationalInsuranceContributions
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.domain.BusinessData
-import models.journeys.Journey.NationalInsuranceContributions
+import models.common.Journey.NationalInsuranceContributions
 import models.journeys.nics.NICsJourneyAnswers
 import pages.Page
 import pages.nics._

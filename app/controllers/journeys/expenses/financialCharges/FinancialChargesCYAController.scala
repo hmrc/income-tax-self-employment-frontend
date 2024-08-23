@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.financialCharges.routes._
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
-import models.journeys.Journey.ExpensesFinancialCharges
+import models.common.Journey.ExpensesFinancialCharges
 import models.journeys.expenses.financialCharges.FinancialChargesJourneyAnswers
 import pages.expenses.financialCharges.FinancialChargesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
