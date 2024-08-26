@@ -27,7 +27,9 @@ case class IncomeJourneyAnswers(incomeNotCountedAsTurnover: Boolean,
                                 notTaxableAmount: Option[BigDecimal],
                                 tradingAllowance: TradingAllowance,
                                 howMuchTradingAllowance: Option[HowMuchTradingAllowance],
-                                tradingAllowanceAmount: Option[BigDecimal])
+                                tradingAllowanceAmount: Option[BigDecimal]) {
+  def totalTurnover: BigDecimal = turnoverIncomeAmount + otherIncomeAmount.getOrElse(0.0)
+}
 
 object IncomeJourneyAnswers {
   implicit val formats: OFormat[IncomeJourneyAnswers] = Json.format[IncomeJourneyAnswers]

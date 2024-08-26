@@ -123,4 +123,6 @@ case class SelfEmploymentServiceStub(
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     EitherT.fromEither[Future](getBusinessIncomeSourcesSummaryResult)
+
+  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] = ???
 }

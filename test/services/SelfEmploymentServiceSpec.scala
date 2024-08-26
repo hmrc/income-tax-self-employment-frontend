@@ -26,7 +26,7 @@ import controllers.actions.SubmittedDataRetrievalActionProvider
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle.routes
 import forms.standard.BooleanFormProvider
 import models.NormalMode
-import models.common.Journey.ExpensesGoodsToSellOrUse
+import models.common.Journey.{ExpensesGoodsToSellOrUse, Income}
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
@@ -34,6 +34,7 @@ import models.domain.BusinessIncomeSourcesSummary
 import models.errors.ServiceError
 import models.journeys.JourneyNameAndStatus
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDoYouWantToClaim, ZegvUseOutsideSE}
+import models.journeys.income.{IncomeJourneyAnswers, IncomeJourneyAnswersTestData}
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
 import org.mockito.IdiomaticMockito.StubbingOps
@@ -308,6 +309,29 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       val result = service.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe aBusinessIncomeSourcesSummary.asRight
+    }
+  }
+
+  "getTotalTurnover" - {
+    val ctx = JourneyContextWithNino(taxYear, nino, businessId, mtditid, Income)
+
+    "fail with Income Not Found error when no income" in new ServiceWithStubs {
+      mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](None)
+      val result = service.getTotalTurnover(ctx).value.futureValue
+      result shouldBe ServiceError.IncomeAnswersNotSubmittedError.asLeft
+    }
+
+    "calculate total turnover from income answers" in new ServiceWithStubs {
+      val answers: IncomeJourneyAnswers = IncomeJourneyAnswersTestData.sample.copy(
+        turnoverIncomeAmount = 5.0,
+        otherIncomeAmount = Some(10.0)
+      )
+      mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](
+        Some(answers))
+
+      val result = service.getTotalTurnover(ctx).value.futureValue
+
+      result shouldBe Right(15.0)
     }
   }
 }
