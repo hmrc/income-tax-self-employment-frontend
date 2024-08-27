@@ -133,9 +133,10 @@ package object checkAnswers {
       TableRow(content = HtmlContent(answer), classes = s"govuk-!-text-align-right $classes")
     )
 
-  def buildTableAmountRow(key: String, answer: BigDecimal, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
+  def buildTableAmountRow(key: String, answer: BigDecimal, classes: String = "", optArgs: Seq[String] = Seq.empty)(implicit
+      messages: Messages): Seq[TableRow] =
     Seq(
-      TableRow(content = HtmlContent(messages(key)), classes = classes),
+      TableRow(content = HtmlContent(messages(key, optArgs: _*)), classes = classes),
       TableRow(content = HtmlContent(formatPosNegMoneyWithPounds(answer)), classes = s"govuk-!-text-align-right $classes")
     )
 

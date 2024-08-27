@@ -211,6 +211,8 @@ adjustments.balancingChargeOther = Balancing charge on sales of assets or on the
 adjustments.goodsAndServicesOwnUse = Cost of goods and services used outside self-employment
 adjustments.transitionProfitAmount = Transition profit amount
 adjustments.transitionProfitAccelerationAmount = Transition profit acceleration amount
+adjustments.anyOtherBusinessIncome = Any other business income
+adjustments.totalAdjustments = Total adjustments
 
 ###### Income Journey ######
 
@@ -2097,8 +2099,13 @@ profitOrLoss.capitalAllowances = Capital allowances
 profitOrLoss.turnoverNotTaxable = Turnover not taxable as business profit
 profitOrLoss.totalDeductions.profit = Total deductions from net profit
 profitOrLoss.totalDeductions.loss = Total deductions from net loss
+profitOrLoss.netForTaxPurposes.profit.tableValue = Net business profit for tax purposes
 profitOrLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
 profitOrLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
+
+profitOrLossCalculation.title = Adjusted taxable profit: {0}
+profitOrLossCalculation.adjustedTable.profit = Adjusted taxable profit for {0} to {1}
+profitOrLossCalculation.adjustedTable.taxableProfit = Taxable profit for {0} to {1}: {2}
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use

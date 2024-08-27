@@ -17,15 +17,16 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.NormalMode
 import controllers.journeys
+import models.NormalMode
 import models.common._
 import models.common.Journey.ProfitOrLoss
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.journeys.SummaryListCYA
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitSummary._
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
 import javax.inject.{Inject, Singleton}
@@ -42,8 +43,24 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val summaryList = SummaryListCYA.summaryListOpt(List())
-    Ok(view(request.userType, summaryList, journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)))
+    val netAmount                 = BigDecimal(4600.00)
+    val formattedNetAmount        = formatSumMoneyNoNegative(List(netAmount))
+    val yourAdjustedProfitTable   = buildYourAdjustedProfitTable(taxYear)
+    val netProfitTable            = buildNetProfitTable()
+    val additionsToNetProfitTable = buildAdditionsToNetProfitTable()
+    val capitalAllowanceTable     = buildCapitalAllowanceTable()
+    val adjustmentsTable          = buildAdjustmentsTable()
+    Ok(
+      view(
+        request.userType,
+        formattedNetAmount,
+        taxYear,
+        yourAdjustedProfitTable,
+        netProfitTable,
+        additionsToNetProfitTable,
+        capitalAllowanceTable,
+        adjustmentsTable,
+        journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
+      ))
   }
-
 }
