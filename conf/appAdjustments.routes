@@ -36,4 +36,4 @@ POST        /:taxYear/:businessId/adjustments/change-previous-year-unused-loss/y
 GET         /:taxYear/:businessId/adjustments/check-answers                                  controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/adjustments/check-answers                                  controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
-GET         /:taxYear/:businessId/adjustments/adjusted-taxable-profit/calculation            controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/adjustments/adjusted-taxable-profit-loss/calculation       controllers.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)

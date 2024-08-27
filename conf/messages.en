@@ -2099,13 +2099,17 @@ profitOrLoss.capitalAllowances = Capital allowances
 profitOrLoss.turnoverNotTaxable = Turnover not taxable as business profit
 profitOrLoss.totalDeductions.profit = Total deductions from net profit
 profitOrLoss.totalDeductions.loss = Total deductions from net loss
-profitOrLoss.netForTaxPurposes.profit.tableValue = Net business profit for tax purposes
 profitOrLoss.netForTaxPurposes.profit = Net business profit for tax purposes:
 profitOrLoss.netForTaxPurposes.loss = Net business loss for tax purposes:
 
-profitOrLossCalculation.title = Adjusted taxable profit: {0}
-profitOrLossCalculation.adjustedTable.profit = Adjusted taxable profit for {0} to {1}
-profitOrLossCalculation.adjustedTable.taxableProfit = Taxable profit for {0} to {1}: {2}
+profitOrLossCalculation.title.profit = Adjusted taxable profit: {0}
+profitOrLossCalculation.title.loss = Adjusted loss: {0}
+profitOrLossCalculation.adjustedTable.netForTaxPurposes.profit = Net business profit for tax purposes
+profitOrLossCalculation.adjustedTable.netForTaxPurposes.loss = Net business loss for tax purposes
+profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.profit = Adjusted taxable profit for {0} to {1}
+profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.loss = Adjusted loss for {0} to {1}
+profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
+profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
