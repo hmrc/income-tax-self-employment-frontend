@@ -17,20 +17,24 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.{ControllerSpec, SpecBase}
+import builders.BusinessIncomeSourcesSummaryBuilder
 import common.TestApp.buildAppFromUserType
 import controllers.journeys
 import models.NormalMode
 import models.database.UserAnswers
 import models.common.Journey.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.http.Status.OK
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
+import stubs.services.SelfEmploymentServiceStub
 import utils.Assertions.assertEqualWithDiff
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.adjustments.AdjustedTaxableProfitSummary._
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary._
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
 class ProfitOrLossCalculationControllerSpec extends ControllerSpec {
@@ -47,37 +51,67 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec {
     "should return OK and render correct view" - {
       userTypeCases.foreach { userType =>
         s"when net profit and user is an $userType" in {
-          val application               = buildAppFromUserType(userType, Some(userAnswers))
-          implicit val msg: Messages    = SpecBase.messages(application)
-          val result                    = route(application, onPageLoadRequest).value
-          val netAmount                 = BigDecimal(4600.00)
-          val formattedNetAmount        = formatSumMoneyNoNegative(List(netAmount))
-          val yourAdjustedProfitTable   = buildYourAdjustedProfitTable(taxYear)
-          val netProfitTable            = buildNetProfitTable()
-          val additionsToNetProfitTable = buildAdditionsToNetProfitTable()
-          val capitalAllowanceTable     = buildCapitalAllowanceTable()
-          val adjustmentsTable          = buildAdjustmentsTable()
+          val incomeSummary          = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
+          val stubService            = SelfEmploymentServiceStub(getBusinessIncomeSourcesSummaryResult = Right(incomeSummary))
+          val application            = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg: Messages = SpecBase.messages(application)
+          val result                 = route(application, onPageLoadRequest).value
+          val netAmount              = BigDecimal(100.00)
+          val formattedNetAmount     = formatSumMoneyNoNegative(List(netAmount))
+          val profitOrLoss           = Profit
+          val tables = AdjustedTaxableProfitOrLossSummary(
+            buildYourAdjustedProfitOrLossTable(taxYear, profitOrLoss),
+            buildNetProfitOrLossTable(profitOrLoss),
+            buildExpensesTable(profitOrLoss),
+            buildCapitalAllowancesTable(profitOrLoss),
+            buildAdjustmentsTable()
+          )
           val expectedView = {
             val view = application.injector.instanceOf[ProfitOrLossCalculationView]
             view(
               userType,
               formattedNetAmount,
               taxYear,
-              yourAdjustedProfitTable,
-              netProfitTable,
-              additionsToNetProfitTable,
-              capitalAllowanceTable,
-              adjustmentsTable,
+              profitOrLoss,
+              tables,
               onwardRoute
             )(onPageLoadRequest, msg).toString()
           }
-
           status(result) mustBe OK
           assertEqualWithDiff(contentAsString(result), expectedView)
         }
 
+        s"when net loss and user is an $userType" in {
+          val incomeSummary          = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
+          val stubService            = SelfEmploymentServiceStub(getBusinessIncomeSourcesSummaryResult = Right(incomeSummary))
+          val application            = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg: Messages = SpecBase.messages(application)
+          val result                 = route(application, onPageLoadRequest).value
+          val netAmount              = BigDecimal(100.00)
+          val formattedNetAmount     = formatSumMoneyNoNegative(List(netAmount))
+          val profitOrLoss           = Loss
+          val tables = AdjustedTaxableProfitOrLossSummary(
+            buildYourAdjustedProfitOrLossTable(taxYear, profitOrLoss),
+            buildNetProfitOrLossTable(profitOrLoss),
+            buildExpensesTable(profitOrLoss),
+            buildCapitalAllowancesTable(profitOrLoss),
+            buildAdjustmentsTable()
+          )
+          val expectedView = {
+            val view = application.injector.instanceOf[ProfitOrLossCalculationView]
+            view(
+              userType,
+              formattedNetAmount,
+              taxYear,
+              profitOrLoss,
+              tables,
+              onwardRoute
+            )(onPageLoadRequest, msg).toString()
+          }
+          status(result) mustBe OK
+          assertEqualWithDiff(contentAsString(result), expectedView)
+        }
       }
     }
-
   }
 }

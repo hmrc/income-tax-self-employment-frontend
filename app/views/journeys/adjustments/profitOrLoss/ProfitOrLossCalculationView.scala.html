@@ -16,6 +16,8 @@
 
 @import models.common.{TaxYear, UserType}
 @import views.html.components._
+@import models.journeys.adjustments.ProfitOrLoss
+@import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 
 @this(
         layout: templates.Layout,
@@ -31,31 +33,27 @@
 @(userType: UserType,
         netAmount: String,
         taxYear: TaxYear,
-        yourAdjustedProfitTable: Table,
-        netProfitTable: Table,
-        additionsToNetProfitTable: Table,
-        capitalAllowanceTable: Table,
-        adjustmentsTable: Table,
+        profitOrLoss: ProfitOrLoss,
+        tables: AdjustedTaxableProfitOrLossSummary,
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("profitOrLossCalculation.title", netAmount))) {
+@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$profitOrLoss", netAmount))) {
 
     @formHelper(action = continueRedirect) {
 
         @caption(taxYear)
-        @heading("profitOrLossCalculation.title", Some(netAmount))
+        @heading(s"profitOrLossCalculation.title.$profitOrLoss", Some(netAmount))
 
-        @govukTable(yourAdjustedProfitTable)
+        @govukTable(tables.adjustedProfitOrLossTable)
         @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){
-            @govukTable(netProfitTable)
-            @govukTable(additionsToNetProfitTable)
-            @govukTable(capitalAllowanceTable)
-            <p class="govuk-body">@{messages("profitOrLoss.netForTaxPurposes.profit")} <strong>@{netAmount}</strong></p>
-            @govukTable(adjustmentsTable)
-            <p class="govuk-body"><strong>@{messages("profitOrLossCalculation.adjustedTable.taxableProfit", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</strong></p>
-
+            @govukTable(tables.netProfitOrLossTable)
+            @govukTable(tables.expensesTable)
+            @govukTable(tables.capitalAllowanceTable)
+            <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
+            @govukTable(tables.adjustmentsTable)
+            <p class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$profitOrLoss", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</p>
         }
 
-        @submitButton()
+        @submitButton(name = messages("site.saveAndContinue"))
     }
 }

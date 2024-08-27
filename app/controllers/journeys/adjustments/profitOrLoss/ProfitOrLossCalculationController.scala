@@ -17,19 +17,21 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.journeys
+import controllers.{handleResultT, journeys}
 import models.NormalMode
-import models.common._
 import models.common.Journey.ProfitOrLoss
+import models.common._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.adjustments.AdjustedTaxableProfitSummary._
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
+import services.SelfEmploymentService
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ProfitOrLossCalculationController @Inject() (override val messagesApi: MessagesApi,
@@ -37,30 +39,30 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   view: ProfitOrLossCalculationView)
+                                                   service: SelfEmploymentService,
+                                                   view: ProfitOrLossCalculationView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val netAmount                 = BigDecimal(4600.00)
-    val formattedNetAmount        = formatSumMoneyNoNegative(List(netAmount))
-    val yourAdjustedProfitTable   = buildYourAdjustedProfitTable(taxYear)
-    val netProfitTable            = buildNetProfitTable()
-    val additionsToNetProfitTable = buildAdditionsToNetProfitTable()
-    val capitalAllowanceTable     = buildCapitalAllowanceTable()
-    val adjustmentsTable          = buildAdjustmentsTable()
-    Ok(
-      view(
-        request.userType,
-        formattedNetAmount,
-        taxYear,
-        yourAdjustedProfitTable,
-        netProfitTable,
-        additionsToNetProfitTable,
-        capitalAllowanceTable,
-        adjustmentsTable,
-        journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
-      ))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
+    implicit request =>
+      val result = for {
+        incomeSummary <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
+        netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
+        profitOrLoss       = incomeSummary.returnProfitOrLoss()
+        formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+        tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)
+      } yield Ok(
+        view(
+          request.userType,
+          formattedNetAmount,
+          taxYear,
+          profitOrLoss,
+          tables,
+          journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
+        )
+      )
+      handleResultT(result)
   }
 }
