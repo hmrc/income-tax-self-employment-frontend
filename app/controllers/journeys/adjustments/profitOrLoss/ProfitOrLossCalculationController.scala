@@ -71,13 +71,12 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
       )
       handleResultT(result)
   }
-  private def showClass4AgeExemption(taxYear: TaxYear, incomeSummary: BusinessIncomeSourcesSummary)(implicit request: DataRequest[_]): ApiResultT[Boolean] =
-    service.getUserDateOfBirth(request.nino, request.mtditid).map {
-      userDoB =>
-        val profitsOverClass4Threshold = TaxableProfitAndLoss.areProfitsOverClass4Threshold(
-          List(TaxableProfitAndLoss(incomeSummary.taxableProfit, incomeSummary.taxableLoss)),
-          taxYear)
-        val ageIsValid = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
-        profitsOverClass4Threshold && !ageIsValid
+  private def showClass4AgeExemption(taxYear: TaxYear, incomeSummary: BusinessIncomeSourcesSummary)(implicit
+      request: DataRequest[_]): ApiResultT[Boolean] =
+    service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>
+      val profitsOverClass4Threshold = TaxableProfitAndLoss
+        .areProfitsOverClass4Threshold(List(TaxableProfitAndLoss(incomeSummary.taxableProfit, incomeSummary.taxableLoss)), taxYear)
+      val ageIsValid = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
+      profitsOverClass4Threshold && !ageIsValid
     }
 }
