@@ -2110,6 +2110,7 @@ profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.profit = Adjus
 profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.loss = Adjusted loss for {0} to {1}
 profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
 profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
+profitOrLossCalculation.class4Exempt.age = Based on your age, you’re exempt and therefore do not need to pay Class 4 National Insurance contributions.
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
