@@ -24,6 +24,8 @@ import models.Mode
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
+import models.errors.ServiceError.IncomeAnswersNotSubmittedError
+import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
 import pages.income.TurnoverIncomeAmountPage
@@ -84,6 +86,8 @@ trait SelfEmploymentService {
 
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
+
+  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -218,6 +222,11 @@ class SelfEmploymentServiceImpl @Inject() (
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid)
 
+  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
+    connector.getSubmittedAnswers[IncomeJourneyAnswers](ctx).subflatMap {
+      case Some(incomeAnswers) => Right(incomeAnswers.totalTurnover)
+      case None                => Left(IncomeAnswersNotSubmittedError)
+    }
 }
 
 object SelfEmploymentService {

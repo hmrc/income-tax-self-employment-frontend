@@ -19,10 +19,10 @@ package controllers.journeys.expenses.tailoring
 import cats.data.EitherT
 import config.TaxYearConfig
 import controllers.actions._
+import controllers.handleApiResult
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
-import models.common.Journey
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
 import models.{Mode, NormalMode}
@@ -62,9 +62,11 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
-      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)) { implicit request =>
-      (for {
-        incomeAmount <- request.valueOrRedirectDefault(TurnoverIncomeAmountPage, businessId)
+      hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)).async { implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)
+
+      val result = for {
+        incomeAmount <- selfEmploymentService.getTotalTurnover(ctx)
         incomeIsOverThreshold = incomeAmount > incomeThreshold
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)
@@ -72,7 +74,9 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       } yield {
         val formattedThreshold = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
         Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold, formattedThreshold))
-      }).merge
+      }
+
+      handleApiResult(result)
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {

@@ -57,4 +57,6 @@ object ServiceError {
 
   final case class BusinessNotFoundError(businessId: BusinessId)
       extends ServiceError(Status.NOT_FOUND, s"Unable to find business with Id: $businessId".asRight)
+
+  final case object IncomeAnswersNotSubmittedError extends ServiceError(Status.NOT_FOUND, Right("Income answers not submitted"))
 }

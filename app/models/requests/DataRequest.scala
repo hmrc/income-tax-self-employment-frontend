@@ -33,6 +33,9 @@ sealed trait NinoDataRequest {
   val userType: UserType
   val nino: Nino
   val mtditid: Mtditid
+
+  def mkJourneyNinoContext(taxYear: TaxYear, businessId: BusinessId, journey: Journey, extraContext: Option[String] = None): JourneyContextWithNino =
+    JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey, extraContext)
 }
 
 case class OptionalDataRequest[A](request: Request[A], userId: String, user: User, userAnswers: Option[UserAnswers])
@@ -42,9 +45,6 @@ case class OptionalDataRequest[A](request: Request[A], userId: String, user: Use
   val nino: Nino           = Nino(user.nino)
   val answers: UserAnswers = userAnswers.getOrElse(UserAnswers(userId))
   val mtditid: Mtditid     = Mtditid(user.mtditid)
-
-  def mkJourneyNinoContext(taxYear: TaxYear, businessId: BusinessId, journey: Journey, extraContext: Option[String] = None): JourneyContextWithNino =
-    JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey, extraContext)
 }
 
 case class DataRequest[A](request: Request[A], userId: String, user: User, userAnswers: UserAnswers)

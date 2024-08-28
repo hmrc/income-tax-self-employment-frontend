@@ -17,10 +17,12 @@
 package controllers.journeys.expenses.tailoring
 
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
+import cats.data.EitherT
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
+import models.errors.ServiceError
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.NoExpenses
 import org.mockito.Mockito.when
@@ -41,8 +43,7 @@ class ExpensesCategoriesControllerSpec
     ) {
 
   private lazy val incomeAmount: BigDecimal       = 80000
-  private lazy val incomeThreshold: BigDecimal    = 85000
-  private lazy val incomeIsOverThreshold: Boolean = incomeAmount > incomeThreshold
+  private lazy val incomeIsOverThreshold: Boolean = false
 
   override def onPageLoadCall: Call           = routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call             = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, NormalMode)
@@ -51,6 +52,7 @@ class ExpensesCategoriesControllerSpec
   override def baseAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  when(mockService.getTotalTurnover(any)(any)) thenReturn EitherT.rightT[Future, ServiceError](incomeAmount)
 
   override def createForm(userType: UserType): Form[ExpensesTailoring] = new ExpensesCategoriesFormProvider()(userType)
 
