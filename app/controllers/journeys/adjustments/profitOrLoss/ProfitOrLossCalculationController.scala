@@ -21,7 +21,7 @@ import controllers.{handleResultT, journeys}
 import models.NormalMode
 import models.common.Journey.ProfitOrLoss
 import models.common._
-import models.domain.{ApiResultT, BusinessIncomeSourcesSummary}
+import models.domain.ApiResultT
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
@@ -52,12 +52,13 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = for {
-        incomeSummary <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
+        taxableProfitsAndLosses <- service.getAllBusinessesTaxableProfitAndLoss(taxYear, request.nino, request.mtditid)
+        incomeSummary           <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
         netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
         tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)
-        showClass4AgeExemptionMessage <- showClass4AgeExemption(taxYear, incomeSummary)
+        showClass4AgeExemptionMessage <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
       } yield Ok(
         view(
           request.userType,
@@ -71,11 +72,11 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
       )
       handleResultT(result)
   }
-  private def showClass4AgeExemption(taxYear: TaxYear, incomeSummary: BusinessIncomeSourcesSummary)(implicit
+  private def showClass4AgeExemption(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
       request: DataRequest[_]): ApiResultT[Boolean] =
     service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>
       val profitsOverClass4Threshold = TaxableProfitAndLoss
-        .areProfitsOverClass4Threshold(List(TaxableProfitAndLoss(incomeSummary.taxableProfit, incomeSummary.taxableLoss)), taxYear)
+        .areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
       val ageIsValid = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
       profitsOverClass4Threshold && !ageIsValid
     }
