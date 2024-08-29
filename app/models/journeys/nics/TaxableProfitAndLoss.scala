@@ -44,12 +44,16 @@ object TaxableProfitAndLoss {
     }
 
     def class4Eligible: Boolean = {
-      val class4Threshold      = Class4NICsFigures.getFiguresForTaxYear(taxYear, figureType = "lowerProfitsLimit")
-      val profitsOverThreshold = taxableProfitsAndLosses.map(_.taxableProfit).sum > BigDecimal(class4Threshold)
+      val profitsOverThreshold = areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
       val ageIsValid           = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
       ageIsValid && profitsOverThreshold
     }
 
     if (class4Eligible) Class4 else if (class2Eligible) Class2 else NotEligible
+  }
+
+  def areProfitsOverClass4Threshold(taxableProfitsAndLosses: List[TaxableProfitAndLoss], taxYear: TaxYear): Boolean = {
+    val class4Threshold = Class4NICsFigures.getFiguresForTaxYear(taxYear, figureType = "lowerProfitsLimit")
+    taxableProfitsAndLosses.map(_.taxableProfit).sum > BigDecimal(class4Threshold)
   }
 }
