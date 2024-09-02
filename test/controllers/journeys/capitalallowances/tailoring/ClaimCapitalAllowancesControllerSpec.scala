@@ -26,6 +26,8 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
 class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBaseSpec("ClaimCapitalAllowancesController", ClaimCapitalAllowancesPage) {
@@ -39,8 +41,19 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ClaimCapitalAllowancesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, Accrual, scenario.businessId).toString()
+    val view                                     = application.injector.instanceOf[ClaimCapitalAllowancesView]
+    val netAmount                                = BigDecimal(12345.67)
+    val formattedNetAmount                       = formatSumMoneyNoNegative(List(netAmount))
+    val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+    view(
+      form,
+      scenario.mode,
+      scenario.userType,
+      scenario.taxYear,
+      Accrual,
+      scenario.businessId,
+      formattedNetAmount,
+      yourBuildCarsAndAssetBasedAllowanceTable).toString()
   }
 
   override val bindings: List[Binding[_]] = List(
