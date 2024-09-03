@@ -16,18 +16,22 @@
 
 package services
 
+import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
 import controllers.journeys.clearDependentPages
 import controllers.redirectJourneyRecovery
 import models.Mode
+import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.Logging
@@ -88,6 +92,7 @@ trait SelfEmploymentService {
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
 
   def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
+  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[UserAnswers]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -227,6 +232,13 @@ class SelfEmploymentServiceImpl @Inject() (
       case Some(incomeAnswers) => Right(incomeAnswers.totalTurnover)
       case None                => Left(IncomeAnswersNotSubmittedError)
     }
+
+  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[UserAnswers] =
+    for {
+      _ <- setJourneyStatus(JourneyAnswersContext(ctx.taxYear, ctx.nino, ctx.businessId, ctx.mtditid, Journey.ExpensesTailoring), NotStarted)
+      _ <- connector.clearExpensesSimplifiedOrNoExpensesAnswers(ctx.taxYear, ctx.nino, ctx.businessId, ctx.mtditid)
+      updatedAnswers <- EitherT.right(Future.fromTry(request.userAnswers.set(ExpensesCategoriesPage, IndividualCategories, Some(ctx.businessId))))
+    } yield updatedAnswers
 }
 
 object SelfEmploymentService {

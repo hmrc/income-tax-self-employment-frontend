@@ -16,17 +16,25 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
+import config.TaxYearConfig.turnoverIsOverIncomeThreshold
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import controllers.handleSubmitAnswersResult
+import controllers.{handleResultT, journeys}
+import models.NormalMode
+import models.common.Journey.Income
 import models.common._
 import models.database.UserAnswers
-import models.common.Journey
-import models.common.Journey.Income
+import models.domain.ApiResultT
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.income.IncomeJourneyAnswers
+import models.requests.DataRequest
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.income._
@@ -34,7 +42,7 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.income.IncomeCYAView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
@@ -76,9 +84,35 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData).async {
     implicit request =>
       val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, Income)
-      val result  = service.submitAnswers[IncomeJourneyAnswers](context, request.userAnswers)
+      val result = for {
+        updatedUserAnswers <- maybeClearSimplifiedExpensesTailoringAnswers(context)
+        _                  <- service.submitAnswers[IncomeJourneyAnswers](context, updatedUserAnswers)
+      } yield Redirect(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, Income, NormalMode))
+      handleResultT(result)
+  }
 
-      handleSubmitAnswersResult(context, result)
+  private def maybeClearSimplifiedExpensesTailoringAnswers(
+      ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[UserAnswers] = {
+    def clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(previousTurnoverWasUnderThreshold: Boolean,
+                                                                currentTurnoverIsOverThreshold: Boolean,
+                                                                expensesTailoringIsSimplified: Boolean): ApiResultT[UserAnswers] =
+      if (previousTurnoverWasUnderThreshold && currentTurnoverIsOverThreshold && expensesTailoringIsSimplified) {
+        service.clearSimplifiedExpensesData(ctx)
+      } else {
+        EitherT.rightT(request.userAnswers)
+      }
+
+    for {
+      existingTurnoverAmount       <- service.getTotalTurnover(ctx)
+      currentAnswersTurnoverAmount <- EitherT.fromEither[Future](request.valueOrNotFoundError(TurnoverIncomeAmountPage, ctx.businessId))
+      existingTurnoverIsOverThreshold = turnoverIsOverIncomeThreshold(existingTurnoverAmount)
+      currentTurnoverIsOverThreshold  = turnoverIsOverIncomeThreshold(currentAnswersTurnoverAmount)
+      expensesTailoringIsSimplified   = request.getValue(ExpensesCategoriesPage, ctx.businessId).exists(_ != IndividualCategories)
+      updatedAnswers <- clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(
+        !existingTurnoverIsOverThreshold,
+        currentTurnoverIsOverThreshold,
+        expensesTailoringIsSimplified)
+    } yield updatedAnswers
   }
 
   private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
