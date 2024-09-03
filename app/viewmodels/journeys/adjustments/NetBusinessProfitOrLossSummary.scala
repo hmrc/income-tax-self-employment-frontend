@@ -16,29 +16,54 @@
 
 package viewmodels.journeys.adjustments
 
-import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.{NetBusinessProfitValues, ProfitOrLoss}
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
-import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
+import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
 
+case class NetBusinessProfitOrLossSummary(netProfitLossTable: Table, expensesTable: Table, capitalAllowancesTable: Table)
 object NetBusinessProfitOrLossSummary {
 
   def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.additions.$profitOrLoss"
   def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.deductions.$profitOrLoss"
 
-  def buildTable1(profitOrLoss: ProfitOrLoss, turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: BigDecimal)(implicit
-      messages: Messages): Table = {
+  def buildTables(netBusinessProfitValues: NetBusinessProfitValues)(implicit messages: Messages): NetBusinessProfitOrLossSummary =
+    NetBusinessProfitOrLossSummary(
+      buildNetProfitLossTable(
+        Profit,
+        netBusinessProfitValues.turnover,
+        netBusinessProfitValues.incomeNotCountedAsTurnover,
+        netBusinessProfitValues.totalExpenses,
+        netBusinessProfitValues.netProfit
+      ),
+      buildExpensesTable(
+        Profit,
+        netBusinessProfitValues.balancingCharge,
+        netBusinessProfitValues.goodsAndServicesForOwnUse,
+        netBusinessProfitValues.disallowableExpenses,
+        netBusinessProfitValues.totalAdditionsToNetProfit
+      ),
+      buildCapitalAllowancesTable(
+        Profit,
+        netBusinessProfitValues.capitalAllowances,
+        netBusinessProfitValues.turnoverNotTaxableAsBusinessProfit,
+        netBusinessProfitValues.totalDeductionsFromNetProfit
+      )
+    )
 
-    val netProfitOrLoss = formatSumMoneyNoNegative(List(turnover, incomeNotCountedAsTurnover, totalExpenses))
+  def buildNetProfitLossTable(profitOrLoss: ProfitOrLoss,
+                              turnover: BigDecimal,
+                              incomeNotCountedAsTurnover: BigDecimal,
+                              totalExpenses: BigDecimal,
+                              netProfitOrLoss: BigDecimal)(implicit messages: Messages): Table = {
 
     val netProfitOrLossRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOrLoss.turnover", turnover),
       buildTableAmountRow("incomeNotCountedAsTurnover.title", incomeNotCountedAsTurnover),
       buildTableAmountRow("profitOrLoss.totalExpenses", totalExpenses),
-      buildTableRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netProfitOrLoss)
+      buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netProfitOrLoss)
     )
 
     buildTable(
@@ -48,16 +73,20 @@ object NetBusinessProfitOrLossSummary {
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildTable2(profitOrLoss: ProfitOrLoss, balancingCharge: BigDecimal, goodsAndServices: BigDecimal, disallowableExpenses: BigDecimal)(implicit
-      messages: Messages): Table = {
-
-    val totalAdditions = formatSumMoneyNoNegative(List(balancingCharge, goodsAndServices, disallowableExpenses))
+  def buildExpensesTable(profitOrLoss: ProfitOrLoss,
+                         balancingCharge: BigDecimal,
+                         goodsAndServices: BigDecimal,
+                         disallowableExpenses: BigDecimal,
+                         totalAdditions: BigDecimal)(implicit messages: Messages): Table = {
 
     val additionsRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("selectCapitalAllowances.balancingCharge", balancingCharge),
       buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", goodsAndServices),
       buildTableAmountRow("profitOrLoss.disallowableExpenses", disallowableExpenses),
-      buildTableRow(s"profitOrLoss.totalAdditions.$profitOrLoss", totalAdditions)
+      buildTableAmountRow(
+        if (profitOrLoss == Profit) { additionsCaption(profitOrLoss) }
+        else { deductionsCaption(profitOrLoss) },
+        totalAdditions)
     )
 
     buildTable(
@@ -67,14 +96,18 @@ object NetBusinessProfitOrLossSummary {
       "govuk-!-margin-bottom-9")
   }
 
-  def buildTable3(profitOrLoss: ProfitOrLoss, capitalAllowances: BigDecimal, turnoverNotTaxable: BigDecimal)(implicit messages: Messages): Table = {
-
-    val totalDeductions = formatSumMoneyNoNegative(List(capitalAllowances, turnoverNotTaxable))
+  def buildCapitalAllowancesTable(profitOrLoss: ProfitOrLoss,
+                                  capitalAllowances: BigDecimal,
+                                  turnoverNotTaxable: BigDecimal,
+                                  totalDeductionsOrAdditions: BigDecimal)(implicit messages: Messages): Table = {
 
     val deductionsRows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOrLoss.capitalAllowances", capitalAllowances),
       buildTableAmountRow("profitOrLoss.turnoverNotTaxable", turnoverNotTaxable),
-      buildTableRow(s"profitOrLoss.totalDeductions.$profitOrLoss", totalDeductions)
+      buildTableAmountRow(
+        if (profitOrLoss == Profit) { deductionsCaption(profitOrLoss) }
+        else { additionsCaption(profitOrLoss) },
+        totalDeductionsOrAdditions)
     )
 
     buildTable(None, deductionsRows, caption = Some(messages(if (profitOrLoss == Profit) deductionsCaption(Profit) else additionsCaption(Loss))))

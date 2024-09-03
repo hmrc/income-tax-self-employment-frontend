@@ -19,6 +19,7 @@ package stubs.services
 import base.SpecBase._
 import builders.BusinessDataBuilder.aBusinessData
 import builders.BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummary
+import builders.NetBusinessProfitValuesBuilder.aNetBusinessProfitValues
 import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import models.Mode
@@ -26,6 +27,7 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
+import models.journeys.adjustments.NetBusinessProfitValues
 import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
@@ -53,7 +55,8 @@ case class SelfEmploymentServiceStub(
     submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
     getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
     getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
-    getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary))
+    getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
+    getNetBusinessProfitValuesResult: Either[ServiceError, NetBusinessProfitValues] = Right(aNetBusinessProfitValues))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -125,4 +128,8 @@ case class SelfEmploymentServiceStub(
     EitherT.fromEither[Future](getBusinessIncomeSourcesSummaryResult)
 
   def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] = ???
+
+  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitValues] =
+    EitherT.fromEither[Future](getNetBusinessProfitValuesResult)
 }
