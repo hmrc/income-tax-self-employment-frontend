@@ -47,7 +47,7 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOn
   override val testDataCases: List[JsObject] = List(submissionData)
 
   override def stubService =
-    SelfEmploymentServiceStub(getTotalTurnoverResult = turnoverIncomeAmount.asRight, clearSimplifiedExpensesDataResult = userAnswers.asRight)
+    SelfEmploymentServiceStub(getTotalIncomeResult = turnoverIncomeAmount.asRight, clearSimplifiedExpensesDataResult = userAnswers.asRight)
 
   override val pageHeading: String = IncomeCYAPage.toString
   override val journey: Journey    = Income

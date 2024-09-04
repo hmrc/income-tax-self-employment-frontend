@@ -66,7 +66,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)
 
       val result = for {
-        incomeAmount <- selfEmploymentService.getTotalTurnover(ctx)
+        incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
         incomeIsOverThreshold = incomeAmount > incomeThreshold
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)

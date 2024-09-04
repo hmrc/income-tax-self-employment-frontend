@@ -313,12 +313,12 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     }
   }
 
-  "getTotalTurnover" - {
+  "getTotalIncome" - {
     val ctx = JourneyContextWithNino(taxYear, nino, businessId, mtditid, Income)
 
     "fail with Income Not Found error when no income" in new ServiceWithStubs {
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](None)
-      val result = service.getTotalTurnover(ctx).value.futureValue
+      val result = service.getTotalIncome(ctx).value.futureValue
       result shouldBe ServiceError.IncomeAnswersNotSubmittedError.asLeft
     }
 
@@ -330,7 +330,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](
         Some(answers))
 
-      val result = service.getTotalTurnover(ctx).value.futureValue
+      val result = service.getTotalIncome(ctx).value.futureValue
 
       result shouldBe Right(15.0)
     }

@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import cats.data.EitherT
-import config.TaxYearConfig.turnoverIsOverIncomeThreshold
+import config.TaxYearConfig.totalIncomeIsOverIncomeThreshold
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.{handleResultT, journeys}
 import models.NormalMode
@@ -29,7 +29,7 @@ import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.income.IncomeJourneyAnswers
 import models.requests.DataRequest
 import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.income.TurnoverIncomeAmountPage
+import pages.income.{OtherIncomeAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -93,24 +93,26 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
 
   private def maybeClearSimplifiedExpensesTailoringAnswers(
       ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[UserAnswers] = {
-    def clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(previousTurnoverWasUnderThreshold: Boolean,
-                                                                currentTurnoverIsOverThreshold: Boolean,
+    def clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(previousIncomeWasUnderThreshold: Boolean,
+                                                                currentIncomeIsOverThreshold: Boolean,
                                                                 expensesTailoringIsSimplified: Boolean): ApiResultT[UserAnswers] =
-      if (previousTurnoverWasUnderThreshold && currentTurnoverIsOverThreshold && expensesTailoringIsSimplified) {
+      if (previousIncomeWasUnderThreshold && currentIncomeIsOverThreshold && expensesTailoringIsSimplified) {
         service.clearSimplifiedExpensesData(ctx)
       } else {
         EitherT.rightT(request.userAnswers)
       }
 
     for {
-      existingTurnoverAmount       <- service.getTotalTurnover(ctx)
+      existingTotalIncomeAmount    <- service.getTotalIncome(ctx)
       currentAnswersTurnoverAmount <- EitherT.fromEither[Future](request.valueOrNotFoundError(TurnoverIncomeAmountPage, ctx.businessId))
-      existingTurnoverIsOverThreshold = turnoverIsOverIncomeThreshold(existingTurnoverAmount)
-      currentTurnoverIsOverThreshold  = turnoverIsOverIncomeThreshold(currentAnswersTurnoverAmount)
+      currentAnswersOtherIncomeAmount = request.getValue[BigDecimal](OtherIncomeAmountPage, ctx.businessId).getOrElse(BigDecimal(0))
+      currentAnswersTotalIncomeAmount = currentAnswersTurnoverAmount + currentAnswersOtherIncomeAmount
+      existingIncomeIsOverThreshold   = totalIncomeIsOverIncomeThreshold(existingTotalIncomeAmount)
+      currentIncomeIsOverThreshold    = totalIncomeIsOverIncomeThreshold(currentAnswersTotalIncomeAmount)
       expensesTailoringIsSimplified   = request.getValue(ExpensesCategoriesPage, ctx.businessId).exists(_ != IndividualCategories)
       updatedAnswers <- clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(
-        !existingTurnoverIsOverThreshold,
-        currentTurnoverIsOverThreshold,
+        !existingIncomeIsOverThreshold,
+        currentIncomeIsOverThreshold,
         expensesTailoringIsSimplified)
     } yield updatedAnswers
   }

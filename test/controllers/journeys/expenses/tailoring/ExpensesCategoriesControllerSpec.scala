@@ -52,7 +52,7 @@ class ExpensesCategoriesControllerSpec
   override def baseAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
-  when(mockService.getTotalTurnover(any)(any)) thenReturn EitherT.rightT[Future, ServiceError](incomeAmount)
+  when(mockService.getTotalIncome(any)(any)) thenReturn EitherT.rightT[Future, ServiceError](incomeAmount)
 
   override def createForm(userType: UserType): Form[ExpensesTailoring] = new ExpensesCategoriesFormProvider()(userType)
 

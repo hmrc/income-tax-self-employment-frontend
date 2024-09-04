@@ -91,7 +91,7 @@ trait SelfEmploymentService {
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
 
-  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[UserAnswers]
 }
 
@@ -227,9 +227,9 @@ class SelfEmploymentServiceImpl @Inject() (
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid)
 
-  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     connector.getSubmittedAnswers[IncomeJourneyAnswers](ctx).subflatMap {
-      case Some(incomeAnswers) => Right(incomeAnswers.totalTurnover)
+      case Some(incomeAnswers) => Right(incomeAnswers.totalIncome)
       case None                => Left(IncomeAnswersNotSubmittedError)
     }
 

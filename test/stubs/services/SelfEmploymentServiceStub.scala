@@ -55,7 +55,7 @@ case class SelfEmploymentServiceStub(
     getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
     getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
     getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
-    getTotalTurnoverResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
+    getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
     clearSimplifiedExpensesDataResult: Either[ServiceError, UserAnswers] = Right(buildUserAnswers(JsObject.empty)))
     extends SelfEmploymentService {
 
@@ -127,8 +127,8 @@ case class SelfEmploymentServiceStub(
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     EitherT.fromEither[Future](getBusinessIncomeSourcesSummaryResult)
 
-  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
-    EitherT.fromEither[Future](getTotalTurnoverResult)
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
+    EitherT.fromEither[Future](getTotalIncomeResult)
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[UserAnswers] =
     EitherT.fromEither[Future](clearSimplifiedExpensesDataResult)
