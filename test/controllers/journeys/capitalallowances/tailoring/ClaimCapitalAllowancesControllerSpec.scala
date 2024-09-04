@@ -19,6 +19,7 @@ package controllers.journeys.capitalallowances.tailoring
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common.AccountingType.Accrual
+import models.journeys.adjustments.ProfitOrLoss
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import pages.capitalallowances.tailoring.ClaimCapitalAllowancesPage
 import play.api.Application
@@ -44,7 +45,7 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
     val view                                     = application.injector.instanceOf[ClaimCapitalAllowancesView]
     val netAmount                                = BigDecimal(12345.67)
     val formattedNetAmount                       = formatSumMoneyNoNegative(List(netAmount))
-    val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+    val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable(ProfitOrLoss.Profit)
     view(
       form,
       scenario.mode,

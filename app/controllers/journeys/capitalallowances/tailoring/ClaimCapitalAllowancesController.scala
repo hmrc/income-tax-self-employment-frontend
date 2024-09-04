@@ -22,6 +22,7 @@ import controllers.returnAccountingType
 import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
@@ -55,12 +56,14 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
   private val page = ClaimCapitalAllowancesPage
 
+  // TODO the hardcoded values are used to create the test cases, these can be updated when the values in Car or Asser based Allowance summary will be replaced with API data (SASS-8624)
+
   private val netAmount          = BigDecimal(12345.67)
   private val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable(ProfitOrLoss.Profit)
 
       val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(
@@ -77,7 +80,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable(ProfitOrLoss.Profit)
       def handleSuccess(answer: Boolean): Future[Result] =
         for {
           (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)

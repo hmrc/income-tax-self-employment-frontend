@@ -42,7 +42,9 @@
 
     @heading(s"claimCapitalAllowances.title.$accountingType")
 
-    <p class="govuk-inset-text">@{messages(s"claimCapitalAllowances.taxCalculation.$userType", taxYear.startYear.toString, taxYear.endYear.toString)} <strong>@{netAmount}</strong></p>
+@*  //TODO Update the key on line 47 when BE integration is implemented SASS-8624*@
+
+    <p class="govuk-inset-text">@{messages(s"claimCapitalAllowances.taxCalculation.profit.$userType", taxYear.startYear.toString, taxYear.endYear.toString)} <strong>@{netAmount}</strong></p>
 
     @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false) {
       @messages("claimCapitalAllowances.tableHeader")
