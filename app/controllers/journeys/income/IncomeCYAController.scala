@@ -33,6 +33,7 @@ import pages.income.{OtherIncomeAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
+import services.SelfEmploymentService.returnOptionalTotalIncome
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -103,15 +104,15 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
       }
 
     for {
-      existingTotalIncomeAmount    <- service.getTotalIncome(ctx)
-      currentAnswersTurnoverAmount <- EitherT.fromEither[Future](request.valueOrNotFoundError(TurnoverIncomeAmountPage, ctx.businessId))
+      maybeExistingTotalIncomeAmount <- returnOptionalTotalIncome(service.getTotalIncome(ctx))
+      currentAnswersTurnoverAmount   <- EitherT.fromEither[Future](request.valueOrNotFoundError(TurnoverIncomeAmountPage, ctx.businessId))
       currentAnswersOtherIncomeAmount = request.getValue[BigDecimal](OtherIncomeAmountPage, ctx.businessId).getOrElse(BigDecimal(0))
       currentAnswersTotalIncomeAmount = currentAnswersTurnoverAmount + currentAnswersOtherIncomeAmount
-      existingIncomeIsOverThreshold   = totalIncomeIsOverIncomeThreshold(existingTotalIncomeAmount)
+      existingIncomeIsUnderThreshold  = maybeExistingTotalIncomeAmount.exists(!totalIncomeIsOverIncomeThreshold(_))
       currentIncomeIsOverThreshold    = totalIncomeIsOverIncomeThreshold(currentAnswersTotalIncomeAmount)
       expensesTailoringIsSimplified   = request.getValue(ExpensesCategoriesPage, ctx.businessId).exists(_ != IndividualCategories)
       updatedAnswers <- clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(
-        !existingIncomeIsOverThreshold,
+        existingIncomeIsUnderThreshold,
         currentIncomeIsOverThreshold,
         expensesTailoringIsSimplified)
     } yield updatedAnswers

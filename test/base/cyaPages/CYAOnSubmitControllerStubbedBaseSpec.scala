@@ -16,16 +16,13 @@
 
 package base.cyaPages
 
-import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
 import controllers.{journeys, standard}
 import models.NormalMode
 import models.common.Journey
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import models.errors.ServiceError
 import models.errors.ServiceError.ConnectorResponseError
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Result}

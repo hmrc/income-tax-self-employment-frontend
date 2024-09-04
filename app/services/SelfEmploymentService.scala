@@ -26,6 +26,7 @@ import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
+import models.errors.ServiceError
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.income.IncomeJourneyAnswers
@@ -269,6 +270,14 @@ object SelfEmploymentService {
       }
 
     removePageData(userAnswers, pages)
+  }
+
+  def returnOptionalTotalIncome(maybeTotalIncome: ApiResultT[BigDecimal])(implicit ec: ExecutionContext): ApiResultT[Option[BigDecimal]] = {
+    val result = maybeTotalIncome.value.map(_ match {
+      case Right(amount) => Some(amount).asRight
+      case Left(_)       => None.asRight
+    })
+    EitherT[Future, ServiceError, Option[BigDecimal]](result)
   }
 
 }
