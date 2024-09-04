@@ -46,7 +46,7 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
       val totalExpenses              = 0.00
       val netProfit                  = 12345.67
 
-      val table         = AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable()
+      val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable()
       val expectedTable = expectedBuildCarsAndAssetBasedAllowanceTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfit)
 
       assertWithClue(result = table, expectedResult = expectedTable)

@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable
+import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildNetProfitOrLossTable
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
 class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBaseSpec("ClaimCapitalAllowancesController", ClaimCapitalAllowancesPage) {
@@ -44,7 +44,7 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
     val view                                     = application.injector.instanceOf[ClaimCapitalAllowancesView]
     val netAmount                                = BigDecimal(12345.67)
     val formattedNetAmount                       = formatSumMoneyNoNegative(List(netAmount))
-    val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+    val yourBuildCarsAndAssetBasedAllowanceTable = buildNetProfitOrLossTable()
     view(
       form,
       scenario.mode,

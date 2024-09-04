@@ -33,7 +33,7 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable
+import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildNetProfitOrLossTable
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
 import javax.inject.{Inject, Singleton}
@@ -60,7 +60,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+      val netProfitOrLossTable = buildNetProfitOrLossTable()
 
       val form = fillForm(page, businessId, formProvider(page, request.userType))
       Ok(
@@ -72,12 +72,12 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
           returnAccountingType(businessId),
           businessId,
           formattedNetAmount,
-          yourBuildCarsAndAssetBasedAllowanceTable))
+          netProfitOrLossTable))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable()
+      val netProfitOrLossTable = buildNetProfitOrLossTable()
       def handleSuccess(answer: Boolean): Future[Result] =
         for {
           (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
@@ -98,7 +98,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
                   returnAccountingType(businessId),
                   businessId,
                   formattedNetAmount,
-                  yourBuildCarsAndAssetBasedAllowanceTable))),
+                  netProfitOrLossTable))),
           value => handleSuccess(value)
         )
   }
