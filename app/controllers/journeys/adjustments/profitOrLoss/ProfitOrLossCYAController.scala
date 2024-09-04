@@ -16,13 +16,17 @@
 
 package controllers.journeys.adjustments.profitOrLoss
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.common.{AccountingType, BusinessId, TaxYear}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.handleSubmitAnswersResult
+import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import pages.Page
 import models.CheckMode
+import models.common.Journey.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLossJourneyAnswers
 import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.adjustments.WhichYearIsLossReportedSummary
@@ -31,20 +35,24 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi,
                                            val controllerComponents: MessagesControllerComponents,
                                            identify: IdentifierAction,
                                            getAnswers: DataRetrievalAction,
+                                           getJourneyAnswers: SubmittedDataRetrievalActionProvider,
                                            requireData: DataRequiredAction,
-                                           view: CheckYourAnswersView)
+                                           service: SelfEmploymentService,
+                                           view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getAnswers andThen getJourneyAnswers[ProfitOrLossJourneyAnswers](req =>
+      req.mkJourneyNinoContext(taxYear, businessId, ProfitOrLoss)) andThen requireData) { implicit request =>
       val accountingType                      = request.userAnswers.getAccountingType(businessId)
       val accountingTypePrefix                = if (accountingType == AccountingType.Cash) ".cash" else ""
       val goodsAndServicesAmountKeyMessage    = Messages(s"goodsAndServicesAmount.subHeading.cya$accountingTypePrefix.${request.userType}")
@@ -93,10 +101,12 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
           routes.ProfitOrLossCYAController.onSubmit(taxYear, businessId)
         )
       )
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData) { _ =>
-    Redirect(routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData).async {
+    implicit request =>
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ProfitOrLoss)
+      val result  = service.submitAnswers[ProfitOrLossJourneyAnswers](context, request.userAnswers)
+      handleSubmitAnswersResult(context, result)
   }
-
 }
