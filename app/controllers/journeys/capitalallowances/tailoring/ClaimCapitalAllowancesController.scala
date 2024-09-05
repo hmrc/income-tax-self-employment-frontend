@@ -22,6 +22,7 @@ import controllers.returnAccountingType
 import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
@@ -32,6 +33,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
 import javax.inject.{Inject, Singleton}
@@ -53,14 +56,31 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
   private val page = ClaimCapitalAllowancesPage
 
+  // TODO the hardcoded values are used to create the test cases, these can be updated when the values in Car or Asser based Allowance summary will be replaced with API data (SASS-8624)
+
+  private val netAmount          = BigDecimal(12345.67)
+  private val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable(ProfitOrLoss.Profit)
+
       val form = fillForm(page, businessId, formProvider(page, request.userType))
-      Ok(view(form, mode, request.userType, taxYear, returnAccountingType(businessId), businessId))
+      Ok(
+        view(
+          form,
+          mode,
+          request.userType,
+          taxYear,
+          returnAccountingType(businessId),
+          businessId,
+          formattedNetAmount,
+          yourBuildCarsAndAssetBasedAllowanceTable))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val yourBuildCarsAndAssetBasedAllowanceTable = buildCarsAndAssetBasedAllowanceTable(ProfitOrLoss.Profit)
       def handleSuccess(answer: Boolean): Future[Result] =
         for {
           (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
@@ -71,7 +91,17 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
         .bindFromRequest()
         .fold(
           formErrors =>
-            Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, returnAccountingType(businessId), businessId))),
+            Future.successful(
+              BadRequest(
+                view(
+                  formErrors,
+                  mode,
+                  request.userType,
+                  taxYear,
+                  returnAccountingType(businessId),
+                  businessId,
+                  formattedNetAmount,
+                  yourBuildCarsAndAssetBasedAllowanceTable))),
           value => handleSuccess(value)
         )
   }

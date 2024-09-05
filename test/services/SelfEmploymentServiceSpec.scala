@@ -325,7 +325,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     "calculate total turnover from income answers" in new ServiceWithStubs {
       val answers: IncomeJourneyAnswers = IncomeJourneyAnswersTestData.sample.copy(
         turnoverIncomeAmount = 5.0,
-        otherIncomeAmount = Some(10.0)
+        nonTurnoverIncomeAmount = Some(10.0)
       )
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](
         Some(answers))
@@ -346,7 +346,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
 
       service.clearSimplifiedExpensesData(ctx).value.map { result =>
-        assert(result === buildUserAnswers(JsObject.empty).asRight)
+        assert(result === ().asRight)
       }
     }
   }

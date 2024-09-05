@@ -40,8 +40,8 @@ object BusinessIncomeSourcesSummaryBuilder {
     100,
     100,
     0,
-    Some(100),
-    Some(100),
+    Some(200),
+    Some(0),
     Some(100),
     100,
     100
@@ -53,8 +53,8 @@ object BusinessIncomeSourcesSummaryBuilder {
     100,
     0,
     100,
-    Some(100),
-    Some(100),
+    Some(0),
+    Some(200),
     Some(100),
     100,
     100

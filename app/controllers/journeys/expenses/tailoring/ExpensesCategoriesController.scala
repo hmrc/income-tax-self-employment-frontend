@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring
 
 import cats.data.EitherT
-import config.TaxYearConfig
+import config.TaxYearConfig.{incomeThreshold, totalIncomeIsOverIncomeThreshold}
 import controllers.actions._
 import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
@@ -60,8 +60,6 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
   private val page = ExpensesCategoriesPage
 
-  private val incomeThreshold: BigDecimal = TaxYearConfig.incomeThreshold
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
       hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)).async { implicit request =>
@@ -69,7 +67,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
       val result = for {
         incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
-        incomeIsOverThreshold = incomeAmount > incomeThreshold
+        incomeIsOverThreshold = totalIncomeIsOverIncomeThreshold(incomeAmount)
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)
         preparedForm          = existingAnswer.fold(form)(form.fill)

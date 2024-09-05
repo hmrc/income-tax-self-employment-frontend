@@ -19,6 +19,7 @@ package stubs.services
 import base.SpecBase._
 import builders.BusinessDataBuilder.aBusinessData
 import builders.BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummary
+import builders.NetBusinessProfitValuesBuilder.aNetBusinessProfitValues
 import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import models.Mode
@@ -26,6 +27,7 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
+import models.journeys.adjustments.NetBusinessProfitValues
 import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
@@ -56,7 +58,8 @@ case class SelfEmploymentServiceStub(
     getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
     getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
     getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
-    clearSimplifiedExpensesDataResult: Either[ServiceError, UserAnswers] = Right(buildUserAnswers(JsObject.empty)))
+    getNetBusinessProfitValuesResult: Either[ServiceError, NetBusinessProfitValues] = Right(aNetBusinessProfitValues),
+    clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -130,6 +133,10 @@ case class SelfEmploymentServiceStub(
   def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     EitherT.fromEither[Future](getTotalIncomeResult)
 
-  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[UserAnswers] =
+  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitValues] =
+    EitherT.fromEither[Future](getNetBusinessProfitValuesResult)
+
+  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearSimplifiedExpensesDataResult)
 }

@@ -22,6 +22,8 @@
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
+        foldableDetails: FoldableDetails,
+        govukTable: GovukTable,
         submitButton: SubmitButton,
         heading: Heading)
 
@@ -30,13 +32,24 @@
         userType: UserType,
         taxYear: TaxYear,
         accountingType: AccountingType,
-        businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+        businessId: BusinessId,
+        netAmount: String,
+        buildCarsAndAssetBasedAllowanceTable: Table)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"claimCapitalAllowances.title.$accountingType"))) {
 
     @errorSummarySection(form)
 
     @heading(s"claimCapitalAllowances.title.$accountingType")
+
+@*  //TODO Update the key on line 47 when BE integration is implemented SASS-8624*@
+
+    <p class="govuk-inset-text">@{messages(s"claimCapitalAllowances.taxCalculation.profit.$userType", taxYear.startYear.toString, taxYear.endYear.toString)} <strong>@{netAmount}</strong></p>
+
+    @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false) {
+      @messages("claimCapitalAllowances.tableHeader")
+      @govukTable(buildCarsAndAssetBasedAllowanceTable)
+    }
 
     <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
         <p>@messages(s"claimCapitalAllowances.p1.$userType.$accountingType")<p>

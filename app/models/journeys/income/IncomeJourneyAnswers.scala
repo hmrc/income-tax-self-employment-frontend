@@ -28,7 +28,7 @@ case class IncomeJourneyAnswers(incomeNotCountedAsTurnover: Boolean,
                                 tradingAllowance: TradingAllowance,
                                 howMuchTradingAllowance: Option[HowMuchTradingAllowance],
                                 tradingAllowanceAmount: Option[BigDecimal]) {
-  def totalIncome: BigDecimal = turnoverIncomeAmount + otherIncomeAmount.getOrElse(0.0)
+  def totalIncome: BigDecimal = turnoverIncomeAmount + nonTurnoverIncomeAmount.getOrElse(0.0)
 }
 
 object IncomeJourneyAnswers {
