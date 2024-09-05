@@ -44,7 +44,7 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
     "when Profit" in {
       val turnover                   = 0.00
       val incomeNotCountedAsTurnover = 0.00
-      val totalExpenses              = s"(${0.00})"
+      val totalExpenses              = s"(£${0.00})"
       val netProfit                  = 12345.67
 
       val table         = AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable(Profit)
@@ -57,7 +57,7 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
     "when Loss" in {
       val turnover                   = 0.00
       val incomeNotCountedAsTurnover = 0.00
-      val totalExpenses              = s"(${0.00})"
+      val totalExpenses              = s"(£${0.00})"
       val netLoss                    = 12345.67
 
       val table         = AssetBasedAllowanceSummary.buildCarsAndAssetBasedAllowanceTable(Loss)
