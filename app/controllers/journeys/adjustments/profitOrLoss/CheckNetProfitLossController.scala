@@ -27,7 +27,7 @@ import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{buildTable1, buildTable2, buildTable3}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 import javax.inject.{Inject, Singleton}
@@ -48,15 +48,13 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = for {
-        incomeSummary <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
+        incomeSummary           <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
+        netBusinessProfitValues <- service.getNetBusinessProfitValues(taxYear, request.nino, businessId, request.mtditid)
         netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
 
-        table1 = buildTable1(profitOrLoss, 3000, 0.05, -3100)
-        table2 = buildTable2(profitOrLoss, 0, -0.05, 100.20)
-        table3 = buildTable3(profitOrLoss, 200, -200.1)
-        // TODO SASS-8626 all of ^these^ hardcoded values will be replaced with API data, and consider renaming table values to be descriptive
+        tables = NetBusinessProfitOrLossSummary.buildTables(netBusinessProfitValues)
         redirectLocation = profitOrLoss match {
           case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           case Loss   => routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -66,9 +64,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
           request.userType,
           profitOrLoss,
           formattedNetAmount,
-          table1,
-          table2,
-          table3,
+          tables,
           redirectLocation
         )
       )

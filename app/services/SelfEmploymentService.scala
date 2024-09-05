@@ -25,6 +25,7 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
+import models.journeys.adjustments.NetBusinessProfitValues
 import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
@@ -86,6 +87,9 @@ trait SelfEmploymentService {
 
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
+
+  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitValues]
 
   def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
 }
@@ -221,6 +225,10 @@ class SelfEmploymentServiceImpl @Inject() (
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid)
+
+  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitValues] =
+    connector.getNetBusinessProfitValues(taxYear, nino, businessId, mtditid)
 
   def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     connector.getSubmittedAnswers[IncomeJourneyAnswers](ctx).subflatMap {
