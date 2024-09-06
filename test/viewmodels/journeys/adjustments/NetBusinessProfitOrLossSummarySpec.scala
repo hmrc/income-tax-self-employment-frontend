@@ -18,7 +18,7 @@ package viewmodels.journeys.adjustments
 
 import base.SpecBase
 import models.journeys.adjustments.ProfitOrLoss
-import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+import models.journeys.adjustments.ProfitOrLoss.Profit
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages

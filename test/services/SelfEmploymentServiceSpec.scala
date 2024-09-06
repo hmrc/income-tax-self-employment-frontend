@@ -41,6 +41,7 @@ import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
+import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
 import play.api.data.{Form, FormBinding}
@@ -312,26 +313,41 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     }
   }
 
-  "getTotalTurnover" - {
+  "getTotalIncome" - {
     val ctx = JourneyContextWithNino(taxYear, nino, businessId, mtditid, Income)
 
     "fail with Income Not Found error when no income" in new ServiceWithStubs {
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](None)
-      val result = service.getTotalTurnover(ctx).value.futureValue
+      val result = service.getTotalIncome(ctx).value.futureValue
       result shouldBe ServiceError.IncomeAnswersNotSubmittedError.asLeft
     }
 
     "calculate total turnover from income answers" in new ServiceWithStubs {
       val answers: IncomeJourneyAnswers = IncomeJourneyAnswersTestData.sample.copy(
         turnoverIncomeAmount = 5.0,
-        otherIncomeAmount = Some(10.0)
+        nonTurnoverIncomeAmount = Some(10.0)
       )
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](
         Some(answers))
 
-      val result = service.getTotalTurnover(ctx).value.futureValue
+      val result = service.getTotalIncome(ctx).value.futureValue
 
       result shouldBe Right(15.0)
+    }
+  }
+
+  "clearSimplifiedExpensesData" - {
+    val ctx              = JourneyContextWithNino(taxYear, nino, businessId, mtditid, Income)
+    implicit val request = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
+
+    "delete Simplified or No Expenses data from the front and back-end repos and API" in new ServiceWithStubs {
+      mockConnector.clearExpensesSimplifiedOrNoExpensesAnswers(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](())
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+
+      service.clearSimplifiedExpensesData(ctx).value.map { result =>
+        assert(result === ().asRight)
+      }
     }
   }
 }

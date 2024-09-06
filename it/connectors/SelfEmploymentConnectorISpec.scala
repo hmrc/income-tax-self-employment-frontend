@@ -34,16 +34,21 @@ import java.time.LocalDate
 class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
   private def journeyNinoCtx(journey: Journey) = JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey)
-  private def journeyCtx(journey: Journey)     = JourneyAnswersContext(taxYear, nino, businessId, mtditid, journey)
+
+  private def journeyCtx(journey: Journey) = JourneyAnswersContext(taxYear, nino, businessId, mtditid, journey)
 
   private def downstreamNinoUrl(journey: Journey) = s"/income-tax-self-employment/$taxYear/$businessId/$journey/$nino/answers"
-  private def downstreamUrl(journey: Journey)     = s"/income-tax-self-employment/$taxYear/$businessId/$journey/answers"
-  private def statusUrl(journey: Journey)         = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
-  private val taskListUrl                         = s"/income-tax-self-employment/$taxYear/$nino/task-list"
-  private val dateOfBirthUrl                      = s"/income-tax-self-employment/user-date-of-birth/$nino"
-  private val businessSummariesUrl                = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
-  private val businessSummaryUrl                  = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
-  private val netBusinessProfitValuesUrl          = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
+
+  private def downstreamUrl(journey: Journey) = s"/income-tax-self-employment/$taxYear/$businessId/$journey/answers"
+
+  private def statusUrl(journey: Journey) = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
+
+  private val taskListUrl                = s"/income-tax-self-employment/$taxYear/$nino/task-list"
+  private val dateOfBirthUrl             = s"/income-tax-self-employment/user-date-of-birth/$nino"
+  private val businessSummariesUrl       = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
+  private val businessSummaryUrl         = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
+  private val netBusinessProfitValuesUrl = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
+  private val clearExpensesUrl           = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -196,6 +201,16 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.getNetBusinessProfitValues(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe profitValues.asRight
+    }
+  }
+
+  "clearExpensesSimplifiedOrNoExpensesAnswers" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearExpensesUrl, OK)
+
+      val result = connector.clearExpensesSimplifiedOrNoExpensesAnswers(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
     }
   }
 }
