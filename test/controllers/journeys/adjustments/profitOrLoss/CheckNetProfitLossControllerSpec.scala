@@ -48,7 +48,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
       userTypeCases.foreach { userType =>
         s"when net loss and user is an $userType" in {
           val incomeSummary                 = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
-          val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
+          val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessLossValues
           val stubService = SelfEmploymentServiceStub(
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),
             getNetBusinessProfitOrLossValuesResult = Right(netBusinessProfitOrLossValues)

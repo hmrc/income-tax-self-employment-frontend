@@ -18,9 +18,11 @@ package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import builders.NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
+import cats.data.EitherT
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
+import org.mockito.Mockito.when
 import pages.capitalallowances.tailoring.ClaimCapitalAllowancesPage
 import play.api.Application
 import play.api.data.Form
@@ -37,6 +39,9 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
   override def onSubmitCall: Call   = routes.ClaimCapitalAllowancesController.onSubmit(taxYear, businessId, NormalMode)
 
   override def onwardRoute: Call = models.common.onwardRoute
+
+  when(mockService.getNetBusinessProfitOrLossValues(anyTaxYear, anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(
+    aNetBusinessProfitValues)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
