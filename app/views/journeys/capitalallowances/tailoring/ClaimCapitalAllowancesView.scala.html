@@ -16,6 +16,7 @@
 
 @import controllers.journeys.capitalallowances.tailoring.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.journeys.adjustments.ProfitOrLoss
 @import views.html.components._
 
 @this(layout: templates.Layout,
@@ -32,6 +33,7 @@
         userType: UserType,
         taxYear: TaxYear,
         accountingType: AccountingType,
+        profitOrLoss: ProfitOrLoss,
         businessId: BusinessId,
         netAmount: String,
         buildCarsAndAssetBasedAllowanceTable: Table)(implicit request: Request[_], messages: Messages)
@@ -42,10 +44,10 @@
 
     @heading(s"claimCapitalAllowances.title.$accountingType")
 
-    <p class="govuk-inset-text">@{messages(s"claimCapitalAllowances.taxCalculation.$userType", taxYear.startYear.toString, taxYear.endYear.toString)} <strong>@{netAmount}</strong></p>
+    <p class="govuk-inset-text">@{messages(s"claimCapitalAllowances.taxCalculation.$profitOrLoss.$userType", taxYear.startYear.toString, taxYear.endYear.toString)} <strong>@{netAmount}</strong></p>
 
     @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false) {
-      @messages("claimCapitalAllowances.tableHeader")
+      <p class="govuk-body">@messages("claimCapitalAllowances.tableHeader")</p>
       @govukTable(buildCarsAndAssetBasedAllowanceTable)
     }
 

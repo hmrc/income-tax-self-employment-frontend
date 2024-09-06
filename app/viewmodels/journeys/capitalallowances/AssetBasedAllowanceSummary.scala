@@ -16,20 +16,22 @@
 
 package viewmodels.journeys.capitalallowances
 
-import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
+import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
 
 object AssetBasedAllowanceSummary {
 
-  def buildNetProfitOrLossTable(profitOrLoss: ProfitOrLoss, answers: NetBusinessProfitOrLossValues)(implicit messages: Messages): Table = {
-    val netProfitOrLoss = if (profitOrLoss == ProfitOrLoss.Profit) answers.netProfit else answers.netLoss
+  def buildNetProfitOrLossTable(answers: NetBusinessProfitOrLossValues)(implicit messages: Messages): Table = {
     val tableRows = Seq(
       buildTableAmountRow("profitOrLoss.turnover", answers.turnover),
       buildTableAmountRow("profitOrLoss.incomeNotCountedAsTurnover", answers.incomeNotCountedAsTurnover),
-      buildTableAmountRow("profitOrLoss.totalExpenses", answers.totalExpenses),
-      buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netProfitOrLoss, classes = "govuk-!-font-weight-bold")
+      buildTableRow("profitOrLoss.totalExpenses", s"(£${answers.totalExpenses})"),
+      buildTableAmountRow(
+        s"profitOrLoss.netProfitOrLoss.${answers.netProfitOrLoss}",
+        answers.netProfitOrLossAmount,
+        classes = "govuk-!-font-weight-bold")
     )
     buildTable(None, tableRows)
   }

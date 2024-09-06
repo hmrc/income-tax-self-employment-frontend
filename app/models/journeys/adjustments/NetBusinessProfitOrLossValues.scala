@@ -16,6 +16,7 @@
 
 package models.journeys.adjustments
 
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.libs.json.{Format, Json}
 
 case class NetBusinessProfitOrLossValues(turnover: BigDecimal,
@@ -29,7 +30,11 @@ case class NetBusinessProfitOrLossValues(turnover: BigDecimal,
                                          totalAdditionsToNetProfit: BigDecimal,
                                          capitalAllowances: BigDecimal,
                                          turnoverNotTaxableAsBusinessProfit: BigDecimal,
-                                         totalDeductionsFromNetProfit: BigDecimal) {}
+                                         totalDeductionsFromNetProfit: BigDecimal) {
+
+  val netProfitOrLoss: ProfitOrLoss     = if (netLoss == 0) Profit else Loss // If netProfit and netLoss are both 0 it is considered Profit
+  val netProfitOrLossAmount: BigDecimal = if (netProfitOrLoss == Profit) netProfit else netLoss
+}
 
 object NetBusinessProfitOrLossValues {
   implicit val formats: Format[NetBusinessProfitOrLossValues] = Json.format[NetBusinessProfitOrLossValues]

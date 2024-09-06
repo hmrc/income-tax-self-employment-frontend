@@ -22,6 +22,7 @@ import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
 import models.common.{Journey, JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
 import models.domain.BusinessIncomeSourcesSummary
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.{JourneyNameAndStatus, TaskList}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._
@@ -42,6 +43,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val dateOfBirthUrl                      = s"/income-tax-self-employment/user-date-of-birth/$nino"
   private val businessSummariesUrl                = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
   private val businessSummaryUrl                  = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
+  private val netBusinessProfitOrLossValuesUrl    = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -54,6 +56,21 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     Some(100),
     100,
     100
+  )
+
+  lazy val aNetBusinessProfitOrLossValues: NetBusinessProfitOrLossValues = NetBusinessProfitOrLossValues(
+    turnover = 100,
+    incomeNotCountedAsTurnover = 20,
+    totalExpenses = 50,
+    netProfit = 400,
+    netLoss = 0,
+    balancingCharge = 10,
+    goodsAndServicesForOwnUse = 50,
+    disallowableExpenses = 10,
+    totalAdditionsToNetProfit = 60,
+    capitalAllowances = 0,
+    turnoverNotTaxableAsBusinessProfit = 50,
+    totalDeductionsFromNetProfit = 70
   )
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)
@@ -168,6 +185,18 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe summary.asRight
+    }
+  }
+
+  "getNetBusinessProfitOrLossValues" must {
+    "return net business profit values of a user business" in {
+      val profitValues = aNetBusinessProfitOrLossValues
+      val body         = Json.stringify(Json.toJson(profitValues))
+      stubGetWithResponseBody(netBusinessProfitOrLossValuesUrl, OK, body, headersSentToBE)
+
+      val result = connector.getNetBusinessProfitOrLossValues(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe profitValues.asRight
     }
   }
 }

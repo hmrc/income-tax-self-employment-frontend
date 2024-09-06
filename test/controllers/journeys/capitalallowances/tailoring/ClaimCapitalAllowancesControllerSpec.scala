@@ -17,6 +17,7 @@
 package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
+import builders.NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
@@ -41,19 +42,23 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view                                     = application.injector.instanceOf[ClaimCapitalAllowancesView]
-    val netAmount                                = BigDecimal(12345.67)
-    val formattedNetAmount                       = formatSumMoneyNoNegative(List(netAmount))
-    val yourBuildCarsAndAssetBasedAllowanceTable = buildNetProfitOrLossTable()
+    val view                 = application.injector.instanceOf[ClaimCapitalAllowancesView]
+    val apiAnswers           = aNetBusinessProfitValues
+    val netAmount            = apiAnswers.netProfitOrLossAmount
+    val profitOrLoss         = apiAnswers.netProfitOrLoss
+    val formattedNetAmount   = formatSumMoneyNoNegative(List(netAmount))
+    val netProfitOrLossTable = buildNetProfitOrLossTable(apiAnswers)
     view(
       form,
       scenario.mode,
       scenario.userType,
       scenario.taxYear,
       Accrual,
+      profitOrLoss,
       scenario.businessId,
       formattedNetAmount,
-      yourBuildCarsAndAssetBasedAllowanceTable).toString()
+      netProfitOrLossTable
+    ).toString()
   }
 
   override val bindings: List[Binding[_]] = List(

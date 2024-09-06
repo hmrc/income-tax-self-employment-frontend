@@ -17,6 +17,7 @@
 package viewmodels.journeys.capitalallowances
 
 import base.SpecBase
+import builders.NetBusinessProfitOrLossValuesBuilder.{aNetBusinessLossValues, aNetBusinessProfitValues}
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
@@ -26,8 +27,6 @@ import utils.MoneyUtils.formatPosNegMoneyWithPounds
 class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyChecks {
 
   private implicit val messages: Messages = messagesStubbed
-
-  // TODO the hardcoded values are used to create the test cases, these can be updated when the values in Car or Asser based Allowance summary  will be replaced with API data (SASS-8624)
 
   private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
        |Result:
@@ -39,33 +38,55 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
     assert(result.rows.mkString("\n") === expectedResult)
   }
 
-  "buildCarsAndAssetBasedAllowanceTable must create a Table with the correct content" - {
-    "when Profit" in {
-      val turnover                   = 0.00
-      val incomeNotCountedAsTurnover = 0.00
-      val totalExpenses              = 0.00
-      val netProfit                  = 12345.67
+  "buildNetProfitOrLossTable" - {
+    "must create a Table with the correct profit or loss content" - {
+      "when net profit" in {
+        val netBusinessProfitOrLossValues = aNetBusinessProfitValues
+        val turnover                      = netBusinessProfitOrLossValues.turnover
+        val incomeNotCountedAsTurnover    = netBusinessProfitOrLossValues.incomeNotCountedAsTurnover
+        val totalExpenses                 = s"(£${netBusinessProfitOrLossValues.totalExpenses})"
+        val netProfit                     = netBusinessProfitOrLossValues.netProfitOrLossAmount
 
-      val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable()
-      val expectedTable = expectedBuildCarsAndAssetBasedAllowanceTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfit)
+        val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(aNetBusinessProfitValues)
+        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfit)
 
-      assertWithClue(result = table, expectedResult = expectedTable)
+        assertWithClue(result = table, expectedResult = expectedTable)
+      }
 
+      "when net loss" in {
+        val netBusinessProfitOrLossValues = aNetBusinessProfitValues
+        val turnover                      = netBusinessProfitOrLossValues.turnover
+        val incomeNotCountedAsTurnover    = netBusinessProfitOrLossValues.incomeNotCountedAsTurnover
+        val totalExpenses                 = s"(£${netBusinessProfitOrLossValues.totalExpenses})"
+        val netLoss                       = netBusinessProfitOrLossValues.netProfitOrLossAmount
+
+        val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(aNetBusinessLossValues)
+        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netLoss)
+
+        assertWithClue(result = table, expectedResult = expectedTable)
+      }
     }
-
   }
 
-  private def expectedBuildCarsAndAssetBasedAllowanceTable(turnover: BigDecimal,
-                                                           incomeNotCountedAsTurnover: BigDecimal,
-                                                           totalExpenses: BigDecimal,
-                                                           netProfit: BigDecimal): String =
+  private def expectedProfitTable(turnover: BigDecimal,
+                                  incomeNotCountedAsTurnover: BigDecimal,
+                                  totalExpenses: String,
+                                  netProfit: BigDecimal): String =
     s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(profitOrLoss.incomeNotCountedAsTurnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         totalExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
+        |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent($totalExpenses),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.profit),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          netProfit)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
+
+  private def expectedLossTable(turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: String, netLoss: BigDecimal): String =
+    s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
+        |List(TableRow(HtmlContent(profitOrLoss.incomeNotCountedAsTurnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
+        |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent($totalExpenses),None,govuk-!-text-align-right ,None,None,Map()))
+        |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.loss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+         netLoss)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
 
 }
