@@ -16,8 +16,8 @@
 
 @import models.common.UserType
 @import models.journeys.adjustments.ProfitOrLoss
-@import views.html.components._
 @import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
+@import views.html.components._
 
 @this(
         layout: templates.Layout,
@@ -31,7 +31,7 @@
 @(userType: UserType,
         profitOrLoss: ProfitOrLoss,
         netAmount: String,
-        summaryTables: NetBusinessProfitOrLossSummary,
+        tables: NetBusinessProfitOrLossSummary,
         continueRedirect: Call
 )(implicit request: Request[_], messages: Messages)
 
@@ -42,9 +42,9 @@
         @heading(s"checkNetProfitLoss.title.$profitOrLoss", Some(netAmount))
 
         @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){
-            @govukTable(summaryTables.netProfitLossTable)
-            @govukTable(summaryTables.expensesTable)
-            @govukTable(summaryTables.capitalAllowancesTable)
+            @govukTable(tables.netProfitLossTable)
+            @govukTable(tables.expensesTable)
+            @govukTable(tables.capitalAllowancesTable)
             <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
         }
 

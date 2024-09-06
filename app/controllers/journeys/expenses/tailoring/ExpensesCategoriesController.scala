@@ -17,26 +17,26 @@
 package controllers.journeys.expenses.tailoring
 
 import cats.data.EitherT
-import config.TaxYearConfig
+import config.TaxYearConfig.{incomeThreshold, totalIncomeIsOverIncomeThreshold}
 import controllers.actions._
-import controllers.handleApiResult
+import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
 import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
+import models.errors.ServiceError
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
 import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring._
 import pages.expenses.tailoring.simplifiedExpenses._
-import pages.income.TurnoverIncomeAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.MoneyUtils
+import utils.{Logging, MoneyUtils}
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
 import javax.inject.{Inject, Singleton}
@@ -55,10 +55,10 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
                                               val controllerComponents: MessagesControllerComponents,
                                               view: ExpensesCategoriesView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
-  private val page = ExpensesCategoriesPage
+    with I18nSupport
+    with Logging {
 
-  private val incomeThreshold: BigDecimal = TaxYearConfig.incomeThreshold
+  private val page = ExpensesCategoriesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen
@@ -66,8 +66,8 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)
 
       val result = for {
-        incomeAmount <- selfEmploymentService.getTotalTurnover(ctx)
-        incomeIsOverThreshold = incomeAmount > incomeThreshold
+        incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
+        incomeIsOverThreshold = totalIncomeIsOverIncomeThreshold(incomeAmount)
         existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
         form                  = formProvider(request.userType)
         preparedForm          = existingAnswer.fold(form)(form.fill)
@@ -117,17 +117,18 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         if (previousAnswer.exists(_ != value)) NormalMode else mode
       }
 
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)
       val result = for {
-        incomeAmount <- EitherT.fromEither[Future](request.valueOrRedirectDefault(TurnoverIncomeAmountPage, businessId))
+        incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
         incomeIsOverThreshold = incomeAmount > incomeThreshold
         userType              = request.userType
         userAnswers           = request.userAnswers
         form                  = formProvider(userType)
         formattedThreshold    = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
-        finalResult <- EitherT.right[Result](handleForm(form, userType, userAnswers, incomeIsOverThreshold, formattedThreshold))
+        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, userAnswers, incomeIsOverThreshold, formattedThreshold))
       } yield finalResult
 
-      result.merge
+      handleResultT(result)
   }
 
   private def clearDependentPageAnswers(userAnswers: UserAnswers, businessId: Option[BusinessId], pageAnswer: ExpensesTailoring): Try[UserAnswers] = {

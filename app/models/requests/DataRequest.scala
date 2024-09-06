@@ -20,8 +20,8 @@ import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.standard
 import models.common._
 import models.database.UserAnswers
-import models.common.Journey
-import pages.{TradeAccountingType, TradingNameKey}
+import models.errors.ServiceError
+import pages.{OneQuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
@@ -61,6 +61,9 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
     userAnswers.get(TradeAccountingType, Some(businessId))
 
   def getTraderName(businessId: BusinessId): Option[TradingName] = userAnswers.get(TradingNameKey, Some(businessId))
+
+  def valueOrNotFoundError[B: Reads](page: OneQuestionPage[B], businessId: BusinessId): Either[ServiceError, B] =
+    getValue(page, businessId).toRight(ServiceError.NotFoundError(s"UserAnswers '${page.toString}' value not found for ID: '$businessId'"))
 
   def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
     getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))

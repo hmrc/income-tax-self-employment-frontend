@@ -18,6 +18,7 @@ package viewmodels.journeys.capitalallowances
 
 import base.SpecBase
 import builders.NetBusinessProfitOrLossValuesBuilder.{aNetBusinessLossValues, aNetBusinessProfitValues}
+import models.journeys.adjustments.ProfitOrLoss
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
@@ -48,7 +49,7 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
         val netProfit                     = netBusinessProfitOrLossValues.netProfitOrLossAmount
 
         val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(aNetBusinessProfitValues)
-        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfit)
+        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfit, ProfitOrLoss.Profit)
 
         assertWithClue(result = table, expectedResult = expectedTable)
       }
@@ -61,7 +62,7 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
         val netLoss                       = netBusinessProfitOrLossValues.netProfitOrLossAmount
 
         val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(aNetBusinessLossValues)
-        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netLoss)
+        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netLoss, ProfitOrLoss.Loss)
 
         assertWithClue(result = table, expectedResult = expectedTable)
       }
@@ -71,22 +72,14 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
   private def expectedProfitTable(turnover: BigDecimal,
                                   incomeNotCountedAsTurnover: BigDecimal,
                                   totalExpenses: String,
-                                  netProfit: BigDecimal): String =
+                                  netProfit: BigDecimal,
+                                  profitOrLoss: ProfitOrLoss): String =
     s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(profitOrLoss.incomeNotCountedAsTurnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent($totalExpenses),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.profit),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+        |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          netProfit)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
-
-  private def expectedLossTable(turnover: BigDecimal, incomeNotCountedAsTurnover: BigDecimal, totalExpenses: String, netLoss: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.incomeNotCountedAsTurnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent($totalExpenses),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.loss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         netLoss)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
 
 }

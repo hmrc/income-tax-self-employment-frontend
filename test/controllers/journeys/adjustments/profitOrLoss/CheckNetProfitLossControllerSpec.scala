@@ -47,8 +47,8 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
     "should return Ok and render correct view" - {
       userTypeCases.foreach { userType =>
         s"when net loss and user is an $userType" in {
-          val incomeSummary           = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
-          val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessLossValues
+          val incomeSummary                 = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
+          val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
           val stubService = SelfEmploymentServiceStub(
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),
             getNetBusinessProfitOrLossValuesResult = Right(netBusinessProfitOrLossValues)
@@ -70,7 +70,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           assertEqualWithDiff(contentAsString(result), expectedView)
         }
         s"when net profit and user is an $userType" in {
-          val incomeSummary           = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
+          val incomeSummary                 = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
           val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
           val stubService = SelfEmploymentServiceStub(
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),

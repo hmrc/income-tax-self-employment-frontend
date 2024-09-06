@@ -120,7 +120,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
         profitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLossValues)
         formattedNetAmount   = formattedNetProfitOrLossAmount(profitOrLossValues.netProfitOrLossAmount)
-        result               <- EitherT.right[ServiceError](handleForm(profitOrLossValues.netProfitOrLoss, netProfitOrLossTable, formattedNetAmount))
+        result <- EitherT.right[ServiceError](handleForm(profitOrLossValues.netProfitOrLoss, netProfitOrLossTable, formattedNetAmount))
       } yield result
       handleResultT(resultT)
   }

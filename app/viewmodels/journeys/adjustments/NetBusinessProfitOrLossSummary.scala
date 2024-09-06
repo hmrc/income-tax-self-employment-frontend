@@ -16,8 +16,8 @@
 
 package viewmodels.journeys.adjustments
 
-import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow

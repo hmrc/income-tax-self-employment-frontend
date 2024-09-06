@@ -16,14 +16,17 @@
 
 package services
 
+import cats.data.EitherT
 import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
 import controllers.journeys.clearDependentPages
 import controllers.redirectJourneyRecovery
 import models.Mode
+import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
+import models.errors.ServiceError
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.income.IncomeJourneyAnswers
@@ -91,7 +94,9 @@ trait SelfEmploymentService {
   def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues]
 
-  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
+
+  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -230,11 +235,17 @@ class SelfEmploymentServiceImpl @Inject() (
       hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
     connector.getNetBusinessProfitOrLossValues(taxYear, nino, businessId, mtditid)
 
-  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     connector.getSubmittedAnswers[IncomeJourneyAnswers](ctx).subflatMap {
-      case Some(incomeAnswers) => Right(incomeAnswers.totalTurnover)
+      case Some(incomeAnswers) => Right(incomeAnswers.totalIncome)
       case None                => Left(IncomeAnswersNotSubmittedError)
     }
+
+  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
+    for {
+      _ <- setJourneyStatus(JourneyAnswersContext(ctx.taxYear, ctx.nino, ctx.businessId, ctx.mtditid, Journey.ExpensesTailoring), NotStarted)
+      _ <- connector.clearExpensesSimplifiedOrNoExpensesAnswers(ctx.taxYear, ctx.nino, ctx.businessId, ctx.mtditid)
+    } yield ()
 }
 
 object SelfEmploymentService {
@@ -265,6 +276,14 @@ object SelfEmploymentService {
       }
 
     removePageData(userAnswers, pages)
+  }
+
+  def returnOptionalTotalIncome(maybeTotalIncome: ApiResultT[BigDecimal])(implicit ec: ExecutionContext): ApiResultT[Option[BigDecimal]] = {
+    val result = maybeTotalIncome.value.map(_ match {
+      case Right(amount) => Some(amount).asRight
+      case Left(_)       => None.asRight
+    })
+    EitherT[Future, ServiceError, Option[BigDecimal]](result)
   }
 
 }
