@@ -32,7 +32,7 @@ case class NetBusinessProfitOrLossValues(turnover: BigDecimal,
                                          turnoverNotTaxableAsBusinessProfit: BigDecimal,
                                          totalDeductionsFromNetProfit: BigDecimal) {
 
-  val netProfitOrLoss: ProfitOrLoss     = if (netLoss == 0) Profit else Loss // If netProfit and netLoss are both 0 it is considered Profit
+  val netProfitOrLoss: ProfitOrLoss     = if (netLoss > 0) Loss else Profit
   val netProfitOrLossAmount: BigDecimal = if (netProfitOrLoss == Profit) netProfit else netLoss
 }
 

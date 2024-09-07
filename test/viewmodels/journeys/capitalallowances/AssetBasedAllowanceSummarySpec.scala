@@ -18,7 +18,7 @@ package viewmodels.journeys.capitalallowances
 
 import base.SpecBase
 import builders.NetBusinessProfitOrLossValuesBuilder.{aNetBusinessLossValues, aNetBusinessProfitValues}
-import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
@@ -41,39 +41,38 @@ class AssetBasedAllowanceSummarySpec extends SpecBase with TableDrivenPropertyCh
 
   "buildNetProfitOrLossTable" - {
     "must create a Table with the correct profit or loss content" - {
-      "when net profit" in {
-        val netBusinessProfitOrLossValues = aNetBusinessProfitValues
-        val turnover                      = netBusinessProfitOrLossValues.turnover
-        val incomeNotCountedAsTurnover    = netBusinessProfitOrLossValues.incomeNotCountedAsTurnover
-        val totalExpenses                 = s"(£${netBusinessProfitOrLossValues.totalExpenses})"
-        val netProfit                     = netBusinessProfitOrLossValues.netProfitOrLossAmount
-
-        val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(aNetBusinessProfitValues)
-        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfit, ProfitOrLoss.Profit)
-
-        assertWithClue(result = table, expectedResult = expectedTable)
+      "when net profit" in new Test {
+        override def netBusinessProfitOrLossValues = aNetBusinessProfitValues
+        override def profitOrLoss                  = ProfitOrLoss.Profit
       }
 
-      "when net loss" in {
-        val netBusinessProfitOrLossValues = aNetBusinessProfitValues
-        val turnover                      = netBusinessProfitOrLossValues.turnover
-        val incomeNotCountedAsTurnover    = netBusinessProfitOrLossValues.incomeNotCountedAsTurnover
-        val totalExpenses                 = s"(£${netBusinessProfitOrLossValues.totalExpenses})"
-        val netLoss                       = netBusinessProfitOrLossValues.netProfitOrLossAmount
-
-        val table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(aNetBusinessLossValues)
-        val expectedTable = expectedProfitTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netLoss, ProfitOrLoss.Loss)
-
-        assertWithClue(result = table, expectedResult = expectedTable)
+      "when net loss" in new Test {
+        override def netBusinessProfitOrLossValues = aNetBusinessLossValues
+        override def profitOrLoss                  = ProfitOrLoss.Loss
       }
     }
   }
 
-  private def expectedProfitTable(turnover: BigDecimal,
-                                  incomeNotCountedAsTurnover: BigDecimal,
-                                  totalExpenses: String,
-                                  netProfit: BigDecimal,
-                                  profitOrLoss: ProfitOrLoss): String =
+  trait Test {
+    def netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues
+    def profitOrLoss: ProfitOrLoss
+
+    def table         = AssetBasedAllowanceSummary.buildNetProfitOrLossTable(netBusinessProfitOrLossValues)
+    def expectedTable = expectedProfitOrLossTable(turnover, incomeNotCountedAsTurnover, totalExpenses, netProfitOrLoss, profitOrLoss)
+
+    val turnover                   = netBusinessProfitOrLossValues.turnover
+    val incomeNotCountedAsTurnover = netBusinessProfitOrLossValues.incomeNotCountedAsTurnover
+    val totalExpenses              = s"(£${netBusinessProfitOrLossValues.totalExpenses})"
+    val netProfitOrLoss            = netBusinessProfitOrLossValues.netProfitOrLossAmount
+
+    assertWithClue(result = table, expectedResult = expectedTable)
+  }
+
+  private def expectedProfitOrLossTable(turnover: BigDecimal,
+                                        incomeNotCountedAsTurnover: BigDecimal,
+                                        totalExpenses: String,
+                                        netProfit: BigDecimal,
+                                        profitOrLoss: ProfitOrLoss): String =
     s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(profitOrLoss.incomeNotCountedAsTurnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
