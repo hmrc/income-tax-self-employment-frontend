@@ -17,7 +17,7 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.{ControllerSpec, SpecBase}
-import builders.{BusinessIncomeSourcesSummaryBuilder, NetBusinessProfitValuesBuilder}
+import builders.{BusinessIncomeSourcesSummaryBuilder, NetBusinessProfitOrLossValuesBuilder}
 import common.TestApp.buildAppFromUserType
 import models.NormalMode
 import models.database.UserAnswers
@@ -47,18 +47,18 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
     "should return Ok and render correct view" - {
       userTypeCases.foreach { userType =>
         s"when net loss and user is an $userType" in {
-          val incomeSummary           = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
-          val netBusinessProfitValues = NetBusinessProfitValuesBuilder.aNetBusinessProfitValues
+          val incomeSummary                 = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetLoss
+          val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessLossValues
           val stubService = SelfEmploymentServiceStub(
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),
-            getNetBusinessProfitValuesResult = Right(netBusinessProfitValues)
+            getNetBusinessProfitOrLossValuesResult = Right(netBusinessProfitOrLossValues)
           )
           val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg       = SpecBase.messages(application)
           val result             = route(application, onPageLoadRequest).value
           val netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitValues)
+          val tables             = buildTables(netBusinessProfitOrLossValues)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
@@ -70,18 +70,18 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           assertEqualWithDiff(contentAsString(result), expectedView)
         }
         s"when net profit and user is an $userType" in {
-          val incomeSummary           = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
-          val netBusinessProfitValues = NetBusinessProfitValuesBuilder.aNetBusinessProfitValues
+          val incomeSummary                 = BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummaryWithNetProfit
+          val netBusinessProfitOrLossValues = NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
           val stubService = SelfEmploymentServiceStub(
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),
-            getNetBusinessProfitValuesResult = Right(netBusinessProfitValues)
+            getNetBusinessProfitOrLossValuesResult = Right(netBusinessProfitOrLossValues)
           )
           val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg       = SpecBase.messages(application)
           val result             = route(application, onPageLoadRequest).value
           val netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitValues)
+          val tables             = buildTables(netBusinessProfitOrLossValues)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]

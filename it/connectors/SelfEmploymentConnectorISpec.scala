@@ -22,7 +22,7 @@ import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
 import models.common.{Journey, JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
 import models.domain.BusinessIncomeSourcesSummary
-import models.journeys.adjustments.NetBusinessProfitValues
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.{JourneyNameAndStatus, TaskList}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._
@@ -43,12 +43,12 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
   private def statusUrl(journey: Journey) = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
 
-  private val taskListUrl                = s"/income-tax-self-employment/$taxYear/$nino/task-list"
-  private val dateOfBirthUrl             = s"/income-tax-self-employment/user-date-of-birth/$nino"
-  private val businessSummariesUrl       = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
-  private val businessSummaryUrl         = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
-  private val netBusinessProfitValuesUrl = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
-  private val clearExpensesUrl           = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
+  private val taskListUrl                      = s"/income-tax-self-employment/$taxYear/$nino/task-list"
+  private val dateOfBirthUrl                   = s"/income-tax-self-employment/user-date-of-birth/$nino"
+  private val businessSummariesUrl             = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
+  private val businessSummaryUrl               = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
+  private val netBusinessProfitOrLossValuesUrl = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
+  private val clearExpensesUrl                 = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -63,11 +63,12 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     100
   )
 
-  lazy val aNetBusinessProfitValues: NetBusinessProfitValues = NetBusinessProfitValues(
+  lazy val aNetBusinessProfitOrLossValues: NetBusinessProfitOrLossValues = NetBusinessProfitOrLossValues(
     turnover = 100,
     incomeNotCountedAsTurnover = 20,
     totalExpenses = 50,
     netProfit = 400,
+    netLoss = 0,
     balancingCharge = 10,
     goodsAndServicesForOwnUse = 50,
     disallowableExpenses = 10,
@@ -192,13 +193,13 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     }
   }
 
-  "getNetBusinessProfitValues" must {
+  "getNetBusinessProfitOrLossValues" must {
     "return net business profit values of a user business" in {
-      val profitValues = aNetBusinessProfitValues
+      val profitValues = aNetBusinessProfitOrLossValues
       val body         = Json.stringify(Json.toJson(profitValues))
-      stubGetWithResponseBody(netBusinessProfitValuesUrl, OK, body, headersSentToBE)
+      stubGetWithResponseBody(netBusinessProfitOrLossValuesUrl, OK, body, headersSentToBE)
 
-      val result = connector.getNetBusinessProfitValues(taxYear, nino, businessId, mtditid).value.futureValue
+      val result = connector.getNetBusinessProfitOrLossValues(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe profitValues.asRight
     }

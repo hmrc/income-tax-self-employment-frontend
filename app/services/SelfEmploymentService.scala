@@ -28,12 +28,10 @@ import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
-import models.journeys.adjustments.NetBusinessProfitValues
-import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
-import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.Logging
@@ -93,10 +91,10 @@ trait SelfEmploymentService {
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
 
-  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
+  def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues]
 
-  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): ApiResultT[NetBusinessProfitValues]
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 }
@@ -233,9 +231,9 @@ class SelfEmploymentServiceImpl @Inject() (
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid)
 
-  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): ApiResultT[NetBusinessProfitValues] =
-    connector.getNetBusinessProfitValues(taxYear, nino, businessId, mtditid)
+  def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
+    connector.getNetBusinessProfitOrLossValues(taxYear, nino, businessId, mtditid)
 
   def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     connector.getSubmittedAnswers[IncomeJourneyAnswers](ctx).subflatMap {

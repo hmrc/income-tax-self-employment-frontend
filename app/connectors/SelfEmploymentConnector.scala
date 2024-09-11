@@ -23,7 +23,7 @@ import models.common._
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
 import models.errors.ServiceError.BusinessNotFoundError
-import models.journeys.adjustments.NetBusinessProfitValues
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.{JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -116,11 +116,11 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def getNetBusinessProfitValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+  def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[NetBusinessProfitValues] = {
+      ec: ExecutionContext): ApiResultT[NetBusinessProfitOrLossValues] = {
     val url      = buildUrl(s"$taxYear/net-business-profit-or-loss-values/$nino/$businessId")
-    val response = get[NetBusinessProfitValues](http, url, mtditid)
+    val response = get[NetBusinessProfitOrLossValues](http, url, mtditid)
     EitherT(response)
   }
 

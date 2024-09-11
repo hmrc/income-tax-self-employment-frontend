@@ -16,40 +16,41 @@
 
 package viewmodels.journeys.adjustments
 
-import models.journeys.adjustments.{NetBusinessProfitValues, ProfitOrLoss}
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
 
 case class NetBusinessProfitOrLossSummary(netProfitLossTable: Table, expensesTable: Table, capitalAllowancesTable: Table)
+
 object NetBusinessProfitOrLossSummary {
 
   def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.additions.$profitOrLoss"
   def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.deductions.$profitOrLoss"
 
-  def buildTables(netBusinessProfitValues: NetBusinessProfitValues)(implicit messages: Messages): NetBusinessProfitOrLossSummary =
+  def buildTables(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues)(implicit messages: Messages): NetBusinessProfitOrLossSummary =
     NetBusinessProfitOrLossSummary(
       buildNetProfitLossTable(
         Profit,
-        netBusinessProfitValues.turnover,
-        netBusinessProfitValues.incomeNotCountedAsTurnover,
-        netBusinessProfitValues.totalExpenses,
-        netBusinessProfitValues.netProfit
+        netBusinessProfitOrLossValues.turnover,
+        netBusinessProfitOrLossValues.incomeNotCountedAsTurnover,
+        netBusinessProfitOrLossValues.totalExpenses,
+        netBusinessProfitOrLossValues.netProfit
       ),
       buildExpensesTable(
         Profit,
-        netBusinessProfitValues.balancingCharge,
-        netBusinessProfitValues.goodsAndServicesForOwnUse,
-        netBusinessProfitValues.disallowableExpenses,
-        netBusinessProfitValues.totalAdditionsToNetProfit
+        netBusinessProfitOrLossValues.balancingCharge,
+        netBusinessProfitOrLossValues.goodsAndServicesForOwnUse,
+        netBusinessProfitOrLossValues.disallowableExpenses,
+        netBusinessProfitOrLossValues.totalAdditionsToNetProfit
       ),
       buildCapitalAllowancesTable(
         Profit,
-        netBusinessProfitValues.capitalAllowances,
-        netBusinessProfitValues.turnoverNotTaxableAsBusinessProfit,
-        netBusinessProfitValues.totalDeductionsFromNetProfit
+        netBusinessProfitOrLossValues.capitalAllowances,
+        netBusinessProfitOrLossValues.turnoverNotTaxableAsBusinessProfit,
+        netBusinessProfitOrLossValues.totalDeductionsFromNetProfit
       )
     )
 

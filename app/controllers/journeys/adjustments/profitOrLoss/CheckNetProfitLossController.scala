@@ -48,13 +48,13 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = for {
-        incomeSummary           <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
-        netBusinessProfitValues <- service.getNetBusinessProfitValues(taxYear, request.nino, businessId, request.mtditid)
+        incomeSummary                 <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
+        netBusinessProfitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
 
-        tables = NetBusinessProfitOrLossSummary.buildTables(netBusinessProfitValues)
+        tables = NetBusinessProfitOrLossSummary.buildTables(netBusinessProfitOrLossValues)
         redirectLocation = profitOrLoss match {
           case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           case Loss   => routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)

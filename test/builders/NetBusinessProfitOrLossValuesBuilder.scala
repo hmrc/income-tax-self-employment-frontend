@@ -16,10 +16,11 @@
 
 package builders
 
-import models.journeys.adjustments.NetBusinessProfitValues
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 
-object NetBusinessProfitValuesBuilder {
-  val aNetBusinessProfitValues = NetBusinessProfitValues(
-    100, 0, 0, 100, 100, 100, 100, 0, 100, 0, 100
-  )
+object NetBusinessProfitOrLossValuesBuilder {
+  val aNetBusinessProfitValues: NetBusinessProfitOrLossValues =
+    NetBusinessProfitOrLossValues(100, 0, 0, netProfit = 100, netLoss = 0, 100, 100, 100, 0, 100, 0, 100)
+  val aNetBusinessLossValues: NetBusinessProfitOrLossValues =
+    NetBusinessProfitOrLossValues(100, 0, 0, netProfit = 0, netLoss = 100, 100, 100, 100, 0, 100, 0, 100)
 }
