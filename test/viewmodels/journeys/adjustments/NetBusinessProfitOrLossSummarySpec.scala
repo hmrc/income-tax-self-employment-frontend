@@ -32,7 +32,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   private implicit val messages: Messages = messagesStubbed
 
   private val netProfitValues = aNetBusinessProfitValues
-  private val netLossValues = aNetBusinessLossValues
+  private val netLossValues   = aNetBusinessLossValues
 
   private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
        |Result:
@@ -46,8 +46,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   "buildNetProfitLossTable must create a Table with the correct content" - {
     s"when a net profit" in {
       val table =
-        NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netProfitValues, Profit)(
-          messages)
+        NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netProfitValues, Profit)(messages)
       val expectedTable = expectedNetProfitLossTable(
         Profit,
         netProfitValues.turnover,
@@ -61,8 +60,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
     }
     s"when a net loss" in {
       val table =
-        NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netLossValues, Loss)(
-          messages)
+        NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netLossValues, Loss)(messages)
       val expectedTable = expectedNetProfitLossTable(
         Loss,
         netLossValues.turnover,
@@ -80,7 +78,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
     s"when a net profit" in {
       val table =
         NetBusinessProfitOrLossSummary.buildExpensesTable(netProfitValues, Profit)
-      val expectedTable   = expectedExpensesTable(
+      val expectedTable = expectedExpensesTable(
         Profit,
         netProfitValues.balancingCharge,
         netProfitValues.goodsAndServicesForOwnUse,
@@ -108,19 +106,19 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   }
 
   "buildCapitalAllowancesTable must create a Table with the correct content" - {
-      s"when a net profit" in {
-        val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netProfitValues, Profit)(messages)
-        val expectedTable   = expectedCapitalAllowancesTable(
-          Profit,
-          netProfitValues.capitalAllowances,
-          netProfitValues.turnoverNotTaxableAsBusinessProfit,
-          netProfitValues.totalDeductions
-        )
-        val expectedCaption = Some(deductionsCaption(Profit))
+    s"when a net profit" in {
+      val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netProfitValues, Profit)(messages)
+      val expectedTable = expectedCapitalAllowancesTable(
+        Profit,
+        netProfitValues.capitalAllowances,
+        netProfitValues.turnoverNotTaxableAsBusinessProfit,
+        netProfitValues.totalDeductions
+      )
+      val expectedCaption = Some(deductionsCaption(Profit))
 
-        assert(table.caption == expectedCaption)
-        assertWithClue(result = table, expectedResult = expectedTable)
-      }
+      assert(table.caption == expectedCaption)
+      assertWithClue(result = table, expectedResult = expectedTable)
+    }
     s"when a net Loss" in {
       val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netLossValues, Loss)(messages)
       val expectedTable = expectedCapitalAllowancesTable(

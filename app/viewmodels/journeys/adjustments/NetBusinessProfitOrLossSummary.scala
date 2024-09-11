@@ -30,15 +30,16 @@ object NetBusinessProfitOrLossSummary {
   def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.additions.$profitOrLoss"
   def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.deductions.$profitOrLoss"
 
-  def buildTables(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)
-                 (implicit messages: Messages): NetBusinessProfitOrLossSummary =
+  def buildTables(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit
+      messages: Messages): NetBusinessProfitOrLossSummary =
     NetBusinessProfitOrLossSummary(
       buildNetProfitLossTable(netBusinessProfitOrLossValues, profitOrLoss),
       buildExpensesTable(netBusinessProfitOrLossValues, profitOrLoss),
       buildCapitalAllowancesTable(netBusinessProfitOrLossValues, profitOrLoss)
     )
 
-  def buildNetProfitLossTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildNetProfitLossTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit
+      messages: Messages): Table = {
 
     val rows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOrLoss.turnover", netBusinessProfitOrLossValues.turnover),
@@ -47,14 +48,11 @@ object NetBusinessProfitOrLossSummary {
       buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netBusinessProfitOrLossValues.netProfitOrLossAmount)
     )
 
-    buildTable(
-      None,
-      rows,
-      caption = Some(messages(s"profitOrLoss.netProfitOrLoss.$profitOrLoss")),
-      "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
+    buildTable(None, rows, caption = Some(messages(s"profitOrLoss.netProfitOrLoss.$profitOrLoss")), "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildExpensesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildExpensesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit
+      messages: Messages): Table = {
 
     val rows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("selectCapitalAllowances.balancingCharge", netBusinessProfitOrLossValues.balancingCharge),
@@ -73,7 +71,8 @@ object NetBusinessProfitOrLossSummary {
       "govuk-!-margin-bottom-9")
   }
 
-  def buildCapitalAllowancesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildCapitalAllowancesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit
+      messages: Messages): Table = {
 
     val rows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOrLoss.capitalAllowances", netBusinessProfitOrLossValues.capitalAllowances),
