@@ -44,7 +44,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   }
 
   "buildNetProfitLossTable must create a Table with the correct content" - {
-    s"when a net profit" in {
+    "when a net profit" in {
       val table =
         NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netProfitValues, Profit)(messages)
       val expectedTable = expectedNetProfitLossTable(
@@ -58,7 +58,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       assert(table.caption == expectedCaption)
       assertWithClue(result = table, expectedResult = expectedTable)
     }
-    s"when a net loss" in {
+    "when a net loss" in {
       val table =
         NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netLossValues, Loss)(messages)
       val expectedTable = expectedNetProfitLossTable(
@@ -75,7 +75,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   }
 
   "buildExpensesTable must create a Table with the correct content" - {
-    s"when a net profit" in {
+    "when a net profit" in {
       val table =
         NetBusinessProfitOrLossSummary.buildExpensesTable(netProfitValues, Profit)
       val expectedTable = expectedExpensesTable(
@@ -89,7 +89,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       assert(table.caption == expectedCaption)
       assertWithClue(result = table, expectedResult = expectedTable)
     }
-    s"when a net loss" in {
+    "when a net loss" in {
       val table =
         NetBusinessProfitOrLossSummary.buildExpensesTable(netLossValues, Loss)
       val expectedTable = expectedExpensesTable(
@@ -106,7 +106,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   }
 
   "buildCapitalAllowancesTable must create a Table with the correct content" - {
-    s"when a net profit" in {
+    "when a net profit" in {
       val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netProfitValues, Profit)(messages)
       val expectedTable = expectedCapitalAllowancesTable(
         Profit,
@@ -119,7 +119,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       assert(table.caption == expectedCaption)
       assertWithClue(result = table, expectedResult = expectedTable)
     }
-    s"when a net Loss" in {
+    "when a net Loss" in {
       val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netLossValues, Loss)(messages)
       val expectedTable = expectedCapitalAllowancesTable(
         Loss,

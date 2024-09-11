@@ -30,7 +30,7 @@ case class BusinessIncomeSourcesSummary(incomeSourceId: String,
                                         accountingAdjustments: Option[BigDecimal],
                                         taxableProfit: BigDecimal,
                                         taxableLoss: BigDecimal) {
-  def getNetBusinessProfitForTaxPurposes(): BigDecimal =
+  def getNetBusinessProfitOrLossForTaxPurposes(): BigDecimal =
     if (returnProfitOrLoss() == Profit)
       netProfit + totalAdditions.getOrElse(0) - totalDeductions.getOrElse(0)
     else
