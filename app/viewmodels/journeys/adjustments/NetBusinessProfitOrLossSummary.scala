@@ -30,88 +30,61 @@ object NetBusinessProfitOrLossSummary {
   def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.additions.$profitOrLoss"
   def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.deductions.$profitOrLoss"
 
-  def buildTables(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues)(implicit messages: Messages): NetBusinessProfitOrLossSummary =
+  def buildTables(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)
+                 (implicit messages: Messages): NetBusinessProfitOrLossSummary =
     NetBusinessProfitOrLossSummary(
-      buildNetProfitLossTable(
-        Profit,
-        netBusinessProfitOrLossValues.turnover,
-        netBusinessProfitOrLossValues.incomeNotCountedAsTurnover,
-        netBusinessProfitOrLossValues.totalExpenses,
-        netBusinessProfitOrLossValues.netProfit
-      ),
-      buildExpensesTable(
-        Profit,
-        netBusinessProfitOrLossValues.balancingCharge,
-        netBusinessProfitOrLossValues.goodsAndServicesForOwnUse,
-        netBusinessProfitOrLossValues.disallowableExpenses,
-        netBusinessProfitOrLossValues.totalAdditionsToNetProfit
-      ),
-      buildCapitalAllowancesTable(
-        Profit,
-        netBusinessProfitOrLossValues.capitalAllowances,
-        netBusinessProfitOrLossValues.turnoverNotTaxableAsBusinessProfit,
-        netBusinessProfitOrLossValues.totalDeductionsFromNetProfit
-      )
+      buildNetProfitLossTable(netBusinessProfitOrLossValues, profitOrLoss),
+      buildExpensesTable(netBusinessProfitOrLossValues, profitOrLoss),
+      buildCapitalAllowancesTable(netBusinessProfitOrLossValues, profitOrLoss)
     )
 
-  def buildNetProfitLossTable(profitOrLoss: ProfitOrLoss,
-                              turnover: BigDecimal,
-                              incomeNotCountedAsTurnover: BigDecimal,
-                              totalExpenses: BigDecimal,
-                              netProfitOrLoss: BigDecimal)(implicit messages: Messages): Table = {
+  def buildNetProfitLossTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
 
-    val netProfitOrLossRows: Seq[Seq[TableRow]] = Seq(
-      buildTableAmountRow("profitOrLoss.turnover", turnover),
-      buildTableAmountRow("incomeNotCountedAsTurnover.title", incomeNotCountedAsTurnover),
-      buildTableAmountRow("profitOrLoss.totalExpenses", totalExpenses),
-      buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netProfitOrLoss)
+    val rows: Seq[Seq[TableRow]] = Seq(
+      buildTableAmountRow("profitOrLoss.turnover", netBusinessProfitOrLossValues.turnover),
+      buildTableAmountRow("incomeNotCountedAsTurnover.title", netBusinessProfitOrLossValues.incomeNotCountedAsTurnover),
+      buildTableAmountRow("profitOrLoss.totalExpenses", netBusinessProfitOrLossValues.totalExpenses),
+      buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netBusinessProfitOrLossValues.netProfitOrLossAmount)
     )
 
     buildTable(
       None,
-      netProfitOrLossRows,
+      rows,
       caption = Some(messages(s"profitOrLoss.netProfitOrLoss.$profitOrLoss")),
       "govuk-!-margin-top-6 govuk-!-margin-bottom-9")
   }
 
-  def buildExpensesTable(profitOrLoss: ProfitOrLoss,
-                         balancingCharge: BigDecimal,
-                         goodsAndServices: BigDecimal,
-                         disallowableExpenses: BigDecimal,
-                         totalAdditions: BigDecimal)(implicit messages: Messages): Table = {
+  def buildExpensesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
 
-    val additionsRows: Seq[Seq[TableRow]] = Seq(
-      buildTableAmountRow("selectCapitalAllowances.balancingCharge", balancingCharge),
-      buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", goodsAndServices),
-      buildTableAmountRow("profitOrLoss.disallowableExpenses", disallowableExpenses),
+    val rows: Seq[Seq[TableRow]] = Seq(
+      buildTableAmountRow("selectCapitalAllowances.balancingCharge", netBusinessProfitOrLossValues.balancingCharge),
+      buildTableAmountRow("goodsAndServicesForYourOwnUse.title.individual", netBusinessProfitOrLossValues.goodsAndServicesForOwnUse),
+      buildTableAmountRow("profitOrLoss.disallowableExpenses", netBusinessProfitOrLossValues.disallowableExpenses),
       buildTableAmountRow(
         if (profitOrLoss == Profit) { additionsCaption(profitOrLoss) }
         else { deductionsCaption(profitOrLoss) },
-        totalAdditions)
+        netBusinessProfitOrLossValues.totalAdditions)
     )
 
     buildTable(
       None,
-      additionsRows,
+      rows,
       caption = Some(messages(if (profitOrLoss == Profit) additionsCaption(Profit) else deductionsCaption(Loss))),
       "govuk-!-margin-bottom-9")
   }
 
-  def buildCapitalAllowancesTable(profitOrLoss: ProfitOrLoss,
-                                  capitalAllowances: BigDecimal,
-                                  turnoverNotTaxable: BigDecimal,
-                                  totalDeductionsOrAdditions: BigDecimal)(implicit messages: Messages): Table = {
+  def buildCapitalAllowancesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
 
-    val deductionsRows: Seq[Seq[TableRow]] = Seq(
-      buildTableAmountRow("profitOrLoss.capitalAllowances", capitalAllowances),
-      buildTableAmountRow("profitOrLoss.turnoverNotTaxable", turnoverNotTaxable),
+    val rows: Seq[Seq[TableRow]] = Seq(
+      buildTableAmountRow("profitOrLoss.capitalAllowances", netBusinessProfitOrLossValues.capitalAllowances),
+      buildTableAmountRow("profitOrLoss.turnoverNotTaxable", netBusinessProfitOrLossValues.turnoverNotTaxableAsBusinessProfit),
       buildTableAmountRow(
         if (profitOrLoss == Profit) { deductionsCaption(profitOrLoss) }
         else { additionsCaption(profitOrLoss) },
-        totalDeductionsOrAdditions)
+        netBusinessProfitOrLossValues.totalDeductions)
     )
 
-    buildTable(None, deductionsRows, caption = Some(messages(if (profitOrLoss == Profit) deductionsCaption(Profit) else additionsCaption(Loss))))
+    buildTable(None, rows, caption = Some(messages(if (profitOrLoss == Profit) deductionsCaption(Profit) else additionsCaption(Loss))))
   }
 
 }

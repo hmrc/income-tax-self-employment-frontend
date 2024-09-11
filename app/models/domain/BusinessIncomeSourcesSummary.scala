@@ -30,9 +30,13 @@ case class BusinessIncomeSourcesSummary(incomeSourceId: String,
                                         accountingAdjustments: Option[BigDecimal],
                                         taxableProfit: BigDecimal,
                                         taxableLoss: BigDecimal) {
-  // TODO getNetBusinessProfitForTaxPurposes logic is only dealing with netProfit currently. SASS-8627 - change to also deal with netLoss
-  def getNetBusinessProfitForTaxPurposes(): BigDecimal = netProfit + totalAdditions.getOrElse(0) - totalDeductions.getOrElse(0)
-  def returnProfitOrLoss(): ProfitOrLoss               = if (getNetBusinessProfitForTaxPurposes() < 0) Loss else Profit
+  def getNetBusinessProfitForTaxPurposes(): BigDecimal = {
+    if (returnProfitOrLoss() == Profit)
+      netProfit + totalAdditions.getOrElse(0) - totalDeductions.getOrElse(0)
+    else
+      netLoss - totalAdditions.getOrElse(0) + totalDeductions.getOrElse(0)
+  }
+  def returnProfitOrLoss(): ProfitOrLoss = if (netLoss > 0) Loss else Profit
 }
 
 object BusinessIncomeSourcesSummary {

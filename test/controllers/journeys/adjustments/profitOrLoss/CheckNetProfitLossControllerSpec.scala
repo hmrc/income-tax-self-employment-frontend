@@ -21,7 +21,7 @@ import builders.{BusinessIncomeSourcesSummaryBuilder, NetBusinessProfitOrLossVal
 import common.TestApp.buildAppFromUserType
 import models.NormalMode
 import models.database.UserAnswers
-import models.journeys.adjustments.ProfitOrLoss
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -58,11 +58,11 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           val result             = route(application, onPageLoadRequest).value
           val netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitOrLossValues)
+          val tables             = buildTables(netBusinessProfitOrLossValues, Loss)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, ProfitOrLoss.Loss, formattedNetAmount, tables, onwardLossRoute)(onPageLoadRequest, msg)
+            view(userType, Loss, formattedNetAmount, tables, onwardLossRoute)(onPageLoadRequest, msg)
               .toString()
           }
 
@@ -81,11 +81,11 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           val result             = route(application, onPageLoadRequest).value
           val netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitOrLossValues)
+          val tables             = buildTables(netBusinessProfitOrLossValues, Profit)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, ProfitOrLoss.Profit, formattedNetAmount, tables, onwardProfitRoute)(onPageLoadRequest, msg)
+            view(userType, Profit, formattedNetAmount, tables, onwardProfitRoute)(onPageLoadRequest, msg)
               .toString()
           }
 
