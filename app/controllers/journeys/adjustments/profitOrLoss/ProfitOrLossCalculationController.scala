@@ -54,7 +54,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
       val result = for {
         taxableProfitsAndLosses <- service.getAllBusinessesTaxableProfitAndLoss(taxYear, request.nino, request.mtditid)
         incomeSummary           <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
-        netAmount          = incomeSummary.getNetBusinessProfitForTaxPurposes()
+        netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes()
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
         tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)

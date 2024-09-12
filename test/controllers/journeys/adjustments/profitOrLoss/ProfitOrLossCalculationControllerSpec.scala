@@ -93,7 +93,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec {
           val application            = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg: Messages = SpecBase.messages(application)
           val result                 = route(application, onPageLoadRequest).value
-          val netAmount              = BigDecimal(200.00)
+          val netAmount              = BigDecimal(300.00)
           val formattedNetAmount     = formatSumMoneyNoNegative(List(netAmount))
           val profitOrLoss           = Loss
           val tables = AdjustedTaxableProfitOrLossSummary(
