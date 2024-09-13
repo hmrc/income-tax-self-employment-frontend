@@ -20,20 +20,15 @@ import controllers.journeys.adjustments.profitOrLoss.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.redirectOnBoolean
+import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 import play.api.mvc.Call
 
-case object CurrentYearLossesPage extends AdjustmentsBasePage[Boolean] {
-  override def toString: String = "currentYearLosses"
+case object WhatDoYouWantToDoWithLossPage extends AdjustmentsBasePage[WhatDoYouWantToDoWithLoss] {
+  override def toString: String = "WhatDoYouWantToDoWithLoss"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    redirectOnBoolean(
-      this,
-      userAnswers,
-      businessId,
-      onTrue = routes.WhatDoYouWantToDoWithLossController.onPageLoad(taxYear, businessId, NormalMode),
-      onFalse = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
-    )
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
+    routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId,NormalMode)
+  }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
