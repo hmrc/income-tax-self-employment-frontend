@@ -17,7 +17,7 @@
 package controllers.journeys.income
 
 import cats.data.EitherT
-import config.TaxYearConfig.totalIncomeIsOverIncomeThreshold
+import config.TaxYearConfig.totalIncomeIsEqualOrAboveThreshold
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.{handleResultT, journeys}
 import models.NormalMode
@@ -106,14 +106,14 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
     for {
       maybeExistingTotalIncomeAmount <- returnOptionalTotalIncome(service.getTotalIncome(ctx))
       currentAnswersTurnoverAmount   <- EitherT.fromEither[Future](request.valueOrNotFoundError(TurnoverIncomeAmountPage, ctx.businessId))
-      currentAnswersNonTurnoverAmount = request.getValue[BigDecimal](NonTurnoverIncomeAmountPage, ctx.businessId).getOrElse(BigDecimal(0))
-      currentAnswersTotalIncomeAmount = currentAnswersTurnoverAmount + currentAnswersNonTurnoverAmount
-      existingIncomeIsUnderThreshold  = maybeExistingTotalIncomeAmount.exists(!totalIncomeIsOverIncomeThreshold(_))
-      currentIncomeIsOverThreshold    = totalIncomeIsOverIncomeThreshold(currentAnswersTotalIncomeAmount)
-      expensesTailoringIsSimplified   = request.getValue(ExpensesCategoriesPage, ctx.businessId).exists(_ != IndividualCategories)
+      currentAnswersNonTurnoverAmount      = request.getValue[BigDecimal](NonTurnoverIncomeAmountPage, ctx.businessId).getOrElse(BigDecimal(0))
+      currentAnswersTotalIncomeAmount      = currentAnswersTurnoverAmount + currentAnswersNonTurnoverAmount
+      existingIncomeIsBelowThreshold       = maybeExistingTotalIncomeAmount.exists(!totalIncomeIsEqualOrAboveThreshold(_))
+      currentIncomeIsEqualOrAboveThreshold = totalIncomeIsEqualOrAboveThreshold(currentAnswersTotalIncomeAmount)
+      expensesTailoringIsSimplified        = request.getValue(ExpensesCategoriesPage, ctx.businessId).exists(_ != IndividualCategories)
       _ <- clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(
-        existingIncomeIsUnderThreshold,
-        currentIncomeIsOverThreshold,
+        existingIncomeIsBelowThreshold,
+        currentIncomeIsEqualOrAboveThreshold,
         expensesTailoringIsSimplified)
     } yield ()
   }

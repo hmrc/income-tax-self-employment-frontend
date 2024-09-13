@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring
 
 import cats.data.EitherT
-import config.TaxYearConfig.{incomeThreshold, totalIncomeIsOverIncomeThreshold}
+import config.TaxYearConfig.{incomeThreshold, totalIncomeIsEqualOrAboveThreshold}
 import controllers.actions._
 import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
@@ -67,13 +67,13 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
       val result = for {
         incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
-        incomeIsOverThreshold = totalIncomeIsOverIncomeThreshold(incomeAmount)
-        existingAnswer        = request.getValue(ExpensesCategoriesPage, businessId)
-        form                  = formProvider(request.userType)
-        preparedForm          = existingAnswer.fold(form)(form.fill)
+        incomeIsEqualOrAboveThreshold = totalIncomeIsEqualOrAboveThreshold(incomeAmount)
+        existingAnswer                = request.getValue(ExpensesCategoriesPage, businessId)
+        form                          = formProvider(request.userType)
+        preparedForm                  = existingAnswer.fold(form)(form.fill)
       } yield {
         val formattedThreshold = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
-        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsOverThreshold, formattedThreshold))
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsEqualOrAboveThreshold, formattedThreshold))
       }
 
       handleApiResult(result)

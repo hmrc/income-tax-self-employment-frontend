@@ -25,9 +25,9 @@ import models.journeys.nics.NICsThresholds.Class4Limits
   */
 object TaxYearConfig {
 
-  /** if turnover > incomeThreshold, then the user must use catagories for expeness */
-  val incomeThreshold: BigDecimal                                        = 85000
-  def totalIncomeIsOverIncomeThreshold(totalIncome: BigDecimal): Boolean = totalIncome > incomeThreshold
+  /** if turnover >= incomeThreshold, then the user must use categories for expenses */
+  val incomeThreshold: BigDecimal                                          = 85000
+  def totalIncomeIsEqualOrAboveThreshold(totalIncome: BigDecimal): Boolean = totalIncome >= incomeThreshold
 
   val taxYearFiguresClass4NicsMap: Map[Int, Class4Limits] = Map(
     2021 -> Class4Limits(9500, 50000, 9, 2),
