@@ -24,7 +24,7 @@ import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 import play.api.mvc.Call
 
 case object WhatDoYouWantToDoWithLossPage extends AdjustmentsBasePage[WhatDoYouWantToDoWithLoss] {
-  override def toString: String = "WhatDoYouWantToDoWithLoss"
+  override def toString: String = "whatDoYouWantToDoWithLoss"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)

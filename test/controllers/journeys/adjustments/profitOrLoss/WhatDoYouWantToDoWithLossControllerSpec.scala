@@ -22,6 +22,7 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss.DeductFromOtherTypes
+import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
@@ -46,13 +47,14 @@ class WhatDoYouWantToDoWithLossControllerSpec
 
   override def createForm(userType: UserType): Form[WhatDoYouWantToDoWithLoss] = new EnumerableFormProvider()(WhatDoYouWantToDoWithLossPage, userType)
 
-  mockService.submitGatewayQuestionAndRedirect(
+  mockService.persistAnswerAndRedirect(
     *[OneQuestionPage[WhatDoYouWantToDoWithLoss]],
     *[BusinessId],
-    *[UserAnswers],
-    *,
+    *[DataRequest[_]],
+    *[WhatDoYouWantToDoWithLoss],
     *[TaxYear],
-    *[Mode]) returns Redirect(onwardRoute).asFuture
+    *[Mode]
+  ) returns Redirect(onwardRoute).asFuture
 
   override def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
