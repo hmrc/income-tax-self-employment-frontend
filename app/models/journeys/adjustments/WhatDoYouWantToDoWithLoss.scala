@@ -35,7 +35,7 @@ object WhatDoYouWantToDoWithLoss extends Enumerable.Implicits {
 
   def options()(implicit messages: Messages): List[CheckboxItem] = values.zipWithIndex.map { case (value, index) =>
     CheckboxItem(
-      content = Text(messages(s"WhatDoYouWantToDoWithLoss.${value.toString}")),
+      content = Text(messages(s"whatDoYouWantToDoWithLoss.${value.toString}")),
       value = value.toString,
       id = Some(s"value_$index")
     )

@@ -30,15 +30,15 @@
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"WhatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString))) {
+@layout(pageTitle = title(form, messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString))) {
 
     @errorSummarySection(form)
 
     @formHelper(action = routes.WhatDoYouWantToDoWithLossController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        <h1 class="govuk-heading-l">@messages(s"WhatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString)</h1>
+        <h1 class="govuk-heading-l">@messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString)</h1>
 
-        <div class="govuk-hint">@messages("WhatDoYouWantToDoWithLoss.selectOptions")</div>
+        <div class="govuk-hint">@messages("whatDoYouWantToDoWithLoss.selectOptions")</div>
 
         @govukCheckboxes(
             CheckboxesViewModel(
