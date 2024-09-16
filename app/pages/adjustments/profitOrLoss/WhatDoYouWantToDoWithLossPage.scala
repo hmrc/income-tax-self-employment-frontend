@@ -26,9 +26,8 @@ import play.api.mvc.Call
 case object WhatDoYouWantToDoWithLossPage extends AdjustmentsBasePage[WhatDoYouWantToDoWithLoss] {
   override def toString: String = "WhatDoYouWantToDoWithLoss"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
-    routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId,NormalMode)
-  }
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+    routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)

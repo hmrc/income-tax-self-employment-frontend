@@ -16,7 +16,7 @@
 
 package models.journeys.adjustments
 
-import models.common.{Enumerable, UserType, WithName}
+import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem

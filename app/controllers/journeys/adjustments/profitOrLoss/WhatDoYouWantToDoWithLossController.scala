@@ -57,7 +57,7 @@ class WhatDoYouWantToDoWithLossController @Inject() (override val messagesApi: M
     implicit request =>
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
       def handleSuccess(answer: WhatDoYouWantToDoWithLoss): Future[Result] =
-        service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
+        service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
 
       service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
