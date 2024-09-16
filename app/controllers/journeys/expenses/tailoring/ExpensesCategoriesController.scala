@@ -119,13 +119,13 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)
       val result = for {
-        incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
-        incomeIsOverThreshold = incomeAmount > incomeThreshold
-        userType              = request.userType
-        userAnswers           = request.userAnswers
-        form                  = formProvider(userType)
-        formattedThreshold    = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
-        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, userAnswers, incomeIsOverThreshold, formattedThreshold))
+        totalIncome <- selfEmploymentService.getTotalIncome(ctx)
+        incomeIsEqualOrAboveThreshold = totalIncomeIsEqualOrAboveThreshold(totalIncome)
+        userType                      = request.userType
+        userAnswers                   = request.userAnswers
+        form                          = formProvider(userType)
+        formattedThreshold            = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
+        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, userAnswers, incomeIsEqualOrAboveThreshold, formattedThreshold))
       } yield finalResult
 
       handleResultT(result)
