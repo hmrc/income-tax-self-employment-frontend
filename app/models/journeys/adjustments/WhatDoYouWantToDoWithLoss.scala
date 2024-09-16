@@ -26,7 +26,7 @@ sealed trait WhatDoYouWantToDoWithLoss
 object WhatDoYouWantToDoWithLoss extends Enumerable.Implicits {
 
   case object DeductFromOtherTypes extends WithName("deductFromOtherTypes") with WhatDoYouWantToDoWithLoss
-  case object CarryItForward extends WithName("carryItForward") with WhatDoYouWantToDoWithLoss
+  case object CarryItForward       extends WithName("carryItForward") with WhatDoYouWantToDoWithLoss
 
   val values: List[WhatDoYouWantToDoWithLoss] = List(
     DeductFromOtherTypes,

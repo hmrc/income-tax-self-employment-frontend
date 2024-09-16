@@ -26,10 +26,12 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Writes
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.Settable
+import stubs.services.SelfEmploymentServiceStub
 
 abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, page: Settable[A]) extends ControllerSpec {
 
@@ -50,10 +52,15 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
 
   def createForm(userType: UserType): Form[A]
 
-  def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
+  def expectedView(expectedForm: Form[_], scenario: TestStubbedScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String
 
   private def getRequest  = FakeRequest(GET, onPageLoadRoute)
   private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString))
+
+  def stubServiceSuccessfulSubmission = SelfEmploymentServiceStub(submitAnswerAndRedirectResult = Redirect(onwardRoute))
 
   forAll(userTypeCases) { user =>
     s"$controller for $user" - {
@@ -61,7 +68,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
 
       "on page load" - {
         "answers exist for the page" - {
-          "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some) {
+          "return Ok and the view with the existing answer" in new TestStubbedScenario(user, answers = pageAnswers.some) {
             running(application) {
               val result = route(application, getRequest).value
 
@@ -71,7 +78,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
           }
         }
         "the page has no existing answers" - {
-          "return Ok" in new TestScenario(user, answers = baseAnswers.some) {
+          "return Ok" in new TestStubbedScenario(user, answers = baseAnswers.some) {
             running(application) {
               val result = route(application, getRequest).value
 
@@ -82,7 +89,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
         }
         // Below test for checking `requireData` is invoked.
         "no answers exist in the session" - {
-          "redirect to the journey recovery controller" in new TestScenario(user, answers = None) {
+          "redirect to the journey recovery controller" in new TestStubbedScenario(user, answers = None) {
             running(application) {
               val result = route(application, getRequest).value
 
@@ -95,7 +102,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
 
       "on page submission" - {
         "valid data is submitted" - {
-          "redirect to the next page" in new TestScenario(user, answers = pageAnswers.some) {
+          "redirect to the next page" in new TestStubbedScenario(user, answers = pageAnswers.some, stubbedService = stubServiceSuccessfulSubmission) {
             running(application) {
               val result = route(application, postRequest).value
 
@@ -105,7 +112,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
           }
         }
         "no answers exist in the session" - {
-          "Redirect to the journey recovery page" in new TestScenario(user, answers = None) {
+          "Redirect to the journey recovery page" in new TestStubbedScenario(user, answers = None) {
             running(application) {
               val result = route(application, postRequest).value
 

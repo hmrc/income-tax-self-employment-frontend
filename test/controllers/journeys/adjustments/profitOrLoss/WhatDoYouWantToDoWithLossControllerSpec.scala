@@ -18,19 +18,14 @@ package controllers.journeys.adjustments.profitOrLoss
 
 import base.questionPages.CheckboxControllerBaseSpec
 import forms.standard.EnumerableFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
+import models.NormalMode
+import models.common.UserType
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss.DeductFromOtherTypes
-import models.requests.DataRequest
-import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
 import pages.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossView
 
@@ -47,16 +42,7 @@ class WhatDoYouWantToDoWithLossControllerSpec
 
   override def createForm(userType: UserType): Form[WhatDoYouWantToDoWithLoss] = new EnumerableFormProvider()(WhatDoYouWantToDoWithLossPage, userType)
 
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[WhatDoYouWantToDoWithLoss]],
-    *[BusinessId],
-    *[DataRequest[_]],
-    *[WhatDoYouWantToDoWithLoss],
-    *[TaxYear],
-    *[Mode]
-  ) returns Redirect(onwardRoute).asFuture
-
-  override def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(expectedForm: Form[_], scenario: TestStubbedScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {

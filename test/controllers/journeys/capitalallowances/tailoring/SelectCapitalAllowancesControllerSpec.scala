@@ -20,12 +20,10 @@ import base.questionPages.CheckboxControllerBaseSpec
 import forms.capitalallowances.tailoring.SelectCapitalAllowancesFormProvider
 import models.NormalMode
 import models.common.AccountingType.Accrual
-import models.common.{BusinessId, UserType}
-import models.database.UserAnswers
+import models.common.UserType
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
 import models.journeys.capitalallowances.tailoring.CapitalAllowances.ElectricVehicleChargepoint
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import play.api.Application
 import play.api.data.Form
@@ -43,15 +41,13 @@ class SelectCapitalAllowancesControllerSpec extends CheckboxControllerBaseSpec("
 
   override def createForm(user: UserType): Form[Set[CapitalAllowances]] = new SelectCapitalAllowancesFormProvider()()
 
-  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+  override def expectedView(form: Form[_], scenario: TestStubbedScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[SelectCapitalAllowancesView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
-
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
 
   override def answer: Set[CapitalAllowances] = Set(ElectricVehicleChargepoint)
 
