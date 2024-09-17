@@ -17,7 +17,7 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.questionPages.CheckboxControllerBaseSpec
-import forms.standard.EnumerableFormProvider
+import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
@@ -32,7 +32,7 @@ import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossVie
 class WhatDoYouWantToDoWithLossControllerSpec
     extends CheckboxControllerBaseSpec("WhatDoYouWantToDoWithLossController", WhatDoYouWantToDoWithLossPage) {
 
-  override def answer: WhatDoYouWantToDoWithLoss = DeductFromOtherTypes
+  override def answer: Set[WhatDoYouWantToDoWithLoss] = Set(DeductFromOtherTypes)
 
   override def onPageLoadRoute: String = routes.WhatDoYouWantToDoWithLossController.onPageLoad(taxYear, businessId, NormalMode).url
 
@@ -40,7 +40,8 @@ class WhatDoYouWantToDoWithLossControllerSpec
 
   override def onwardRoute: Call = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
 
-  override def createForm(userType: UserType): Form[WhatDoYouWantToDoWithLoss] = new EnumerableFormProvider()(WhatDoYouWantToDoWithLossPage, userType)
+  override def createForm(userType: UserType): Form[Set[WhatDoYouWantToDoWithLoss]] =
+    new WhatDoYouWantToDoWithLossFormProvider()(WhatDoYouWantToDoWithLossPage, userType)
 
   override def expectedView(expectedForm: Form[_], scenario: TestStubbedScenario)(implicit
       request: Request[_],

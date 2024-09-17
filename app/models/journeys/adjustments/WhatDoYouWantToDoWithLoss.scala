@@ -20,6 +20,7 @@ import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
+import viewmodels.govuk.all.CheckboxItemViewModel
 
 sealed trait WhatDoYouWantToDoWithLoss
 
@@ -34,10 +35,11 @@ object WhatDoYouWantToDoWithLoss extends Enumerable.Implicits {
   )
 
   def options()(implicit messages: Messages): List[CheckboxItem] = values.zipWithIndex.map { case (value, index) =>
-    CheckboxItem(
+    CheckboxItemViewModel(
       content = Text(messages(s"whatDoYouWantToDoWithLoss.${value.toString}")),
       value = value.toString,
-      id = Some(s"value_$index")
+      fieldId = "value",
+      index = index
     )
   }
 

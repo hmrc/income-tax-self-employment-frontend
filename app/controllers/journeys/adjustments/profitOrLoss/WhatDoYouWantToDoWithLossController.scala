@@ -18,7 +18,7 @@ package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.standard.EnumerableFormProvider
+import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
@@ -40,7 +40,7 @@ class WhatDoYouWantToDoWithLossController @Inject() (override val messagesApi: M
                                                      identify: IdentifierAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: EnumerableFormProvider,
+                                                     formProvider: WhatDoYouWantToDoWithLossFormProvider,
                                                      view: WhatDoYouWantToDoWithLossView)
     extends FrontendBaseController
     with I18nSupport {
@@ -56,7 +56,7 @@ class WhatDoYouWantToDoWithLossController @Inject() (override val messagesApi: M
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
-      def handleSuccess(answer: WhatDoYouWantToDoWithLoss): Future[Result] =
+      def handleSuccess(answer: Set[WhatDoYouWantToDoWithLoss]): Future[Result] =
         service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
 
       service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)

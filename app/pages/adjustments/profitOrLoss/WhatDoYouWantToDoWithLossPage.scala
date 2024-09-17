@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 import play.api.mvc.Call
 
-case object WhatDoYouWantToDoWithLossPage extends AdjustmentsBasePage[WhatDoYouWantToDoWithLoss] {
+case object WhatDoYouWantToDoWithLossPage extends AdjustmentsBasePage[Set[WhatDoYouWantToDoWithLoss]] {
   override def toString: String = "whatDoYouWantToDoWithLoss"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
