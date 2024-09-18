@@ -316,7 +316,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       GoodsAndServicesForYourOwnUsePage,
       GoodsAndServicesAmountPage,
-      CurrentYearLossesPage,
+      ClaimLossReliefPage,
       PreviousUnusedLossesPage,
       UnusedLossAmountPage,
       WhichYearIsLossReportedPage

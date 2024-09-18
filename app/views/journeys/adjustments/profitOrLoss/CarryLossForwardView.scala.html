@@ -29,25 +29,17 @@
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"currentYearLosses.title"))) {
+@layout(pageTitle = title(form, messages("carryLossForward.title", taxYear.startYear.toString, taxYear.endYear.toString))) {
 
     @errorSummarySection(form)
 
-    @formHelper(action = routes.CurrentYearLossesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.CurrentYearLossController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(s"currentYearLosses.title")
+        @heading(messages("carryLossForward.title", taxYear.startYear.toString, taxYear.endYear.toString))
 
-        <div class="govuk-body">
-            <p>@messages(s"currentYearLosses.p1.$userType")</p>
-            <p>@messages(s"currentYearLosses.p2.$userType")</p>
+        <p class="govuk-body">@messages(s"carryLossForward.p1.$userType")</p>
 
-            <ul class="govuk-list govuk-list--bullet">
-                <li>@messages(s"currentYearLosses.l1.$userType")</li>
-                <li>@messages(s"currentYearLosses.l2")</li>
-            </ul>
-        </div>
-
-        @twoRadios(form, "currentYearLosses", userType, taxYear, inline = false)
+        @twoRadios(form, "carryLossForward", userType, taxYear, inline = false, noLabel = messages("carryLossForward.no"))
 
         @submitButton()
     }

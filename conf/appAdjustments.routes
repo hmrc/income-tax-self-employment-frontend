@@ -13,15 +13,15 @@ POST        /:taxYear/:businessId/adjustments/change-goods-services/amount      
 
 GET         /:taxYear/:businessId/adjustments/net-business-profit-loss/calculation           controllers.journeys.adjustments.profitOrLoss.CheckNetProfitLossController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
-GET         /:taxYear/:businessId/adjustments/current-year-loss                              controllers.journeys.adjustments.profitOrLoss.CurrentYearLossesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/adjustments/current-year-loss                              controllers.journeys.adjustments.profitOrLoss.CurrentYearLossesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/adjustments/change-current-year-loss                       controllers.journeys.adjustments.profitOrLoss.CurrentYearLossesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/adjustments/change-current-year-loss                       controllers.journeys.adjustments.profitOrLoss.CurrentYearLossesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/adjustments/claim-loss-relief                              controllers.journeys.adjustments.profitOrLoss.ClaimLossReliefController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/adjustments/claim-loss-relief                              controllers.journeys.adjustments.profitOrLoss.ClaimLossReliefController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/adjustments/change-claim-loss-relief                       controllers.journeys.adjustments.profitOrLoss.ClaimLossReliefController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/adjustments/change-claim-loss-relief                       controllers.journeys.adjustments.profitOrLoss.ClaimLossReliefController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/adjustments/what-do-you-want-to-do-with-loss               controllers.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/adjustments/what-do-you-want-to-do-with-loss               controllers.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/adjustments/change-what-do-you-want-to-do-with-loss        controllers.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/adjustments/change-what-do-you-want-to-do-with-loss        controllers.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/adjustments/current-year-loss                              controllers.journeys.adjustments.profitOrLoss.CurrentYearLossController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/adjustments/current-year-loss                              controllers.journeys.adjustments.profitOrLoss.CurrentYearLossController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/adjustments/change-current-year-loss                       controllers.journeys.adjustments.profitOrLoss.CurrentYearLossController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/adjustments/change-current-year-loss                       controllers.journeys.adjustments.profitOrLoss.CurrentYearLossController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 GET         /:taxYear/:businessId/adjustments/previous-year-unused-loss                      controllers.journeys.adjustments.profitOrLoss.PreviousUnusedLossesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/adjustments/previous-year-unused-loss                      controllers.journeys.adjustments.profitOrLoss.PreviousUnusedLossesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

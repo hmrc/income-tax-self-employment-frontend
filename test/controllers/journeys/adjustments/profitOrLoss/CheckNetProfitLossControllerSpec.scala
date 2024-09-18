@@ -38,7 +38,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
   def userAnswers: UserAnswers = buildUserAnswers(Json.obj())
 
   def onPageLoad: String      = routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId).url
-  def onwardLossRoute: Call   = routes.CurrentYearLossesController.onPageLoad(taxYear, businessId, NormalMode)
+  def onwardLossRoute: Call   = routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
   def onwardProfitRoute: Call = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
 
   def onPageLoadRequest = FakeRequest(GET, onPageLoad)

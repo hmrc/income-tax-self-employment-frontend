@@ -18,34 +18,32 @@ package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
+import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
-import pages.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossPage
+import pages.adjustments.profitOrLoss.ClaimLossReliefPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossView
+import views.html.journeys.adjustments.profitOrLoss.ClaimLossReliefView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
 
 @Singleton
-class WhatDoYouWantToDoWithLossController @Inject() (override val messagesApi: MessagesApi,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     service: SelfEmploymentService,
-                                                     identify: IdentifierAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: WhatDoYouWantToDoWithLossFormProvider,
-                                                     view: WhatDoYouWantToDoWithLossView)
+class ClaimLossReliefController @Inject() (override val messagesApi: MessagesApi,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           service: SelfEmploymentService,
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: BooleanFormProvider,
+                                           view: ClaimLossReliefView)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = WhatDoYouWantToDoWithLossPage
+  private val page = ClaimLossReliefPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -56,10 +54,8 @@ class WhatDoYouWantToDoWithLossController @Inject() (override val messagesApi: M
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
-      def handleSuccess(answer: Set[WhatDoYouWantToDoWithLoss]): Future[Result] =
-        service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
 
-      service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
+      service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }
