@@ -36,20 +36,25 @@ object TaxableProfitAndLoss {
   def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], userDoB: LocalDate, taxYear: TaxYear): NicClassExemption = {
 
     def class2Eligible: Boolean = {
-      val class2Threshold       = Class2NICsThresholds.getThresholdForTaxYear(taxYear)
-      val profitsUnderThreshold = taxableProfitsAndLosses.map(_.taxableProfit).sum < BigDecimal(class2Threshold)
-      val hasAnyLosses          = taxableProfitsAndLosses.map(_.taxableLoss).sum != 0
-      val ageIsValid            = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = false)
-      ageIsValid && (profitsUnderThreshold || hasAnyLosses)
+      val ageIsValid                     = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = false)
+      val profitsOrLossAreClass2Eligible = areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
+      ageIsValid && profitsOrLossAreClass2Eligible
     }
 
     def class4Eligible: Boolean = {
-      val profitsOverThreshold = areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
       val ageIsValid           = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
+      val profitsOverThreshold = areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
       ageIsValid && profitsOverThreshold
     }
 
     if (class4Eligible) Class4 else if (class2Eligible) Class2 else NotEligible
+  }
+
+  def areProfitsOrLossClass2Eligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], taxYear: TaxYear): Boolean = {
+    val class2Threshold       = Class2NICsThresholds.getThresholdForTaxYear(taxYear)
+    val profitsUnderThreshold = taxableProfitsAndLosses.map(_.taxableProfit).sum < BigDecimal(class2Threshold)
+    val hasAnyLosses          = taxableProfitsAndLosses.map(_.taxableLoss).sum != 0
+    profitsUnderThreshold || hasAnyLosses
   }
 
   def areProfitsOverClass4Threshold(taxableProfitsAndLosses: List[TaxableProfitAndLoss], taxYear: TaxYear): Boolean = {

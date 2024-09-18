@@ -22,17 +22,17 @@ import models.NormalMode
 import models.common.Journey.ProfitOrLoss
 import models.common._
 import models.domain.ApiResultT
-import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
+import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.{ageIsBetween16AndStatePension, ageIsUnder16, ageIsUnderStatePensionAge}
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
-import services.SelfEmploymentService
 import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
+import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -58,6 +58,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
         tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)
+        class2ExemptionMessage        <- showClass2AgeExemption(taxYear, taxableProfitsAndLosses)
         showClass4AgeExemptionMessage <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
       } yield Ok(
         view(
@@ -66,12 +67,28 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
           taxYear,
           profitOrLoss,
           tables,
+          class2ExemptionMessage,
           showClass4AgeExemptionMessage,
           journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
         )
       )
       handleResultT(result)
   }
+
+  private def showClass2AgeExemption(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
+      request: DataRequest[_]): ApiResultT[Option[String]] =
+    service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>
+      val userIsClass2Eligible = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
+      val ageIsTooYoung        = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)
+      val ageIsTooOld          = !ageIsUnderStatePensionAge(userDoB, taxYear, ageAtStartOfTaxYear = false)
+
+      (userIsClass2Eligible, ageIsTooYoung, ageIsTooOld) match { // TODO SASS-8740 add other cases for between class 2/4 thresholds
+        case (true, true, _) => Some("tooYoung")
+        case (true, _, true) => Some("tooOld")
+        case _               => None
+      }
+    }
+
   private def showClass4AgeExemption(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
       request: DataRequest[_]): ApiResultT[Boolean] =
     service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>

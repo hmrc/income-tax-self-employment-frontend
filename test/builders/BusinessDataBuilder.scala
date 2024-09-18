@@ -85,8 +85,9 @@ object BusinessDataBuilder {
       businessAddressCountryCode = "GB"
     )
 
-  val withLossesTaxableProfitAndLoss   = List(TaxableProfitAndLoss(100, 0), TaxableProfitAndLoss(100, 50))
-  val smallProfitTaxableProfitAndLoss  = List(TaxableProfitAndLoss(100, 0), TaxableProfitAndLoss(100, 0))
-  val mediumProfitTaxableProfitAndLoss = List(TaxableProfitAndLoss(6800, 0))
-  val largeProfitTaxableProfitAndLoss  = List(TaxableProfitAndLoss(14000, 0))
+  val withLossesTaxableProfitAndLoss               = List(TaxableProfitAndLoss(100, 0), TaxableProfitAndLoss(100, 50))
+  val smallProfitTaxableProfitAndLoss              = List(TaxableProfitAndLoss(100, 0), TaxableProfitAndLoss(100, 0))
+  val mediumProfitTaxableProfitAndLoss             = List(TaxableProfitAndLoss(6800, 0))
+  val largeProfitTaxableProfitAndLoss              = List(TaxableProfitAndLoss(14000, 0))
+  val smallProfitsWithLargeSumTaxableProfitAndLoss = List(TaxableProfitAndLoss(5000, 0), TaxableProfitAndLoss(5000, 0), TaxableProfitAndLoss(5000, 0))
 }
