@@ -29,7 +29,7 @@
     foldableDetails: FoldableDetails
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, incomeIsOverThreshold: Boolean, incomeThreshold: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"expenses.cyaSummary.$userType"))) {
 
@@ -37,18 +37,7 @@
 
     @heading("journeys.expenses-categories")
 
-    @if(incomeIsOverThreshold){
-
-        <p class="govuk-body govuk-!-margin-top-6">@messages(s"expensesCategories.p4.$userType", incomeThreshold)</p>
-
-
-        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @submitButton()
-        }
-
-    } else {
-
-        <div class="govuk-body govuk-!-margin-top-6">
+          <div class="govuk-body govuk-!-margin-top-6">
             <p>@messages(s"expensesCategories.p1.$userType")</p>
             <p>@messages(s"expensesCategories.p2.$userType")</p>
             @heading("expensesCategories.subHeading", headerSize = "m")
@@ -87,5 +76,4 @@
 
             @submitButton()
         }
-    }
 }

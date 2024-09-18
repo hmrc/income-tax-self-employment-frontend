@@ -26,6 +26,7 @@ import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
+import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring._
@@ -65,35 +66,47 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
       hopChecker.hasPreviousAnswers(Journey.ExpensesTailoring, page, taxYear, businessId, mode)).async { implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, Journey.Income)
 
-      val result = for {
+      val finalResult = for {
         incomeAmount <- selfEmploymentService.getTotalIncome(ctx)
         incomeIsEqualOrAboveThreshold = totalIncomeIsEqualOrAboveThreshold(incomeAmount)
         existingAnswer                = request.getValue(ExpensesCategoriesPage, businessId)
         form                          = formProvider(request.userType)
         preparedForm                  = existingAnswer.fold(form)(form.fill)
-      } yield {
-        val formattedThreshold = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
-        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, incomeIsEqualOrAboveThreshold, formattedThreshold))
-      }
+        result <-
+          if (incomeIsEqualOrAboveThreshold) {
+            EitherT.right[ServiceError](
+              persistAndRedirectWhenIncomeIsEqualOrAboveThreshold(request.userAnswers, businessId, taxYear))
+          } else {
+            EitherT.right[ServiceError](Future.successful(Ok(view(preparedForm, mode, request.userType, taxYear, businessId))))
+          }
+      } yield result
 
-      handleApiResult(result)
+      handleApiResult(finalResult)
     }
+
+  private def persistAndRedirectWhenIncomeIsEqualOrAboveThreshold(userAnswers: UserAnswers,
+                                                                  businessId: BusinessId,
+                                                                  taxYear: TaxYear): Future[Result] =
+    persistAndRedirect(userAnswers, IndividualCategories, businessId, taxYear, NormalMode)
+
+  private def persistAndRedirect(userAnswers: UserAnswers, value: ExpensesTailoring, businessId: BusinessId, taxYear: TaxYear, mode: Mode): Future[Result] =
+    for {
+      editedUserAnswers <- Future.fromTry(clearDependentPageAnswers(userAnswers, Some(businessId), value))
+      result <- selfEmploymentService
+        .persistAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
+        .map(updated => Redirect(navigator.nextPage(ExpensesCategoriesPage, mode, updated, taxYear, businessId)))
+    } yield result
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       def handleError(formWithErrors: Form[_], userType: UserType, incomeIsOverThreshold: Boolean, formattedThreshold: String): Future[Result] =
         Future.successful(
-          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId, incomeIsOverThreshold, formattedThreshold))
+          BadRequest(view(formWithErrors, mode, userType, taxYear, businessId))
         )
 
       def handleSuccess(userAnswers: UserAnswers, value: ExpensesTailoring): Future[Result] = {
         val redirectMode = continueAsNormalModeIfPrevAnswerChanged(value)
-        for {
-          editedUserAnswers <- Future.fromTry(clearDependentPageAnswers(userAnswers, Some(businessId), value))
-          result <- selfEmploymentService
-            .persistAnswer(businessId, editedUserAnswers, value, ExpensesCategoriesPage)
-            .map(updated => Redirect(navigator.nextPage(ExpensesCategoriesPage, redirectMode, updated, taxYear, businessId)))
-        } yield result
+        persistAndRedirect(userAnswers, value, businessId, taxYear, redirectMode)
       }
 
       def handleForm(form: Form[ExpensesTailoring],
