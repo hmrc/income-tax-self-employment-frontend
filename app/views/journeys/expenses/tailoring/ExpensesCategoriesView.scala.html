@@ -37,43 +37,41 @@
 
     @heading("journeys.expenses-categories")
 
-          <div class="govuk-body govuk-!-margin-top-6">
-            <p>@messages(s"expensesCategories.p1.$userType")</p>
-            <p>@messages(s"expensesCategories.p2.$userType")</p>
-            @heading("expensesCategories.subHeading", headerSize = "m")
-            <p>@messages("expensesCategories.p3")</p>
+    <div class="govuk-body govuk-!-margin-top-6">
+        <p>@messages(s"expensesCategories.p1.$userType")</p>
+        <p>@messages(s"expensesCategories.p2.$userType")</p>
+        @heading("expensesCategories.subHeading", headerSize = "m")
+        <p>@messages("expensesCategories.p3")</p>
 
-            @foldableDetails(messages("expensesCategories.details.heading")) {
-                <p>@messages("expensesCategories.details.p1")</p>
-                <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                    <li>@messages("expenses.officeSupplies")</li>
-                    <li>@messages("expenses.goodsToSellOrUse")</li>
-                    <li>@messages("expenses.repairsAndMaintenance")</li>
-                    <li>@messages("expenses.runningPremises")</li>
-                    <li>@messages("expenses.travel")</li>
-                    <li>@messages("expenses.advertisingOrMarketing")</li>
-                    <li>@messages("expenses.staffContractorsAndServices")</li>
-                    <li>@messages("expenses.financialExpenses")</li>
-                    <li>@messages("expenses.trainingCourses")</li>
-                    <li>@messages("expenses.workClothing")</li>
-                </ul>
-                <p>
-                    <a class="govuk-link" href=@messages("expensesCategories.details.href")>@messages("expensesCategories.details.link")</a>
-                </p>
-            }
-        </div>
-
-        @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-
-            @govukRadios(
-                RadiosViewModel(
-                    field  = form("value"),
-                    legend = LegendViewModel(messages(s"expenses.cyaSummary.$userType"))
-                                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
-                    items  = ExpensesTailoring.options(userType)
-                )
-            )
-
-            @submitButton()
+        @foldableDetails(messages("expensesCategories.details.heading")) {
+            <p>@messages("expensesCategories.details.p1")</p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+                <li>@messages("expenses.officeSupplies")</li>
+                <li>@messages("expenses.goodsToSellOrUse")</li>
+                <li>@messages("expenses.repairsAndMaintenance")</li>
+                <li>@messages("expenses.runningPremises")</li>
+                <li>@messages("expenses.travel")</li>
+                <li>@messages("expenses.advertisingOrMarketing")</li>
+                <li>@messages("expenses.staffContractorsAndServices")</li>
+                <li>@messages("expenses.financialExpenses")</li>
+                <li>@messages("expenses.trainingCourses")</li>
+                <li>@messages("expenses.workClothing")</li>
+            </ul>
+            <p>
+                <a class="govuk-link" href=@messages("expensesCategories.details.href")>@messages("expensesCategories.details.link")</a>
+            </p>
         }
+    </div>
+
+    @formHelper(action = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(s"expenses.cyaSummary.$userType"))
+                            .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
+                items  = ExpensesTailoring.options(userType)
+            )
+        )
+        @submitButton()
+    }
 }

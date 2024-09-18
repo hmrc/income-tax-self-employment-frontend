@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.tailoring
 
 import cats.data.EitherT
-import config.TaxYearConfig.{incomeThreshold, totalIncomeIsEqualOrAboveThreshold}
+import config.TaxYearConfig.totalIncomeIsEqualOrAboveThreshold
 import controllers.actions._
 import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
@@ -26,7 +26,6 @@ import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
-import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring._
@@ -37,7 +36,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Logging, MoneyUtils}
+import utils.Logging
 import views.html.journeys.expenses.tailoring.ExpensesCategoriesView
 
 import javax.inject.{Inject, Singleton}
@@ -74,10 +73,9 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         preparedForm                  = existingAnswer.fold(form)(form.fill)
         result <-
           if (incomeIsEqualOrAboveThreshold) {
-            EitherT.right[ServiceError](
-              persistAndRedirectWhenIncomeIsEqualOrAboveThreshold(request.userAnswers, businessId, taxYear))
+            EitherT.right[ServiceError](persistAndRedirectWhenIncomeIsEqualOrAboveThreshold(request.userAnswers, businessId, taxYear))
           } else {
-            EitherT.right[ServiceError](Future.successful(Ok(view(preparedForm, mode, request.userType, taxYear, businessId))))
+            EitherT.pure[Future, ServiceError](Ok(view(preparedForm, mode, request.userType, taxYear, businessId)))
           }
       } yield result
 
@@ -89,7 +87,11 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
                                                                   taxYear: TaxYear): Future[Result] =
     persistAndRedirect(userAnswers, IndividualCategories, businessId, taxYear, NormalMode)
 
-  private def persistAndRedirect(userAnswers: UserAnswers, value: ExpensesTailoring, businessId: BusinessId, taxYear: TaxYear, mode: Mode): Future[Result] =
+  private def persistAndRedirect(userAnswers: UserAnswers,
+                                 value: ExpensesTailoring,
+                                 businessId: BusinessId,
+                                 taxYear: TaxYear,
+                                 mode: Mode): Future[Result] =
     for {
       editedUserAnswers <- Future.fromTry(clearDependentPageAnswers(userAnswers, Some(businessId), value))
       result <- selfEmploymentService
@@ -99,7 +101,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleError(formWithErrors: Form[_], userType: UserType, incomeIsOverThreshold: Boolean, formattedThreshold: String): Future[Result] =
+      def handleError(formWithErrors: Form[_], userType: UserType): Future[Result] =
         Future.successful(
           BadRequest(view(formWithErrors, mode, userType, taxYear, businessId))
         )
@@ -109,18 +111,14 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         persistAndRedirect(userAnswers, value, businessId, taxYear, redirectMode)
       }
 
-      def handleForm(form: Form[ExpensesTailoring],
-                     userType: UserType,
-                     userAnswers: UserAnswers,
-                     incomeIsOverThreshold: Boolean,
-                     formattedThreshold: String): Future[Result] =
+      def handleForm(form: Form[ExpensesTailoring], userType: UserType, userAnswers: UserAnswers, incomeIsOverThreshold: Boolean): Future[Result] =
         if (incomeIsOverThreshold) {
           handleSuccess(userAnswers, IndividualCategories)
         } else {
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => handleError(formWithErrors, userType, incomeIsOverThreshold, formattedThreshold),
+              formWithErrors => handleError(formWithErrors, userType),
               value => handleSuccess(userAnswers, value)
             )
         }
@@ -137,8 +135,7 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
         userType                      = request.userType
         userAnswers                   = request.userAnswers
         form                          = formProvider(userType)
-        formattedThreshold            = MoneyUtils.formatMoney(incomeThreshold, addDecimalForWholeNumbers = false)
-        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, userAnswers, incomeIsEqualOrAboveThreshold, formattedThreshold))
+        finalResult <- EitherT.right[ServiceError](handleForm(form, userType, userAnswers, incomeIsEqualOrAboveThreshold))
       } yield finalResult
 
       handleResultT(result)
