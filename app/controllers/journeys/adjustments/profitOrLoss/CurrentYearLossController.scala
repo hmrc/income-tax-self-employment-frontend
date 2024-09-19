@@ -54,7 +54,7 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       // TODO retrieve whether the user has other incomes from API 2085 and pension income in SASS-9566
-      val hasOtherIncomes = false
+      val hasOtherIncomes = true
       if (hasOtherIncomes) {
         val filledForm = fillForm(whatDoYouWantToDoWithLossPage, businessId, formProvider(whatDoYouWantToDoWithLossPage, request.userType))
         Ok(whatDoYouWantToDoWithLossView(filledForm, taxYear, businessId, request.userType, mode))
@@ -67,7 +67,7 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       // TODO retrieve whether the user has other incomes from API 2085 and pension income in SASS-9566
-      val hasOtherIncomes = false
+      val hasOtherIncomes = true
       if (hasOtherIncomes) {
         def handleError(formWithErrors: Form[_]): Result = BadRequest(
           whatDoYouWantToDoWithLossView(formWithErrors, taxYear, businessId, request.userType, mode)

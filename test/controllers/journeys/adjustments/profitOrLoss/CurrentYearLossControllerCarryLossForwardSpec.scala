@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
@@ -43,3 +44,5 @@ class CurrentYearLossControllerCarryLossForwardSpec extends BooleanGetAndPostQue
 
   // TODO in SASS-9566 test that the view CarryLossForward gets displayed when user has NO other incomes
 }
+
+ */

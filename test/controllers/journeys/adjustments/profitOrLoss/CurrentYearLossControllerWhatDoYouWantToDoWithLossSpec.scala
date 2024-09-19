@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.questionPages.CheckboxControllerBaseSpec
@@ -30,7 +29,8 @@ import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossView
 
-class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec extends CheckboxControllerBaseSpec("CurrentYearLossController", WhatDoYouWantToDoWithLossPage) {
+class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec
+    extends CheckboxControllerBaseSpec("CurrentYearLossController", WhatDoYouWantToDoWithLossPage) {
 
   override def answer: Set[WhatDoYouWantToDoWithLoss] = Set(DeductFromOtherTypes)
 
@@ -52,4 +52,3 @@ class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec extends CheckboxCon
   }
   // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes
 }
- */
