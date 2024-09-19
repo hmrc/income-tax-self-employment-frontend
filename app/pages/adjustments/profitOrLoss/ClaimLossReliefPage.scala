@@ -23,18 +23,27 @@ import models.database.UserAnswers
 import pages.redirectOnBoolean
 import play.api.mvc.Call
 
-case object CurrentYearLossesPage extends AdjustmentsBasePage[Boolean] {
-  override def toString: String = "currentYearLosses"
+case object ClaimLossReliefPage extends AdjustmentsBasePage[Boolean] {
+  override def toString: String = "claimLossRelief"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     redirectOnBoolean(
       this,
       userAnswers,
       businessId,
-      onTrue = routes.WhatDoYouWantToDoWithLossController.onPageLoad(taxYear, businessId, NormalMode),
+      onTrue = routes.CurrentYearLossController.onPageLoad(taxYear, businessId, NormalMode),
       onFalse = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
     )
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
+    userAnswers
+      .get(this, businessId)
+      .exists(
+        if (_) {
+          CarryLossForwardPage.hasAllFurtherAnswers(businessId, userAnswers) || WhatDoYouWantToDoWithLossPage
+            .hasAllFurtherAnswers(businessId, userAnswers)
+        } else {
+          PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
+        }
+      )
 }

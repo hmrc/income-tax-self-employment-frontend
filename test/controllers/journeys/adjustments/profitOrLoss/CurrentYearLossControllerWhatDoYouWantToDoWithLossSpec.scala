@@ -29,14 +29,14 @@ import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossView
 
-class WhatDoYouWantToDoWithLossControllerSpec
-    extends CheckboxControllerBaseSpec("WhatDoYouWantToDoWithLossController", WhatDoYouWantToDoWithLossPage) {
+class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec
+    extends CheckboxControllerBaseSpec("CurrentYearLossController", WhatDoYouWantToDoWithLossPage) {
 
   override def answer: Set[WhatDoYouWantToDoWithLoss] = Set(DeductFromOtherTypes)
 
-  override def onPageLoadRoute: String = routes.WhatDoYouWantToDoWithLossController.onPageLoad(taxYear, businessId, NormalMode).url
+  override def onPageLoadRoute: String = routes.CurrentYearLossController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  override def onSubmitRoute: String = routes.WhatDoYouWantToDoWithLossController.onSubmit(taxYear, businessId, NormalMode).url
+  override def onSubmitRoute: String = routes.CurrentYearLossController.onSubmit(taxYear, businessId, NormalMode).url
 
   override def onwardRoute: Call = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -50,4 +50,5 @@ class WhatDoYouWantToDoWithLossControllerSpec
     val view = application.injector.instanceOf[WhatDoYouWantToDoWithLossView]
     view(expectedForm, taxYear, businessId, scenario.userType, scenario.mode).toString()
   }
+  // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes
 }

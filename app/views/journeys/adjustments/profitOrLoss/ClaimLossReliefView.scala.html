@@ -16,40 +16,38 @@
 
 @import controllers.journeys.adjustments.profitOrLoss.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 @import views.html.components._
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        govukCheckboxes: GovukCheckboxes,
+        twoRadios: TwoRadios,
         submitButton: SubmitButton,
         heading: Heading
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString))) {
+@layout(pageTitle = title(form, messages(s"claimLossRelief.title"))) {
 
     @errorSummarySection(form)
 
-    @formHelper(action = routes.CurrentYearLossController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ClaimLossReliefController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
+        @heading("claimLossRelief.title")
 
-        <div class="govuk-hint">@messages("whatDoYouWantToDoWithLoss.selectOptions")</div>
+        <div class="govuk-body">
+            <p>@messages(s"claimLossRelief.p1.$userType")</p>
+            <p>@messages(s"claimLossRelief.p2.$userType")</p>
 
-        @govukCheckboxes(
-            CheckboxesViewModel(
-                form = form,
-                name = "value",
-                items = WhatDoYouWantToDoWithLoss.options(),
-                legend = Legend(
-                    classes = "govuk-fieldset__legend--l"
-                )
-            )
-        )
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages(s"claimLossRelief.l1.$userType")</li>
+                <li>@messages(s"claimLossRelief.l2")</li>
+            </ul>
+        </div>
+
+        @twoRadios(form, "claimLossRelief", userType, taxYear, inline = false)
 
         @submitButton()
     }
