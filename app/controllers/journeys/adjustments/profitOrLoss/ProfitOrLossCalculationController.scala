@@ -59,6 +59,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
         tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)
         class2ExemptionMessage        <- showClass2AgeExemption(taxYear, taxableProfitsAndLosses)
+        showClass2ButLessThenClass4Message <- showClass2EligibleButLowerThenClass4Threshold(taxYear, taxableProfitsAndLosses)
         showClass4AgeExemptionMessage <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
       } yield Ok(
         view(
@@ -68,6 +69,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
           profitOrLoss,
           tables,
           class2ExemptionMessage,
+          showClass2ButLessThenClass4Message,
           showClass4AgeExemptionMessage,
           journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
         )
@@ -87,6 +89,12 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         case (true, _, true) => Some("tooOld")
         case _               => None
       }
+    }
+
+  private def showClass2EligibleButLowerThenClass4Threshold(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
+      request: DataRequest[_]): ApiResultT[Boolean] =
+    service.getUserDateOfBirth(request.nino, request.mtditid).map { _ =>
+      TaxableProfitAndLoss.class2EligibleButLessThenClass4Threshold(taxableProfitsAndLosses, taxYear)
     }
 
   private def showClass4AgeExemption(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit

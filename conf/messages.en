@@ -2117,6 +2117,8 @@ profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.loss = Adjuste
 profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
 profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
 profitOrLossCalculation.class4Exempt.age = Based on your age, you’re exempt and therefore do not need to pay Class 4 National Insurance contributions.
+profitOrLossCalculation.class4Exempt.threshold.individual = Based on the figures above, your National Insurance Class 2 contributions are treated as having been paid and you do not need to pay Class 4 contributions.
+profitOrLossCalculation.class4Exempt.threshold.agent = Based on the figures above, your client‘s National Insurance Class 2 contributions are treated as having been paid and your client does not need to pay Class 4 contributions.
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
