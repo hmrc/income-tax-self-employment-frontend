@@ -36,7 +36,7 @@
         profitOrLoss: ProfitOrLoss,
         tables: AdjustedTaxableProfitOrLossSummary,
         showClass2ExemptionMessage: Option[String],
-        showClass2ButLessThenClass4Message: Boolean,
+        moreThanClass2ButLessThanClass4Message: Boolean,
         showClass4AgeExemptionMessage: Boolean,
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
@@ -59,8 +59,8 @@
         @showClass2ExemptionMessage.map { exemptionReason =>
             <p class="govuk-inset-text">@messages(s"nics.class2Ineligible.$exemptionReason.$userType")</p>
         }
-        @if(showClass2ButLessThenClass4Message) {
-            <p class="govuk-inset-text">@messages(s"profitOrLossCalculation.class4Exempt.threshold.$userType")</p>
+        @if(moreThanClass2ButLessThanClass4Message) {
+            <p class="govuk-inset-text">@messages(s"profitOrLossCalculation.betweenClass2AndClass4.threshold.$userType")</p>
         }
         @if(showClass4AgeExemptionMessage) {
             <p class="govuk-inset-text">@messages("profitOrLossCalculation.class4Exempt.age")</p>
