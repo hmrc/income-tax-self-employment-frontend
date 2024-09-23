@@ -128,7 +128,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
     }
 
     val tooYoungDoB = LocalDate.now().minusYears(15)
-    val adultDoB = LocalDate.now().minusYears(25)
+    val adultDoB    = LocalDate.now().minusYears(25)
     val tooOldDoB   = LocalDate.now().minusYears(StatePensionAgeThresholds.getThresholdForTaxYear(taxYear) + 1)
 
     val exemptionMessageCases = Table(

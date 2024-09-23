@@ -58,9 +58,9 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
         tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)
-        class2ExemptionMessage        <- showClass2AgeExemption(taxYear, taxableProfitsAndLosses)
+        class2ExemptionMessage                 <- showClass2AgeExemption(taxYear, taxableProfitsAndLosses)
         moreThanClass2ButLessThanClass4Message <- moreThanClass2ButLessThanClass4Threshold(taxYear, taxableProfitsAndLosses)
-        showClass4AgeExemptionMessage <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
+        showClass4AgeExemptionMessage          <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
       } yield Ok(
         view(
           request.userType,
