@@ -22,7 +22,7 @@ import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, MoneyBounds, TaxYear, UserType}
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +48,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
     with Logging {
 
   private val page = TurnoverIncomeAmountPage
-  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some)
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = page.toString.some, minValue = MoneyBounds.minimumZeroOrOverValue)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
