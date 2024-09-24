@@ -2117,8 +2117,6 @@ profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.loss = Adjuste
 profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
 profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
 profitOrLossCalculation.class4Exempt.age = Based on your age, you’re exempt and therefore do not need to pay Class 4 National Insurance contributions.
-profitOrLossCalculation.betweenClass2AndClass4.threshold.individual = Based on the figures above, your National Insurance Class 2 contributions are treated as having been paid and you do not need to pay Class 4 contributions.
-profitOrLossCalculation.betweenClass2AndClass4.threshold.agent = Based on the figures above, your client‘s National Insurance Class 2 contributions are treated as having been paid and your client does not need to pay Class 4 contributions.
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
@@ -2239,6 +2237,8 @@ nics.class2Ineligible.tooYoung.individual = As you’re under 16 years of age, y
 nics.class2Ineligible.tooYoung.agent = As you’re client is under 16 years of age, they cannot make voluntary Class 2 National Insurance contributions.
 nics.class2Ineligible.tooOld.individual = You cannot make voluntary Class 2 National Insurance Contributions for any weeks after you’ve reached State Pension age.
 nics.class2Ineligible.tooOld.agent = Your client cannot make voluntary Class 2 National Insurance Contributions for any weeks after they’ve reached State Pension age.
+nics.betweenClass2AndClass4.individual = Based on the figures above, your National Insurance Class 2 contributions are treated as having been paid and you do not need to pay Class 4 contributions.
+nics.betweenClass2AndClass4.agent = Based on the figures above, your client‘s National Insurance Class 2 contributions are treated as having been paid and they do not need to pay Class 4 contributions.
 
 class2NICs.title = Voluntary Class 2 National Insurance contributions
 class2NICs.p1.individual = As your adjustable taxable profit is less than £{0} you do not need to make Class 2 National Insurance contributions.
