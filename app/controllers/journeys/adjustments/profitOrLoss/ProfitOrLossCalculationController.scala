@@ -84,7 +84,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
       val ageIsTooYoung        = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)
       val ageIsTooOld          = !ageIsUnderStatePensionAge(userDoB, taxYear, ageAtStartOfTaxYear = false)
 
-      (userIsClass2Eligible, ageIsTooYoung, ageIsTooOld) match { // TODO SASS-8740 add other cases for between class 2/4 thresholds
+      (userIsClass2Eligible, ageIsTooYoung, ageIsTooOld) match {
         case (true, true, _) => Some("tooYoung")
         case (true, _, true) => Some("tooOld")
         case _               => None
