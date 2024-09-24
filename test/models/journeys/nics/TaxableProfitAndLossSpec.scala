@@ -58,4 +58,41 @@ class TaxableProfitAndLossSpec extends AnyFreeSpec with ScalaCheckPropertyChecks
       }
     }
   }
+
+  private val class2TestScenarios = Table(
+    ("taxableProfitsAndLosses", "expectedResult"),
+    (withLossesTaxableProfitAndLoss, true),
+    (smallProfitTaxableProfitAndLoss, true),
+    (mediumProfitTaxableProfitAndLoss, false),
+    (largeProfitTaxableProfitAndLoss, false)
+  )
+
+  "areProfitsOrLossClass2Eligible" - {
+    "must return true if sum of profits are under threshold or if there are any losses" in {
+      forAll(class2TestScenarios) { case (taxableProfitsAndLosses, expectedResult) =>
+        val result = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
+
+        assert(result === expectedResult)
+      }
+    }
+  }
+
+  private val class4TestScenarios = Table(
+    ("taxableProfitsAndLosses", "expectedResult"),
+    (withLossesTaxableProfitAndLoss, false),
+    (smallProfitTaxableProfitAndLoss, false),
+    (mediumProfitTaxableProfitAndLoss, false),
+    (largeProfitTaxableProfitAndLoss, true),
+    (smallProfitsWithLargeSumTaxableProfitAndLoss, true)
+  )
+
+  "areProfitsOverClass4Threshold" - {
+    "must return true if sum of profits are over threshold" in {
+      forAll(class4TestScenarios) { case (taxableProfitsAndLosses, expectedResult) =>
+        val result = TaxableProfitAndLoss.areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
+
+        assert(result === expectedResult)
+      }
+    }
+  }
 }

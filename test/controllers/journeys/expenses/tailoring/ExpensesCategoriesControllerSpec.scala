@@ -42,8 +42,7 @@ class ExpensesCategoriesControllerSpec
       ExpensesCategoriesPage
     ) {
 
-  private lazy val incomeAmount: BigDecimal       = 80000
-  private lazy val incomeIsOverThreshold: Boolean = false
+  private lazy val incomeAmount: BigDecimal = 80000
 
   override def onPageLoadCall: Call           = routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode)
   override def onSubmitCall: Call             = routes.ExpensesCategoriesController.onSubmit(taxYear, businessId, NormalMode)
@@ -52,7 +51,7 @@ class ExpensesCategoriesControllerSpec
   override def baseAnswers: UserAnswers       = emptyUserAnswers.set(TurnoverIncomeAmountPage, incomeAmount, Some(businessId)).success.value
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
-  when(mockService.getTotalTurnover(any)(any)) thenReturn EitherT.rightT[Future, ServiceError](incomeAmount)
+  when(mockService.getTotalIncome(any)(any)) thenReturn EitherT.rightT[Future, ServiceError](incomeAmount)
 
   override def createForm(userType: UserType): Form[ExpensesTailoring] = new ExpensesCategoriesFormProvider()(userType)
 
@@ -61,7 +60,7 @@ class ExpensesCategoriesControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[ExpensesCategoriesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, incomeIsOverThreshold, "85,000").toString()
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
 }

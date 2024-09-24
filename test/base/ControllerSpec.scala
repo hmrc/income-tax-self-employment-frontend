@@ -20,7 +20,6 @@ import builders.UserBuilder
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
-import models.common.Journey
 import models.{Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchersSugar
@@ -33,6 +32,7 @@ import play.api.mvc.Result
 import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers.contentAsString
 import services.SelfEmploymentService
+import stubs.services.SelfEmploymentServiceStub
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -70,6 +70,33 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
     private def createApp(userType: UserType, answers: Option[UserAnswers], mockService: SelfEmploymentService): Application = {
       val overrideBindings: List[Binding[_]] =
         bind[SelfEmploymentService].toInstance(mockService) :: bindings
+
+      SpecBase
+        .applicationBuilder(answers, userType)
+        .overrides(overrideBindings)
+        .build()
+    }
+
+  }
+
+  case class TestStubbedScenario(userType: UserType = Individual,
+                                 answers: Option[UserAnswers],
+                                 mode: Mode = NormalMode,
+                                 taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
+                                 businessId: BusinessId = SpecBase.businessId,
+                                 tradingName: TradingName = TradingName.empty,
+                                 accountingType: Option[AccountingType] = Some(AccountingType.Accrual),
+                                 stubbedService: SelfEmploymentService = SelfEmploymentServiceStub()) {
+    implicit val application: Application = createApp(userType, answers, stubbedService)
+    implicit val messagesApi: MessagesApi = application.injector.instanceOf[MessagesApi]
+    implicit val appMessages: Messages    = SpecBase.messages(application)
+
+    val testScenarioContext: Journey => JourneyContextWithNino = (journey: Journey) =>
+      JourneyContextWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
+
+    private def createApp(userType: UserType, answers: Option[UserAnswers], stubbedService: SelfEmploymentService): Application = {
+      val overrideBindings: List[Binding[_]] =
+        bind[SelfEmploymentService].toInstance(stubbedService) :: bindings
 
       SpecBase
         .applicationBuilder(answers, userType)

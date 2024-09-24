@@ -1,0 +1,54 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.adjustments.profitOrLoss.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components._
+
+@this(
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        errorSummarySection: ErrorSummarySection,
+        twoRadios: TwoRadios,
+        submitButton: SubmitButton,
+        heading: Heading
+)
+
+@(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"claimLossRelief.title"))) {
+
+    @errorSummarySection(form)
+
+    @formHelper(action = routes.ClaimLossReliefController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @heading("claimLossRelief.title")
+
+        <div class="govuk-body">
+            <p>@messages(s"claimLossRelief.p1.$userType")</p>
+            <p>@messages(s"claimLossRelief.p2.$userType")</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages(s"claimLossRelief.l1.$userType")</li>
+                <li>@messages(s"claimLossRelief.l2")</li>
+            </ul>
+        </div>
+
+        @twoRadios(form, "claimLossRelief", userType, taxYear, inline = false)
+
+        @submitButton()
+    }
+}

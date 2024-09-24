@@ -19,6 +19,7 @@ package stubs.services
 import base.SpecBase._
 import builders.BusinessDataBuilder.aBusinessData
 import builders.BusinessIncomeSourcesSummaryBuilder.aBusinessIncomeSourcesSummary
+import builders.NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
 import builders.UserBuilder.aUserDateOfBirth
 import cats.data.EitherT
 import models.Mode
@@ -26,6 +27,7 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
+import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
@@ -45,6 +47,7 @@ case class SelfEmploymentServiceStub(
     getBusinessResult: Either[ServiceError, BusinessData] = Right(aBusinessData),
     accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Accrual),
     saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
+    submitAnswersResult: Either[ServiceError, Unit] = Right(()),
     getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
     getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
     setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
@@ -53,7 +56,10 @@ case class SelfEmploymentServiceStub(
     submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
     getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
     getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
-    getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary))
+    getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
+    getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
+    getNetBusinessProfitOrLossValuesResult: Either[ServiceError, NetBusinessProfitOrLossValues] = Right(aNetBusinessProfitValues),
+    clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -68,7 +74,7 @@ case class SelfEmploymentServiceStub(
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext,
                                              userAnswers: UserAnswers,
                                              declareJourneyAnswers: Option[SubsetOfAnswers] = None)(implicit hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.pure[Future, ServiceError](())
+    EitherT.fromEither[Future](submitAnswersResult)
 
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus] =
     EitherT.fromEither[Future](getJourneyStatusResult)
@@ -124,5 +130,13 @@ case class SelfEmploymentServiceStub(
       hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     EitherT.fromEither[Future](getBusinessIncomeSourcesSummaryResult)
 
-  def getTotalTurnover(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] = ???
+  def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
+    EitherT.fromEither[Future](getTotalIncomeResult)
+
+  def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
+    EitherT.fromEither[Future](getNetBusinessProfitOrLossValuesResult)
+
+  def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](clearSimplifiedExpensesDataResult)
 }

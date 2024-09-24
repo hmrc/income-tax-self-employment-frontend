@@ -17,15 +17,20 @@
 package controllers.journeys.capitalallowances.tailoring
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
+import builders.NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
+import cats.data.EitherT
 import models.NormalMode
 import models.common.AccountingType.Accrual
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
+import org.mockito.Mockito.when
 import pages.capitalallowances.tailoring.ClaimCapitalAllowancesPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
 import play.api.mvc.{Call, Request}
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildNetProfitOrLossTable
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
 class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBaseSpec("ClaimCapitalAllowancesController", ClaimCapitalAllowancesPage) {
@@ -35,12 +40,30 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
 
   override def onwardRoute: Call = models.common.onwardRoute
 
+  when(mockService.getNetBusinessProfitOrLossValues(anyTaxYear, anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(
+    aNetBusinessProfitValues)
+
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],
       messages: Messages,
       application: Application): String = {
-    val view = application.injector.instanceOf[ClaimCapitalAllowancesView]
-    view(form, scenario.mode, scenario.userType, scenario.taxYear, Accrual, scenario.businessId).toString()
+    val view                 = application.injector.instanceOf[ClaimCapitalAllowancesView]
+    val apiAnswers           = aNetBusinessProfitValues
+    val netAmount            = apiAnswers.netProfitOrLossAmount
+    val profitOrLoss         = apiAnswers.netProfitOrLoss
+    val formattedNetAmount   = formatSumMoneyNoNegative(List(netAmount))
+    val netProfitOrLossTable = buildNetProfitOrLossTable(apiAnswers)
+    view(
+      form,
+      scenario.mode,
+      scenario.userType,
+      scenario.taxYear,
+      Accrual,
+      profitOrLoss,
+      scenario.businessId,
+      formattedNetAmount,
+      netProfitOrLossTable
+    ).toString()
   }
 
   override val bindings: List[Binding[_]] = List(

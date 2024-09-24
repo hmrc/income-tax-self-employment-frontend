@@ -21,30 +21,29 @@ import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.adjustments.profitOrLoss.CurrentYearLossesPage
+import pages.adjustments.profitOrLoss.ClaimLossReliefPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.adjustments.profitOrLoss.CurrentYearLossesView
+import views.html.journeys.adjustments.profitOrLoss.ClaimLossReliefView
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CurrentYearLossesController @Inject() (override val messagesApi: MessagesApi,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             service: SelfEmploymentService,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             formProvider: BooleanFormProvider,
-                                             view: CurrentYearLossesView)
-// TODO if you can get both versions of the view to be handled by the same form (String, List[Enum], not sure) great, otherwise might need to make multiple views and maybe multiple forms
+class ClaimLossReliefController @Inject() (override val messagesApi: MessagesApi,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           service: SelfEmploymentService,
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: BooleanFormProvider,
+                                           view: ClaimLossReliefView)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = CurrentYearLossesPage
+  private val page = ClaimLossReliefPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
