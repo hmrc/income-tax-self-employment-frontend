@@ -222,7 +222,6 @@ class MessagesSpec extends SpecBase {
     "checkNetProfitLoss.p1.profit.agent",
     "checkNetProfitLoss.p1.loss.agent",
     "whichYearIsLossReported.p2.loss.agent"
-//    "profitOrLossCalculation.class4Exempt.threshold"
   )
 
   "messages must not contain any illegal characters" in {
