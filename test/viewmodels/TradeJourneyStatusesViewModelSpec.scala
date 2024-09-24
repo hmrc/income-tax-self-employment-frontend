@@ -119,7 +119,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow("#", CapitalAllowancesTailoring, CannotStartYet),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
-    // Abroad, Income and CapAllowances there, but income without answers so no expenses tailoring rendered
+    // Abroad, Income and CapAllowances there, but income without answers so no expenses or cap-allowances tailoring rendered
     (
       List(
         JourneyNameAndStatus(Abroad, Completed),
@@ -129,7 +129,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       List(
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
-        expectedRow(capitalAllowancesTailoringUrl, CapitalAllowancesTailoring, NotStarted),
+        expectedRow("#", CapitalAllowancesTailoring, CannotStartYet),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
     // Expense Tailoring there, with some sub journeys
@@ -157,6 +157,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     (
       List(
         JourneyNameAndStatus(Abroad, Completed),
+        JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
         JourneyNameAndStatus(CapitalAllowancesElectricVehicleChargePoints, Completed),
@@ -166,7 +167,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       capitalAllowances,
       List(
         expectedRow(abroadCyaUrl, Abroad, Completed),
-        expectedRow(incomeUrl, Income, NotStarted),
+        expectedRow(incomeCyaUrl, Income, Completed),
         expectedRow(capitalAllowancesTailoringCyaUrl, CapitalAllowancesTailoring, Completed),
         expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress),
         expectedRow(zeroEmissionGoodsVehicleStartUrl, CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
