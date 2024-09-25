@@ -130,8 +130,16 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
 
     val exemptionMessageCases = Table(
       ("scenario", "dateOfBirth", "eligibility", "expectedViewArguments"),
-      ("too young for Class 2 message when user is Class 2 eligible but under 16 years old", tooYoungDoB, Class2, (Some("class2Ineligible.tooYoung"), false)),
-      ("too old for Class 2 message when user is Class 2 eligible but over state pension age", tooOldDoB, Class2, (Some("class2Ineligible.tooOld"), false)),
+      (
+        "too young for Class 2 message when user is Class 2 eligible but under 16 years old",
+        tooYoungDoB,
+        Class2,
+        (Some("class2Ineligible.tooYoung"), false)),
+      (
+        "too old for Class 2 message when user is Class 2 eligible but over state pension age",
+        tooOldDoB,
+        Class2,
+        (Some("class2Ineligible.tooOld"), false)),
       ("class 4 exemption due to age message when user is Class 4 eligible but under 16 years old", tooYoungDoB, Class4, (None, true)),
       ("class 4 exemption due to age message when user is Class 4 eligible but over state pension age", tooOldDoB, Class4, (None, true))
     )

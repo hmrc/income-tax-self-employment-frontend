@@ -58,8 +58,8 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         profitOrLoss       = incomeSummary.returnProfitOrLoss()
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
         tables             = AdjustedTaxableProfitOrLossSummary.buildTables(taxYear, profitOrLoss)
-        nicsExemptionMessage                 <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
-        showClass4AgeExemptionMessage          <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
+        nicsExemptionMessage          <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
+        showClass4AgeExemptionMessage <- showClass4AgeExemption(taxYear, taxableProfitsAndLosses)
       } yield Ok(
         view(
           request.userType,
@@ -78,9 +78,9 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
   private def showNicsExemptionMessage(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
       request: DataRequest[_]): ApiResultT[Option[String]] =
     service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>
-      val userIsClass2Eligible = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
-      val ageIsTooYoung        = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)
-      val ageIsTooOld          = !ageIsUnderStatePensionAge(userDoB, taxYear, ageAtStartOfTaxYear = false)
+      val userIsClass2Eligible         = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
+      val ageIsTooYoung                = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)
+      val ageIsTooOld                  = !ageIsUnderStatePensionAge(userDoB, taxYear, ageAtStartOfTaxYear = false)
       val betweenEligibilityThresholds = TaxableProfitAndLoss.class2EligibleButLessThenClass4Threshold(taxableProfitsAndLosses, taxYear)
 
       (userIsClass2Eligible, ageIsTooYoung, ageIsTooOld, betweenEligibilityThresholds) match {
