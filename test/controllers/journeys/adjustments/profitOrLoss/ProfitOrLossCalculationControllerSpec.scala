@@ -83,7 +83,6 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
               tables,
               None,
               false,
-              false,
               onwardRoute
             )(onPageLoadRequest, msg).toString()
           }
@@ -117,7 +116,6 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
               tables,
               None,
               false,
-              false,
               onwardRoute
             )(onPageLoadRequest, msg).toString()
           }
@@ -128,13 +126,12 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
     }
 
     val tooYoungDoB = LocalDate.now().minusYears(15)
-    val adultDoB    = LocalDate.now().minusYears(25)
     val tooOldDoB   = LocalDate.now().minusYears(StatePensionAgeThresholds.getThresholdForTaxYear(taxYear) + 1)
 
     val exemptionMessageCases = Table(
       ("scenario", "dateOfBirth", "eligibility", "expectedViewArguments"),
-      ("too young for Class 2 message when user is Class 2 eligible but under 16 years old", tooYoungDoB, Class2, (Some("tooYoung"), false)),
-      ("too old for Class 2 message when user is Class 2 eligible but over state pension age", tooOldDoB, Class2, (Some("tooOld"), false)),
+      ("too young for Class 2 message when user is Class 2 eligible but under 16 years old", tooYoungDoB, Class2, (Some("class2Ineligible.tooYoung"), false)),
+      ("too old for Class 2 message when user is Class 2 eligible but over state pension age", tooOldDoB, Class2, (Some("class2Ineligible.tooOld"), false)),
       ("class 4 exemption due to age message when user is Class 4 eligible but under 16 years old", tooYoungDoB, Class4, (None, true)),
       ("class 4 exemption due to age message when user is Class 4 eligible but over state pension age", tooOldDoB, Class4, (None, true))
     )
@@ -169,7 +166,6 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             profitOrLoss,
             tables,
             expectedViewArguments._1,
-            false,
             expectedViewArguments._2,
             onwardRoute
           )(onPageLoadRequest, msg).toString()
@@ -183,8 +179,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
       val taxableProfit: BigDecimal = 10000
       val taxableProfitsAndLosses   = List(TaxableProfitAndLoss(taxableProfit = taxableProfit, taxableLoss = BigDecimal(0)))
       val stubService = SelfEmploymentServiceStub(
-        getAllBusinessesTaxableProfitAndLossResult = Right(taxableProfitsAndLosses),
-        getUserDateOfBirthResult = Right(adultDoB)
+        getAllBusinessesTaxableProfitAndLossResult = Right(taxableProfitsAndLosses)
       )
       val application            = buildAppFromUserType(UserType.Individual, Some(userAnswers), Some(stubService))
       implicit val msg: Messages = SpecBase.messages(application)
@@ -207,8 +202,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
           taxYear,
           profitOrLoss,
           tables,
-          None,
-          true,
+          Some("betweenClass2AndClass4"),
           false,
           onwardRoute
         )(onPageLoadRequest, msg).toString()

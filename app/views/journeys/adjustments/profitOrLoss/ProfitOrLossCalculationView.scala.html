@@ -35,8 +35,7 @@
         taxYear: TaxYear,
         profitOrLoss: ProfitOrLoss,
         tables: AdjustedTaxableProfitOrLossSummary,
-        showClass2ExemptionMessage: Option[String],
-        moreThanClass2ButLessThanClass4Message: Boolean,
+        nicsExemptionMessage: Option[String],
         showClass4AgeExemptionMessage: Boolean,
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
@@ -56,11 +55,8 @@
             @govukTable(tables.adjustmentsTable)
             <p class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$profitOrLoss", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</p>
         }
-        @showClass2ExemptionMessage.map { exemptionReason =>
-            <p class="govuk-inset-text">@messages(s"nics.class2Ineligible.$exemptionReason.$userType")</p>
-        }
-        @if(moreThanClass2ButLessThanClass4Message) {
-            <p class="govuk-inset-text">@messages(s"nics.betweenClass2AndClass4.$userType")</p>
+        @nicsExemptionMessage.map { exemptionReason =>
+            <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>
         }
         @if(showClass4AgeExemptionMessage) {
             <p class="govuk-inset-text">@messages("profitOrLossCalculation.class4Exempt.age")</p>
