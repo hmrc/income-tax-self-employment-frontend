@@ -81,7 +81,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
       val userIsClass2Eligible         = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
       val ageIsTooYoung                = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)
       val ageIsTooOld                  = !ageIsUnderStatePensionAge(userDoB, taxYear, ageAtStartOfTaxYear = false)
-      val betweenEligibilityThresholds = TaxableProfitAndLoss.class2EligibleButLessThenClass4Threshold(taxableProfitsAndLosses, taxYear)
+      val betweenEligibilityThresholds = TaxableProfitAndLoss.betweenClass2AndClass4Threshold(taxableProfitsAndLosses, taxYear)
 
       (userIsClass2Eligible, ageIsTooYoung, ageIsTooOld, betweenEligibilityThresholds) match {
         case (true, true, _, _) => Some("class2Ineligible.tooYoung")
