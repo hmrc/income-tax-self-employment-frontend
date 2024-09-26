@@ -16,9 +16,10 @@
 
 package controllers.journeys.adjustments.profitOrLoss
 
-import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.CheckMode
-import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+import models.common.Journey.ProfitOrLoss
+import models.common.{AccountingType, BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.adjustments.WhichYearIsLossReported
 import pages.Page
@@ -30,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.adjustments.WhichYearIsLossReportedSummary
 import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 
-class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
 
   override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
@@ -38,7 +39,7 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
   private val unusedLossAmount        = BigDecimal(200.00)
   private val whichYearIsLossReported = WhichYearIsLossReported.Year2018to2019.toString
 
-  val data: JsObject = Json.obj(
+  override val submissionData: JsObject = Json.obj(
     "goodsAndServicesForYourOwnUse" -> true,
     "goodsAndServicesAmount"        -> goodsAndServicesAmount,
     "previousUnusedLosses"          -> true,
@@ -47,7 +48,9 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
     "accountingType"                -> "CASH"
   )
 
-  override val testDataCases: List[JsObject] = List(data)
+  override val testDataCases: List[JsObject] = List(submissionData)
+
+  override protected val journey: Journey = ProfitOrLoss
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ProfitOrLossCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ProfitOrLossCYAController.onSubmit
