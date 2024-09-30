@@ -32,7 +32,8 @@ import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers extends Logging {
-  def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+  def redirectJourneyRecovery(errorMessage: Option[String] = None): Result = Redirect(
+    standard.routes.JourneyRecoveryController.onPageLoad(errorMessage = errorMessage))
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
     journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode)

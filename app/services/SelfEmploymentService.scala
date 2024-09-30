@@ -32,7 +32,7 @@ import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
-import pages.income.TurnoverIncomeAmountPage
+import pages.income.{NonTurnoverIncomeAmountPage, TurnoverIncomeAmountPage}
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
@@ -255,9 +255,10 @@ object SelfEmploymentService {
   // TODO: Return an error as left once we have impl. error handling instead of redirecting.
   def getMaxTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): Either[Result, BigDecimal] =
     userAnswers
-      .get(TurnoverIncomeAmountPage, Some(businessId))
-      .fold(redirectJourneyRecovery().asLeft[BigDecimal]) { turnover =>
-        if (turnover > maxAllowance) maxAllowance.asRight else turnover.asRight
+      .get(TurnoverIncomeAmountPage, businessId)
+      .fold(redirectJourneyRecovery(Some("Turnover Income amount not found")).asLeft[BigDecimal]) { turnover =>
+        val totalAmount = turnover + userAnswers.get(NonTurnoverIncomeAmountPage, businessId).getOrElse(0)
+        if (totalAmount > maxAllowance) maxAllowance.asRight else totalAmount.asRight
       }
 
   def clearDataFromUserAnswers(userAnswers: UserAnswers, pages: List[Settable[_]], businessId: Option[BusinessId]): Try[UserAnswers] = {

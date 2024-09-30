@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
-import models.Mode
+import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,7 +59,10 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          answer => {
+            val updatedMode = if (request.getValue(page, businessId).contains(answer)) mode else NormalMode
+            service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, updatedMode)
+          }
         )
   }
 

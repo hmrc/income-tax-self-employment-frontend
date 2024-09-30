@@ -21,8 +21,8 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
-import models.Mode
 import models.common.{BusinessId, MoneyBounds, TaxYear, UserType}
+import models.{Mode, NormalMode}
 import pages.income.TurnoverIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,7 +63,10 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
         .fold(
           formErrors =>
             Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          answer => {
+            val updatedMode = if (request.getValue(page, businessId).contains(answer)) mode else NormalMode
+            service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, updatedMode)
+          }
         )
   }
 
