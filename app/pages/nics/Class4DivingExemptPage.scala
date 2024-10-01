@@ -26,13 +26,27 @@ import queries.Settable
 case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] {
   override def toString: String = "class4DivingExempt"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    if (Class4NonDivingExemptPage.remainingBusinesses(userAnswers).isEmpty)
-      routes.NICsCYAController.onPageLoad(taxYear)
-    else routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+    val remainingBusinesses = Class4NonDivingExemptPage.remainingBusinesses(userAnswers).size
 
-  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(Class4NonDivingExemptPage)
+    remainingBusinesses match {
+      case 0 => routes.NICsCYAController.onPageLoad(taxYear)
+      case 1 => routes.Class4NonDivingExemptSingleBusinessController.onPageLoad(taxYear, NormalMode)
+      case _ => routes.Class4NonDivingExemptController.onPageLoad(taxYear, NormalMode)
+    }
+
+  }
+
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val remainingBusinesses = Class4NonDivingExemptPage.remainingBusinesses(userAnswers).size
+    val hasFurtherAnswers = remainingBusinesses match {
+      case 0 => true
+      case 1 => Class4NonDivingExemptSingleBusinessPage.hasAllFurtherAnswers(businessId, userAnswers)
+      case _ => Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+    }
+    userAnswers.get(this, businessId).isDefined && hasFurtherAnswers
+  }
+
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(Class4NonDivingExemptPage, Class4NonDivingExemptSingleBusinessPage)
 }

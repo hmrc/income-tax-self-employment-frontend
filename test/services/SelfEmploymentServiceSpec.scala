@@ -46,6 +46,7 @@ import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.income.TurnoverIncomeAmountPage
 import play.api.data.{Form, FormBinding}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{AnyContent, Result}
@@ -60,6 +61,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec {
+
+  implicit val messages: Messages = messagesStubbed
+
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
   val businessIdCash    = BusinessId("businessIdCash")

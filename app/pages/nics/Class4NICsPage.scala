@@ -45,6 +45,6 @@ case object Class4NICsPage extends NicsBasePage[Boolean] {
     userAnswers.get(this, businessId).exists(!_ || Class4ExemptionReasonPage.hasAllFurtherAnswers(businessId, userAnswers))
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
-    List(Class2NICsPage, Class4ExemptionReasonPage, Class4DivingExemptPage, Class4NonDivingExemptPage)
+    List(Class2NICsPage, Class4ExemptionReasonPage, Class4DivingExemptPage, Class4NonDivingExemptPage, Class4NonDivingExemptSingleBusinessPage)
 
 }

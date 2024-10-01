@@ -2228,7 +2228,8 @@ whichYearIsLossReported.change.hidden = Change in which tax year you most recent
 
 ########## National Insurance Contributions ##########
 
-nics.exemptForDifferentReason = I’m exempt for a different reason
+nics.class-four-other-exemption = I’m exempt for a different reason
+nics.class-four-none-exempt = None of these businesses are exempt
 nics.diverDivingInstructor.individual = You are a diver or diving supervisor
 nics.diverDivingInstructor.agent = Your client is a diver or diving supervisor
 nics.trusteeExecutorAdmin.individual = You are the trustee, executor or administrator but only in some cases
@@ -2292,8 +2293,12 @@ class4DivingExempt.change.hidden = Change which self employment businesses you a
 
 class4NonDivingExempt.subHeading.individual = For which self employment businesses did you receive profits in your capacity as a trustee, executor or administrator?
 class4NonDivingExempt.subHeading.agent = For which self employment businesses did your client receive profits in their capacity as a trustee, executor or administrator?
+class4NonDivingExemptSingleBusiness.subHeading.individual = Have you received profits in your capacity as a trustee, executor or administrator for
+class4NonDivingExemptSingleBusiness.subHeading.agent = Did your client receive profits in their capacity as a trustee, executor or administrator for
 class4NonDivingExempt.subHeading.cya.individual = For which self employment businesses are you a trustee, executor or administrator?
 class4NonDivingExempt.subHeading.cya.agent = For which self employment businesses is your client a trustee, executor or administrator?
 class4NonDivingExempt.error.required.individual = Select all your self employment businesses where you are a trustee, executor or administrator
 class4NonDivingExempt.error.required.agent = Select all your client’s self employment businesses where they are a trustee, executor or administrator
+class4NonDivingExemptSingleBusiness.error.required.individual = Select yes if you have received profits in your capacity as a trustee, executor or administrator for {0}
+class4NonDivingExemptSingleBusiness.error.required.agent = Select yes if your client has received profits in their capacity as a trustee, executor or administrator {0}
 class4NonDivingExempt.change.hidden = Change which self employment businesses you are a trustee, executor or administrator for
