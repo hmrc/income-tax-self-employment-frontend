@@ -15,12 +15,11 @@
  */
 
 import cats.data.EitherT
-import cats.implicits.catsStdInstancesForFuture
+import cats.implicits.{catsStdInstancesForFuture, toBifunctorOps}
 import models.NormalMode
-import models.common.{AccountingType, BusinessId, JourneyContext, TaxYear}
+import models.common._
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
-import models.common.Journey
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.Result
@@ -32,8 +31,7 @@ import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers extends Logging {
-  def redirectJourneyRecovery(errorMessage: Option[String] = None): Result = Redirect(
-    standard.routes.JourneyRecoveryController.onPageLoad(errorMessage = errorMessage))
+  def redirectJourneyRecovery(): Result = Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
     journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode)
@@ -50,6 +48,12 @@ package object controllers extends Logging {
 
   def handleResultT(resultT: EitherT[Future, ServiceError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     resultT.leftMap { httpError =>
+      logger.error(s"HttpError encountered: $httpError")
+      redirectJourneyRecovery()
+    }.merge
+
+  def handleResult(result: Either[ServiceError, Result])(implicit logger: Logger): Result =
+    result.leftMap { httpError =>
       logger.error(s"HttpError encountered: $httpError")
       redirectJourneyRecovery()
     }.merge

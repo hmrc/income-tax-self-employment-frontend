@@ -36,7 +36,7 @@ class JourneyRecoveryController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad(errorMessage: Option[String] = None, continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify { implicit request =>
+  def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify { implicit request =>
     val safeUrl: Option[String] = continueUrl.flatMap { unsafeUrl =>
       unsafeUrl.getEither(OnlyRelative) match {
         case Right(safeUrl) =>
@@ -46,10 +46,9 @@ class JourneyRecoveryController @Inject() (
           None
       }
     }
-    val errorDescription = errorMessage.getOrElse("journeyRecovery.noErrorDescription")
 
     safeUrl
-      .map(url => Ok(continueView(errorDescription, url)))
-      .getOrElse(Ok(startAgainView(errorDescription)))
+      .map(url => Ok(continueView(url)))
+      .getOrElse(Ok(startAgainView()))
   }
 }

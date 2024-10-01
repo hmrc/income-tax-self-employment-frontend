@@ -20,6 +20,7 @@ import base.SpecBase.{businessId, taxYear}
 import cats.data.EitherT
 import models.common.UserType
 import models.database.UserAnswers
+import models.errors.ServiceError
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
@@ -68,10 +69,10 @@ class HowMuchTradingAllowanceSummarySpec extends AnyWordSpec with Matchers {
           }
         }
         "user answers don't exist for TurnoverIncomeAmountPage" should {
-          "return a run-time exception bundled in a Left" in {
+          "return an error in a Left" in {
             val result = HowMuchTradingAllowanceSummary.row(userAnswersForTradingAllowanceOnly, taxYear, authUser, businessId)
 
-            result should matchPattern { case Some(Left(_: RuntimeException)) =>
+            result should matchPattern { case Some(Left(_: ServiceError)) =>
             }
           }
         }
