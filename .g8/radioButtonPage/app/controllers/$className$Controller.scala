@@ -12,7 +12,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.$className$View
 
-import scala.concurrent.{ExecutionContext, Future}
+
 
 class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,

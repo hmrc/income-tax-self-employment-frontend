@@ -45,16 +45,17 @@ class ContractForBuildingConstructionController @Inject() (override val messages
     with Logging {
 
   private val page = ContractForBuildingConstructionPage
-  private val form = (userType: UserType) => formProvider(page, userType)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) { implicit request =>
+      val form       = (userType: UserType) => formProvider(page, userType)
       val filledForm = page.fillFormWithIndex(form(request.userType), page, request, businessId, index)
       Ok(view(filledForm, mode, request.userType, taxYear, businessId, index))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) async { implicit request =>
+      val form = (userType: UserType) => formProvider(page, userType)
       form(request.userType)
         .bindFromRequest()
         .fold(
