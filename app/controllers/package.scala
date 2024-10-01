@@ -17,14 +17,14 @@
 import cats.data.EitherT
 import cats.implicits.catsStdInstancesForFuture
 import models.NormalMode
-import models.common.{AccountingType, BusinessId, JourneyContext, TaxYear}
+import models.common._
 import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
-import models.common.Journey
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
+import queries.Gettable
 import utils.Logging
 
 import java.time.LocalDate
@@ -32,8 +32,12 @@ import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 package object controllers extends Logging {
-  def redirectJourneyRecovery(errorMessage: Option[String] = None): Result = Redirect(
-    standard.routes.JourneyRecoveryController.onPageLoad(errorMessage = errorMessage))
+  def redirectJourneyRecovery(errorMessage: Option[String] = None): Result =
+    Redirect(standard.routes.JourneyRecoveryController.onPageLoad())
+      .flashing("errorMessage" -> errorMessage.getOrElse(""))
+
+  def redirectJourneyRecoveryValueNotFound(page: Gettable[_], businessId: BusinessId): Result =
+    redirectJourneyRecovery(Some(s"Value not found for page path: ${page.path(Some(businessId))}"))
 
   private def redirectJourneyCompletedState(taxYear: TaxYear, businessId: BusinessId, journey: Journey): Result = Redirect(
     journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode)
@@ -50,8 +54,9 @@ package object controllers extends Logging {
 
   def handleResultT(resultT: EitherT[Future, ServiceError, Result])(implicit ec: ExecutionContext, logger: Logger): Future[Result] =
     resultT.leftMap { httpError =>
-      logger.error(s"HttpError encountered: $httpError")
-      redirectJourneyRecovery()
+      val errorMessage = s"HttpError encountered: $httpError"
+      logger.error(errorMessage)
+      redirectJourneyRecovery(Some(errorMessage))
     }.merge
 
   // Redirection to journey recovery on downstream error retrieval is a temporary action until we pick up the unhappy
@@ -65,13 +70,14 @@ package object controllers extends Logging {
     val taxYearCutoffDate = LocalDate.parse(s"${taxYear.endYear}-04-05")
     val defaultMaxMonths  = 12
     business.commencementDate.fold[Either[Result, Int]] {
-      logger.error(s"Business businessId=${business.businessId} does not have a commencement date. Redirecting to journey recovery.")
-      Left(redirectJourneyRecovery())
+      val errorMessage = s"Business with ID '${business.businessId}' does not have a commencement date."
+      logger.error(s"$errorMessage Redirecting to journey recovery.")
+      Left(redirectJourneyRecovery(Some(errorMessage)))
     } { date =>
       val startDate: LocalDate                 = LocalDate.parse(date)
       val monthsBetweenStartDateAndCutOff: Int = ChronoUnit.MONTHS.between(startDate, taxYearCutoffDate).toInt
       monthsBetweenStartDateAndCutOff match {
-        case m if m < 0                => Left(redirectJourneyRecovery())
+        case m if m < 0                => Left(redirectJourneyRecovery(Some("Months between start date and cut off is negative")))
         case m if m > defaultMaxMonths => Right(defaultMaxMonths)
         case m                         => Right(m)
       }

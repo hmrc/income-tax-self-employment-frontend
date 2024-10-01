@@ -55,7 +55,7 @@ object WfbpFlatRateViewModel {
             formatMoney(amount3People),
             flatRate
           ))
-      case _ => Left(redirectJourneyRecovery())
+      case (one, two, three) => Left(redirectJourneyRecovery(Some(s"Missing months value for one ($one), two ($two) or three ($three) people")))
     }
   }
 

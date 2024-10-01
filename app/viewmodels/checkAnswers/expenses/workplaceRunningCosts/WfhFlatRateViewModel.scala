@@ -55,7 +55,8 @@ object WfhFlatRateViewModel {
             formatMoney(amount101Plus),
             flatRate
           ))
-      case _ => Left(redirectJourneyRecovery())
+      case _ =>
+        Left(redirectJourneyRecovery(Some(s"Missing months value for 25-50 ($months25To50), 51-100 ($months51To100) or 101+ ($months101Plus) hours")))
     }
   }
 

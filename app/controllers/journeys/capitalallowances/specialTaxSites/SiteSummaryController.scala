@@ -45,7 +45,7 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       getSiteFromIndex(request.userAnswers, businessId, index) match {
-        case None => redirectJourneyRecovery()
+        case None => redirectJourneyRecovery(Some(s"No site found with index: $index"))
         case Some(site) =>
           val summaryList =
             SummaryListCYA.summaryListOpt(

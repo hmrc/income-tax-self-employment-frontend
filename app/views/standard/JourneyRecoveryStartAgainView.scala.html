@@ -19,13 +19,13 @@
     govukButton: GovukButton
 )
 
-@(errorMessage: String)(implicit request: Request[_], messages: Messages)
+@(errorMessage: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
 
     <h1 class="govuk-heading-xl">@messages("journeyRecovery.continue.title")</h1>
 
-    <p class="govuk-body">@messages("journeyRecovery.errorPrefix", errorMessage)</p>
+    <p class="govuk-body">@messages("journeyRecovery.errorPrefix", errorMessage.getOrElse(messages("journeyRecovery.noErrorDescription")))</p>
 
     <p class="govuk-body">
         @govukButton(

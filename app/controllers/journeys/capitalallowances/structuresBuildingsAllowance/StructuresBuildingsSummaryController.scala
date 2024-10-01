@@ -49,7 +49,7 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       getStructureFromIndex(request.userAnswers, businessId, index) match {
-        case None => redirectJourneyRecovery()
+        case None => redirectJourneyRecovery(Some(s"No structure found with index: $index"))
         case Some(structure) =>
           val summaryList =
             SummaryListCYA.summaryListOpt(
