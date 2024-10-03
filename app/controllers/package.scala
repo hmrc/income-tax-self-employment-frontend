@@ -15,7 +15,7 @@
  */
 
 import cats.data.EitherT
-import cats.implicits.catsStdInstancesForFuture
+import cats.implicits.{catsStdInstancesForFuture, toBifunctorOps}
 import models.NormalMode
 import models.common._
 import models.domain.{ApiResultT, BusinessData}
@@ -57,6 +57,12 @@ package object controllers extends Logging {
       val errorMessage = s"HttpError encountered: $httpError"
       logger.error(errorMessage)
       redirectJourneyRecovery(Some(errorMessage))
+    }.merge
+
+  def handleResult(result: Either[ServiceError, Result])(implicit logger: Logger): Result =
+    result.leftMap { httpError =>
+      logger.error(s"HttpError encountered: $httpError")
+      redirectJourneyRecovery()
     }.merge
 
   // Redirection to journey recovery on downstream error retrieval is a temporary action until we pick up the unhappy

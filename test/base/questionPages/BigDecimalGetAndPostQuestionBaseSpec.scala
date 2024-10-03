@@ -106,6 +106,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
     "on page submission" - {
       "valid data is submitted" - {
         "redirect to the next page" in new TestScenario(answers = pageAnswers.some) {
+          mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns Redirect(onwardRoute).asFuture
           mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
             *[DataRequest[_]],
             *[FormBinding],
@@ -128,6 +129,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
             val boundForm: Form[BigDecimal]                      = createForm(userType).bind(Map("value" -> "invalid value"))
             val expectedErrorView: String                        = expectedView(boundForm, this)(request, messages(application), application)
 
+            mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
             mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
               *[DataRequest[_]],
               *[FormBinding],

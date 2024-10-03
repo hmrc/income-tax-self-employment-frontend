@@ -19,16 +19,19 @@ package controllers.journeys.income
 import cats.data.EitherT
 import controllers.actions._
 import controllers.journeys.fillForm
+import controllers.{handleResult, handleResultT}
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.errors.ServiceError
+import models.journeys.income.HowMuchTradingAllowance
 import pages.income.HowMuchTradingAllowancePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
-import services.SelfEmploymentService.getMaxTradingAllowance
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.MoneyUtils
+import utils.{Logging, MoneyUtils}
 import views.html.journeys.income.HowMuchTradingAllowanceView
 
 import javax.inject.{Inject, Singleton}
@@ -45,33 +48,35 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
                                                    view: HowMuchTradingAllowanceView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with MoneyUtils {
+    with MoneyUtils
+    with Logging {
 
   private val page = HowMuchTradingAllowancePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      (for {
-        allowance <- getMaxTradingAllowance(businessId, request.userAnswers)
-        formattedAllowance = formatMoney(allowance, addDecimalForWholeNumbers = false)
-        form               = fillForm(page, businessId, formProvider(request.userType, formattedAllowance))
-      } yield Ok(view(form, mode, request.userType, taxYear, businessId, formattedAllowance))).merge
+      val result = getMaxTradingAllowance(businessId, request.userAnswers).map { allowance =>
+        val formattedAllowance = formatMoney(allowance, addDecimalForWholeNumbers = false)
+        val filledForm         = fillForm(page, businessId, formProvider(request.userType, formattedAllowance))
+        Ok(view(filledForm, mode, request.userType, taxYear, businessId, formattedAllowance))
+      }
+      handleResult(result)
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(allowance: String): Future[Result] =
-        formProvider(request.userType, allowance)
-          .bindFromRequest()
-          .fold(
-            formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, allowance))),
-            answer => service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
-          )
+      def handleError(allowance: String)(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, allowance))
+      def handleSuccess(answer: HowMuchTradingAllowance): Future[Result] =
+        service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
 
-      (for {
+      val result = for {
         allowance <- EitherT.fromEither[Future](getMaxTradingAllowance(businessId, request.userAnswers))
         formattedAllowance = formatMoney(allowance, addDecimalForWholeNumbers = false)
-        result <- EitherT.right[Result](handleForm(formattedAllowance))
-      } yield result).merge
+        handleForm <- EitherT.liftF[Future, ServiceError, Result](
+          service.handleForm(formProvider(request.userType, formattedAllowance), handleError(formattedAllowance), handleSuccess))
+      } yield handleForm
+
+      handleResultT(result)
   }
 }
