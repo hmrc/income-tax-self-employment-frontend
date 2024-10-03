@@ -24,15 +24,16 @@ import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, MoneyBounds, TaxYear, UserType}
 import pages.income.TurnoverIncomeAmountPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.income.TurnoverIncomeAmountView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TurnoverIncomeAmountController @Inject() (override val messagesApi: MessagesApi,
@@ -42,7 +43,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
                                                 requireData: DataRequiredAction,
                                                 service: SelfEmploymentService,
                                                 formProvider: CurrencyFormProvider,
-                                                view: TurnoverIncomeAmountView)
+                                                view: TurnoverIncomeAmountView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -58,13 +59,18 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formErrors =>
-            Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
-        )
+      def handleError(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
+      def handleSuccess(answer: BigDecimal): Future[Result] = {
+        val answerUnchanged = request.getValue(page, businessId).contains(answer)
+        for {
+          updateUserAnswers <- clearAllowancePagesData(answerUnchanged, businessId, request.userAnswers)
+          savedAnswers      <- service.persistAnswer(businessId, updateUserAnswers, answer, page)
+          result = page.redirectNext(mode, savedAnswers, businessId, taxYear)
+        } yield result
+      }
+
+      service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
 
 }
