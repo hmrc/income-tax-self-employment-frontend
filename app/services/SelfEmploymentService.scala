@@ -16,23 +16,18 @@
 
 package services
 
-import cats.data.EitherT
-import cats.implicits.catsSyntaxEitherId
 import connectors.SelfEmploymentConnector
 import controllers.journeys.clearDependentPages
-import controllers.redirectJourneyRecovery
 import models.Mode
 import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
-import models.errors.ServiceError
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
-import pages.income.TurnoverIncomeAmountPage
 import pages.{OneQuestionPage, QuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.Logging
 import play.api.data.{Form, FormBinding}
@@ -250,16 +245,6 @@ class SelfEmploymentServiceImpl @Inject() (
 
 object SelfEmploymentService {
 
-  private val maxAllowance = BigDecimal(1000.00)
-
-  // TODO: Return an error as left once we have impl. error handling instead of redirecting.
-  def getMaxTradingAllowance(businessId: BusinessId, userAnswers: UserAnswers): Either[Result, BigDecimal] =
-    userAnswers
-      .get(TurnoverIncomeAmountPage, Some(businessId))
-      .fold(redirectJourneyRecovery().asLeft[BigDecimal]) { turnover =>
-        if (turnover > maxAllowance) maxAllowance.asRight else turnover.asRight
-      }
-
   def clearDataFromUserAnswers(userAnswers: UserAnswers, pages: List[Settable[_]], businessId: Option[BusinessId]): Try[UserAnswers] = {
     @tailrec
     def removePageData(userAnswers: UserAnswers, pages: List[Settable[_]]): Try[UserAnswers] =
@@ -276,14 +261,6 @@ object SelfEmploymentService {
       }
 
     removePageData(userAnswers, pages)
-  }
-
-  def returnOptionalTotalIncome(maybeTotalIncome: ApiResultT[BigDecimal])(implicit ec: ExecutionContext): ApiResultT[Option[BigDecimal]] = {
-    val result = maybeTotalIncome.value.map(_ match {
-      case Right(amount) => Some(amount).asRight
-      case Left(_)       => None.asRight
-    })
-    EitherT[Future, ServiceError, Option[BigDecimal]](result)
   }
 
 }

@@ -18,16 +18,16 @@ package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.returnAccountingType
-import models.common.{BusinessId, TaxYear}
+import models.NormalMode
+import models.common.BusinessId
+import models.database.UserAnswers
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.income.TurnoverIncomeAmountPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import views.html.journeys.income.TurnoverIncomeAmountView
 
@@ -47,12 +47,10 @@ class TurnoverIncomeAmountControllerSpec extends BigDecimalGetAndPostQuestionBas
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, returnAccountingType(businessId)(dataRequest)).toString()
   }
 
-  mockService.persistAnswerAndRedirect(
-    *[OneQuestionPage[BigDecimal]],
+  mockService.persistAnswer(
     *[BusinessId],
-    *[DataRequest[_]],
+    *[UserAnswers],
     *,
-    *[TaxYear],
-    *[Mode]
-  ) returns Redirect(onwardRoute).asFuture
+    *[OneQuestionPage[BigDecimal]]
+  ) returns pageAnswers.asFuture
 }

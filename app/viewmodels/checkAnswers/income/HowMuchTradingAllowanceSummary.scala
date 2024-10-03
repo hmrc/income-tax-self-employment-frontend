@@ -16,12 +16,13 @@
 
 package viewmodels.checkAnswers.income
 
-import controllers.journeys.income.routes
+import controllers.journeys.income.{getMaxTradingAllowance, routes}
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.errors.ServiceError
 import models.journeys.income.HowMuchTradingAllowance
-import pages.income.{HowMuchTradingAllowancePage, TurnoverIncomeAmountPage}
+import pages.income.HowMuchTradingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
@@ -30,12 +31,12 @@ import viewmodels.checkAnswers.buildRowString
 object HowMuchTradingAllowanceSummary extends MoneyUtils {
 
   def row(userAnswers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
-      messages: Messages): Option[Either[Exception, SummaryListRow]] =
+      messages: Messages): Option[Either[ServiceError, SummaryListRow]] =
     userAnswers.get(HowMuchTradingAllowancePage, Some(businessId)).map { answer =>
       val rowValueOrError = answer match {
         case HowMuchTradingAllowance.Maximum =>
-          calculateMaxTradingAllowance(userAnswers, businessId)
-            .map(amount => s"The maximum £$amount")
+          getMaxTradingAllowance(businessId, userAnswers)
+            .map(amount => s"The maximum £${formatMoney(amount)}")
 
         case HowMuchTradingAllowance.LessThan =>
           Right(messages("common.lowerAmount"))
@@ -50,13 +51,6 @@ object HowMuchTradingAllowanceSummary extends MoneyUtils {
         "howMuchTradingAllowance.change.hidden",
         rightTextAlign = true
       )
-    }
-
-  private def calculateMaxTradingAllowance(userAnswers: UserAnswers, businessId: BusinessId): Either[Exception, String] =
-    userAnswers.get(TurnoverIncomeAmountPage, Some(businessId)) match {
-      case Some(amount) if amount < 1000  => Right(formatMoney(amount))
-      case Some(amount) if amount >= 1000 => Right(formatMoney(1000))
-      case _                              => Left(new RuntimeException("Unable to retrieve user answers for TurnoverIncomeAmountPage"))
     }
 
 }

@@ -43,7 +43,6 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
-import pages.income.TurnoverIncomeAmountPage
 import play.api.data.{Form, FormBinding}
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.i18n.Messages
@@ -53,7 +52,7 @@ import play.api.mvc.{AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.Settable.SetAnswer
-import services.SelfEmploymentService.{clearDataFromUserAnswers, getMaxTradingAllowance}
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import stubs.repositories.StubSessionRepository
 import stubs.services.AuditServiceStub
 
@@ -67,10 +66,6 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   val nino              = Nino("nino")
   val businessIdAccrual = BusinessId("businessIdAccrual")
   val businessIdCash    = BusinessId("businessIdCash")
-
-  val maxIncomeTradingAllowance: BigDecimal = 1000
-  val smallTurnover: BigDecimal             = 450.00
-  val largeTurnover: BigDecimal             = 45000.00
 
   "getJourneyStatus" - {
     "should return status" in new ServiceWithStubs {
@@ -92,26 +87,6 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
         .value
         .futureValue
       result shouldBe ().asRight
-    }
-  }
-
-  "getIncomeTradingAllowance" - {
-    "should return a BigDecimal trading allowance that is" - {
-      "equal to the turnover amount when the turnover amount is less than the max trading allowance" in {
-        val userAnswers = UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, smallTurnover, Some(businessId)).success.value
-
-        getMaxTradingAllowance(businessId, userAnswers) shouldBe smallTurnover.asRight
-      }
-
-      "equal to the max allowance when the turnover amount is equal or greater than the max trading allowance" in {
-        val userAnswersLargeTurnover =
-          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, largeTurnover, Some(businessId)).success.value
-        val userAnswersEqualToMax =
-          UserAnswers(userAnswersId).set(TurnoverIncomeAmountPage, maxIncomeTradingAllowance, Some(businessId)).success.value
-
-        getMaxTradingAllowance(businessId, userAnswersLargeTurnover) shouldBe maxIncomeTradingAllowance.asRight
-        getMaxTradingAllowance(businessId, userAnswersEqualToMax) shouldBe maxIncomeTradingAllowance.asRight
-      }
     }
   }
 

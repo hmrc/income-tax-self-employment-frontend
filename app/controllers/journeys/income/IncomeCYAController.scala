@@ -33,7 +33,6 @@ import pages.income.{NonTurnoverIncomeAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
-import services.SelfEmploymentService.returnOptionalTotalIncome
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -121,8 +120,9 @@ class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
   private def howMuchTradingAllowanceSummaryRow(userAnswers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit
       messages: Messages): Option[SummaryListRow] =
     HowMuchTradingAllowanceSummary.row(userAnswers, taxYear, userType, businessId).map {
-      case Right(value)    => value
-      case Left(exception) => throw exception
+      case Right(value) => value
+      case Left(exception) =>
+        throw new RuntimeException(s"${exception.httpError.status}}: ${exception.httpError.internalReasonMessage.getOrElse("")}")
     }
 
 }
