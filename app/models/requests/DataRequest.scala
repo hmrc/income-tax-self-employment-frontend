@@ -17,13 +17,12 @@
 package models.requests
 
 import controllers.actions.AuthenticatedIdentifierAction.User
-import controllers.standard
+import controllers.redirectJourneyRecoveryValueNotFound
 import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError
 import pages.{OneQuestionPage, TradeAccountingType, TradingNameKey}
 import play.api.libs.json.Reads
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, WrappedRequest}
 import queries.Gettable
 
@@ -66,9 +65,9 @@ case class DataRequest[A](request: Request[A], userId: String, user: User, userA
     getValue(page, businessId).toRight(ServiceError.NotFoundError(s"UserAnswers '${page.toString}' value not found for ID: '$businessId'"))
 
   def valueOrRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId): Either[Result, B] =
-    getValue(page, businessId).toRight(Redirect(standard.routes.JourneyRecoveryController.onPageLoad()))
+    getValue(page, businessId).toRight(redirectJourneyRecoveryValueNotFound(page, businessId))
 
   def valueOrFutureRedirectDefault[B: Reads](page: Gettable[B], businessId: BusinessId)(implicit ec: ExecutionContext): Either[Future[Result], B] =
-    getValue(page, businessId).toRight(Future(Redirect(standard.routes.JourneyRecoveryController.onPageLoad())))
+    getValue(page, businessId).toRight(Future(redirectJourneyRecoveryValueNotFound(page, businessId)))
 
 }

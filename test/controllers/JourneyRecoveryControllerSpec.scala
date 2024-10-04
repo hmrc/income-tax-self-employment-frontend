@@ -25,6 +25,8 @@ import views.html.standard.{JourneyRecoveryContinueView, JourneyRecoveryStartAga
 
 class JourneyRecoveryControllerSpec extends SpecBase {
 
+  val errorDescription = "journeyRecovery.noErrorDescription"
+
   "JourneyRecovery Controller" - {
 
     "when a relative continue Url is supplied" - {
@@ -35,14 +37,14 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
         running(application) {
           val continueUrl = RedirectUrl("/foo")
-          val request     = FakeRequest(GET, routes.JourneyRecoveryController.onPageLoad(Some(continueUrl)).url)
+          val request     = FakeRequest(GET, routes.JourneyRecoveryController.onPageLoad(continueUrl = Some(continueUrl)).url)
 
           val result = route(application, request).value
 
           val continueView = application.injector.instanceOf[JourneyRecoveryContinueView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(request, messages(application)).toString
+          contentAsString(result) mustEqual continueView(continueUrl = continueUrl.unsafeValue)(request, messages(application)).toString
         }
       }
     }
@@ -55,7 +57,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
         running(application) {
           val continueUrl = RedirectUrl("https://foo.com")
-          val request     = FakeRequest(GET, routes.JourneyRecoveryController.onPageLoad(Some(continueUrl)).url)
+          val request     = FakeRequest(GET, routes.JourneyRecoveryController.onPageLoad(continueUrl = Some(continueUrl)).url)
 
           val result = route(application, request).value
 

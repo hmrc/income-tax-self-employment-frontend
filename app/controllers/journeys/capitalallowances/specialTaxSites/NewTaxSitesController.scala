@@ -17,11 +17,11 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.{journeys, redirectJourneyRecovery}
+import controllers.journeys
 import forms.standard.BooleanFormProvider
 import models.NormalMode
-import models.common._
 import models.common.Journey.CapitalAllowancesSpecialTaxSites
+import models.common._
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite.returnTotalIfMultipleSites
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
 import pages.capitalallowances.specialTaxSites._
@@ -55,22 +55,23 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.getValue(NewSpecialTaxSitesList, businessId) match {
-        case None => Future(redirectJourneyRecovery())
-        case Some(sites) =>
+      request
+        .valueOrFutureRedirectDefault(NewSpecialTaxSitesList, businessId)
+        .map { sites =>
           val cleanSiteList = removeIncompleteSites(sites)
           service.persistAnswer(businessId, request.userAnswers, cleanSiteList, NewSpecialTaxSitesList).map { _ =>
             val summaryList = getNewSitesSummaryRows(cleanSiteList, taxYear, businessId)
             val totalAmount = returnTotalIfMultipleSites(cleanSiteList)
             Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList, totalAmount))
           }
-      }
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    request.getValue(NewSpecialTaxSitesList, businessId) match {
-      case None => redirectJourneyRecovery()
-      case Some(sites) =>
+    request
+      .valueOrRedirectDefault(NewSpecialTaxSitesList, businessId)
+      .map { sites =>
         val summaryList = getNewSitesSummaryRows(sites, taxYear, businessId)
         formProvider(page, request.userType)
           .bindFromRequest()
@@ -82,7 +83,8 @@ class NewTaxSitesController @Inject() (override val messagesApi: MessagesApi,
                 else routes.DoYouHaveAContinuingClaimController.onPageLoad(taxYear, businessId, NormalMode)
               )
           )
-    }
+      }
+      .merge
   }
 
   def returnToOverview(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {

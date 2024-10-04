@@ -41,11 +41,11 @@ class ControllersPackageSpec extends SpecBase {
     "should return an Error Redirect in a Left" - {
       "when the BusinessData does not have a Commencement date" in {
         val result = getMaxMonthsWithinTaxYearOrRedirect(aBusinessData.copy(commencementDate = None), taxYear)
-        result shouldBe redirectJourneyRecovery().asLeft
+        result shouldBe redirectJourneyRecovery(Some(s"Business with ID '${aBusinessData.businessId}' does not have a commencement date.")).asLeft
       }
       "when the Commencement date is later than the TaxYear.endYear" in {
         val result = getMaxMonthsWithinTaxYearOrRedirect(aBusinessData.copy(commencementDate = Some(s"${taxYear.endYear + 1}-04-06")), taxYear)
-        result shouldBe redirectJourneyRecovery().asLeft
+        result shouldBe redirectJourneyRecovery(Some("Months between start date and cut off is negative")).asLeft
       }
     }
   }

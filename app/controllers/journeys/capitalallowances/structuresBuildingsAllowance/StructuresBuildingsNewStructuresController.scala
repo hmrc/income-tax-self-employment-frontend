@@ -17,7 +17,6 @@
 package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.redirectJourneyRecovery
 import forms.standard.BooleanFormProvider
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -32,7 +31,7 @@ import viewmodels.journeys.capitalallowances.structuresBuildingsAllowance.NewStr
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewStructuresView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class StructuresBuildingsNewStructuresController @Inject() (override val messagesApi: MessagesApi,
@@ -51,21 +50,22 @@ class StructuresBuildingsNewStructuresController @Inject() (override val message
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      request.getValue(NewStructuresBuildingsList, businessId) match {
-        case None => Future(redirectJourneyRecovery())(ec)
-        case Some(sites) =>
+      request
+        .valueOrFutureRedirectDefault(NewStructuresBuildingsList, businessId)
+        .map { sites =>
           val cleanSiteList = removeIncompleteStructure(sites)
           service.persistAnswer(businessId, request.userAnswers, cleanSiteList, NewStructuresBuildingsList).map { _ =>
             val summaryList = getNewStructuresSummaryRows(cleanSiteList, taxYear, businessId)
             Ok(view(formProvider(page, request.userType), request.userType, taxYear, businessId, summaryList))
           }
-      }
+        }
+        .merge
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    request.getValue(NewStructuresBuildingsList, businessId) match {
-      case None => redirectJourneyRecovery()
-      case Some(structures) =>
+    request
+      .valueOrRedirectDefault(NewStructuresBuildingsList, businessId)
+      .map { structures =>
         val summaryList = getNewStructuresSummaryRows(structures, taxYear, businessId)
         formProvider(page, request.userType)
           .bindFromRequest()
@@ -77,7 +77,8 @@ class StructuresBuildingsNewStructuresController @Inject() (override val message
                 else routes.StructuresBuildingsPreviousClaimUseController.onPageLoad(taxYear, businessId, NormalMode)
               )
           )
-    }
+      }
+      .merge
   }
 
 }
