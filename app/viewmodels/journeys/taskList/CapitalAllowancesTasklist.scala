@@ -71,18 +71,18 @@ object CapitalAllowancesTasklist {
       zegvIsTailored
     )
 
-    val electricVehicleChargePointsStatus = getJourneyStatus(CapitalAllowancesElectricVehicleChargePoints)(journeyStatuses)
-    val electricVehicleChargePointsHref =
-      getUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
-    val evcpIsTailored =
-      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ElectricVehicleChargepoint) && capAllowancesTailoringCompleted
-    val electricVehicleChargePointsRow = returnRowIfConditionPassed(
-      buildSummaryRow(
-        electricVehicleChargePointsHref,
-        messages(s"journeys.$CapitalAllowancesElectricVehicleChargePoints"),
-        electricVehicleChargePointsStatus),
-      evcpIsTailored
-    )
+//    val electricVehicleChargePointsStatus = getJourneyStatus(CapitalAllowancesElectricVehicleChargePoints)(journeyStatuses)
+//    val electricVehicleChargePointsHref =
+//      getUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
+//    val evcpIsTailored =
+//      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ElectricVehicleChargepoint) && capAllowancesTailoringCompleted
+//    val electricVehicleChargePointsRow = returnRowIfConditionPassed(
+//      buildSummaryRow(
+//        electricVehicleChargePointsHref,
+//        messages(s"journeys.$CapitalAllowancesElectricVehicleChargePoints"),
+//        electricVehicleChargePointsStatus),
+//      evcpIsTailored
+//    )
 
     val specialTaxSitesRow = getAllowanceRow(
       taxYear,
@@ -135,7 +135,7 @@ object CapitalAllowancesTasklist {
       tailoringRow,
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
-      electricVehicleChargePointsRow,
+//      electricVehicleChargePointsRow,
       structuresBuildingsRow,
       specialTaxSitesRow,
       annualInvestmentAllowanceRow,
@@ -176,11 +176,6 @@ object CapitalAllowancesTasklist {
         determineJourneyStartOrCyaUrl(
           capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId).url
-        )(journeyStatus)
-      case CapitalAllowancesElectricVehicleChargePoints =>
-        determineJourneyStartOrCyaUrl(
-          capitalallowances.electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
-          capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
       case CapitalAllowancesStructuresBuildings =>
         determineJourneyStartOrCyaUrl(

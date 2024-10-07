@@ -22,7 +22,7 @@ import models.NormalMode
 import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.journeys.capitalallowances.tailoring.CapitalAllowances
-import models.journeys.capitalallowances.tailoring.CapitalAllowances.ElectricVehicleChargepoint
+import models.journeys.capitalallowances.tailoring.CapitalAllowances.ZeroEmissionGoodsVehicle
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import play.api.Application
@@ -49,7 +49,7 @@ class SelectCapitalAllowancesControllerSpec extends CheckboxControllerBaseSpec("
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
 
-  override def answer: Set[CapitalAllowances] = Set(ElectricVehicleChargepoint)
+  override def answer: Set[CapitalAllowances] = Set(ZeroEmissionGoodsVehicle)
 
   override val bindings: List[Binding[_]] = List(
     bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute))

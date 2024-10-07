@@ -24,7 +24,6 @@ import pages.abroad.SelfEmploymentAbroadPage
 import pages.adjustments.profitOrLoss._
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
-import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.specialTaxSites._
 import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowancePage, StructuresBuildingsClaimedPage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
@@ -233,19 +232,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       ZegvUseOutsideSEPercentagePage.pageName,
       ZegvHowMuchDoYouWantToClaimPage.pageName,
       ZegvClaimAmountPage.pageName
-    )
-  }
-
-  case object CapitalAllowancesElectricVehicleChargePoints extends CapitalAllowanceBaseJourney("capital-allowances-electric-vehicle-charge-points") {
-    override val pageKeys: List[PageName] = List(
-      EVCPAllowancePage.pageName,
-      ChargePointTaxReliefPage.pageName,
-      AmountSpentOnEvcpPage.pageName,
-      EvcpOnlyForSelfEmploymentPage.pageName,
-      EvcpUseOutsideSEPage.pageName,
-      EvcpUseOutsideSEPercentagePage.pageName,
-      EvcpHowMuchDoYouWantToClaimPage.pageName,
-      EvcpClaimAmount.pageName
     )
   }
 

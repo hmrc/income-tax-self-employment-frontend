@@ -61,7 +61,6 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       Set[CapitalAllowances](
         CapitalAllowances.ZeroEmissionCar,
         CapitalAllowances.ZeroEmissionGoodsVehicle,
-        CapitalAllowances.ElectricVehicleChargepoint,
         CapitalAllowances.StructuresAndBuildings,
         CapitalAllowances.SpecialTaxSitesStructuresAndBuildings,
         CapitalAllowances.AnnualInvestment,
@@ -81,8 +80,6 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
   private val zeroEmissionCarsCyaUrl = capitalallowances.zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId).url
   private val zeroEmissionGoodsVehicleStartUrl =
     capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
-  private val electricVehicleChargePointsCyaUrl =
-    capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
   private val structuresBuildingsAllowanceUrl =
     capitalallowances.structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url
   private val specialTaxSitesUrl =
@@ -160,7 +157,6 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
-        JourneyNameAndStatus(CapitalAllowancesElectricVehicleChargePoints, Completed),
         JourneyNameAndStatus(CapitalAllowancesAnnualInvestmentAllowance, Completed),
         JourneyNameAndStatus(CapitalAllowancesBalancingAllowance, Completed)
       ),
@@ -171,7 +167,6 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         expectedRow(capitalAllowancesTailoringCyaUrl, CapitalAllowancesTailoring, Completed),
         expectedRow(zeroEmissionCarsCyaUrl, CapitalAllowancesZeroEmissionCars, InProgress),
         expectedRow(zeroEmissionGoodsVehicleStartUrl, CapitalAllowancesZeroEmissionGoodsVehicle, NotStarted),
-        expectedRow(electricVehicleChargePointsCyaUrl, CapitalAllowancesElectricVehicleChargePoints, Completed),
         expectedRow(structuresBuildingsAllowanceUrl, CapitalAllowancesStructuresBuildings, NotStarted),
         expectedRow(specialTaxSitesUrl, CapitalAllowancesSpecialTaxSites, NotStarted),
         expectedRow(annualInvestmentAllowanceCyaUrl, CapitalAllowancesAnnualInvestmentAllowance, Completed),
