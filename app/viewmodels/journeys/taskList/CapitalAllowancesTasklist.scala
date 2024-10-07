@@ -71,19 +71,6 @@ object CapitalAllowancesTasklist {
       zegvIsTailored
     )
 
-//    val electricVehicleChargePointsStatus = getJourneyStatus(CapitalAllowancesElectricVehicleChargePoints)(journeyStatuses)
-//    val electricVehicleChargePointsHref =
-//      getUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
-//    val evcpIsTailored =
-//      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ElectricVehicleChargepoint) && capAllowancesTailoringCompleted
-//    val electricVehicleChargePointsRow = returnRowIfConditionPassed(
-//      buildSummaryRow(
-//        electricVehicleChargePointsHref,
-//        messages(s"journeys.$CapitalAllowancesElectricVehicleChargePoints"),
-//        electricVehicleChargePointsStatus),
-//      evcpIsTailored
-//    )
-
     val specialTaxSitesRow = getAllowanceRow(
       taxYear,
       CapitalAllowancesSpecialTaxSites,
@@ -135,7 +122,6 @@ object CapitalAllowancesTasklist {
       tailoringRow,
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
-//      electricVehicleChargePointsRow,
       structuresBuildingsRow,
       specialTaxSitesRow,
       annualInvestmentAllowanceRow,
