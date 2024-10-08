@@ -46,42 +46,42 @@
 // * limitations under the License.
 // */
 //
-//package controllers.journeys.capitalallowances.structuresBuildingsAllowance
-//
-//import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-//import forms.capitalallowances.electricVehicleChargePoints.AmountSpentOnEvcpFormProvider
-//import models.NormalMode
-//import models.common.UserType
-//import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
-//import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimedAmountPage
-//import play.api.Application
-//import play.api.data.Form
-//import play.api.i18n.Messages
-//import play.api.inject.{Binding, bind}
-//import play.api.mvc.{Call, Request}
-//import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimedAmountView
-//
-//class StructuresBuildingsPreviousClaimedAmountControllerSpec
-//    extends BigDecimalGetAndPostQuestionBaseSpec(
-//      "StructuresBuildingsPreviousClaimedAmountController",
-//      StructuresBuildingsPreviousClaimedAmountPage
-//    ) {
-//
-//  lazy val onPageLoadRoute = routes.StructuresBuildingsPreviousClaimedAmountController.onPageLoad(taxYear, businessId, NormalMode).url
-//  lazy val onSubmitRoute   = routes.StructuresBuildingsPreviousClaimedAmountController.onSubmit(taxYear, businessId, NormalMode).url
-//
-//  override val onwardRoute: Call = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, 0, NormalMode)
-//
-//  override val bindings: List[Binding[_]] = List(bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute)))
-//
-//  override def createForm(userType: UserType): Form[BigDecimal] = new AmountSpentOnEvcpFormProvider()(userType)
-//
-//  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-//      request: Request[_],
-//      messages: Messages,
-//      application: Application): String = {
-//    val view = application.injector.instanceOf[StructuresBuildingsPreviousClaimedAmountView]
-//    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
-//  }
-//
-//}
+package controllers.journeys.capitalallowances.structuresBuildingsAllowance
+
+import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
+import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimedAmountFormProvider
+import models.NormalMode
+import models.common.UserType
+import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
+import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimedAmountPage
+import play.api.Application
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.inject.{Binding, bind}
+import play.api.mvc.{Call, Request}
+import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimedAmountView
+
+class StructuresBuildingsPreviousClaimedAmountControllerSpec
+    extends BigDecimalGetAndPostQuestionBaseSpec(
+      "StructuresBuildingsPreviousClaimedAmountController",
+      StructuresBuildingsPreviousClaimedAmountPage
+    ) {
+
+  lazy val onPageLoadRoute = routes.StructuresBuildingsPreviousClaimedAmountController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onSubmitRoute   = routes.StructuresBuildingsPreviousClaimedAmountController.onSubmit(taxYear, businessId, NormalMode).url
+
+  override val onwardRoute: Call = routes.StructuresBuildingsNewClaimAmountController.onPageLoad(taxYear, businessId, 0, NormalMode)
+
+  override val bindings: List[Binding[_]] = List(bind[CapitalAllowancesNavigator].toInstance(new FakeCapitalAllowanceNavigator(onwardRoute)))
+
+  override def createForm(userType: UserType): Form[BigDecimal] = new StructuresBuildingsPreviousClaimedAmountFormProvider()(userType)
+
+  override def expectedView(form: Form[_], scenario: TestScenario)(implicit
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
+    val view = application.injector.instanceOf[StructuresBuildingsPreviousClaimedAmountView]
+    view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
+  }
+
+}
