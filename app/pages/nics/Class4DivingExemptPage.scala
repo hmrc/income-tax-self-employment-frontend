@@ -38,8 +38,15 @@ case object Class4DivingExemptPage extends NicsBasePage[List[BusinessId]] {
 
   }
 
-  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+  override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean = {
+    val remainingBusinesses = Class4NonDivingExemptPage.remainingBusinesses(userAnswers).size
+    val hasFurtherAnswers = remainingBusinesses match {
+      case 0 => true
+      case 1 => Class4NonDivingExemptSingleBusinessPage.hasAllFurtherAnswers(businessId, userAnswers)
+      case _ => Class4NonDivingExemptPage.hasAllFurtherAnswers(businessId, userAnswers)
+    }
+    userAnswers.get(this, businessId).isDefined && hasFurtherAnswers
+  }
 
   override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(Class4NonDivingExemptPage, Class4NonDivingExemptSingleBusinessPage)
 }

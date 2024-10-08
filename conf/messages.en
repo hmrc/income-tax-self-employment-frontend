@@ -2228,7 +2228,8 @@ whichYearIsLossReported.change.hidden = Change in which tax year you most recent
 
 ########## National Insurance Contributions ##########
 
-nics.exemptForDifferentReason = None of these businesses are exempt
+nics.class-four-other-exemption = I’m exempt for a different reason
+nics.class-four-none-exempt = None of these businesses are exempt
 nics.diverDivingInstructor.individual = You are a diver or diving supervisor
 nics.diverDivingInstructor.agent = Your client is a diver or diving supervisor
 nics.trusteeExecutorAdmin.individual = You are the trustee, executor or administrator but only in some cases

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import models.common.BusinessId
-import models.common.BusinessId.classFourOtherExemption
+import models.common.BusinessId.{classFourNoneExempt, classFourOtherExemption}
 import models.domain.BusinessData
 import play.api.i18n.Messages
 
@@ -32,7 +32,9 @@ package object nics {
 
   def formatBusinessTradingNameAnswers(idList: Seq[BusinessId], businesses: Seq[BusinessData])(implicit messages: Messages): String = {
     val values =
-      if (idList.contains(classFourOtherExemption)) Seq(messages("nics.exemptForDifferentReason")) else getTradingNamesFromIds(idList, businesses)
+      if (idList.contains(classFourOtherExemption)) Seq(messages(s"nics.$classFourOtherExemption"))
+      else if (idList.contains(classFourNoneExempt)) Seq(messages(s"nics.$classFourNoneExempt"))
+      else getTradingNamesFromIds(idList, businesses)
     values.mkString(",<br>")
   }
 

@@ -48,10 +48,17 @@ class Class4NonDivingExemptSingleBusinessController @Inject() (override val mess
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     page.remainingBusinesses(request.userAnswers) match {
-      case List(Business(_, tradingName)) =>
+      case List(Business(businessId, tradingName)) =>
+        val form            = formProvider(page, request.userType, parameters = List(s"${tradingName.value}."))
+        val existingAnswers = request.getValue(page, nationalInsuranceContributions)
+        val preparedForm = existingAnswers match {
+          case Some(list) if list.contains(businessId)          => form.fill(true)
+          case Some(list) if list.contains(classFourNoneExempt) => form.fill(false)
+          case _                                                => form
+        }
         Ok(
           view(
-            formProvider(page, request.userType, parameters = List(s"${tradingName.value}.")),
+            preparedForm,
             taxYear,
             request.userType,
             mode,
@@ -65,18 +72,10 @@ class Class4NonDivingExemptSingleBusinessController @Inject() (override val mess
     def handleError(formWithErrors: Form[_]): Result =
       BadRequest(view(formWithErrors, taxYear, request.userType, mode, page.remainingBusinesses(request.userAnswers).head.tradingName.value))
 
-    def handleSuccess(answer: Boolean): Future[Result] =
-      if (answer) {
-        service.persistAnswerAndRedirect(
-          page,
-          nationalInsuranceContributions,
-          request,
-          page.remainingBusinesses(request.userAnswers).map(_.businessId),
-          taxYear,
-          mode)
-      } else {
-        service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, List(classFourNoneExempt), taxYear, mode)
-      }
+    def handleSuccess(answer: Boolean): Future[Result] = {
+      val submissionAnswer = if (answer) page.remainingBusinesses(request.userAnswers).map(_.businessId) else List(classFourNoneExempt)
+      service.persistAnswerAndRedirect(page, nationalInsuranceContributions, request, submissionAnswer, taxYear, mode)
+    }
 
     val tradingName = page.remainingBusinesses(request.userAnswers).headOption.map(_.tradingName.value).getOrElse("")
 
