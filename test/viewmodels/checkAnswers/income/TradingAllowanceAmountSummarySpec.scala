@@ -15,45 +15,52 @@
  */
 
 package viewmodels.checkAnswers.income
-import base.SpecBase.{businessId, taxYear}
+import base.SpecBase.{buildUserAnswers, businessId, taxYear}
 import models.common.UserType
-import models.database.UserAnswers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class TradingAllowanceAmountSummarySpec extends AnyWordSpec with Matchers {
 
-  private val id       = "some_id"
-  private val authUser = UserType.Individual
-
-  private val data      = Json.obj(businessId.value -> Json.obj("tradingAllowanceAmount" -> 123.45))
-  private val otherData = Json.obj(businessId.value -> Json.obj("otherPage" -> 123.45))
-
-  private val userAnswers      = UserAnswers(id, data)
-  private val otherUserAnswers = UserAnswers(id, otherData)
+  private def buildRow(data: JsObject): Option[SummaryListRow] =
+    TradingAllowanceAmountSummary.row(buildUserAnswers(data), taxYear, UserType.Individual, businessId)
 
   private implicit val messages: MessagesImpl = {
     val messagesApi: DefaultMessagesApi = new DefaultMessagesApi()
     MessagesImpl(Lang("en"), messagesApi)
   }
 
-  "TradingAllowanceAmountSummary" when {
-    "user answers for TradingAllowanceAmountPage exist" should {
-      "generate a summary list row" in {
-        val result = TradingAllowanceAmountSummary.row(userAnswers, taxYear, authUser, businessId)
+  "TradingAllowanceAmountSummary" should {
+    "generate a summary list row" when {
+      "user answers for TradingAllowanceAmountPage exist and HowMuchTradingAllowancePage is 'LessThan'" in {
+        val data   = Json.obj("tradingAllowanceAmount" -> 123.45, "howMuchTradingAllowance" -> "lessThan")
+        val result = buildRow(data)
 
         result.get shouldBe a[SummaryListRow]
         result.get.key.content shouldBe Text("tradingAllowanceAmount.title.individual")
         result.get.value.content shouldBe HtmlContent("£123.45")
       }
     }
-    "user answers do not exist for TradingAllowanceAmountPage" should {
-      "return None" in {
-        val result = TradingAllowanceAmountSummary.row(otherUserAnswers, taxYear, authUser, businessId)
+    "return None" when {
+      "user answers do not exist for TradingAllowanceAmountPage" in {
+        val data   = Json.obj("howMuchTradingAllowance" -> "lessThan")
+        val result = buildRow(data)
+
+        result shouldBe None
+      }
+      "user answers do not exist for HowMuchTradingAllowancePage" in {
+        val data   = Json.obj("tradingAllowanceAmount" -> 123.45)
+        val result = buildRow(data)
+
+        result shouldBe None
+      }
+      "user answers for HowMuchTradingAllowancePage are 'Maximum'" in {
+        val data   = Json.obj("tradingAllowanceAmount" -> 123.45, "howMuchTradingAllowance" -> "maximum")
+        val result = buildRow(data)
 
         result shouldBe None
       }
