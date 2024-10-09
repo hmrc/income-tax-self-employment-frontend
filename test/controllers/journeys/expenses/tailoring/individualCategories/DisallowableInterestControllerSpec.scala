@@ -34,6 +34,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -45,6 +46,8 @@ import views.html.journeys.expenses.tailoring.individualCategories.DisallowableI
 import scala.concurrent.Future
 
 class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
+
+  implicit val messages: Messages = messagesStubbed
 
   def onwardRoute = Call("GET", "/foo")
 

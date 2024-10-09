@@ -15,7 +15,7 @@
  *@
 
 @import controllers.journeys.nics.routes
-@import models.common.BusinessId.classFourOtherExemption
+@import models.common.BusinessId.classFourNoneExempt
 @import models.common.{Business, TaxYear, UserType}
 @import viewmodels.journeys.nics.Class4ExemptBusinesses
 @import views.html.components._
@@ -42,8 +42,8 @@
             userType,
             items = Class4ExemptBusinesses.buildCheckboxes(businesses),
             hint = Some(Hint(content = Text(messages("site.selectAllThatApply")))),
-            exclusiveCheckboxText = Some("nics.exemptForDifferentReason"),
-            exclusiveCheckboxValue = Some(classFourOtherExemption.value)
+            exclusiveCheckboxText = Some(s"nics.$classFourNoneExempt"),
+            exclusiveCheckboxValue = Some(classFourNoneExempt.value)
         )
 
         @submitButton()

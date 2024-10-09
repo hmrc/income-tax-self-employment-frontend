@@ -26,6 +26,7 @@ import models.common.Journey
 import org.scalatest.prop.TableDrivenPropertyChecks
 import pages.SectionCompletedStatePage
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -35,6 +36,9 @@ import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.SectionCompletedStateView
 
 class SectionCompletedStateControllerSpec extends SpecBase with TableDrivenPropertyChecks {
+
+  implicit val messages: Messages = messagesStubbed
+
   val journey             = Journey.Abroad
   val stubService         = SelfEmploymentServiceStub()
   val formProvider        = new BooleanFormProvider()

@@ -16,19 +16,24 @@
 
 package forms.standard
 
-import forms.mappings.Mappings._
+import forms.mappings.Mappings
 import models.common.UserType
 import pages.OneQuestionPage
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BooleanFormProvider @Inject() {
+class BooleanFormProvider @Inject() extends Mappings {
 
   def apply(page: OneQuestionPage[_],
             userType: UserType,
             altPrefix: Option[String] = None,
-            userSpecificRequiredError: Boolean = true): Form[Boolean] =
-    Form("value" -> boolean(s"${altPrefix.getOrElse(page.pageName)}.error.required${if (userSpecificRequiredError) s".$userType" else ""}"))
+            userSpecificRequiredError: Boolean = true,
+            parameters: List[String] = List.empty[String])(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(
+        messages(s"${altPrefix.getOrElse(page.pageName)}.error.required${if (userSpecificRequiredError) s".$userType" else ""}", parameters: _*))
+    )
 }

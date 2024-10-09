@@ -39,6 +39,8 @@ import play.api.test.Helpers._
 
 abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, page: OneQuestionPage[Boolean]) extends ControllerSpec {
 
+  implicit val messages: Messages = messagesStubbed
+
   val validAnswer: Boolean    = true
   val form                    = new BooleanFormProvider
   val checkForExistingAnswers = true
