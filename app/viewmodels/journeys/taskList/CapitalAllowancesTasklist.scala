@@ -98,6 +98,16 @@ object CapitalAllowancesTasklist {
       balancingAllowanceIsTailored
     )
 
+    val balancingChargeStatus = getJourneyStatus(CapitalAllowancesBalancingCharge)(journeyStatuses)
+    val balancingChargeHref =
+      getUrl(CapitalAllowancesBalancingCharge, balancingChargeStatus, businessId, taxYear)
+    val balancingChargeIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.BalancingCharge) && capAllowancesTailoringCompleted
+    val balancingChargeRow = returnRowIfConditionPassed(
+      buildSummaryRow(balancingChargeHref, messages(s"journeys.$CapitalAllowancesBalancingCharge"), balancingChargeStatus),
+      balancingChargeIsTailored
+    )
+
     val annualInvestmentAllowanceStatus = getJourneyStatus(CapitalAllowancesAnnualInvestmentAllowance)(journeyStatuses)
     val annualInvestmentAllowanceHref =
       getUrl(CapitalAllowancesAnnualInvestmentAllowance, annualInvestmentAllowanceStatus, businessId, taxYear)
@@ -126,7 +136,8 @@ object CapitalAllowancesTasklist {
       specialTaxSitesRow,
       annualInvestmentAllowanceRow,
       writingDownRow,
-      balancingAllowanceRow
+      balancingAllowanceRow,
+      balancingChargeRow
     ).flatten
   }
 
@@ -180,6 +191,7 @@ object CapitalAllowancesTasklist {
           capitalallowances.balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
+      case CapitalAllowancesBalancingCharge => "#"
       case CapitalAllowancesAnnualInvestmentAllowance =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
