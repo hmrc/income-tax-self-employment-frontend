@@ -23,7 +23,6 @@ import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
-import pages.capitalallowances.electricVehicleChargePoints._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import play.api.libs.json.Json
@@ -165,102 +164,6 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       }
     }
 
-    "page is EvcpAllowancePage" - {
-      "answer is 'true'" - {
-        "navigate to ChargePointTaxReliefController" in {
-          val data           = Json.obj("evcpAllowance" -> true)
-          val expectedResult = electricVehicleChargePoints.routes.ChargePointTaxReliefController.onPageLoad(taxYear, businessId, NormalMode)
-
-          nextPage(EVCPAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is 'false'" - {
-        "navigate to ElectricVehicleChargePointsCYAController" in {
-          val data           = Json.obj("evcpAllowance" -> false)
-          val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
-
-          nextPage(EVCPAllowancePage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is None or invalid" - {
-        "navigate to the ErrorRecoveryPage" in {
-          nextPage(EVCPAllowancePage, emptyUserAnswers) shouldBe errorRedirect
-        }
-      }
-    }
-
-    "page is ChargePointTaxReliefPage" - {
-      "answer is 'true'" - {
-        "navigate to AmountSpentOnEvcpController" in {
-          val data           = Json.obj("chargePointTaxRelief" -> true)
-          val expectedResult = electricVehicleChargePoints.routes.AmountSpentOnEvcpController.onPageLoad(taxYear, businessId, NormalMode)
-
-          nextPage(ChargePointTaxReliefPage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is 'false'" - {
-        "navigate to ElectricVehicleChargePointsCYAController" in {
-          val data           = Json.obj("chargePointTaxRelief" -> false)
-          val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
-
-          nextPage(ChargePointTaxReliefPage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is None or invalid" - {
-        "navigate to the ErrorRecoveryPage" in {
-          nextPage(ChargePointTaxReliefPage, emptyUserAnswers) shouldBe errorRedirect
-        }
-      }
-    }
-
-    "page is AmountSpentOnEvcpPage" - {
-      "navigate to EvcpOnlyForSelfEmploymentPage" in {
-        val expectedResult = electricVehicleChargePoints.routes.EvcpOnlyForSelfEmploymentController.onPageLoad(taxYear, businessId, NormalMode)
-
-        nextPage(AmountSpentOnEvcpPage, emptyUserAnswers) shouldBe expectedResult
-      }
-    }
-
-    "page is EvcpOnlyForSelfEmploymentPage" - {
-      "answer is 'Yes'" - {
-        "navigate to EvcpHowMuchDoYouWantToClaimPage" in {
-          val data           = Json.obj("evcpOnlyForSelfEmployment" -> true)
-          val expectedResult = electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
-
-          nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is 'No'" - {
-        "navigate to EvcpUseOutsideSEPage" in {
-          val data           = Json.obj("evcpOnlyForSelfEmployment" -> false)
-          val expectedResult = electricVehicleChargePoints.routes.EvcpUseOutsideSEController.onPageLoad(taxYear, businessId, NormalMode)
-
-          nextPage(EvcpOnlyForSelfEmploymentPage, buildUserAnswers(data)) shouldBe expectedResult
-        }
-      }
-      "answer is None or invalid" - {
-        "navigate to the ErrorRecoveryPage" in {
-          nextPage(EvcpOnlyForSelfEmploymentPage, emptyUserAnswers) shouldBe errorRedirect
-        }
-      }
-    }
-
-    "page is EvcpUseOutsideSEPage" - {
-      "navigate to EvcpHowMuchDoYouWantToClaimPage" in {
-        val expectedResult = electricVehicleChargePoints.routes.EvcpHowMuchDoYouWantToClaimController.onPageLoad(taxYear, businessId, NormalMode)
-
-        nextPage(EvcpUseOutsideSEPage, emptyUserAnswers) shouldBe expectedResult
-      }
-    }
-
-    "page is EvcpHowMuchDoYouWantToClaimPage" - {
-      "navigate to ElectricVehicleChargePointsCYAController" in {
-        val expectedResult = electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId)
-
-        nextPage(EvcpHowMuchDoYouWantToClaimPage, emptyUserAnswers) shouldBe expectedResult
-      }
-    }
-
     "navigate to journey recovery on no page match" in {
       nextPage(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
@@ -286,15 +189,6 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
           ZecUseOutsideSEPage,
           ZecHowMuchDoYouWantToClaimPage).foreach {
           nextPageViaCheckMode(_, emptyUserAnswers) shouldBe zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
-        }
-      }
-    }
-
-    "page is EVCPAllowancePage, ChargePointTaxReliefPage, AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage, EvcpHowMuchDoYouWantToClaimPage" - {
-      "navigate to ElectricVehicleChargePointsCYAController" in {
-        List(EVCPAllowancePage, ChargePointTaxReliefPage, AmountSpentOnEvcpPage, EvcpOnlyForSelfEmploymentPage, EvcpUseOutsideSEPage).foreach {
-          nextPageViaCheckMode(_, emptyUserAnswers) shouldBe electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController
-            .onPageLoad(taxYear, businessId)
         }
       }
     }
