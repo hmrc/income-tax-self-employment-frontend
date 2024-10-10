@@ -346,6 +346,12 @@ tradingAllowance.error.required.individual = Select yes if you want to use the t
 tradingAllowance.error.required.agent = Select yes if your client wants to use the trading allowance or declare expenses
 tradingAllowance.change.hidden = Change trading allowance
 
+## Trading allowance warning
+tradingAllowanceWarning.title.individual = Your expenses and capital allowances will be deleted
+tradingAllowanceWarning.title.agent = Your client’s expenses and capital allowances will be deleted
+tradingAllowanceWarning.p1.individual = If you use the trading allowance, you cannot declare expenses and the expenses you previously entered will be deleted. You will also be unable to claim any capital allowances.
+tradingAllowanceWarning.p1.agent = If your client uses the trading allowance, they cannot declare expenses and the expenses they previously entered will be deleted. Your client will also be unable to claim any capital allowances.
+
 ## How much trading allowance
 howMuchTradingAllowance.title = Trading allowance for income under £1,000
 howMuchTradingAllowance.p1.individual = If your income was less than £1,000, you cannot use the full trading allowance. You may also choose to not use all of it. This is known as ‘partial relief’.
