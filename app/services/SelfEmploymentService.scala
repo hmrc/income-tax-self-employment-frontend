@@ -16,9 +16,11 @@
 
 package services
 
+import cats.data.EitherT
 import connectors.SelfEmploymentConnector
 import controllers.journeys.clearDependentPages
 import models.Mode
+import models.common.Journey.{allCapitalAllowanceJourneyPages, allExpensesJourneyPages}
 import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
@@ -35,6 +37,7 @@ import play.api.libs.json._
 import play.api.mvc.Result
 import queries.Settable
 import repositories.SessionRepositoryBase
+import services.SelfEmploymentService.clearDataFromUserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
@@ -92,6 +95,10 @@ trait SelfEmploymentService {
   def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
+
+  def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -241,6 +248,17 @@ class SelfEmploymentServiceImpl @Inject() (
       _ <- setJourneyStatus(JourneyAnswersContext(ctx.taxYear, ctx.nino, ctx.businessId, ctx.mtditid, Journey.ExpensesTailoring), NotStarted)
       _ <- connector.clearExpensesSimplifiedOrNoExpensesAnswers(ctx.taxYear, ctx.nino, ctx.businessId, ctx.mtditid)
     } yield ()
+
+  def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] = {
+    val pagesToClear = allExpensesJourneyPages ++ allCapitalAllowanceJourneyPages
+    val result = Future
+      .fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
+      .flatMap(_ => connector.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value)
+    EitherT(result)
+  }
+
 }
 
 object SelfEmploymentService {

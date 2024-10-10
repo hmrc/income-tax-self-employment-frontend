@@ -59,7 +59,8 @@ case class SelfEmploymentServiceStub(
     getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
     getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
     getNetBusinessProfitOrLossValuesResult: Either[ServiceError, NetBusinessProfitOrLossValues] = Right(aNetBusinessProfitValues),
-    clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()))
+    clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()),
+    clearExpensesAndCapitalAllowancesResult: Either[ServiceError, Unit] = Right(()))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -139,4 +140,9 @@ case class SelfEmploymentServiceStub(
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearSimplifiedExpensesDataResult)
+
+  def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](clearExpensesAndCapitalAllowancesResult)
 }

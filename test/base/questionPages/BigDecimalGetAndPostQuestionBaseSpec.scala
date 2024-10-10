@@ -148,7 +148,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
       "no answers exist in the session" - {
         "Redirect to the journey recovery page" in new TestScenario(answers = None) {
           running(application) {
-            val result = route(application, getRequest).value
+            val result = route(application, postRequest).value
 
             status(result) shouldBe SEE_OTHER
             redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url

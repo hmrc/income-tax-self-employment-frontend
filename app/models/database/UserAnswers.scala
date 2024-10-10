@@ -18,6 +18,7 @@ package models.database
 
 import cats.implicits.catsSyntaxOptionId
 import models.RichJsObject
+import models.common.Journey.{allCapitalAllowanceJourneys, allExpensesJourneys}
 import models.common._
 import pages.{TradeAccountingType, TradingNameKey}
 import play.api.libs.json._
@@ -100,6 +101,12 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
       val updatedAnswers = copy(data = d)
       page.cleanup(updatedAnswers)
     }
+  }
+
+  def hasExistingExpensesOrCapitalAllowances(businessId: BusinessId): Boolean = {
+    val journeys = allExpensesJourneys ++ allCapitalAllowanceJourneys
+    val answers  = (data \ businessId.value).asOpt[JsObject].getOrElse(Json.obj())
+    journeys.exists(_.pageKeys.exists(page => answers.keys.contains(page.value)))
   }
 
 }

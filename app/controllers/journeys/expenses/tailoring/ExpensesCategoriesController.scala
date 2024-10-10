@@ -21,11 +21,12 @@ import config.TaxYearConfig.totalIncomeIsEqualOrAboveThreshold
 import controllers.actions._
 import controllers.{handleApiResult, handleResultT}
 import forms.expenses.tailoring.ExpensesCategoriesFormProvider
+import models.common.Journey.expensesTailoringList
 import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.expenses.ExpensesTailoring
-import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount, tailoringList}
+import models.journeys.expenses.ExpensesTailoring.{IndividualCategories, NoExpenses, TotalAmount}
 import models.{Mode, NormalMode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring._
@@ -143,9 +144,9 @@ class ExpensesCategoriesController @Inject() (override val messagesApi: Messages
 
   private def clearDependentPageAnswers(userAnswers: UserAnswers, businessId: Option[BusinessId], pageAnswer: ExpensesTailoring): Try[UserAnswers] = {
     val toBeRemoved = pageAnswer match {
-      case NoExpenses           => tailoringList
-      case IndividualCategories => tailoringList.filter(_ == TotalExpensesPage)
-      case TotalAmount          => tailoringList.filterNot(_ == TotalExpensesPage)
+      case NoExpenses           => expensesTailoringList
+      case IndividualCategories => expensesTailoringList.filter(_ == TotalExpensesPage)
+      case TotalAmount          => expensesTailoringList.filterNot(_ == TotalExpensesPage)
     }
     clearDataFromUserAnswers(userAnswers, toBeRemoved, businessId)
   }
