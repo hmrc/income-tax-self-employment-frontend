@@ -206,9 +206,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   sealed abstract class CapitalAllowanceBaseJourney(override val entryName: String) extends Journey(entryName) {
-    override def toString: String      = entryName
-    val answerPages: List[Settable[_]] = ???
-    lazy val pageKeys: List[PageName]  = answerPages.asInstanceOf[List[Page]].map(_.pageName)
+    override def toString: String = entryName
+    val answerPages: List[Settable[_]]
+    lazy val pageKeys: List[PageName] = answerPages.asInstanceOf[List[Page]].map(_.pageName)
   }
 
   case object CapitalAllowancesTailoring extends CapitalAllowanceBaseJourney("capital-allowances-tailoring") {
@@ -249,7 +249,9 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     )
   }
 
-  case object CapitalAllowancesBalancingCharge extends CapitalAllowanceBaseJourney("capital-allowances-balancing-charge")
+  case object CapitalAllowancesBalancingCharge extends CapitalAllowanceBaseJourney("capital-allowances-balancing-charge") {
+    override val answerPages: List[Settable[_]] = List.empty[Settable[_]]
+  }
 
   case object CapitalAllowancesAnnualInvestmentAllowance extends CapitalAllowanceBaseJourney("capital-allowances-annual-investment-allowance") {
     override val answerPages: List[Settable[_]] = List(
