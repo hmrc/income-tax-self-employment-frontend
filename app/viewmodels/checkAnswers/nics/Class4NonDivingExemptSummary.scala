@@ -22,7 +22,7 @@ import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.domain.BusinessData
-import pages.nics.{Class4DivingExemptPage, Class4NonDivingExemptPage}
+import pages.nics.Class4NonDivingExemptPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
