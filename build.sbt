@@ -1,3 +1,4 @@
+import com.typesafe.sbt.uglify.Import.uglifyOps
 import play.sbt.routes.RoutesKeys
 import sbt.Def
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
