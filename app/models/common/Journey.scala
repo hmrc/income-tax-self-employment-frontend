@@ -19,23 +19,22 @@ package models.common
 import controllers.journeys.expenses
 import enumeratum._
 import models.NormalMode
-import pages.QuestionPage
 import pages.abroad.SelfEmploymentAbroadPage
 import pages.adjustments.profitOrLoss._
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
 import pages.capitalallowances.specialTaxSites._
-import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsAllowancePage, StructuresBuildingsClaimedPage}
+import pages.capitalallowances.structuresBuildingsAllowance._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.writingDownAllowance._
 import pages.capitalallowances.zeroEmissionCars._
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
-import pages.expenses.advertisingOrMarketing.AdvertisingOrMarketingAmountPage
+import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
 import pages.expenses.depreciation.DepreciationDisallowableAmountPage
 import pages.expenses.entertainment.EntertainmentAmountPage
 import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage}
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import pages.expenses.interest.{InterestAmountPage, InterestDisallowableAmountPage}
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
@@ -44,11 +43,15 @@ import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, Professional
 import pages.expenses.repairsandmaintenance.{RepairsAndMaintenanceAmountPage, RepairsAndMaintenanceDisallowableAmountPage}
 import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAmountPage}
 import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.expenses.tailoring.individualCategories._
+import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
 import pages.nics._
+import pages.{Page, QuestionPage}
 import play.api.mvc.PathBindable
+import queries.Settable
 
 sealed abstract class Journey(override val entryName: String) extends EnumEntry {
   override def toString: String = entryName
@@ -129,6 +132,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object AdjustmentsPrepop extends Journey("adjustments-prepop") {
     override val pageKeys: List[PageName] = Nil
   }
+
   case object ExpensesTailoring extends Journey("expenses-categories") {
     override val pageKeys: List[PageName] = List(
       ExpensesCategoriesPage.pageName
@@ -203,42 +207,45 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   sealed abstract class CapitalAllowanceBaseJourney(override val entryName: String) extends Journey(entryName) {
     override def toString: String = entryName
+    val answerPages: List[Settable[_]]
+    lazy val pageKeys: List[PageName] = answerPages.asInstanceOf[List[Page]].map(_.pageName)
   }
 
   case object CapitalAllowancesTailoring extends CapitalAllowanceBaseJourney("capital-allowances-tailoring") {
-    override val pageKeys: List[PageName] = List(ClaimCapitalAllowancesPage.pageName, SelectCapitalAllowancesPage.pageName)
+    override val answerPages: List[Settable[_]] = List(ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage)
+
   }
 
   case object CapitalAllowancesZeroEmissionCars extends CapitalAllowanceBaseJourney("capital-allowances-zero-emission-cars") {
-    override val pageKeys: List[PageName] = List(
-      ZeroEmissionCarsPage.pageName,
-      ZecAllowancePage.pageName,
-      ZecTotalCostOfCarPage.pageName,
-      ZecOnlyForSelfEmploymentPage.pageName,
-      ZecUseOutsideSEPage.pageName,
-      ZecUseOutsideSEPercentagePage.pageName,
-      ZecHowMuchDoYouWantToClaimPage.pageName,
-      ZecClaimAmount.pageName
+    override val answerPages: List[Settable[_]] = List(
+      ZeroEmissionCarsPage,
+      ZecAllowancePage,
+      ZecTotalCostOfCarPage,
+      ZecOnlyForSelfEmploymentPage,
+      ZecUseOutsideSEPage,
+      ZecUseOutsideSEPercentagePage,
+      ZecHowMuchDoYouWantToClaimPage,
+      ZecClaimAmount
     )
   }
 
   case object CapitalAllowancesZeroEmissionGoodsVehicle extends CapitalAllowanceBaseJourney("capital-allowances-zero-emission-goods-vehicle") {
-    override val pageKeys: List[PageName] = List(
-      ZeroEmissionGoodsVehiclePage.pageName,
-      ZegvAllowancePage.pageName,
-      ZegvTotalCostOfVehiclePage.pageName,
-      ZegvOnlyForSelfEmploymentPage.pageName,
-      ZegvUseOutsideSEPage.pageName,
-      ZegvUseOutsideSEPercentagePage.pageName,
-      ZegvHowMuchDoYouWantToClaimPage.pageName,
-      ZegvClaimAmountPage.pageName
+    override val answerPages: List[Settable[_]] = List(
+      ZeroEmissionGoodsVehiclePage,
+      ZegvAllowancePage,
+      ZegvTotalCostOfVehiclePage,
+      ZegvOnlyForSelfEmploymentPage,
+      ZegvUseOutsideSEPage,
+      ZegvUseOutsideSEPercentagePage,
+      ZegvHowMuchDoYouWantToClaimPage,
+      ZegvClaimAmountPage
     )
   }
 
   case object CapitalAllowancesBalancingAllowance extends CapitalAllowanceBaseJourney("capital-allowances-balancing-allowance") {
-    override val pageKeys: List[PageName] = List(
-      BalancingAllowancePage.pageName,
-      BalancingAllowanceAmountPage.pageName
+    override val answerPages: List[Settable[_]] = List(
+      BalancingAllowancePage,
+      BalancingAllowanceAmountPage
     )
   }
 
@@ -247,41 +254,42 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesAnnualInvestmentAllowance extends CapitalAllowanceBaseJourney("capital-allowances-annual-investment-allowance") {
-    override val pageKeys: List[PageName] = List(
-      AnnualInvestmentAllowancePage.pageName,
-      AnnualInvestmentAllowanceAmountPage.pageName
+    override val answerPages: List[Settable[_]] = List(
+      AnnualInvestmentAllowancePage,
+      AnnualInvestmentAllowanceAmountPage
     )
   }
 
   case object CapitalAllowancesStructuresBuildings extends CapitalAllowanceBaseJourney("capital-allowances-structures-buildings") {
-    override val pageKeys: List[PageName] = List(
-      StructuresBuildingsAllowancePage.pageName,
-      StructuresBuildingsClaimedPage.pageName
-      // TODO add other pages in journey
+    override val answerPages: List[Settable[_]] = List(
+      NewStructuresBuildingsList,
+      StructuresBuildingsAllowancePage,
+      StructuresBuildingsClaimedPage,
+      StructuresBuildingsEligibleClaimPage,
+      StructuresBuildingsLocationPage,
+      StructuresBuildingsNewClaimAmountPage,
+      StructuresBuildingsNewStructuresPage,
+      StructuresBuildingsPreviousClaimUsePage,
+      StructuresBuildingsPreviousClaimedAmountPage,
+      StructuresBuildingsQualifyingUseDatePage,
+      StructuresBuildingsRemovePage
     )
   }
 
   case object CapitalAllowancesWritingDownAllowance extends CapitalAllowanceBaseJourney("capital-allowances-writing-down-allowance") {
-    override val pageKeys: List[PageName] = List(
-      WritingDownAllowancePage.pageName,
-      WdaMainRateClaimAmountPage.pageName,
-      WdaMainRatePage.pageName,
-      WdaSingleAssetClaimAmountsPage.pageName,
-      WdaSingleAssetPage.pageName,
-      WdaSpecialRateClaimAmountPage.pageName,
-      WdaSpecialRatePage.pageName
+    override val answerPages: List[Settable[_]] = List(
+      WritingDownAllowancePage,
+      WdaMainRateClaimAmountPage,
+      WdaMainRatePage,
+      WdaSingleAssetClaimAmountsPage,
+      WdaSingleAssetPage,
+      WdaSpecialRateClaimAmountPage,
+      WdaSpecialRatePage
     )
   }
 
   case object CapitalAllowancesSpecialTaxSites extends CapitalAllowanceBaseJourney("capital-allowances-special-tax-sites") {
-    override val pageKeys: List[PageName] = List(
-      SpecialTaxSitesPage.pageName,
-      NewSpecialTaxSitesList.pageName,
-      DoYouHaveAContinuingClaimPage.pageName,
-      ContinueClaimingAllowanceForExistingSitePage.pageName,
-      ExistingSiteClaimingAmountPage.pageName
-    )
-    val answerPages = List(
+    override val answerPages: List[Settable[_]] = List(
       SpecialTaxSitesPage,
       NewSpecialTaxSitesList,
       DoYouHaveAContinuingClaimPage,
@@ -312,5 +320,101 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       WhichYearIsLossReportedPage
     ).map(_.pageName)
   }
+
+  val allExpensesJourneys: List[Journey] = List(
+    ExpensesTailoring,
+    ExpensesGoodsToSellOrUse,
+    ExpensesAdvertisingOrMarketing,
+    ExpensesOfficeSupplies,
+    ExpensesOtherExpenses,
+    ExpensesFinancialCharges,
+    ExpensesEntertainment,
+    ExpensesStaffCosts,
+    ExpensesConstruction,
+    ExpensesProfessionalFees,
+    ExpensesInterest,
+    ExpensesDepreciation,
+    ExpensesRepairsAndMaintenance,
+    ExpensesWorkplaceRunningCosts,
+    ExpensesIrrecoverableDebts,
+    ExpensesDepreciation
+  )
+
+  val expensesTailoringList: List[Settable[_]] = List(
+    TotalExpensesPage,
+    AdvertisingOrMarketingAmountPage,
+    AdvertisingOrMarketingDisallowableAmountPage,
+    AdvertisingOrMarketingPage,
+    BusinessPremisesAmountPage,
+    BusinessPremisesDisallowableAmountPage,
+    ConstructionIndustryAmountPage,
+    ConstructionIndustryDisallowableAmountPage,
+    DepreciationDisallowableAmountPage,
+    DepreciationPage,
+    DisallowableGoodsToSellOrUseAmountPage,
+    DisallowableInterestPage,
+    DisallowableIrrecoverableDebtsPage,
+    DisallowableOtherFinancialChargesPage,
+    DisallowableProfessionalFeesPage,
+    DisallowableStaffCostsPage,
+    DisallowableSubcontractorCostsPage,
+    EntertainmentAmountPage,
+    EntertainmentCostsPage,
+    FinancialChargesAmountPage,
+    FinancialChargesDisallowableAmountPage,
+    FinancialExpensesPage,
+    GoodsToSellOrUseAmountPage,
+    GoodsToSellOrUsePage,
+    InterestAmountPage,
+    InterestDisallowableAmountPage,
+    IrrecoverableDebtsAmountPage,
+    IrrecoverableDebtsDisallowableAmountPage,
+    LiveAtBusinessPremisesPage,
+    LivingAtBusinessPremisesOnePerson,
+    LivingAtBusinessPremisesThreePlusPeople,
+    LivingAtBusinessPremisesTwoPeople,
+    MoreThan25HoursPage,
+    OfficeSuppliesAmountPage,
+    OfficeSuppliesDisallowableAmountPage,
+    OfficeSuppliesPage,
+    OtherExpensesAmountPage,
+    OtherExpensesDisallowableAmountPage,
+    OtherExpensesPage,
+    ProfessionalFeesAmountPage,
+    ProfessionalFeesDisallowableAmountPage,
+    ProfessionalServiceExpensesPage,
+    RepairsAndMaintenanceAmountPage,
+    RepairsAndMaintenanceDisallowableAmountPage,
+    RepairsAndMaintenancePage,
+    StaffCostsAmountPage,
+    StaffCostsDisallowableAmountPage,
+    TaxiMinicabOrRoadHaulagePage,
+    TravelForWorkPage,
+    WfbpClaimingAmountPage,
+    WfbpFlatRateOrActualCostsPage,
+    WfhClaimingAmountPage,
+    WfhFlatRateOrActualCostsPage,
+    WorkFromBusinessPremisesPage,
+    WorkFromHomePage,
+    WorkingFromHomeHours25To50,
+    WorkingFromHomeHours51To100,
+    WorkingFromHomeHours101Plus
+  )
+
+  val allExpensesJourneyPages: List[Settable[_]] = expensesTailoringList.appended(ExpensesCategoriesPage)
+
+  val allCapitalAllowanceJourneys: List[Journey] = List(
+    CapitalAllowancesTailoring,
+    CapitalAllowancesZeroEmissionCars,
+    CapitalAllowancesZeroEmissionGoodsVehicle,
+    CapitalAllowancesBalancingAllowance,
+    CapitalAllowancesAnnualInvestmentAllowance,
+    CapitalAllowancesStructuresBuildings,
+    CapitalAllowancesWritingDownAllowance,
+    CapitalAllowancesSpecialTaxSites
+  )
+
+  val allCapitalAllowanceJourneyPages: List[Settable[_]] =
+    allCapitalAllowanceJourneys.asInstanceOf[List[CapitalAllowanceBaseJourney]].flatMap(_.answerPages)
 
 }
