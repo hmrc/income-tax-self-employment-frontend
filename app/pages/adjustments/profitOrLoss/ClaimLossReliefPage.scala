@@ -22,6 +22,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.redirectOnBoolean
 import play.api.mvc.Call
+import queries.Settable
 
 case object ClaimLossReliefPage extends AdjustmentsBasePage[Boolean] {
   override def toString: String = "claimLossRelief"
@@ -46,4 +47,6 @@ case object ClaimLossReliefPage extends AdjustmentsBasePage[Boolean] {
           PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
         }
       )
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(WhatDoYouWantToDoWithLossPage, CarryLossForwardPage)
 }
