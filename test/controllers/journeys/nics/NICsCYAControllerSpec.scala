@@ -35,7 +35,12 @@ import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import utils.Assertions.assertEqualWithDiff
 import viewmodels.checkAnswers.BooleanSummary
-import viewmodels.checkAnswers.nics.{Class4DivingExemptSummary, Class4ExemptionReasonSummary, Class4NonDivingExemptSummary}
+import viewmodels.checkAnswers.nics.{
+  Class4DivingExemptSummary,
+  Class4ExemptionReasonSummary,
+  Class4NonDivingExemptSingleBusinessSummary,
+  Class4NonDivingExemptSummary
+}
 import views.html.standard.CheckYourAnswersView
 
 class NICsCYAControllerSpec extends ControllerSpec {
@@ -69,12 +74,12 @@ class NICsCYAControllerSpec extends ControllerSpec {
         val summaryList = SummaryList(
           rows = List(
             new BooleanSummary(Class4NICsPage, routes.Class4NICsController.onPageLoad(taxYear, CheckMode))
-              .row(userAnswers, taxYear, nationalInsuranceContributions, userType, rightTextAlign = false)
-              .value,
-            Class4ExemptionReasonSummary.row(userAnswers, userType, taxYear).value,
-            Class4DivingExemptSummary.row(userAnswers, businesses, userType, taxYear).value,
-            Class4NonDivingExemptSummary.row(userAnswers, businesses, userType, taxYear).value
-          ),
+              .row(userAnswers, taxYear, nationalInsuranceContributions, userType, rightTextAlign = false),
+            Class4ExemptionReasonSummary.row(userAnswers, userType, taxYear),
+            Class4DivingExemptSummary.row(userAnswers, businesses, userType, taxYear),
+            Class4NonDivingExemptSummary.row(userAnswers, businesses, userType, taxYear),
+            Class4NonDivingExemptSingleBusinessSummary.row(userAnswers, userType, taxYear)
+          ).flatten,
           classes = "govuk-!-margin-bottom-7"
         )
 

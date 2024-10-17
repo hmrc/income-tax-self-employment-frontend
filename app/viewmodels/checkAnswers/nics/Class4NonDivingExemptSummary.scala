@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.nics
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.nics.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
@@ -30,12 +31,14 @@ object Class4NonDivingExemptSummary {
 
   def row(answers: UserAnswers, businesses: Seq[BusinessData], userType: UserType, taxYear: TaxYear)(implicit
       messages: Messages): Option[SummaryListRow] =
-    answers.get(Class4NonDivingExemptPage, BusinessId.nationalInsuranceContributions).map { idList =>
-      buildRowString(
-        formatBusinessTradingNameAnswers(idList, businesses),
-        routes.Class4NonDivingExemptController.onPageLoad(taxYear, CheckMode),
-        s"class4NonDivingExempt.subHeading.cya.$userType",
-        "class4NonDivingExempt.change.hidden"
-      )
+    answers.get(Class4NonDivingExemptPage, BusinessId.nationalInsuranceContributions).flatMap { idList =>
+      if (Class4NonDivingExemptPage.remainingBusinesses(answers).size > 1) {
+        buildRowString(
+          formatBusinessTradingNameAnswers(idList, businesses),
+          routes.Class4NonDivingExemptController.onPageLoad(taxYear, CheckMode),
+          s"class4NonDivingExempt.subHeading.cya.$userType",
+          "class4NonDivingExempt.change.hidden"
+        ).some
+      } else None
     }
 }

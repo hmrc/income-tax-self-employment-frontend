@@ -20,7 +20,6 @@ import models.common.BusinessId.nationalInsuranceContributions
 import models.common.{Business, BusinessId, TaxYear}
 import models.database.UserAnswers
 import play.api.mvc.Call
-import queries.Settable
 
 case object Class4NonDivingExemptPage extends NicsBasePage[List[BusinessId]] {
   override def toString: String = "class4NonDivingExempt"
@@ -36,6 +35,4 @@ case object Class4NonDivingExemptPage extends NicsBasePage[List[BusinessId]] {
 
     userAnswers.getBusinesses.filterNot(business => previouslySelected.contains(business.businessId))
   }
-
-  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(Class4NonDivingExemptSingleBusinessPage)
 }

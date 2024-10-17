@@ -21,7 +21,7 @@ import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.BusinessId.{classFourNoneExempt, nationalInsuranceContributions}
 import models.common.{Business, TaxYear}
-import pages.nics.Class4NonDivingExemptSingleBusinessPage
+import pages.nics.Class4NonDivingExemptPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -44,7 +44,7 @@ class Class4NonDivingExemptSingleBusinessController @Inject() (override val mess
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = Class4NonDivingExemptSingleBusinessPage
+  private val page = Class4NonDivingExemptPage
 
   def onPageLoad(taxYear: TaxYear, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     page.remainingBusinesses(request.userAnswers) match {
