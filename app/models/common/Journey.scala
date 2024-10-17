@@ -250,7 +250,8 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesBalancingCharge extends CapitalAllowanceBaseJourney("capital-allowances-balancing-charge") {
-    override val pageKeys: List[PageName] = List()
+    override lazy val pageKeys: List[PageName] = List()
+    override val answerPages: List[Settable[_]] = List.empty[Settable[_]]
   }
 
   case object CapitalAllowancesAnnualInvestmentAllowance extends CapitalAllowanceBaseJourney("capital-allowances-annual-investment-allowance") {
