@@ -71,19 +71,6 @@ object CapitalAllowancesTasklist {
       zegvIsTailored
     )
 
-    val electricVehicleChargePointsStatus = getJourneyStatus(CapitalAllowancesElectricVehicleChargePoints)(journeyStatuses)
-    val electricVehicleChargePointsHref =
-      getUrl(CapitalAllowancesElectricVehicleChargePoints, electricVehicleChargePointsStatus, businessId, taxYear)
-    val evcpIsTailored =
-      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.ElectricVehicleChargepoint) && capAllowancesTailoringCompleted
-    val electricVehicleChargePointsRow = returnRowIfConditionPassed(
-      buildSummaryRow(
-        electricVehicleChargePointsHref,
-        messages(s"journeys.$CapitalAllowancesElectricVehicleChargePoints"),
-        electricVehicleChargePointsStatus),
-      evcpIsTailored
-    )
-
     val specialTaxSitesRow = getAllowanceRow(
       taxYear,
       CapitalAllowancesSpecialTaxSites,
@@ -111,6 +98,16 @@ object CapitalAllowancesTasklist {
       balancingAllowanceIsTailored
     )
 
+    val balancingChargeStatus = getJourneyStatus(CapitalAllowancesBalancingCharge)(journeyStatuses)
+    val balancingChargeHref =
+      getUrl(CapitalAllowancesBalancingCharge, balancingChargeStatus, businessId, taxYear)
+    val balancingChargeIsTailored =
+      conditionPassedForViewableLink(SelectCapitalAllowancesPage, CapitalAllowances.BalancingCharge) && capAllowancesTailoringCompleted
+    val balancingChargeRow = returnRowIfConditionPassed(
+      buildSummaryRow(balancingChargeHref, messages(s"journeys.$CapitalAllowancesBalancingCharge"), balancingChargeStatus),
+      balancingChargeIsTailored
+    )
+
     val annualInvestmentAllowanceStatus = getJourneyStatus(CapitalAllowancesAnnualInvestmentAllowance)(journeyStatuses)
     val annualInvestmentAllowanceHref =
       getUrl(CapitalAllowancesAnnualInvestmentAllowance, annualInvestmentAllowanceStatus, businessId, taxYear)
@@ -135,12 +132,12 @@ object CapitalAllowancesTasklist {
       tailoringRow,
       zeroEmissionCarsRow,
       zeroEmissionGoodsVehicleRow,
-      electricVehicleChargePointsRow,
       structuresBuildingsRow,
       specialTaxSitesRow,
       annualInvestmentAllowanceRow,
       writingDownRow,
-      balancingAllowanceRow
+      balancingAllowanceRow,
+      balancingChargeRow
     ).flatten
   }
 
@@ -177,11 +174,6 @@ object CapitalAllowancesTasklist {
           capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.zeroEmissionGoodsVehicle.routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
-      case CapitalAllowancesElectricVehicleChargePoints =>
-        determineJourneyStartOrCyaUrl(
-          capitalallowances.electricVehicleChargePoints.routes.EVCPAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
-          capitalallowances.electricVehicleChargePoints.routes.ElectricVehicleChargePointsCYAController.onPageLoad(taxYear, businessId).url
-        )(journeyStatus)
       case CapitalAllowancesStructuresBuildings =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.structuresBuildingsAllowance.routes.StructuresBuildingsAllowanceController
@@ -199,6 +191,7 @@ object CapitalAllowancesTasklist {
           capitalallowances.balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
+      case CapitalAllowancesBalancingCharge => "#"
       case CapitalAllowancesAnnualInvestmentAllowance =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,

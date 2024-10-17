@@ -41,9 +41,6 @@ object CapitalAllowances extends Enumerable.Implicits {
   case object ZeroEmissionGoodsVehicle extends WithName("zeroEmissionGoodsVehicle") with AllowanceType with CapitalAllowances {
     override val identifier: Group = ZeroEmissions
   }
-  case object ElectricVehicleChargepoint extends WithName("electricVehicleChargepoint") with AllowanceType with CapitalAllowances {
-    override val identifier: Group = BuildingsAndStructures
-  }
   case object StructuresAndBuildings extends WithName("structuresAndBuildings") with AllowanceType with CapitalAllowances {
     override val identifier: Group = BuildingsAndStructures
   }
@@ -70,7 +67,6 @@ object CapitalAllowances extends Enumerable.Implicits {
     List(
       ZeroEmissionCar,
       ZeroEmissionGoodsVehicle,
-      ElectricVehicleChargepoint,
       StructuresAndBuildings,
       SpecialTaxSitesStructuresAndBuildings,
       AnnualInvestment,

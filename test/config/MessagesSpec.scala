@@ -184,7 +184,6 @@ class MessagesSpec extends SpecBase {
 
   // TODO Go through this list and fix content for agent
   private val userSpecificMessagesWithoutAgentVersions = List(
-    "amountSpentOnEvcp.title.cya",
     "checkYourSelfEmploymentDetails.accountingType",
     "expenses.cyaSummary.agent",
     "expenses.hint.disallowableExpenses",
@@ -202,7 +201,6 @@ class MessagesSpec extends SpecBase {
     "selectCapitalAllowances.subText.balancing",
     "selectCapitalAllowances.subText.balancingCharge.ACCRUAL",
     "selectCapitalAllowances.subText.balancingCharge.CASH",
-    "selectCapitalAllowances.subText.electricVehicleChargepoint",
     "selectCapitalAllowances.subText.structuresAndBuildings",
     "selectCapitalAllowances.subText.writingDown",
     "selectCapitalAllowances.subText.zeroEmissionCar.ACCRUAL",
@@ -211,7 +209,6 @@ class MessagesSpec extends SpecBase {
     "signedOut.title",
     "specialTaxSites.details.heading",
     "structuresBuildingsAllowance.p1.agent",
-    "taxReliefChargePoints.hint.agent",
     "timeout.message",
     "turnoverNotTaxable.p1.agent",
     "turnoverNotTaxable.p3.agent",

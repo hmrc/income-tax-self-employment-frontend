@@ -21,21 +21,23 @@ import controllers.standard
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.ExpensesTailoring.tailoringList
 import models.journeys.income.TradingAllowance
-import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.mvc.Call
 import queries.Settable
 
 case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
   override def toString: String = "tradingAllowance"
 
-  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
+  override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
+    val hasExistingExpensesOrCapitalAllowances = userAnswers.hasExistingExpensesOrCapitalAllowances(businessId)
     userAnswers.get(this, businessId) match {
+      case Some(TradingAllowance.UseTradingAllowance) if hasExistingExpensesOrCapitalAllowances =>
+        routes.TradingAllowanceWarningController.onPageLoad(taxYear, businessId)
       case Some(TradingAllowance.UseTradingAllowance) => routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
       case Some(TradingAllowance.DeclareExpenses)     => routes.IncomeCYAController.onPageLoad(taxYear, businessId)
       case None                                       => standard.routes.JourneyRecoveryController.onPageLoad()
     }
+  }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId) match {
@@ -44,6 +46,5 @@ case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
       case None                                       => false
     }
 
-  override val dependentPagesWhenAnswerChanges: List[Settable[_]] =
-    tailoringList ++ List(HowMuchTradingAllowancePage, TradingAllowanceAmountPage, ExpensesCategoriesPage)
+  override val dependentPagesWhenAnswerChanges: List[Settable[_]] = List(HowMuchTradingAllowancePage, TradingAllowanceAmountPage)
 }

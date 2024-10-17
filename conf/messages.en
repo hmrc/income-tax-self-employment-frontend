@@ -88,8 +88,8 @@ journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and b
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
 journeys.capital-allowances-zero-emission-cars = Zero-emission cars
 journeys.capital-allowances-zero-emission-goods-vehicle = Zero-emission goods vehicles
-journeys.capital-allowances-electric-vehicle-charge-points = Electric vehicle charge-points
 journeys.capital-allowances-balancing-allowance = Balancing allowance
+journeys.capital-allowances-balancing-charge = Balancing charge
 journeys.capital-allowances-annual-investment-allowance = Annual Investment Allowance
 journeys.capital-allowances-writing-down-allowance = ‘Writing down’ allowance
 journeys.capital-allowances-special-tax-sites = Freeport sites
@@ -346,6 +346,12 @@ tradingAllowance.checkYourAnswersLabel.agent = Does your client want to use the 
 tradingAllowance.error.required.individual = Select yes if you want to use the trading allowance or declare expenses
 tradingAllowance.error.required.agent = Select yes if your client wants to use the trading allowance or declare expenses
 tradingAllowance.change.hidden = Change trading allowance
+
+## Trading allowance warning
+tradingAllowanceWarning.title.individual = Your expenses and capital allowances will be deleted
+tradingAllowanceWarning.title.agent = Your client’s expenses and capital allowances will be deleted
+tradingAllowanceWarning.p1.individual = If you use the trading allowance, you cannot declare expenses and the expenses you previously entered will be deleted. You will also be unable to claim any capital allowances.
+tradingAllowanceWarning.p1.agent = If your client uses the trading allowance, they cannot declare expenses and the expenses they previously entered will be deleted. Your client will also be unable to claim any capital allowances.
 
 ## How much trading allowance
 howMuchTradingAllowance.title = Trading allowance for income under £1,000
@@ -1365,8 +1371,6 @@ selectCapitalAllowances.zeroEmissionCar = Zero-emission car allowance
 selectCapitalAllowances.zeroEmissionCar.cya = Zero emission cars
 selectCapitalAllowances.zeroEmissionGoodsVehicle = Zero-emission goods vehicle allowance
 selectCapitalAllowances.zeroEmissionGoodsVehicle.cya = Zero emission vehicles
-selectCapitalAllowances.electricVehicleChargepoint = Electric vehicle charge-point allowance
-selectCapitalAllowances.electricVehicleChargepoint.cya = Electric vehicle charge points
 selectCapitalAllowances.structuresAndBuildings = Structures and buildings allowance
 selectCapitalAllowances.structuresAndBuildings.cya = Buildings and structures
 selectCapitalAllowances.specialTaxSitesStructuresAndBuildings = Freeport structures and buildings allowance
@@ -1382,7 +1386,6 @@ selectCapitalAllowances.balancingCharge.cya = Balancing charge
 selectCapitalAllowances.subText.zeroEmissionCar.ACCRUAL = Claim part of the cost of a new or unused car if you also used it outside your self-employment.
 selectCapitalAllowances.subText.zeroEmissionCar.CASH = You can claim part of the cost of a new and unused car if you also used it outside your self-employment.
 selectCapitalAllowances.subText.zeroEmissionGoodsVehicle = Claim part of the cost of a new and unused vehicle if you also used it outside your self-employment.
-selectCapitalAllowances.subText.electricVehicleChargepoint = Claim 100% first year allowances if you buy and install new and unused electric charge-points for electric vehicles.
 selectCapitalAllowances.subText.structuresAndBuildings = If you build, buy or lease a structure and all contracts were signed on or after 29 October 2018, you may be able to claim tax relief.
 selectCapitalAllowances.subText.specialTaxSitesStructuresAndBuildings = Claim tax relief on qualifying expenditure on structures and buildings in designated Freeport tax sites.
 selectCapitalAllowances.subText.annualInvestment = Claim if you bought business equipment (not cars) during the year. If for business and private use, you can only claim the business proportion.
@@ -1525,66 +1528,6 @@ zegvHowMuchDoYouWantToClaim.error.required.agent = Enter an amount up to the ful
 zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the vehicle
 zegvHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
 zegvHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
-
-########## Capital Allowances - Electric Vehicle Charge Points ##########
-
-evcpAllowance.p1.individual = You can use the cost of any new and unused electric vehicle charge-points to reduce your taxable income.
-evcpAllowance.p1.agent = Your client can use the cost of any new and unused electric vehicle charge-points to reduce their taxable income.
-evcpAllowance.p2.individual = Reduce your taxable income by the full cost of the electric vehicle charge-points.
-evcpAllowance.p2.agent = Reduce your client’s taxable income by the full cost of the electric vehicle charge-points.
-evcpAllowance.p3.individual = Claim part of the cost of the charge-points by using this allowance for this tax year. You can then use
-evcpAllowance.p3.agent = Claim part of the cost of the charge-points by using this allowance for this tax year. They can then use
-evcpAllowance.subHeading.individual = Did you buy and install any new and unused electric vehicle charge-points?
-evcpAllowance.subHeading.agent = Did your client buy and install any new and unused electric vehicle charge-points?
-evcpAllowance.subHeading.cya.individual = Did you buy and install new and unused electric vehicle charge-points for work vehicles?
-evcpAllowance.subHeading.cya.agent = Did your client buy and install new and unused electric vehicle charge-points for work vehicles?
-evcpAllowance.error.required.individual = Select yes if you bought and installed new and unused electric vehicle charge-point for work vehicles
-evcpAllowance.error.required.agent = Select yes if your client bought and installed new and unused electric vehicle charge-point for work vehicles
-evcpAllowance.change.hidden = Change whether any new and unused electric vehicle charge-points were bought and installed
-
-taxReliefChargePoints.title = Tax relief on charge-points
-taxReliefChargePoints.p1.individual = You can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
-taxReliefChargePoints.p1.agent = Your client can claim the full cost of new and unused electric vehicle charge-points as a tax relief.
-taxReliefChargePoints.p2.individual = This will reduce your taxable income for this tax year.
-taxReliefChargePoints.p2.agent = This will reduce your client’s taxable income for this tax year.
-taxReliefChargePoints.subHeading.individual = Do you want to use the 100% first year allowance?
-taxReliefChargePoints.subHeading.agent = Does your client want to use the 100% first year allowance?
-taxReliefChargePoints.hint.individual = If you do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
-taxReliefChargePoints.hint.agent = If they do not want to use the allowance this year, you can enter it into a pool in the ‘writing down’ allowance section.
-taxReliefChargePoints.change.hidden = Change whether to use the 100% first year allowance
-
-amountSpentOnEvcp.title.individual = How much did you spend on electric vehicle charge-points, in pounds?
-amountSpentOnEvcp.title.agent = How much did your client spend on electric vehicle charge-points, in pounds?
-amountSpentOnEvcp.title.cya = How much did you spend on charge-points, in pounds?
-amountSpentOnEvcp.l1 = all new and unused electric vehicle charge-points
-amountSpentOnEvcp.l2 = alteration of land for the sole purpose of installing the charge-points
-amountSpentOnEvcp.l3 = equipment installed for the sole purpose of providing the charge-points with electricity
-amountSpentOnEvcp.error.required.individual = Enter the amount you spent on charge-points in pounds
-amountSpentOnEvcp.error.required.agent = Enter the amount your client spent on charge-points in pounds
-amountSpentOnEvcp.change.hidden = Change how much was spent on electric vehicle charge-points
-
-evcpOnlyForSelfEmployment.title.individual = Did you only use these charge-points for your self-employment?
-evcpOnlyForSelfEmployment.title.agent = Did your client only use these charge-points for their self-employment?
-evcpOnlyForSelfEmployment.error.required.individual = Select yes if you only used the charge-points for your self-employment
-evcpOnlyForSelfEmployment.error.required.agent = Select yes if your client only used the charge-points for their self-employment
-evcpOnlyForSelfEmployment.no.individual = No, I used them for other things as well
-evcpOnlyForSelfEmployment.no.agent = No, my client used them for other things as well
-evcpOnlyForSelfEmployment.change.hidden = Change whether electric vehicle charge-points were used only for self-employment purposes
-
-evcpUseOutsideSE.title.individual = How much did you use the charge-points outside your self-employment?
-evcpUseOutsideSE.title.agent = How much did your client use the charge-points outside their self-employment?
-evcpUseOutsideSE.error.required.individual = Select or enter a percentage for how much you used the charge-points outside your self-employment
-evcpUseOutsideSE.error.required.agent = Select or enter a percentage for how much your client used the charge-points outside their self-employment
-evcpUseOutsideSE.change.hidden = Change how much the charge-points were used outside of self-employment
-
-evcpHowMuchDoYouWantToClaim.subHeading.individual = How much of the charge-points’ costs do you want to claim under the 100% allowance?
-evcpHowMuchDoYouWantToClaim.subHeading.agent = How much of the charge-points’ costs does your client want to claim under the 100% allowance?
-evcpHowMuchDoYouWantToClaim.hint = You should enter any remaining amounts in the ‘writing down’ allowances section.
-evcpHowMuchDoYouWantToClaim.error.required.individual = Select if you want to claim the full amount or a lower amount for the charge-points’ costs
-evcpHowMuchDoYouWantToClaim.error.required.agent = Select if your client wants to claim the full amount or a lower amount for the charge-points’ costs
-evcpHowMuchDoYouWantToClaim.error.required.amount = Enter an amount up to the full cost spent on electric vehicle charge-points
-evcpHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost spent on electric vehicle charge-points
-evcpHowMuchDoYouWantToClaim.change.hidden = Change how much of the cost of electric vehicle charge-points should be claimed under the 100% allowance
 
 ########## Capital Allowances - Balancing Allowance ##########
 
@@ -2228,7 +2171,8 @@ whichYearIsLossReported.change.hidden = Change in which tax year you most recent
 
 ########## National Insurance Contributions ##########
 
-nics.exemptForDifferentReason = I’m exempt for a different reason
+nics.class-four-other-exemption = I’m exempt for a different reason
+nics.class-four-none-exempt = None of these businesses are exempt
 nics.diverDivingInstructor.individual = You are a diver or diving supervisor
 nics.diverDivingInstructor.agent = Your client is a diver or diving supervisor
 nics.trusteeExecutorAdmin.individual = You are the trustee, executor or administrator but only in some cases
@@ -2294,8 +2238,12 @@ class4DivingExempt.change.hidden = Change which self employment businesses you a
 
 class4NonDivingExempt.subHeading.individual = For which self employment businesses did you receive profits in your capacity as a trustee, executor or administrator?
 class4NonDivingExempt.subHeading.agent = For which self employment businesses did your client receive profits in their capacity as a trustee, executor or administrator?
+class4NonDivingExemptSingleBusiness.subHeading.individual = Have you received profits in your capacity as a trustee, executor or administrator for
+class4NonDivingExemptSingleBusiness.subHeading.agent = Did your client receive profits in their capacity as a trustee, executor or administrator for
 class4NonDivingExempt.subHeading.cya.individual = For which self employment businesses are you a trustee, executor or administrator?
 class4NonDivingExempt.subHeading.cya.agent = For which self employment businesses is your client a trustee, executor or administrator?
 class4NonDivingExempt.error.required.individual = Select all your self employment businesses where you are a trustee, executor or administrator
 class4NonDivingExempt.error.required.agent = Select all your client’s self employment businesses where they are a trustee, executor or administrator
+class4NonDivingExemptSingleBusiness.error.required.individual = Select yes if you have received profits in your capacity as a trustee, executor or administrator for {0}
+class4NonDivingExemptSingleBusiness.error.required.agent = Select yes if your client has received profits in their capacity as a trustee, executor or administrator {0}
 class4NonDivingExempt.change.hidden = Change which self employment businesses you are a trustee, executor or administrator for

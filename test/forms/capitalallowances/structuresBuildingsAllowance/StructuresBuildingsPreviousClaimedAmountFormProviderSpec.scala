@@ -36,7 +36,7 @@ class StructuresBuildingsPreviousClaimedAmountFormProviderSpec extends BigDecima
   val validDataGenerator: Gen[String]    = intsInRangeWithCommas(minimumVal.toInt, maximumVal.toInt)
   val dataDecimalsGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimumVal, maximumVal)
 
-  "AmountSpentOnEvcpFormProvider should" - {
+  "StructuresBuildingsPreviousClaimedAmountFormProvider should" - {
     val form: Form[BigDecimal] = new StructuresBuildingsPreviousClaimedAmountFormProvider()(userType)
 
     behave like fieldThatBindsValidData(

@@ -43,12 +43,13 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
   private def statusUrl(journey: Journey) = s"/income-tax-self-employment/completed-section/$businessId/$journey/$taxYear"
 
-  private val taskListUrl                      = s"/income-tax-self-employment/$taxYear/$nino/task-list"
-  private val dateOfBirthUrl                   = s"/income-tax-self-employment/user-date-of-birth/$nino"
-  private val businessSummariesUrl             = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
-  private val businessSummaryUrl               = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
-  private val netBusinessProfitOrLossValuesUrl = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
-  private val clearExpensesUrl                 = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
+  private val taskListUrl                          = s"/income-tax-self-employment/$taxYear/$nino/task-list"
+  private val dateOfBirthUrl                       = s"/income-tax-self-employment/user-date-of-birth/$nino"
+  private val businessSummariesUrl                 = s"/income-tax-self-employment/$taxYear/business-income-sources-summaries/$nino"
+  private val businessSummaryUrl                   = s"/income-tax-self-employment/$taxYear/business-income-sources-summary/$nino/$businessId"
+  private val netBusinessProfitOrLossValuesUrl     = s"/income-tax-self-employment/$taxYear/net-business-profit-or-loss-values/$nino/$businessId"
+  private val clearSimplifiedExpensesUrl           = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
+  private val clearExpensesAndCapitalAllowancesUrl = s"/income-tax-self-employment/$taxYear/clear-expenses-and-capital-allowances/$nino/$businessId"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -207,9 +208,19 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
   "clearExpensesSimplifiedOrNoExpensesAnswers" must {
     "return a successful result from downstream" in {
-      stubPostWithoutResponseAndRequestBody(clearExpensesUrl, OK)
+      stubPostWithoutResponseAndRequestBody(clearSimplifiedExpensesUrl, OK)
 
       val result = connector.clearExpensesSimplifiedOrNoExpensesAnswers(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
+    }
+  }
+
+  "clearExpensesAndCapitalAllowances" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearExpensesAndCapitalAllowancesUrl, OK)
+
+      val result = connector.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe ().asRight
     }
