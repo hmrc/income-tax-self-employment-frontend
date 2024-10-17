@@ -32,6 +32,7 @@ import models.common._
 import models.database.UserAnswers
 import models.domain.BusinessIncomeSourcesSummary
 import models.errors.ServiceError
+import models.errors.ServiceError.NotFoundError
 import models.journeys.JourneyNameAndStatus
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDoYouWantToClaim, ZegvUseOutsideSE}
 import models.journeys.income.{IncomeJourneyAnswers, IncomeJourneyAnswersTestData}
@@ -324,9 +325,29 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
         .rightT[Future, ServiceError](())
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
 
-      service.clearSimplifiedExpensesData(ctx).value.map { result =>
-        assert(result === ().asRight)
-      }
+      val result = service.clearSimplifiedExpensesData(ctx).value.futureValue
+      assert(result === ().asRight)
+    }
+  }
+
+  "clearExpensesAndCapitalAllowances" - {
+    implicit val request = fakeDataRequest(emptyUserAnswers)
+
+    "should delete Expenses and Capital Allowances data from the front and back-end repos and API" in new ServiceWithStubs {
+      mockConnector.clearExpensesAndCapitalAllowances(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](())
+
+      val result = service.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
+      assert(result === ().asRight)
+    }
+
+    "should delete Simplified or No Expenses data from the front and back-end repos and API" in new ServiceWithStubs {
+      val downstreamError = NotFoundError("NOT_FOUND")
+      mockConnector.clearExpensesAndCapitalAllowances(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .leftT[Future, Unit](downstreamError)
+
+      val result = service.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
+      assert(result === downstreamError.asLeft)
     }
   }
 }
