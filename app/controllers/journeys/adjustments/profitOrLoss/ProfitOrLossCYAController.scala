@@ -17,19 +17,19 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import controllers.handleSubmitAnswersResult
+import controllers.handleSubmitAnswersResultAndRedirect
 import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import pages.Page
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
 import models.journeys.adjustments.ProfitOrLossJourneyAnswers
-import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
+import pages.adjustments.profitOrLoss._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.adjustments.WhichYearIsLossReportedSummary
+import viewmodels.checkAnswers.adjustments.{WhatDoYouWantToDoWithLossSummary, WhichYearIsLossReportedSummary}
 import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
@@ -78,6 +78,11 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
               overrideKeyMessage = Some(goodsAndServicesAmountKeyMessage),
               overrideChangeMessage = Some(goodsAndServicesAmountChangeMessage)
             ),
+          new BooleanSummary(ClaimLossReliefPage, routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(request.userAnswers, taxYear, businessId, request.userType),
+          WhatDoYouWantToDoWithLossSummary.row(request.userAnswers, request.userType, taxYear, businessId),
+          new BooleanSummary(CarryLossForwardPage, routes.CurrentYearLossController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(request.userAnswers, taxYear, businessId, request.userType),
           new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
             .row(
               request.userAnswers,
@@ -105,8 +110,9 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData).async {
     implicit request =>
-      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ProfitOrLoss)
-      val result  = service.submitAnswers[ProfitOrLossJourneyAnswers](context, request.userAnswers)
-      handleSubmitAnswersResult(context, result)
+      val context          = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ProfitOrLoss)
+      val result           = service.submitAnswers[ProfitOrLossJourneyAnswers](context, request.userAnswers)
+      val redirectLocation = controllers.journeys.adjustments.profitOrLoss.routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId)
+      handleSubmitAnswersResultAndRedirect(result, redirectLocation)
   }
 }

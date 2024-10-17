@@ -176,6 +176,7 @@ class MessagesSpec extends SpecBase {
 
   private val exclusionKeySubstrings: Set[String] = Set(
     "checkYourAnswersLabel.individual",
+    "checkYourAnswersLabel.agent",
     "journeys",
     ".cya"
   )
@@ -218,7 +219,10 @@ class MessagesSpec extends SpecBase {
     "goodsAndServicesForYourOwnUse.hint.agent",
     "checkNetProfitLoss.p1.profit.agent",
     "checkNetProfitLoss.p1.loss.agent",
-    "whichYearIsLossReported.p2.loss.agent"
+    "whichYearIsLossReported.p2.loss.agent",
+    "carryLossForward.subHeading.cya.agent",
+    "claimLossRelief.subHeading.cya.agent",
+    "whatDoYouWantToDoWithLoss.checkYourAnswersLabel.agent"
   )
 
   "messages must not contain any illegal characters" in {
