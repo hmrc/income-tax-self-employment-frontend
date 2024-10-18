@@ -23,9 +23,10 @@ import controllers.{handleResult, handleResultT}
 import forms.income.HowMuchTradingAllowanceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.income.HowMuchTradingAllowance
-import pages.income.HowMuchTradingAllowancePage
+import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -67,16 +68,26 @@ class HowMuchTradingAllowanceController @Inject() (override val messagesApi: Mes
     implicit request =>
       def handleError(allowance: String)(formWithErrors: Form[_]): Result =
         BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, allowance))
-      def handleSuccess(answer: HowMuchTradingAllowance): Future[Result] =
-        service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
+      def handleSuccess(maxAllowance: BigDecimal)(answer: HowMuchTradingAllowance): Future[Result] =
+        setTradingAllowanceIfMaximum(answer, maxAllowance, request.userAnswers, businessId).flatMap { s =>
+          service.submitGatewayQuestionAndRedirect(page, businessId, s, answer, taxYear, mode)
+        }
 
       val result = for {
         allowance <- EitherT.fromEither[Future](getMaxTradingAllowance(businessId, request.userAnswers))
         formattedAllowance = formatMoney(allowance, addDecimalForWholeNumbers = false)
         handleForm <- EitherT.liftF[Future, ServiceError, Result](
-          service.handleForm(formProvider(request.userType, formattedAllowance), handleError(formattedAllowance), handleSuccess))
+          service.handleForm(formProvider(request.userType, formattedAllowance), handleError(formattedAllowance), handleSuccess(allowance)))
       } yield handleForm
 
       handleResultT(result)
   }
+
+  private def setTradingAllowanceIfMaximum(answer: HowMuchTradingAllowance,
+                                           maxAllowance: BigDecimal,
+                                           userAnswers: UserAnswers,
+                                           businessId: BusinessId): Future[UserAnswers] =
+    if (answer == HowMuchTradingAllowance.LessThan)
+      Future.fromTry(SelfEmploymentService.clearDataFromUserAnswers(userAnswers, List(TradingAllowanceAmountPage), Some(businessId)))
+    else service.persistAnswer(businessId, userAnswers, maxAllowance, TradingAllowanceAmountPage)
 }
