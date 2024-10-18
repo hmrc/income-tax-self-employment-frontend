@@ -18,12 +18,13 @@ package navigation
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances._
-import controllers.standard
+import controllers.{journeys, standard}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
 import pages.capitalallowances.balancingAllowance._
+import pages.capitalallowances.balancingCharge.{BalancingChargeAmountPage, BalancingChargePage}
 import pages.capitalallowances.structuresBuildingsAllowance._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
@@ -146,6 +147,38 @@ class CapitalAllowancesNavigator @Inject() {
               taxYear,
               businessId
             )
+
+    case BalancingChargePage =>
+      userAnswers =>
+        taxYear =>
+          businessId =>
+            userAnswers.get(BalancingChargePage, Some(businessId)) match {
+              case Some(true) =>
+                balancingCharge.routes.BalancingChargeAmountController.onPageLoad(
+                  taxYear,
+                  businessId,
+                  NormalMode
+                )
+              case Some(false) =>
+                // Temp redirect to task-list until CYA Implemented.
+                journeys.routes.TaskListController.onPageLoad(taxYear)
+//                balancingCharge.routes.BalancingChargeCYAController.onPageLoad(
+//                  taxYear,
+//                  businessId
+//                )
+              case _ => standard.routes.JourneyRecoveryController.onPageLoad()
+            }
+
+    case BalancingChargeAmountPage =>
+      _ =>
+        taxYear =>
+          businessId =>
+            // Temp redirect to task-list until CYA Implemented.
+            journeys.routes.TaskListController.onPageLoad(taxYear)
+//            balancingCharge.routes.BalancingChargeCYAController.onPageLoad(
+//              taxYear,
+//              businessId
+//            )
 
     case StructuresBuildingsAllowancePage =>
       userAnswers =>
