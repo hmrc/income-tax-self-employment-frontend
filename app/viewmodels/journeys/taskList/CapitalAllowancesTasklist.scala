@@ -191,7 +191,11 @@ object CapitalAllowancesTasklist {
           capitalallowances.balancingAllowance.routes.BalancingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
           capitalallowances.balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId).url
         )(journeyStatus)
-      case CapitalAllowancesBalancingCharge => "#"
+      case CapitalAllowancesBalancingCharge =>
+        determineJourneyStartOrCyaUrl(
+          capitalallowances.balancingCharge.routes.BalancingChargeController.onPageLoad(taxYear, businessId, NormalMode).url,
+          capitalallowances.balancingCharge.routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId).url
+        )(journeyStatus)
       case CapitalAllowancesAnnualInvestmentAllowance =>
         determineJourneyStartOrCyaUrl(
           capitalallowances.annualInvestmentAllowance.routes.AnnualInvestmentAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url,
