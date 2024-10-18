@@ -18,7 +18,7 @@ package controllers.actions
 
 import cats.data.EitherT
 import connectors.SelfEmploymentConnector
-import models.common.{Journey, JourneyContext, TaxYear}
+import models.common.{BusinessId, Journey, JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.TaskListWithRequest
@@ -27,6 +27,7 @@ import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAns
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
+import models.journeys.nics.NICsJourneyAnswers
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.libs.json.Format
 import play.api.mvc.AnyContent
@@ -73,8 +74,10 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         taxYear,
         businesses,
         gtsouUpdated,
-        Journey.CapitalAllowancesTailoring)
-    } yield TaskListWithRequest(taskList, capitalAllowancesUpdated)
+        Journey.CapitalAllowancesTailoring
+      ) // TODO 10281 fetch Profit or Loss journey answers
+      nicsUpdated <- loadNicsAnswers[NICsJourneyAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.NationalInsuranceContributions)
+    } yield TaskListWithRequest(taskList, nicsUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,
@@ -85,6 +88,21 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
     val result = businesses.foldLeft(Future.successful(request)) { (futureRequest, business) =>
       futureRequest.flatMap { updatedRequest =>
         apply[A](req => req.mkJourneyNinoContext(taxYear, business.businessId, journey))
+          .execute(updatedRequest)
+      }
+    }
+
+    EitherT.right[ServiceError](result)
+  }
+
+  private def loadNicsAnswers[A: Format](taxYear: TaxYear,
+                                         businesses: List[TradesJourneyStatuses],
+                                         request: OptionalDataRequest[AnyContent],
+                                         journey: Journey)(implicit
+      ec: ExecutionContext): EitherT[Future, ServiceError, OptionalDataRequest[AnyContent]] = {
+    val result = businesses.foldLeft(Future.successful(request)) { (futureRequest, _) =>
+      futureRequest.flatMap { updatedRequest =>
+        apply[A](req => req.mkJourneyNinoContext(taxYear, BusinessId.nationalInsuranceContributions, journey))
           .execute(updatedRequest)
       }
     }
