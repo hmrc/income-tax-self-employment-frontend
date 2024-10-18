@@ -16,11 +16,12 @@
 
 package viewmodels.checkAnswers.nics
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.nics.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.nics.Class4NonDivingExemptSingleBusinessPage
+import pages.nics.Class4NonDivingExemptPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
@@ -28,23 +29,23 @@ import viewmodels.checkAnswers.buildRowString
 object Class4NonDivingExemptSingleBusinessSummary {
 
   def row(answers: UserAnswers, userType: UserType, taxYear: TaxYear)(implicit messages: Messages): Option[SummaryListRow] = {
+    val remainingBusinesses = Class4NonDivingExemptPage.remainingBusinesses(answers)
 
-    val remainingBusinesses = Class4NonDivingExemptSingleBusinessPage.remainingBusinesses(answers)
-
-    answers.get(Class4NonDivingExemptSingleBusinessPage, BusinessId.nationalInsuranceContributions).map { idList =>
-      val value = idList.headOption
-        .collect {
-          case id if id == BusinessId.classFourNoneExempt => "No"
-          case _                                          => "Yes"
-        }
-        .getOrElse("No")
-
-      buildRowString(
-        value,
-        routes.Class4NonDivingExemptSingleBusinessController.onPageLoad(taxYear, CheckMode),
-        s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} ${remainingBusinesses.headOption.map(_.tradingName).getOrElse("")}.",
-        "class4NonDivingExempt.change.hidden"
-      )
+    answers.get(Class4NonDivingExemptPage, BusinessId.nationalInsuranceContributions).flatMap { idList =>
+      if (remainingBusinesses.size == 1) {
+        val value = idList.headOption
+          .collect {
+            case id if id == BusinessId.classFourNoneExempt => "No"
+            case _                                          => "Yes"
+          }
+          .getOrElse("No")
+        buildRowString(
+          value,
+          routes.Class4NonDivingExemptSingleBusinessController.onPageLoad(taxYear, CheckMode),
+          s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} ${remainingBusinesses.headOption.map(_.tradingName).getOrElse("")}.",
+          "class4NonDivingExempt.change.hidden"
+        ).some
+      } else None
     }
   }
 }
