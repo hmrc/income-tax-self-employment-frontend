@@ -38,21 +38,22 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
   protected val journey: Journey
   protected val submissionData: JsObject
 
+  protected val customSuccessRedirectLocation: Option[String] = None
+
   protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitCall(taxYear, businessId).url)
 
   private val userAnswers: UserAnswers = buildUserAnswers(submissionData)
 
   "submitting a page" - {
     "journey answers submitted successfully" - {
-      "redirect to section completed" in new TestScenario(Individual, userAnswers.some) {
+      "redirect to next page" in new TestScenario(Individual, userAnswers.some) {
         mockService.submitAnswers(*, *, *)(*, *) returns EitherT(Future.successful(().asRight))
         val result: Future[Result] = route(application, postRequest).value
+        val successRedirectLocation: String = customSuccessRedirectLocation
+          .getOrElse(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url)
 
         status(result) shouldBe 303
-
-        redirectLocation(result).value shouldBe journeys.routes.SectionCompletedStateController
-          .onPageLoad(taxYear, businessId, journey, NormalMode)
-          .url
+        redirectLocation(result).value should endWith(successRedirectLocation)
       }
     }
 
