@@ -51,7 +51,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         incomeSummary                 <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
         netBusinessProfitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-        profitOrLoss       = incomeSummary.returnProfitOrLoss
+        profitOrLoss       = incomeSummary.returnNetProfitOrLoss
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
 
         tables = NetBusinessProfitOrLossSummary.buildTables(netBusinessProfitOrLossValues, request.userAnswers, profitOrLoss, request.userType, businessId)

@@ -33,7 +33,7 @@ object NetBusinessProfitOrLossValuesBuilder {
       capitalAllowances = 100,
       turnoverNotTaxableAsBusinessProfit = 0,
       totalDeductions = 0,
-      outstandingBusinessIncome = 0
+      outstandingBusinessIncome = 500
     )
   val aNetBusinessLossValues: NetBusinessProfitOrLossValues =
     NetBusinessProfitOrLossValues(
@@ -49,6 +49,6 @@ object NetBusinessProfitOrLossValuesBuilder {
       capitalAllowances = 100,
       turnoverNotTaxableAsBusinessProfit = 0,
       totalDeductions = 200,
-      outstandingBusinessIncome = 0
+      outstandingBusinessIncome = 500
     )
 }

@@ -21,8 +21,9 @@ import models.journeys.adjustments.ProfitOrLoss.Profit
 import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow}
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption, totalAdditionsCaption, totalDeductionsCaption}
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
 
 case class AdjustedTaxableProfitOrLossSummary(adjustedProfitOrLossTable: Table,
                                               netProfitOrLossTable: Table,
@@ -31,10 +32,10 @@ case class AdjustedTaxableProfitOrLossSummary(adjustedProfitOrLossTable: Table,
                                               adjustmentsTable: Table)
 object AdjustedTaxableProfitOrLossSummary {
 
-  private val topMarginClass      = "govuk-!-margin-top-6"
-  private val doubleMarginClasses = s"$topMarginClass govuk-!-margin-bottom-9"
+  val topMarginClass: String      = "govuk-!-margin-top-6"
+  val doubleMarginClasses: String = s"$topMarginClass govuk-!-margin-bottom-9"
 
-  def buildTables(taxableProfitOrLoss: BigDecimal,
+  def buildTables(adjustedTaxableProfitOrLoss: BigDecimal,
                   netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
                   taxYear: TaxYear,
                   profitOrLoss: ProfitOrLoss,
@@ -43,7 +44,7 @@ object AdjustedTaxableProfitOrLossSummary {
     val adjustments               = netBusinessProfitOrLossValues.outstandingBusinessIncome
 
     AdjustedTaxableProfitOrLossSummary(
-      buildYourAdjustedProfitOrLossTable(taxableProfitOrLoss, adjustments, netBusinessProfitOrLossValues, taxYear, profitOrLoss),
+      buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitOrLoss, adjustments, netBusinessProfitOrLossValues, taxYear, profitOrLoss),
       NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(netBusinessProfitOrLossValues, profitOrLoss, doubleMarginClasses),
       NetBusinessProfitOrLossSummary.buildExpensesTable(
         netBusinessProfitOrLossValues,
@@ -56,7 +57,7 @@ object AdjustedTaxableProfitOrLossSummary {
     )
   }
 
-  def buildYourAdjustedProfitOrLossTable(taxableProfitOrLoss: BigDecimal,
+  def buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitOrLoss: BigDecimal,
                                          adjustments: BigDecimal,
                                          values: NetBusinessProfitOrLossValues,
                                          taxYear: TaxYear,
@@ -69,16 +70,22 @@ object AdjustedTaxableProfitOrLossSummary {
       if (returnAdditionsRow) buildTableAmountRow(additionsCaption(profitOrLoss), values.totalAdditions)
       else buildTableAmountRow(deductionsCaption(profitOrLoss), values.totalDeductions)
 
+    val netProfitOrLossForTaxPurposesRow = {
+      val amount          = values.getNetBusinessProfitOrLossForTaxPurposes
+      val formattedAmount = formatSumMoneyNoNegative(List(amount))
+      buildTableRow(s"profitOrLossCalculation.adjustedTable.netForTaxPurposes.${values.netProfitOrLoss}", formattedAmount)
+    }
+
     val rows =
       List(
         buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", values.netProfitOrLossAmount),
         additionsOrDeductionsRow(returnAdditionsRow = isProfit),
         additionsOrDeductionsRow(returnAdditionsRow = !isProfit),
-        buildTableAmountRow(s"profitOrLossCalculation.adjustedTable.netForTaxPurposes.$profitOrLoss", values.turnoverNotTaxableAsBusinessProfit),
+        netProfitOrLossForTaxPurposesRow,
         buildTableAmountRow("journeys.adjustments", adjustments),
         buildTableAmountRow(
           s"profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$profitOrLoss",
-          taxableProfitOrLoss,
+          adjustedTaxableProfitOrLoss,
           classes = "govuk-!-font-weight-bold",
           optArgs = Seq(startYear, endYear)
         )

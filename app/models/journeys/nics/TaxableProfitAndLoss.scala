@@ -77,9 +77,4 @@ object TaxableProfitAndLoss {
     taxableProfitsAndLosses.map(_.taxableProfit).sum > BigDecimal(class4Threshold)
   }
 
-  def betweenClass2AndClass4Threshold(taxableProfitsAndLosses: List[TaxableProfitAndLoss], taxYear: TaxYear): Boolean = {
-    val class2Eligible = areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
-    val class4Eligible = areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
-    !class2Eligible && !class4Eligible
-  }
 }

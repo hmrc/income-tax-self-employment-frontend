@@ -31,28 +31,29 @@
 )
 
 @(userType: UserType,
-        netAmount: String,
+        adjustedTaxableProfitOrLoss: String,
+        netProfitOrLossForTaxPurposes: String,
         taxYear: TaxYear,
         profitOrLoss: ProfitOrLoss,
         tables: AdjustedTaxableProfitOrLossSummary,
         nicsExemptionMessage: Option[String],
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$profitOrLoss", netAmount))) {
+@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$profitOrLoss", adjustedTaxableProfitOrLoss))) {
 
     @formHelper(action = continueRedirect) {
 
         @caption(taxYear)
-        @heading(s"profitOrLossCalculation.title.$profitOrLoss", Some(netAmount))
+        @heading(s"profitOrLossCalculation.title.$profitOrLoss", Some(adjustedTaxableProfitOrLoss))
 
         @govukTable(tables.adjustedProfitOrLossTable)
         @foldableDetails(messages("profitOrLoss.showCalculations"), "govuk-!-margin-bottom-9"){
             @govukTable(tables.netProfitOrLossTable)
             @govukTable(tables.expensesTable)
             @govukTable(tables.capitalAllowanceTable)
-            <p class="govuk-body govuk-!-margin-bottom-9">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
+            <p class="govuk-body govuk-!-margin-bottom-9">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netProfitOrLossForTaxPurposes}</strong></p>
             @govukTable(tables.adjustmentsTable)
-            <p class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$profitOrLoss", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</p>
+            <p class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$profitOrLoss", taxYear.startYear.toString, taxYear.endYear.toString, adjustedTaxableProfitOrLoss)}</p>
         }
         @nicsExemptionMessage.map { exemptionReason =>
             <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>

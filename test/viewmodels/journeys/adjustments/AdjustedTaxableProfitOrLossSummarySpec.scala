@@ -17,17 +17,22 @@
 package viewmodels.journeys.adjustments
 
 import base.SpecBase
-import models.journeys.adjustments.ProfitOrLoss
+import builders.NetBusinessProfitOrLossValuesBuilder.{aNetBusinessLossValues, aNetBusinessProfitValues}
+import models.common.UserType.Individual
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
-import utils.MoneyUtils.formatPosNegMoneyWithPounds
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.doubleMarginClasses
 
 class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPropertyChecks {
 
   private implicit val messages: Messages = messagesStubbed
+
+  private val adjustments   = 500
+  private val taxableProfit = 4400.00
+  private val taxableLoss   = 2200.00
 
   private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
      |Result:
@@ -39,93 +44,132 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
     assert(result.rows.mkString("\n") === expectedResult)
   }
 
-//  "buildYourAdjustedProfitOrLossTable must create a Table with the correct content" - {
-//    "when adjusted taxable profit" in {
-//      val netProfit                           = 4400.00
-//      val additionsToNetProfit                = 200.00
-//      val deductionsFromNetProfit             = 0.00
-//      val netBusinessProfit                   = 4600.00
-//      val adjustments                         = 0.00
-//      val adjustedTaxableProfitForCurrentYear = 4600.00
-//
-//      val table =
-//        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitForCurrentYear, adjustments, values, taxYear, Profit)
-//      val expectedTable = expectedYourAdjustedProfitOrLossTable(
-//        Profit,
-//        netProfit,
-//        additionsToNetProfit,
-//        deductionsFromNetProfit,
-//        netBusinessProfit,
-//        adjustments,
-//        adjustedTaxableProfitForCurrentYear)
-//      assertWithClue(result = table, expectedResult = expectedTable)
-//    }
-//    "when adjusted loss" in {
-//      val netLoss                    = 4400.00
-//      val deductionsFromNetLoss      = 200.00
-//      val additionsToNetLoss         = 0.00
-//      val netBusinessLoss            = 4600.00
-//      val adjustments                = 0.00
-//      val adjustedLossForCurrentYear = 4600.00
-//
-//      val table =
-//        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossTable(taxYear, Loss)
-//      val expectedTable = expectedYourAdjustedProfitOrLossTable(
-//        Loss,
-//        netLoss,
-//        deductionsFromNetLoss,
-//        additionsToNetLoss,
-//        netBusinessLoss,
-//        adjustments,
-//        adjustedLossForCurrentYear)
-//      assertWithClue(result = table, expectedResult = expectedTable)
-//    }
-//  }
-//
-//  "buildAdjustmentsTable must create a Table with the correct content" - {
-//    "when adjustments" in {
-//      val anyOtherBusinessIncome = 0.00
-//      val totalAdjustments       = 0.00
-//
-//      val table           = AdjustedTaxableProfitOrLossSummary.buildAdjustmentsTable()
-//      val expectedTable   = expectedAdjustmentsTable(anyOtherBusinessIncome, totalAdjustments)
-//      val expectedCaption = Some("journeys.adjustments")
-//
-//      assert(table.caption == expectedCaption)
-//      assertWithClue(result = table, expectedResult = expectedTable)
-//
-//    }
-//  }
+  "buildTables must return all five AdjustedTaxableProfitOrLossSummary tables" - {
+    "when a net profit" in {
+      val result =
+        AdjustedTaxableProfitOrLossSummary.buildTables(taxableProfit, aNetBusinessProfitValues, taxYear, Profit, Individual)(messages)
 
-  private def expectedYourAdjustedProfitOrLossTable(profitOrLoss: ProfitOrLoss,
-                                                    netProfit: BigDecimal,
-                                                    additionsToNetProfit: BigDecimal,
-                                                    deductionsFromNetProfit: BigDecimal,
-                                                    netBusinessProfit: BigDecimal,
-                                                    adjustments: BigDecimal,
-                                                    adjustedTaxableProfitForCurrentYear: BigDecimal): String = {
-    val additionsToProfitOrDeductionsFromLoss = if (profitOrLoss == Profit) { "additions.profit" }
-    else { "deductions.loss" }
-    val deductionsFromProfitOrAdditionsToLoss = if (profitOrLoss == Profit) { "deductions.profit" }
-    else { "additions.loss" }
-    s"""|List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         netProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.$additionsToProfitOrDeductionsFromLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         additionsToNetProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.$deductionsFromProfitOrAdditionsToLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         deductionsFromNetProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.netForTaxPurposes.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         netBusinessProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(journeys.adjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))
-    |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$profitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         adjustedTaxableProfitForCurrentYear)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
+      val yourAdjustedProfitOrLossTable = expectedYourAdjustedProfitOrLossTable(
+        Profit,
+        aNetBusinessProfitValues.netProfitOrLossAmount,
+        aNetBusinessProfitValues.totalAdditions,
+        aNetBusinessProfitValues.totalDeductions,
+        aNetBusinessProfitValues.getNetBusinessProfitOrLossForTaxPurposes,
+        adjustments,
+        taxableProfit
+      )
+      val netProfitOrLossTable = expectedNetProfitLossTable(
+        Profit,
+        aNetBusinessProfitValues.turnover,
+        aNetBusinessProfitValues.incomeNotCountedAsTurnover,
+        aNetBusinessProfitValues.totalExpenses,
+        aNetBusinessProfitValues.netProfitOrLossAmount
+      )
+      val expensesTable = expectedExpensesTable(
+        Profit,
+        aNetBusinessProfitValues.balancingCharge,
+        aNetBusinessProfitValues.goodsAndServicesForOwnUse,
+        aNetBusinessProfitValues.disallowableExpenses,
+        aNetBusinessProfitValues.totalAdditions
+      )
+      val capitalAllowancesTable = expectedCapitalAllowancesTable(
+        Profit,
+        aNetBusinessProfitValues.capitalAllowances,
+        aNetBusinessProfitValues.turnoverNotTaxableAsBusinessProfit,
+        aNetBusinessProfitValues.totalDeductions
+      )
+      val adjustmentsTable = expectedAdjustmentsTable(adjustments)
+
+      assertWithClue(result.adjustedProfitOrLossTable, expectedResult = yourAdjustedProfitOrLossTable)
+      assertWithClue(result.netProfitOrLossTable, expectedResult = netProfitOrLossTable)
+      assertWithClue(result.expensesTable, expectedResult = expensesTable)
+      assertWithClue(result.capitalAllowanceTable, expectedResult = capitalAllowancesTable)
+      assertWithClue(result.adjustmentsTable, expectedResult = adjustmentsTable)
+    }
+
+    "when a net loss" in {
+      val result =
+        AdjustedTaxableProfitOrLossSummary.buildTables(taxableLoss, aNetBusinessLossValues, taxYear, Loss, Individual)(messages)
+
+      val yourAdjustedProfitOrLossTable = expectedYourAdjustedProfitOrLossTable(
+        Loss,
+        aNetBusinessLossValues.netProfitOrLossAmount,
+        aNetBusinessLossValues.totalAdditions,
+        aNetBusinessLossValues.totalDeductions,
+        aNetBusinessLossValues.getNetBusinessProfitOrLossForTaxPurposes,
+        adjustments,
+        taxableLoss
+      )
+      val netProfitOrLossTable = expectedNetProfitLossTable(
+        Loss,
+        aNetBusinessLossValues.turnover,
+        aNetBusinessLossValues.incomeNotCountedAsTurnover,
+        aNetBusinessLossValues.totalExpenses,
+        aNetBusinessLossValues.netProfitOrLossAmount
+      )
+      val expensesTable = expectedExpensesTable(
+        Loss,
+        aNetBusinessLossValues.balancingCharge,
+        aNetBusinessLossValues.goodsAndServicesForOwnUse,
+        aNetBusinessLossValues.disallowableExpenses,
+        aNetBusinessLossValues.totalAdditions
+      )
+      val capitalAllowancesTable = expectedCapitalAllowancesTable(
+        Loss,
+        aNetBusinessLossValues.capitalAllowances,
+        aNetBusinessLossValues.turnoverNotTaxableAsBusinessProfit,
+        aNetBusinessLossValues.totalDeductions)
+      val adjustmentsTable = expectedAdjustmentsTable(adjustments)
+
+      assertWithClue(result.adjustedProfitOrLossTable, expectedResult = yourAdjustedProfitOrLossTable)
+      assertWithClue(result.netProfitOrLossTable, expectedResult = netProfitOrLossTable)
+      assertWithClue(result.expensesTable, expectedResult = expensesTable)
+      assertWithClue(result.capitalAllowanceTable, expectedResult = capitalAllowancesTable)
+      assertWithClue(result.adjustmentsTable, expectedResult = adjustmentsTable)
+    }
   }
 
-  private def expectedAdjustmentsTable(anyOtherBusinessIncome: BigDecimal, totalAdjustments: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(adjustments.anyOtherBusinessIncome),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         anyOtherBusinessIncome)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(adjustments.totalAdjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         totalAdjustments)}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
+  "buildYourAdjustedProfitOrLossTable must create a Table with the correct content" - {
+    "when a new profit" in {
+      val table =
+        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossTable(taxableProfit, adjustments, aNetBusinessProfitValues, taxYear, Profit)
+      val expectedTable = expectedYourAdjustedProfitOrLossTable(
+        Profit,
+        aNetBusinessProfitValues.netProfitOrLossAmount,
+        aNetBusinessProfitValues.totalAdditions,
+        aNetBusinessProfitValues.totalDeductions,
+        aNetBusinessProfitValues.getNetBusinessProfitOrLossForTaxPurposes,
+        adjustments,
+        taxableProfit
+      )
+
+      assertWithClue(result = table, expectedResult = expectedTable)
+    }
+
+    "when a net loss" in {
+      val table =
+        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossTable(taxableLoss, adjustments, aNetBusinessLossValues, taxYear, Loss)
+      val expectedTable = expectedYourAdjustedProfitOrLossTable(
+        Loss,
+        aNetBusinessLossValues.netProfitOrLossAmount,
+        aNetBusinessLossValues.totalAdditions,
+        aNetBusinessLossValues.totalDeductions,
+        aNetBusinessLossValues.getNetBusinessProfitOrLossForTaxPurposes,
+        adjustments,
+        taxableLoss
+      )
+
+      assertWithClue(result = table, expectedResult = expectedTable)
+    }
+  }
+
+  "buildAdjustmentsTable must create a Table with the correct content" in {
+    val table           = AdjustedTaxableProfitOrLossSummary.buildAdjustmentsTable(adjustments, doubleMarginClasses)
+    val expectedTable   = expectedAdjustmentsTable(adjustments)
+    val expectedCaption = Some("journeys.adjustments")
+
+    assert(table.caption == expectedCaption)
+    assertWithClue(result = table, expectedResult = expectedTable)
+  }
 
 }

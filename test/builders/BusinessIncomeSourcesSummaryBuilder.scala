@@ -44,7 +44,7 @@ object BusinessIncomeSourcesSummaryBuilder {
     totalDeductions = Some(0),
     accountingAdjustments = Some(100),
     taxableProfit = 100,
-    taxableLoss = 100
+    taxableLoss = 0
   )
 
   val aBusinessIncomeSourcesSummaryWithNetLoss = BusinessIncomeSourcesSummary(
@@ -56,7 +56,7 @@ object BusinessIncomeSourcesSummaryBuilder {
     totalAdditions = Some(0),
     totalDeductions = Some(200),
     accountingAdjustments = Some(100),
-    taxableProfit = 100,
+    taxableProfit = 0,
     taxableLoss = 100
   )
 }

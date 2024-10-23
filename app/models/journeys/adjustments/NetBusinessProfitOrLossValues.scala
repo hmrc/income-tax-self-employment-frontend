@@ -35,6 +35,9 @@ case class NetBusinessProfitOrLossValues(turnover: BigDecimal,
 
   val netProfitOrLoss: ProfitOrLoss     = if (netLoss > 0) Loss else Profit
   val netProfitOrLossAmount: BigDecimal = if (netProfitOrLoss == Profit) netProfit else netLoss
+
+  def getNetBusinessProfitOrLossForTaxPurposes: BigDecimal =
+    if (netProfitOrLoss == Profit) netProfit + totalAdditions - totalDeductions else netLoss - totalAdditions + totalDeductions
 }
 
 object NetBusinessProfitOrLossValues {

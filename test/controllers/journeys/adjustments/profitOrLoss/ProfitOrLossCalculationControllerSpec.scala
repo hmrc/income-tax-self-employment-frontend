@@ -26,14 +26,12 @@ import models.NormalMode
 import models.common.Journey.ProfitOrLoss
 import models.common.UserType
 import models.common.UserType.Individual
-import models.database.UserAnswers
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds
 import models.journeys.nics.TaxableProfitAndLoss
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.http.Status.OK
 import play.api.i18n.Messages
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
@@ -53,16 +51,63 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
 
   def onwardRoute: Call = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ProfitOrLoss, NormalMode)
 
-  private val testScenarios = Table(
+  private val profitOrLossScenarios = Table(
     ("profitOrLoss", "incomeSourceSummary", "netProfitOrLossValues"),
     (Profit, aBusinessIncomeSourcesSummaryWithNetProfit, aNetBusinessProfitValues),
-    (Loss, aBusinessIncomeSourcesSummaryWithNetLoss, aNetBusinessLossValues),
+    (Loss, aBusinessIncomeSourcesSummaryWithNetLoss, aNetBusinessLossValues)
+  )
+
+  private val tooYoungDoB = LocalDate.now().minusYears(15)
+  private val tooOldDoB   = LocalDate.now().minusYears(StatePensionAgeThresholds.getThresholdForTaxYear(taxYear) + 1)
+
+  private val class2TaxableProfit = 500
+  private val class4TaxableProfit = 12571
+  private val otherTaxableProfit  = 10000
+
+  private val class2TooYoungMsg = "As you’re under 16 years of age, you cannot make voluntary Class 2 National Insurance contributions."
+  private val class2TooOldMsg =
+    "You cannot make voluntary Class 2 National Insurance Contributions for any weeks after you’ve reached State Pension age."
+  private val class4InvalidAgeMsg = "Based on your age, you’re exempt and therefore do not need to pay Class 4 National Insurance contributions."
+  private val betweenThresholdsMsg =
+    "Based on the figures above, your National Insurance Class 2 contributions are treated as having been paid and you do not need to pay Class 4 contributions."
+
+  def taxableProfitsAndLosses(taxableProfit: BigDecimal, taxableLoss: BigDecimal = 0): List[TaxableProfitAndLoss] = List(
+    TaxableProfitAndLoss(businessId, taxableProfit = taxableProfit, taxableLoss = taxableLoss))
+
+  private val exemptionMessageScenarios = Table(
+    ("scenario", "dateOfBirth", "taxableProfitsAndLosses", "expectedNicsMessage"),
+    (
+      "'too young for Class 2' message when user is Class 2 eligible but under 16 years old",
+      tooYoungDoB,
+      taxableProfitsAndLosses(class2TaxableProfit),
+      class2TooYoungMsg),
+    (
+      "'too old for Class 2' message when user is Class 2 eligible but over state pension age",
+      tooOldDoB,
+      taxableProfitsAndLosses(class2TaxableProfit),
+      class2TooOldMsg),
+    (
+      "'class 4 exemption due to age' message when user is Class 4 eligible but under 16 years old",
+      tooYoungDoB,
+      taxableProfitsAndLosses(class4TaxableProfit),
+      class4InvalidAgeMsg),
+    (
+      "'class 4 exemption due to age' message when user is Class 4 eligible but over state pension age",
+      tooOldDoB,
+      taxableProfitsAndLosses(class4TaxableProfit),
+      class4InvalidAgeMsg),
+    (
+      "'user is between Class 2 and 4 thresholds' message when taxable profit is between thresholds",
+      aUserDateOfBirth,
+      taxableProfitsAndLosses(otherTaxableProfit),
+      betweenThresholdsMsg)
   )
 
   "onPageLoad" - {
     "should return OK and render correct view" - {
-      testScenarios.foreach { case (profitOrLoss, incomeSourceSummary, netProfitOrLossValues) =>
-        val allTaxableProfitsAndLosses = List(TaxableProfitAndLoss(businessId, taxableProfit = incomeSourceSummary.taxableProfit, taxableLoss = incomeSourceSummary.taxableLoss))
+      profitOrLossScenarios.foreach { case (profitOrLoss, incomeSourceSummary, netProfitOrLossValues) =>
+        val allTaxableProfitsAndLosses =
+          List(TaxableProfitAndLoss(businessId, taxableProfit = incomeSourceSummary.taxableProfit, taxableLoss = incomeSourceSummary.taxableLoss))
 
         s"when net $profitOrLoss" in {
           val stubService = SelfEmploymentServiceStub(
@@ -70,80 +115,47 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             getAllBusinessesTaxableProfitAndLossResult = Right(allTaxableProfitsAndLosses),
             getNetBusinessProfitOrLossValuesResult = Right(netProfitOrLossValues)
           )
-          val netAmount = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+          val adjustedTaxablePoL             = incomeSourceSummary.getTaxableProfitOrLoss
+          val formattedAdjustedTaxableAmount = formatSumMoneyNoNegative(List(adjustedTaxablePoL))
+          val netPoLForTaxPurposes           = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
+          val formattedNetAmount             = formatSumMoneyNoNegative(List(netPoLForTaxPurposes))
 
-          val application = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
+          val application            = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
           implicit val msg: Messages = SpecBase.messages(application)
 
-          val result = route(application, onPageLoadRequest).value
+          val result               = route(application, onPageLoadRequest).value
           val adjustedProfitOrLoss = allTaxableProfitsAndLosses.headOption.get.taxableProfitOrLoss(profitOrLoss)
           val tables = AdjustedTaxableProfitOrLossSummary.buildTables(adjustedProfitOrLoss, netProfitOrLossValues, taxYear, profitOrLoss, Individual)
 
           val expectedView = {
             val view = application.injector.instanceOf[ProfitOrLossCalculationView]
-            view(Individual, formattedNetAmount, taxYear, profitOrLoss, tables, None, onwardRoute)(onPageLoadRequest, msg).toString()
+            view(Individual, formattedAdjustedTaxableAmount, formattedNetAmount, taxYear, profitOrLoss, tables, None, onwardRoute)(
+              onPageLoadRequest,
+              msg).toString()
           }
 
           status(result) mustBe OK
           assertEqualWithDiff(contentAsString(result), expectedView)
         }
       }
-    }
 
-    val tooYoungDoB = LocalDate.now().minusYears(15)
-    val tooOldDoB   = LocalDate.now().minusYears(StatePensionAgeThresholds.getThresholdForTaxYear(taxYear) + 1)
+      "that displays the notification:" - {
+        exemptionMessageScenarios.foreach { case (scenario, dateOfBirth, taxableProfitsAndLosses, expectedNicsMessage) =>
+          scenario in {
+            val stubService = SelfEmploymentServiceStub(
+              getBusinessIncomeSourcesSummaryResult = Right(aBusinessIncomeSourcesSummaryWithNetProfit),
+              getAllBusinessesTaxableProfitAndLossResult = Right(taxableProfitsAndLosses),
+              getNetBusinessProfitOrLossValuesResult = Right(aNetBusinessProfitValues),
+              getUserDateOfBirthResult = Right(dateOfBirth)
+            )
 
-    val class2TaxableProfit = 500
-    val class4TaxableProfit = 12571
-    val otherTaxableProfit = 10000
-    def taxableProfitsAndLosses(taxableProfit: BigDecimal, taxableLoss: BigDecimal = 0): List[TaxableProfitAndLoss] = List(TaxableProfitAndLoss(businessId, taxableProfit = taxableProfit, taxableLoss = taxableLoss))
+            val application = buildAppFromUserType(UserType.Individual, Some(emptyUserAnswers), Some(stubService))
 
-    val exemptionMessageCases = Table(
-      ("scenario", "dateOfBirth", "taxableProfitsAndLosses", "expectedViewArguments"),
-      ("'too young for Class 2' message when user is Class 2 eligible but under 16 years old", tooYoungDoB, taxableProfitsAndLosses(class2TaxableProfit), Some("class2Ineligible.tooYoung")),
-//      ("'too old for Class 2' message when user is Class 2 eligible but over state pension age", tooOldDoB, taxableProfitsAndLosses(class2TaxableProfit), Some("class2Ineligible.tooOld")),
-//      (
-//        "'class 4 exemption due to age' message when user is Class 4 eligible but under 16 years old",
-//        tooYoungDoB,
-//        taxableProfitsAndLosses(class4TaxableProfit),
-//        Some("class2Ineligible.tooYoung")),
-//      (
-//        "'class 4 exemption due to age' message when user is Class 4 eligible but over state pension age",
-//        tooOldDoB,
-//        taxableProfitsAndLosses(class4TaxableProfit),
-//        Some("class2Ineligible.tooOld")),
-//      (
-//        "'user is between Class 2 and 4 thresholds' message when taxable profit is between thresholds",
-//        aUserDateOfBirth,
-//        taxableProfitsAndLosses(otherTaxableProfit),
-//        Some("betweenClass2AndClass4"))
-    )
+            val result = route(application, onPageLoadRequest).value
 
-    exemptionMessageCases.foreach { case (scenario, dateOfBirth, taxableProfitsAndLosses, expectedViewArguments) =>
-      s"should display content with $scenario" in {
-        val stubService = SelfEmploymentServiceStub(
-          getBusinessIncomeSourcesSummaryResult = Right(aBusinessIncomeSourcesSummaryWithNetProfit),
-          getAllBusinessesTaxableProfitAndLossResult = Right(taxableProfitsAndLosses),
-          getNetBusinessProfitOrLossValuesResult = Right(aNetBusinessProfitValues),
-          getUserDateOfBirthResult = Right(dateOfBirth)
-        )
-
-        val application            = buildAppFromUserType(UserType.Individual, Some(emptyUserAnswers), Some(stubService))
-        val view                   = application.injector.instanceOf[ProfitOrLossCalculationView]
-        implicit val msg: Messages = SpecBase.messages(application)
-
-        val result             = route(application, onPageLoadRequest).value
-        val netAmount          = aBusinessIncomeSourcesSummaryWithNetProfit.getNetBusinessProfitOrLossForTaxPurposes
-        val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-        val tables             = AdjustedTaxableProfitOrLossSummary.buildTables(netAmount, aNetBusinessProfitValues, taxYear, Profit, Individual)
-
-        val expectedView =
-          view(Individual, formattedNetAmount, taxYear, Profit, tables, expectedViewArguments, onwardRoute)(onPageLoadRequest, msg).toString()
-
-        status(result) mustBe OK
-        assert(contentAsString(result).contains(messages()))
-        assertEqualWithDiff(contentAsString(result), expectedView)
+            assert(contentAsString(result) contains expectedNicsMessage)
+          }
+        }
       }
     }
   }
