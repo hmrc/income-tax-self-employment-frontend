@@ -18,14 +18,21 @@ package viewmodels.journeys.adjustments
 
 import base.SpecBase
 import builders.NetBusinessProfitOrLossValuesBuilder.{aNetBusinessLossValues, aNetBusinessProfitValues}
+import models.common.UserType.Individual
 import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
+import pages.adjustments.profitOrLoss.GoodsAndServicesAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Table
 import utils.MoneyUtils.formatPosNegMoneyWithPounds
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{
+  additionsCaption,
+  deductionsCaption,
+  totalAdditionsCaption,
+  totalDeductionsCaption
+}
 
 class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenPropertyChecks {
 
@@ -33,6 +40,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
 
   private val netProfitValues = aNetBusinessProfitValues
   private val netLossValues   = aNetBusinessLossValues
+  private val tableClasses    = "govuk-!-margin-top-6 govuk-!-margin-bottom-9"
 
   private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
        |Result:
@@ -43,10 +51,68 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
     assert(result.rows.mkString("\n") === expectedResult)
   }
 
+  "buildTables must return all three NetBusinessProfitOrLossSummary tables" - {
+    "when a net profit with Goods and Services session data" in {
+      val goodsAndServicesForOwnUse = BigDecimal(111.22)
+      val userAnswers               = buildUserAnswers(GoodsAndServicesAmountPage, goodsAndServicesForOwnUse)
+      val result =
+        NetBusinessProfitOrLossSummary.buildTables(netProfitValues, userAnswers, Profit, Individual, businessId)(messages)
+
+      val netProfitLossTable = expectedNetProfitLossTable(
+        Profit,
+        netProfitValues.turnover,
+        netProfitValues.incomeNotCountedAsTurnover,
+        netProfitValues.totalExpenses,
+        netProfitValues.netProfitOrLossAmount)
+      val expensesTable = expectedExpensesTable(
+        Profit,
+        netProfitValues.balancingCharge,
+        goodsAndServicesForOwnUse,
+        netProfitValues.disallowableExpenses,
+        netProfitValues.totalAdditions)
+      val capitalAllowancesTable = expectedCapitalAllowancesTable(
+        Profit,
+        netProfitValues.capitalAllowances,
+        netProfitValues.turnoverNotTaxableAsBusinessProfit,
+        netProfitValues.totalDeductions)
+
+      assertWithClue(result.netProfitLossTable, expectedResult = netProfitLossTable)
+      assertWithClue(result.expensesTable, expectedResult = expensesTable)
+      assertWithClue(result.capitalAllowancesTable, expectedResult = capitalAllowancesTable)
+    }
+    "when a net loss and no Goods and Services session data" in {
+      val goodsAndServicesForOwnUse = BigDecimal(0)
+      val result =
+        NetBusinessProfitOrLossSummary.buildTables(netProfitValues, emptyUserAnswers, Loss, Individual, businessId)(messages)
+
+      val netProfitLossTable = expectedNetProfitLossTable(
+        Loss,
+        netProfitValues.turnover,
+        netProfitValues.incomeNotCountedAsTurnover,
+        netProfitValues.totalExpenses,
+        netProfitValues.netProfitOrLossAmount)
+      val expensesTable = expectedExpensesTable(
+        Loss,
+        netProfitValues.balancingCharge,
+        goodsAndServicesForOwnUse,
+        netProfitValues.disallowableExpenses,
+        netProfitValues.totalAdditions)
+      val capitalAllowancesTable = expectedCapitalAllowancesTable(
+        Loss,
+        netProfitValues.capitalAllowances,
+        netProfitValues.turnoverNotTaxableAsBusinessProfit,
+        netProfitValues.totalDeductions)
+
+      assertWithClue(result.netProfitLossTable, expectedResult = netProfitLossTable)
+      assertWithClue(result.expensesTable, expectedResult = expensesTable)
+      assertWithClue(result.capitalAllowancesTable, expectedResult = capitalAllowancesTable)
+    }
+  }
+
   "buildNetProfitLossTable must create a Table with the correct content" - {
     "when a net profit" in {
       val table =
-        NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netProfitValues, Profit)(messages)
+        NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(netProfitValues, Profit, tableClasses)(messages)
       val expectedTable = expectedNetProfitLossTable(
         Profit,
         netProfitValues.turnover,
@@ -60,7 +126,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
     }
     "when a net loss" in {
       val table =
-        NetBusinessProfitOrLossSummary.buildNetProfitLossTable(netLossValues, Loss)(messages)
+        NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(netLossValues, Loss, tableClasses)(messages)
       val expectedTable = expectedNetProfitLossTable(
         Loss,
         netLossValues.turnover,
@@ -75,13 +141,14 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
   }
 
   "buildExpensesTable must create a Table with the correct content" - {
+    val goodsAndServicesForOwnUse = 111.22
     "when a net profit" in {
       val table =
-        NetBusinessProfitOrLossSummary.buildExpensesTable(netProfitValues, Profit)
+        NetBusinessProfitOrLossSummary.buildExpensesTable(netProfitValues, goodsAndServicesForOwnUse, Profit, Individual, tableClasses)
       val expectedTable = expectedExpensesTable(
         Profit,
         netProfitValues.balancingCharge,
-        netProfitValues.goodsAndServicesForOwnUse,
+        goodsAndServicesForOwnUse,
         netProfitValues.disallowableExpenses,
         netProfitValues.totalAdditions)
       val expectedCaption = Some(additionsCaption(Profit))
@@ -91,11 +158,11 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
     }
     "when a net loss" in {
       val table =
-        NetBusinessProfitOrLossSummary.buildExpensesTable(netLossValues, Loss)
+        NetBusinessProfitOrLossSummary.buildExpensesTable(netLossValues, goodsAndServicesForOwnUse, Loss, Individual, tableClasses)
       val expectedTable = expectedExpensesTable(
         Loss,
         netLossValues.balancingCharge,
-        netLossValues.goodsAndServicesForOwnUse,
+        goodsAndServicesForOwnUse,
         netLossValues.disallowableExpenses,
         netLossValues.totalAdditions)
       val expectedCaption = Some(deductionsCaption(Loss))
@@ -107,7 +174,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
 
   "buildCapitalAllowancesTable must create a Table with the correct content" - {
     "when a net profit" in {
-      val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netProfitValues, Profit)(messages)
+      val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netProfitValues, Profit, tableClasses)(messages)
       val expectedTable = expectedCapitalAllowancesTable(
         Profit,
         netProfitValues.capitalAllowances,
@@ -120,7 +187,7 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
       assertWithClue(result = table, expectedResult = expectedTable)
     }
     "when a net Loss" in {
-      val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netLossValues, Loss)(messages)
+      val table = NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netLossValues, Loss, tableClasses)(messages)
       val expectedTable = expectedCapitalAllowancesTable(
         Loss,
         netProfitValues.capitalAllowances,
@@ -153,8 +220,8 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
                             goodsAndServices: BigDecimal,
                             disallowableExpenses: BigDecimal,
                             totalAdditionsOrDeductions: BigDecimal): String = {
-    val additionsDeductionCaption = if (profitOrLoss == Profit) { additionsCaption(profitOrLoss) }
-    else { deductionsCaption(profitOrLoss) }
+    val additionsDeductionCaption = if (profitOrLoss == Profit) { totalAdditionsCaption(profitOrLoss) }
+    else { totalDeductionsCaption(profitOrLoss) }
     s"""|List(TableRow(HtmlContent(selectCapitalAllowances.balancingCharge),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          balancingCharge)}),None,govuk-!-text-align-right ,None,None,Map()))
       |List(TableRow(HtmlContent(goodsAndServicesForYourOwnUse.title.individual),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
@@ -169,8 +236,8 @@ class NetBusinessProfitOrLossSummarySpec extends SpecBase with TableDrivenProper
                                      capitalAllowances: BigDecimal,
                                      turnoverNotTaxable: BigDecimal,
                                      totalDeductionsOrAdditions: BigDecimal): String = {
-    val deductionsAdditionsCaption = if (profitOrLoss == Profit) { deductionsCaption(profitOrLoss) }
-    else { additionsCaption(profitOrLoss) }
+    val deductionsAdditionsCaption = if (profitOrLoss == Profit) { totalDeductionsCaption(profitOrLoss) }
+    else { totalAdditionsCaption(profitOrLoss) }
     s"""|List(TableRow(HtmlContent(profitOrLoss.capitalAllowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          capitalAllowances)}),None,govuk-!-text-align-right ,None,None,Map()))
       |List(TableRow(HtmlContent(profitOrLoss.turnoverNotTaxable),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(

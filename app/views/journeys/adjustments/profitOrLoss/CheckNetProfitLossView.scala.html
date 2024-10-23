@@ -41,7 +41,7 @@
 
         @heading(s"checkNetProfitLoss.title.$profitOrLoss", Some(netAmount))
 
-        @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){
+        @foldableDetails(messages("profitOrLoss.showCalculations")){
             @govukTable(tables.netProfitLossTable)
             @govukTable(tables.expensesTable)
             @govukTable(tables.capitalAllowancesTable)

@@ -16,22 +16,37 @@
 
 package models.journeys.nics
 
-import models.common.TaxYear
+import cats.data.EitherT
+import models.common.{BusinessId, TaxYear}
 import models.domain.BusinessIncomeSourcesSummary
+import models.errors.ServiceError
+import models.errors.ServiceError.BusinessNotFoundError
+import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
 import models.journeys.nics.NICsThresholds.{Class2NICsThresholds, Class4NICsFigures}
 import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
+import scala.concurrent.{ExecutionContext, Future}
 
-case class TaxableProfitAndLoss(taxableProfit: BigDecimal, taxableLoss: BigDecimal)
+case class TaxableProfitAndLoss(businessId: BusinessId, taxableProfit: BigDecimal, taxableLoss: BigDecimal) {
+
+  def taxableProfitOrLoss(profitOrLoss: ProfitOrLoss): BigDecimal = if (profitOrLoss == ProfitOrLoss.Profit) taxableProfit else taxableLoss
+}
 
 object TaxableProfitAndLoss {
   implicit val formats: Format[TaxableProfitAndLoss] = Json.format[TaxableProfitAndLoss]
 
   def fromBusinessIncomeSourcesSummary(biss: BusinessIncomeSourcesSummary): TaxableProfitAndLoss =
-    TaxableProfitAndLoss(biss.taxableProfit, biss.taxableLoss)
+    TaxableProfitAndLoss(BusinessId(biss.incomeSourceId), biss.taxableProfit, biss.taxableLoss)
+
+  def returnSingleBusinessProfitOrLoss(allUserProfitsAndLosses: List[TaxableProfitAndLoss], businessId: BusinessId, profitOrLoss: ProfitOrLoss)(
+      implicit ec: ExecutionContext): EitherT[Future, BusinessNotFoundError, BigDecimal] =
+    allUserProfitsAndLosses
+      .find(_.businessId == businessId)
+      .map(profitOrLossValues => EitherT.rightT[Future, BusinessNotFoundError](profitOrLossValues.taxableProfitOrLoss(profitOrLoss)))
+      .getOrElse(EitherT.leftT[Future, BigDecimal](ServiceError.BusinessNotFoundError(businessId)))
 
   def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], userDoB: LocalDate, taxYear: TaxYear): NicClassExemption = {
 

@@ -56,9 +56,9 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg       = SpecBase.messages(application)
           val result             = route(application, onPageLoadRequest).value
-          val netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes()
+          val netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitOrLossValues, Loss)
+          val tables             = buildTables(netBusinessProfitOrLossValues, userAnswers, Loss, userType, businessId)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
@@ -79,9 +79,9 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
           implicit val msg       = SpecBase.messages(application)
           val result             = route(application, onPageLoadRequest).value
-          val netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes()
+          val netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
           val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitOrLossValues, Profit)
+          val tables             = buildTables(netBusinessProfitOrLossValues, userAnswers, Profit, userType, businessId)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]

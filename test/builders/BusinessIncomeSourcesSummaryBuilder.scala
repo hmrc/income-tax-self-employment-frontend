@@ -35,28 +35,28 @@ object BusinessIncomeSourcesSummaryBuilder {
   )
 
   val aBusinessIncomeSourcesSummaryWithNetProfit = BusinessIncomeSourcesSummary(
-    businessId.value,
-    100,
-    100,
-    100,
-    0,
-    Some(200),
-    Some(0),
-    Some(100),
-    100,
-    100
+    incomeSourceId = businessId.value,
+    totalIncome = 100,
+    totalExpenses = 100,
+    netProfit = 100,
+    netLoss = 0,
+    totalAdditions = Some(200),
+    totalDeductions = Some(0),
+    accountingAdjustments = Some(100),
+    taxableProfit = 100,
+    taxableLoss = 100
   )
 
   val aBusinessIncomeSourcesSummaryWithNetLoss = BusinessIncomeSourcesSummary(
-    businessId.value,
-    100,
-    100,
-    0,
-    100,
-    Some(0),
-    Some(200),
-    Some(100),
-    100,
-    100
+    incomeSourceId = businessId.value,
+    totalIncome = 100,
+    totalExpenses = 100,
+    netProfit = 0,
+    netLoss = 100,
+    totalAdditions = Some(0),
+    totalDeductions = Some(200),
+    accountingAdjustments = Some(100),
+    taxableProfit = 100,
+    taxableLoss = 100
   )
 }

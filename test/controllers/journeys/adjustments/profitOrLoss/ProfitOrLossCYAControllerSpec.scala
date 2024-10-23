@@ -19,7 +19,7 @@ package controllers.journeys.adjustments.profitOrLoss
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
-import models.common.{AccountingType, BusinessId, Journey, TaxYear, UserType}
+import models.common._
 import models.database.UserAnswers
 import models.journeys.adjustments.WhichYearIsLossReported
 import pages.Page
@@ -51,6 +51,8 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
   override val testDataCases: List[JsObject] = List(submissionData)
 
   override protected val journey: Journey = ProfitOrLoss
+
+  override lazy val onwardRoute: String = routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId).url
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ProfitOrLossCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ProfitOrLossCYAController.onSubmit
