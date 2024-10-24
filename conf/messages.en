@@ -38,9 +38,6 @@ site.twentyFivePercent = 25%
 site.fiftyPercent = 50%
 site.differentAmount = A different amount
 site.exampleDate = For example, 27 3 2007
-site.day = Day
-site.month = Month
-site.year = Year
 site.or = or
 site.buildingName = Building name
 site.buildingNumber = Building number
@@ -179,12 +176,9 @@ checkYourSelfEmploymentDetails.p1 = To edit this data, use your software.
 
 sectionCompletedState.title = Have you finished this section?
 sectionCompletedState.hint = You’ll still be able to go back and review the information that you’ve given us.
-sectionCompletedState.yes = Yes
-sectionCompletedState.no = No
 sectionCompletedState.error.required = Select yes if you’ve completed this section
 
 prepopTastList.taxReturn = Your Income Tax Return
-prepopTastList.hint = To change this data you’ll have to use your reporting software.
 
 ###### Abroad Journey ######
 
@@ -475,7 +469,7 @@ expensesCategories.details.link = Find out more about allowable expenses (opens 
 expensesCategories.details.href = https://www.gov.uk/government/publications/how-to-calculate-your-taxable-profits-hs222-self-assessment-helpsheet/hs222-how-to-calculate-your-taxable-profits-2023#allowable-business-expenses-cash-basis-and-traditional-accounting
 expensesCategories.error.required.individual = Select if you’re reporting your expenses as one total amount, in individual categories or you do not have any expenses to report
 expensesCategories.error.required.agent = Select if your client is reporting their expenses as one total amount, in individual categories or they do not have any expenses to report
-expensesCategories.change.hidden = Change how to report the expenses?
+expensesCategories.change.hidden = Change how to report the expenses
 
 ## Tailoring CYA
 expensesTailoringCya.title.individual = Check your expenses
@@ -512,7 +506,7 @@ officeSupplies.question.individual = Did you buy any office supplies?
 officeSupplies.question.agent = Did your client buy any office supplies?
 officeSupplies.error.required.individual = Select if all your office supplies expenses are allowable, some of them are disallowable or you do not have any office supplies expenses
 officeSupplies.error.required.agent = Select if all your client’s office supplies expenses are allowable, some of them are disallowable or they do not have any office supplies expenses
-officeSupplies.change.hidden = OfficeSupplies
+officeSupplies.change.hidden = Change if office supplies were bought
 
 ## Goods to sell or use
 goodsToSellOrUse.insetText = Include your fuel costs in this section and not under travel and accommodation for work expenses.
@@ -520,7 +514,7 @@ goodsToSellOrUse.question.individual = Did you buy any goods to sell or use?
 goodsToSellOrUse.question.agent = Did your client buy any goods to sell or use?
 goodsToSellOrUse.error.required.individual = Select if all your goods to sell or use expenses are allowable, some of them are disallowable or you do not have any goods to sell or use expenses
 goodsToSellOrUse.error.required.agent = Select if all your client’s goods to sell or use expenses are allowable, some of them are disallowable or they do not have any goods to sell or use expenses
-goodsToSellOrUse.change.hidden = Change if any goods to sell or use were bought?
+goodsToSellOrUse.change.hidden = Change if any goods to sell or use were bought
 
 ## Repairs and maintenance
 repairsAndMaintenance.l1 = repairs and maintenance of work premises and equipment
@@ -533,14 +527,14 @@ repairsAndMaintenance.error.required.individual = Select if all your repairs and
 repairsAndMaintenance.error.required.agent = Select if all your client’s repairs and maintenance expenses are allowable, some of them are disallowable or they do not have any repairs and maintenance expenses
 repairsAndMaintenance.cyaSummary.individual = Did you spend anything on repairs and maintenance?
 repairsAndMaintenance.cyaSummary.agent = Did your client spend anything on repairs and maintenance?
-repairsAndMaintenance.change.hidden = Change whether anything was spent on repairs and maintenance of property or equipment?
+repairsAndMaintenance.change.hidden = Change whether anything was spent on repairs and maintenance of property or equipment
 
 ## Work from home
 workFromHome.title.individual = Did you work from home?
 workFromHome.title.agent = Did your client work from home?
 workFromHome.error.required.individual = Select yes if you worked from home
 workFromHome.error.required.agent = Select yes if your client worked from home
-workFromHome.change.hidden = WorkFromHome
+workFromHome.change.hidden = Change if you worked from home
 
 ## Work from business premises
 workFromBusinessPremises.title.individual = Did you work from your own business premises?
@@ -549,7 +543,7 @@ workFromBusinessPremises.hint.individual = For example an office, shop or indust
 workFromBusinessPremises.hint.agent = For example an office, shop or industrial unit that your client owns or rents. Select no if your client worked from their home.
 workFromBusinessPremises.error.required.individual = Select if all your business premises expenses are allowable, some of them are disallowable or you do not have any business premises expenses
 workFromBusinessPremises.error.required.agent = Select if all your client’s business premises expenses are allowable, some of them are disallowable or they do not have any business premises expenses
-workFromBusinessPremises.change.hidden = WorkFromBusinessPremises
+workFromBusinessPremises.change.hidden = Change if you worked from your business premises
 
 ## Travel and accommodation for work
 travelForWork.title = Travel and accommodation for work
@@ -565,7 +559,7 @@ travelForWork.question.individual = Did you travel for work?
 travelForWork.question.agent = Did your client travel for work?
 travelForWork.error.required.individual = Select if all your travel expenses are allowable, some of them are disallowable or you do not have any travel expenses
 travelForWork.error.required.agent = Select if all your client’s travel expenses are allowable, some of them are disallowable or they do not have any travel expenses
-travelForWork.change.hidden = TravelForWork
+travelForWork.change.hidden = Change if you traveled for work
 
 ## Advertising or marketing
 advertisingOrMarketing.title = Advertising or marketing
@@ -577,7 +571,7 @@ advertisingOrMarketing.question.individual = Did you spend anything on advertisi
 advertisingOrMarketing.question.agent = Did your client spend anything on advertising or marketing?
 advertisingOrMarketing.error.required.individual = Select if all your advertising or marketing expenses are allowable, some of them are disallowable or you do not have any advertising or marketing expenses
 advertisingOrMarketing.error.required.agent = Select if all your client’s advertising or marketing expenses are allowable, some of them are disallowable or they do not have any advertising or marketing expenses
-advertisingOrMarketing.change.hidden = AdvertisingOrMarketing
+advertisingOrMarketing.change.hidden = Change if you spent anything on advertising or marketing
 
 ## Entertainment costs
 entertainmentCosts.l1 = entertaining clients, suppliers and customers
@@ -586,7 +580,7 @@ entertainmentCosts.question.individual = Did you spend anything on entertainment
 entertainmentCosts.question.agent = Did your client spend anything on entertainment costs?
 entertainmentCosts.error.required.individual = Select yes if you spent anything on entertainment costs
 entertainmentCosts.error.required.agent = Select yes if your client spent anything on entertainment costs
-entertainmentCosts.change.hidden = EntertainmentCosts
+entertainmentCosts.change.hidden = Change if anything was spent on entertainment costs
 
 ## Staff, construction industry and professional services
 professionalServiceExpenses.title = Staff, construction industry and professional services expenses
@@ -599,7 +593,7 @@ professionalServiceExpenses.no.individual = No, I did not pay for any of these p
 professionalServiceExpenses.no.agent = No, my client did not pay for any of these professionals or services
 professionalServiceExpenses.error.required.individual = Select the professionals or services you paid for, or select ‘No, I did not pay for any of these professionals or services’
 professionalServiceExpenses.error.required.agent = Select the professionals or services your client paid for, or select ‘No, my client did not pay for any of these professionals or services’
-professionalServiceExpenses.change.hidden = ProfessionalServiceExpenses
+professionalServiceExpenses.change.hidden = Change if you paid for professionals or services
 professionalServiceExpenses.d1.heading = Understanding staff expenses
 professionalServiceExpenses.d3.heading = Understanding professional fees
 professionalServiceExpenses.d3.l1 = accountants
@@ -614,7 +608,7 @@ disallowableStaffCosts.subHeading.individual = Are any of your staff costs disal
 disallowableStaffCosts.subHeading.agent = Are any of your client’s staff costs disallowable?
 disallowableStaffCosts.error.required.agent = Select yes if any of your client’s staff costs are disallowable
 disallowableStaffCosts.error.required.individual = Select yes if any of your staff costs are disallowable
-disallowableStaffCosts.change.hidden = DisallowableStaffCosts
+disallowableStaffCosts.change.hidden = Change if any of the staff costs are disallowable
 disallowableStaffCosts.l1.individual = your own pay, pension or National Insurance contributions
 disallowableStaffCosts.l1.agent = your client’s own pay, pension or National Insurance contributions
 
@@ -624,7 +618,7 @@ disallowableSubcontractorCosts.subHeading.individual = Are any of your construct
 disallowableSubcontractorCosts.subHeading.agent = Are any of your client’s construction industry subcontractors costs disallowable?
 disallowableSubcontractorCosts.error.required.individual = Select yes if any of your construction industry subcontractors costs are disallowable
 disallowableSubcontractorCosts.error.required.agent = Select yes if any of your client’s construction industry subcontractors costs are disallowable
-disallowableSubcontractorCosts.change.hidden = DisallowableSubcontractorCosts
+disallowableSubcontractorCosts.change.hidden = Change if any construction industry subcontractor costs are disallowable
 disallowableSubcontractorCosts.p1.individual = This includes any non-work amounts. For example, building work carried out on your home.
 disallowableSubcontractorCosts.p1.agent = This includes any non-work amounts. For example, building work carried out on your client’s home.
 
@@ -634,7 +628,7 @@ disallowableProfessionalFees.subHeading.individual = Are any of your professiona
 disallowableProfessionalFees.subHeading.agent = Are any of your client’s professional fees disallowable?
 disallowableProfessionalFees.error.required.individual = Select yes if any of your professional fees are disallowable
 disallowableProfessionalFees.error.required.agent = Select yes if any of your client’s professional fees are disallowable
-disallowableProfessionalFees.change.hidden = DisallowableProfessionalFees
+disallowableProfessionalFees.change.hidden = Change if any professional fees are disallowable
 
 ## Financial expenses
 financialExpenses.title = Financial expenses
@@ -659,7 +653,7 @@ financialExpenses.noFinancialExpenses.individual = No, I did not have any financ
 financialExpenses.noFinancialExpenses.agent = No, my client did not have any financial expenses
 financialExpenses.error.required.individual = Select the financial expenses you paid for, or select ‘No, I did not have any financial expenses’
 financialExpenses.error.required.agent = Select the financial expenses your client paid for, or select ‘No, my client did not have any financial expenses’
-financialExpenses.change.hidden = FinancialExpenses
+financialExpenses.change.hidden = Change if you had any financial expenses
 
 ## Disallowable interest
 disallowableInterest.title.individual = Is any of your interest on bank and other business loans disallowable?
@@ -668,7 +662,7 @@ disallowableInterest.heading = Disallowable interest on bank and other business 
 disallowableInterest.l2 = overdraft or finance arrangements
 disallowableInterest.error.required.individual = Select yes if any of your interest on bank and other business loans is disallowable
 disallowableInterest.error.required.agent = Select yes if any of your client’s interest on bank and other business loans is disallowable
-disallowableInterest.change.hidden = DisallowableInterest
+disallowableInterest.change.hidden = Change if the interest on any bank and other business loans are disallowable
 
 ## Disallowable other financial charges
 disallowableOtherFinancialCharges.title.individual = Are any of your bank, credit card and other financial charges disallowable?
@@ -677,7 +671,7 @@ disallowableOtherFinancialCharges.heading = Disallowable bank, credit card and o
 disallowableOtherFinancialCharges.p1 = These include capital repayments.
 disallowableOtherFinancialCharges.error.required.individual = Select yes if any of your bank, credit card and other financial charges are disallowable
 disallowableOtherFinancialCharges.error.required.agent = Select yes if any of your client’s bank, credit card and other financial charges are disallowable
-disallowableOtherFinancialCharges.change.hidden = DisallowableOtherFinancialCharges
+disallowableOtherFinancialCharges.change.hidden = Change if any of the bank, credit card and other financial charges are disallowable
 
 ## Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.title.individual = Are any of your irrecoverable debts disallowable?
@@ -685,7 +679,7 @@ disallowableIrrecoverableDebts.title.agent = Are any of your client’s irrecove
 disallowableIrrecoverableDebts.heading = Disallowable irrecoverable debts
 disallowableIrrecoverableDebts.error.required.individual = Select yes if any of your irrecoverable debts are disallowable
 disallowableIrrecoverableDebts.error.required.agent = Select yes if any of your client’s irrecoverable debts are disallowable
-disallowableIrrecoverableDebts.change.hidden = DisallowableIrrecoverableDebts
+disallowableIrrecoverableDebts.change.hidden = Change if any irrecoverable debts are disallowable
 
 ## Depreciation
 depreciation.title = Depreciation and loss or profit on the sale of assets
@@ -710,7 +704,7 @@ otherExpenses.l4 = any non-work use
 otherExpenses.l5 = the cost of ordinary clothing
 otherExpenses.error.required.individual = Select if all your other expenses are allowable, some of them are disallowable or you do not have any other expenses
 otherExpenses.error.required.agent = Select if all your client’s other expenses are allowable, some of them are disallowable or they do not have any other expenses
-otherExpenses.change.hidden = OtherExpenses
+otherExpenses.change.hidden = Change if you need to report any other expenses
 
 ########## Expenses - Office supplies ##########
 
@@ -722,7 +716,7 @@ officeSuppliesAmount.error.nonNumeric.individual = The amount you spent on offic
 officeSuppliesAmount.error.nonNumeric.agent = The amount your client spent on office supplies must be a number
 officeSuppliesAmount.error.required.individual = Enter the amount you spent on office supplies
 officeSuppliesAmount.error.required.agent = Enter the amount your client spent on office supplies
-officeSuppliesAmount.change.hidden = OfficeSuppliesAmount
+officeSuppliesAmount.change.hidden = Change how much was spent on office supplies
 officeSuppliesAmount.error.lessThanZero.individual = The amount you spent on office supplies must be more than £0
 officeSuppliesAmount.error.lessThanZero.agent = The amount your client spent on office supplies must be more than £0
 officeSuppliesAmount.error.overMax.individual = The amount you spent on office supplies must be less than £100,000,000,000
@@ -735,7 +729,7 @@ officeSuppliesDisallowableAmount.error.nonNumeric.individual = The disallowable 
 officeSuppliesDisallowableAmount.error.nonNumeric.agent = The disallowable amount of the £{0} your client spent on office supplies must be a number
 officeSuppliesDisallowableAmount.error.required.agent = Enter the amount of the £{0} your client spent on office supplies that is disallowable
 officeSuppliesDisallowableAmount.error.required.individual = Enter the amount of the £{0} you spent on office supplies that is disallowable
-officeSuppliesDisallowableAmount.change.hidden = OfficeSuppliesDisallowableAmount
+officeSuppliesDisallowableAmount.change.hidden = Change how much spent on office supplies is disallowable
 officeSuppliesDisallowableAmount.error.lessThanZero.individual = The disallowable amount of the £{0} you spent on office supplies must be more than £0
 officeSuppliesDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on office supplies must be more than £0
 officeSuppliesDisallowableAmount.error.overMax.individual = The disallowable amount of the £{0} you spent on office supplies must be less than £100,000,000,000
@@ -814,7 +808,7 @@ repairsAndMaintenanceDisallowableAmount.error.lessThanZero.individual = The disa
 repairsAndMaintenanceDisallowableAmount.error.lessThanZero.agent = The disallowable amount of the £{0} your client spent on repairs and maintenance must be more than £0
 repairsAndMaintenanceDisallowableAmount.error.overAmount.individual = The disallowable amount you spent on repairs and maintenance must be the same as or less than £{0}
 repairsAndMaintenanceDisallowableAmount.error.overAmount.agent = The disallowable amount your client spent on repairs and maintenance must be the same as or less than £{0}
-repairsAndMaintenanceDisallowableAmount.change.hidden = RepairsAndMaintenanceDisallowableAmount
+repairsAndMaintenanceDisallowableAmount.change.hidden = Change how much spent on repairs and maintenance is disallowable
 
 ## Repairs and maintenanceCosts CYA
 repairsAndMaintenanceCostsCYA.title.individual = Check your repairs and maintenance costs
@@ -1526,7 +1520,6 @@ zegvHowMuchDoYouWantToClaim.subHeading.agent = How much of the vehicle’s cost 
 zegvHowMuchDoYouWantToClaim.error.required.individual = Select either the full cost or a lower amount from your first year allowance that you want to claim
 zegvHowMuchDoYouWantToClaim.error.required.agent = Enter an amount up to the full cost of the vehicle
 zegvHowMuchDoYouWantToClaim.error.overMax = The amount must be less than the full cost of the vehicle
-zegvHowMuchDoYouWantToClaim.fullCost = The full cost (£{0})
 zegvHowMuchDoYouWantToClaim.change.hidden = Change how much of the car’s cost should be claimed under the 100% allowance
 
 ########## Capital Allowances - Balancing Allowance ##########
@@ -1547,7 +1540,6 @@ balancingAllowance.p6.agent = the market value of the goods that they keep or gi
 balancingAllowance.p7.read = Read more about
 balancingAllowance.p7.link = balancing charges
 balancingAllowance.p7.href = https://www.gov.uk/government/publications/capital-allowances-and-balancing-charges-hs252-self-assessment-helpsheet/hs252-capital-allowances-and-balancing-charges-2023#short-and-long-life-assets
-balancingAllowance.p7.tab = (opens in a new tab)
 balancingAllowance.subHeading.individual = Do you have a balancing allowance to report?
 balancingAllowance.subHeading.agent = Does your client have a balancing allowance to report?
 balancingAllowance.error.required.individual = Select yes if you have a balancing allowance to report
@@ -1573,7 +1565,6 @@ balancingCharge.p4.agent = This is called a balancing charge. These charges are 
 balancingCharge.p5.individual = to calculate your taxable profits.
 balancingCharge.p5.agent = to calculate their taxable profits.
 balancingCharge.p6.link = short and long-life assets and balancing charges
-balancingCharge.p6.tab = (opens in a new tab)
 balancingCharge.subHeading.individual = Do you have a balancing charge to report?
 balancingCharge.subHeading.agent = Does your client have a balancing charge to report?
 balancingCharge.error.required.individual = Select yes if you have a balancing charge to report
@@ -1702,7 +1693,7 @@ structuresBuildingsEligibleClaim.hint.individual = If you’ve sold, demolished 
 structuresBuildingsEligibleClaim.hint.agent = If they have sold, demolished or used the building for anything other than their claim, click ‘no’.
 structuresBuildingsEligibleClaim.error.required.individual = Select yes if you want to use the structures and buildings allowance
 structuresBuildingsEligibleClaim.error.required.agent = Select yes if your client wants to use the structures and buildings allowance
-structuresBuildingsEligibleClaim.change.hidden =
+structuresBuildingsEligibleClaim.change.hidden = Change if you want to use the structures and buildings allowance?
 
 structuresBuildingsNewClaimAmount.p1.individual = You can claim 3% on qualifying costs.
 structuresBuildingsNewClaimAmount.p1.agent = Your client can claim 3% on qualifying costs.
@@ -1847,8 +1838,6 @@ wdaMainRateClaimAmount.l5.agent = the market value of any items your client’s 
 wdaMainRateClaimAmount.p4.individual = This will give you your new pool balance.
 wdaMainRateClaimAmount.p4.agent = This will give your client their new pool balance.
 wdaMainRateClaimAmount.p5 = If the balance is:
-wdaMainRateClaimAmount.l6.individual = £1,000 or less, you can claim the full amount (known as the small pools allowance)
-wdaMainRateClaimAmount.l6.agent = £1,000 or less, your client can claim the full amount (known as the small pools allowance)
 wdaMainRateClaimAmount.l7.individual = £1,000 or more, you can claim 18% of the balance.
 wdaMainRateClaimAmount.l7.agent = £1,000 or more, your client can claim 18% of the balance.
 wdaMainRateClaimAmount.subHeading.individual = How much do you want to claim for the main rate pool?
@@ -1946,21 +1935,19 @@ constructionStartDate.error.required = Enter the date when construction or physi
 constructionStartDate.error.tooEarly = The date when construction or physical works started cannot be before 29 October 2018
 constructionStartDate.change.hidden = Change the date construction or physical works started
 
-qualifyingUseStartDate.title = Qualifying use
 qualifyingUseStartDate.subHeading = When was the building first brought into qualifying use?
-qualifyingUseStartDate.p1 = Qualifying use is when the building is in non-residential use for the business activity.
 qualifyingUseStartDate.hint.individual = If later, enter the date you incurred the qualifying spend.
 qualifyingUseStartDate.hint.agent = If later, enter the date that your client incurred the qualifying spend.
 qualifyingUseStartDate.error.required = Enter the date when the building first came into qualifying use
 qualifyingUseStartDate.error.tooLate = The date when the building first came into qualifying use must be in the past
-qualifyingUseStartDate.change.hidden =
+qualifyingUseStartDate.change.hidden = Change when the building was first brought into qualifying use
 
 specialTaxSiteLocation.title = Where is the special tax site located?
 specialTaxSiteLocation.error.building.individual = Enter a building number or name for the special tax site
 specialTaxSiteLocation.error.building.agent = Enter a building number or name for your client’s special tax site
 specialTaxSiteLocation.error.postcode.individual = Enter a postcode for the special tax site
 specialTaxSiteLocation.error.postcode.agent = Enter a postcode for your client’s special tax site
-specialTaxSiteLocation.change.hidden =
+specialTaxSiteLocation.change.hidden = Change where the special tax site is located
 
 newSiteClaimingAmount.p1.individual = You can claim 10% of the qualifying costs.
 newSiteClaimingAmount.p1.agent = Your client can claim 10% of the qualifying costs.
@@ -1990,7 +1977,7 @@ newSiteClaimingAmount.subHeading.cya.individual = How much enhanced structures a
 newSiteClaimingAmount.subHeading.cya.agent = How much enhanced structures and buildings allowance does your client want to claim?
 newSiteClaimingAmount.error.required.individual = Enter the amount you want to claim for the building in the special tax site
 newSiteClaimingAmount.error.required.agent = Enter the amount your client wants to claim for the building in the special tax site
-newSiteClaimingAmount.change.hidden =
+newSiteClaimingAmount.change.hidden = Change how much enhanced structures and buildings allowance you want to claim
 
 newTaxSites.title = New special tax site structures or buildings
 newTaxSites.subHeading.individual = Do you need to add another site?
@@ -2003,8 +1990,8 @@ newTaxSites.emptyList.agent = If your client doesn’t have a special tax struct
 newTaxSites.addABuilding = Add a building
 newTaxSites.error.required.individual = Select yes if you need to add another building in a special tax site
 newTaxSites.error.required.agent = Select yes if your client needs to add another building in a special tax site
-newTaxSites.change.hidden =
-newTaxSites.remove.hidden =
+newTaxSites.change.hidden = Change the special tax site structure or building
+newTaxSites.remove.hidden = Remove the special tax site structure or building
 
 siteSummary.title.individual = Special tax site summary
 siteSummary.title.agent = Special tax site summary
@@ -2022,10 +2009,8 @@ doYouHaveAContinuingClaim.title.cya.individual = Have you used the Freeports str
 doYouHaveAContinuingClaim.title.cya.agent = Has your client used the Freeports structures and building allowance before?
 doYouHaveAContinuingClaim.error.required.individual = Select yes if you have a continuing claim for enhanced structures and buildings allowance
 doYouHaveAContinuingClaim.error.required.agent = Select yes if your client has a continuing claim for enhanced structures and buildings allowance
-doYouHaveAContinuingClaim.change.hidden =
+doYouHaveAContinuingClaim.change.hidden = Change if you have used the Freeports structures and building allowance before
 
-continueClaimingAllowanceForExistingSite.title.individual = Can you still claim?
-continueClaimingAllowanceForExistingSite.title.agent = Can your client still claim?
 continueClaimingAllowanceForExistingSite.subHeading.individual = Do you want to continue to claim this allowance for an existing site?
 continueClaimingAllowanceForExistingSite.subHeading.agent = Does your client want to continue to claim this allowance for an existing site?
 continueClaimingAllowanceForExistingSite.subHeading.cya.individual = Do you want to claim anything for an existing site?
@@ -2036,7 +2021,7 @@ continueClaimingAllowanceForExistingSite.p3.individual = You must also hold an a
 continueClaimingAllowanceForExistingSite.p3.agent = Your client must also hold an allowance statement, otherwise the qualifying expenditure is treated as £0.
 continueClaimingAllowanceForExistingSite.error.required.individual = Select yes if you want to continue to claim this allowance for an existing site
 continueClaimingAllowanceForExistingSite.error.required.agent = Select yes if your client wants to continue to claim this allowance for an existing site
-continueClaimingAllowanceForExistingSite.change.hidden =
+continueClaimingAllowanceForExistingSite.change.hidden = Change if you want to continue to claim the allowance for an existing site
 
 existingSiteClaimingAmount.title = Claim amount
 existingSiteClaimingAmount.details.p1.individual = For a continuing claim you can claim 10% of the qualifying expenditure a year up to the end of the allowance period.
@@ -2053,7 +2038,7 @@ existingSiteClaimingAmount.cya.individual = How much do you want to claim for th
 existingSiteClaimingAmount.cya.agent = How much does your client want to claim for this site?
 
 newSpecialTaxSites.cya = Total new enhanced structures and buildings allowance claim:
-newSpecialTaxSites.change.hidden =
+newSpecialTaxSites.change.hidden = Change new enhanced structures and buildings allowance claim
 
 ########## Profit or Loss ##########
 
@@ -2232,8 +2217,6 @@ class4NICs.l1 = {0}% on profits over £{1} up to £{2}
 class4NICs.l2 = {0}% on profits over £{1}
 class4NICs.p3.individual = You are exempt from paying Class 4 National Insurance contributions if one or more of the following apply:
 class4NICs.p3.agent = Your client is exempt from paying Class 4 National Insurance contributions if one or more of the following apply:
-class4NICs.l3.individual = You have received profits in your capacity as a trustee, executor or administrator
-class4NICs.l3.agent = They have received profits in their capacity as a trustee, executor or administrator
 class4NICs.l4.individual = You are a diver or diving instructor and have paid Class 1 National Insurance contributions on your earnings
 class4NICs.l4.agent = They are a diver or diving instructor and have paid Class 1 National Insurance contributions on their earnings
 class4NICs.subHeading.individual = Are you exempt from paying Class 4 National Insurance contributions?

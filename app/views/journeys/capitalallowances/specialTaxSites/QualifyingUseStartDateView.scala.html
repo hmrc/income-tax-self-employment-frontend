@@ -28,14 +28,14 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("qualifyingUseStartDate.title"))) {
+@layout(pageTitle = title(form, messages("structuresBuildingsQualifyingUseDate.title"))) {
 
     @errorSummarySection(form)
 
-    @heading("qualifyingUseStartDate.title")
+    @heading("structuresBuildingsQualifyingUseDate.title")
 
         <div class="govuk-body">
-            <p>@messages("qualifyingUseStartDate.p1")</p>
+            <p>@messages("structuresBuildingsQualifyingUseDate.p1")</p>
         </div>
 
     @formHelper(action = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
