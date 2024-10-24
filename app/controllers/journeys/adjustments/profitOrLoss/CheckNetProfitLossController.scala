@@ -54,7 +54,12 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         profitOrLoss       = incomeSummary.returnNetProfitOrLoss
         formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
 
-        tables = NetBusinessProfitOrLossSummary.buildTables(netBusinessProfitOrLossValues, request.userAnswers, profitOrLoss, request.userType, businessId)
+        tables = NetBusinessProfitOrLossSummary.buildTables(
+          netBusinessProfitOrLossValues,
+          request.userAnswers,
+          profitOrLoss,
+          request.userType,
+          businessId)
         redirectLocation = profitOrLoss match {
           case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           case Loss   => routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)

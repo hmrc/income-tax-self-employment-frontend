@@ -32,8 +32,8 @@ object NetBusinessProfitOrLossSummary {
 
   def totalAdditionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.totalAdditions.$profitOrLoss"
   def totalDeductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.totalDeductions.$profitOrLoss"
-  def additionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.additions.$profitOrLoss"
-  def deductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.deductions.$profitOrLoss"
+  def additionsCaption(profitOrLoss: ProfitOrLoss)       = s"profitOrLoss.additions.$profitOrLoss"
+  def deductionsCaption(profitOrLoss: ProfitOrLoss)      = s"profitOrLoss.deductions.$profitOrLoss"
 
   def buildTables(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
                   userAnswers: UserAnswers,
@@ -48,8 +48,8 @@ object NetBusinessProfitOrLossSummary {
     )
   }
 
-  def buildNetProfitOrLossTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss, tableClasses: String)(implicit
-                                                                                                                                                messages: Messages): Table = {
+  def buildNetProfitOrLossTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss, tableClasses: String)(
+      implicit messages: Messages): Table = {
 
     val rows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOrLoss.turnover", netBusinessProfitOrLossValues.turnover),
@@ -67,7 +67,7 @@ object NetBusinessProfitOrLossSummary {
                          userType: UserType,
                          tableClasses: String)(implicit messages: Messages): Table = {
     def additionsCaptionIfProfit: String = if (profitOrLoss == Profit) totalAdditionsCaption(profitOrLoss) else totalDeductionsCaption(profitOrLoss)
-    def additionsTitleIfProfit: String = if (profitOrLoss == Profit) additionsCaption(profitOrLoss) else deductionsCaption(profitOrLoss)
+    def additionsTitleIfProfit: String   = if (profitOrLoss == Profit) additionsCaption(profitOrLoss) else deductionsCaption(profitOrLoss)
     val rows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("selectCapitalAllowances.balancingCharge", netBusinessProfitOrLossValues.balancingCharge),
       buildTableAmountRow(s"goodsAndServicesForYourOwnUse.title.$userType", goodsAndServicesForOwnUse),
@@ -81,7 +81,7 @@ object NetBusinessProfitOrLossSummary {
   def buildCapitalAllowancesTable(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss, tableClasses: String)(
       implicit messages: Messages): Table = {
     def deductionsCaptionIfProfit: String = if (profitOrLoss == Profit) totalDeductionsCaption(profitOrLoss) else totalAdditionsCaption(profitOrLoss)
-    def deductionsTitleIfProfit: String = if (profitOrLoss == Profit) deductionsCaption(profitOrLoss) else additionsCaption(profitOrLoss)
+    def deductionsTitleIfProfit: String   = if (profitOrLoss == Profit) deductionsCaption(profitOrLoss) else additionsCaption(profitOrLoss)
     val rows: Seq[Seq[TableRow]] = Seq(
       buildTableAmountRow("profitOrLoss.capitalAllowances", netBusinessProfitOrLossValues.capitalAllowances),
       buildTableAmountRow("profitOrLoss.turnoverNotTaxable", netBusinessProfitOrLossValues.turnoverNotTaxableAsBusinessProfit),
