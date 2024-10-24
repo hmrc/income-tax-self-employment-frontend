@@ -17,7 +17,7 @@
 package viewmodels.journeys
 
 import models.journeys.adjustments.ProfitOrLoss
-import models.journeys.adjustments.ProfitOrLoss.Profit
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import utils.MoneyUtils.formatPosNegMoneyWithPounds
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{totalAdditionsCaption, totalDeductionsCaption}
 
@@ -79,13 +79,14 @@ package object adjustments {
       s"List(TableRow(HtmlContent(profitOrLoss.additions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(additionsAmount)}),None,govuk-!-text-align-right ,None,None,Map()))"
     val deductionsRow =
       s"List(TableRow(HtmlContent(profitOrLoss.deductions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(deductionsAmount)}),None,govuk-!-text-align-right ,None,None,Map()))"
+    val netForTaxPurposesProfitOrLoss = if (netForTaxPurposes < 0) Loss else Profit
 
     s"""|List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          netProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
         |${if (profitOrLoss == Profit) additionsRow else deductionsRow}
         |${if (profitOrLoss == Profit) deductionsRow
        else additionsRow}
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.netForTaxPurposes.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.netForTaxPurposes.$netForTaxPurposesProfitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          netForTaxPurposes)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(journeys.adjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))

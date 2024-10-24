@@ -37,7 +37,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
 import stubs.services.SelfEmploymentServiceStub
 import utils.Assertions.assertEqualWithDiff
-import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
@@ -115,10 +114,8 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             getAllBusinessesTaxableProfitAndLossResult = Right(allTaxableProfitsAndLosses),
             getNetBusinessProfitOrLossValuesResult = Right(netProfitOrLossValues)
           )
-          val adjustedTaxablePoL             = incomeSourceSummary.getTaxableProfitOrLoss
-          val formattedAdjustedTaxableAmount = formatSumMoneyNoNegative(List(adjustedTaxablePoL))
-          val netPoLForTaxPurposes           = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val formattedNetAmount             = formatSumMoneyNoNegative(List(netPoLForTaxPurposes))
+          val adjustedTaxablePoL   = incomeSourceSummary.getTaxableProfitOrLossAmount
+          val netPoLForTaxPurposes = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
 
           val application            = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
           implicit val msg: Messages = SpecBase.messages(application)
@@ -129,9 +126,8 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
 
           val expectedView = {
             val view = application.injector.instanceOf[ProfitOrLossCalculationView]
-            view(Individual, formattedAdjustedTaxableAmount, formattedNetAmount, taxYear, profitOrLoss, tables, None, onwardRoute)(
-              onPageLoadRequest,
-              msg).toString()
+            view(Individual, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, profitOrLoss, tables, None, onwardRoute)(onPageLoadRequest, msg)
+              .toString()
           }
 
           status(result) mustBe OK

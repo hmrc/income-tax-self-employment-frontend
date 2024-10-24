@@ -16,8 +16,10 @@
 
 @import models.common.UserType
 @import models.journeys.adjustments.ProfitOrLoss
+@import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 @import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
 @import views.html.components._
+@import utils.MoneyUtils.formatSumMoneyNoNegative
 
 @this(
         layout: templates.Layout,
@@ -30,25 +32,28 @@
 
 @(userType: UserType,
         profitOrLoss: ProfitOrLoss,
-        netAmount: String,
+        netBusinessProfitOrLossForTaxPurposes: BigDecimal,
         tables: NetBusinessProfitOrLossSummary,
         continueRedirect: Call
 )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$profitOrLoss", netAmount))) {
+@netBusinessProfitOrLoss = @{if (netBusinessProfitOrLossForTaxPurposes < 0) Loss else Profit}
+@formattedNetAmount = @{formatSumMoneyNoNegative(List(netBusinessProfitOrLossForTaxPurposes))}
+
+@layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", formattedNetAmount))) {
 
     @formHelper(action = continueRedirect) {
 
-        @heading(s"checkNetProfitLoss.title.$profitOrLoss", Some(netAmount))
+        @heading(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", Some(formattedNetAmount))
 
         @foldableDetails(messages("profitOrLoss.showCalculations")){
             @govukTable(tables.netProfitLossTable)
             @govukTable(tables.expensesTable)
             @govukTable(tables.capitalAllowancesTable)
-            <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
+            <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$netBusinessProfitOrLoss")} <strong>@{formattedNetAmount}</strong></p>
         }
 
-        <p class="govuk-body">@messages(s"checkNetProfitLoss.p1.$profitOrLoss.$userType")</p>
+        <p class="govuk-body">@messages(s"checkNetProfitLoss.p1.$netBusinessProfitOrLoss.$userType")</p>
 
         @submitButton()
     }

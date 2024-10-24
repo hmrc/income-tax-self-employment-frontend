@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
@@ -50,9 +49,8 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
       val result = for {
         incomeSummary                 <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
         netBusinessProfitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
-        netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-        profitOrLoss       = incomeSummary.returnNetProfitOrLoss
-        formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
+        netBusinessProfitOrLossForTaxPurposes = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
+        profitOrLoss                          = incomeSummary.journeyIsNetProfitOrLoss
 
         tables = NetBusinessProfitOrLossSummary.buildTables(
           netBusinessProfitOrLossValues,
@@ -68,7 +66,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         view(
           request.userType,
           profitOrLoss,
-          formattedNetAmount,
+          netBusinessProfitOrLossForTaxPurposes,
           tables,
           redirectLocation
         )

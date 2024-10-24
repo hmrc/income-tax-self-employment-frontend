@@ -30,7 +30,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.buildTables
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
@@ -56,13 +55,13 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         taxableProfitsAndLosses <- service.getAllBusinessesTaxableProfitAndLoss(taxYear, request.nino, request.mtditid)
         netProfitOrLossValues   <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         incomeSummary           <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
-        pageIsProfitOrLoss   = incomeSummary.returnTaxableProfitOrLoss
-        adjustedTaxablePoL   = formatSumMoneyNoNegative(List(incomeSummary.getTaxableProfitOrLoss))
-        netPoLForTaxPurposes = formatSumMoneyNoNegative(List(incomeSummary.getNetBusinessProfitOrLossForTaxPurposes))
-        tables               = buildTables(incomeSummary.getTaxableProfitOrLoss, netProfitOrLossValues, taxYear, pageIsProfitOrLoss, request.userType)
+        journeyIsProfitOrLoss = incomeSummary.journeyIsNetProfitOrLoss
+        adjustedTaxablePoL    = incomeSummary.getTaxableProfitOrLossAmount
+        netPoLForTaxPurposes  = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
+        tables = buildTables(incomeSummary.getTaxableProfitOrLossAmount, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
         nicsExemptionMessage <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
       } yield Ok(
-        view(request.userType, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, pageIsProfitOrLoss, tables, nicsExemptionMessage, onwardRoute))
+        view(request.userType, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, journeyIsProfitOrLoss, tables, nicsExemptionMessage, onwardRoute))
 
       handleResultT(result)
   }

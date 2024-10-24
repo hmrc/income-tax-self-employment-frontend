@@ -29,7 +29,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
 import stubs.services.SelfEmploymentServiceStub
 import utils.Assertions.assertEqualWithDiff
-import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.buildTables
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
@@ -53,16 +52,15 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),
             getNetBusinessProfitOrLossValuesResult = Right(netBusinessProfitOrLossValues)
           )
-          val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
-          implicit val msg       = SpecBase.messages(application)
-          val result             = route(application, onPageLoadRequest).value
-          val netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitOrLossValues, userAnswers, Loss, userType, businessId)
+          val application  = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg = SpecBase.messages(application)
+          val result       = route(application, onPageLoadRequest).value
+          val netAmount    = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
+          val tables       = buildTables(netBusinessProfitOrLossValues, userAnswers, Loss, userType, businessId)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, Loss, formattedNetAmount, tables, onwardLossRoute)(onPageLoadRequest, msg)
+            view(userType, Loss, netAmount, tables, onwardLossRoute)(onPageLoadRequest, msg)
               .toString()
           }
 
@@ -76,16 +74,15 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
             getBusinessIncomeSourcesSummaryResult = Right(incomeSummary),
             getNetBusinessProfitOrLossValuesResult = Right(netBusinessProfitOrLossValues)
           )
-          val application        = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
-          implicit val msg       = SpecBase.messages(application)
-          val result             = route(application, onPageLoadRequest).value
-          val netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-          val tables             = buildTables(netBusinessProfitOrLossValues, userAnswers, Profit, userType, businessId)
+          val application  = buildAppFromUserType(userType, Some(userAnswers), Some(stubService))
+          implicit val msg = SpecBase.messages(application)
+          val result       = route(application, onPageLoadRequest).value
+          val netAmount    = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
+          val tables       = buildTables(netBusinessProfitOrLossValues, userAnswers, Profit, userType, businessId)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, Profit, formattedNetAmount, tables, onwardProfitRoute)(onPageLoadRequest, msg)
+            view(userType, Profit, netAmount, tables, onwardProfitRoute)(onPageLoadRequest, msg)
               .toString()
           }
 

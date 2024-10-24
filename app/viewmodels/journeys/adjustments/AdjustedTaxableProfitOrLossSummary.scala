@@ -17,7 +17,7 @@
 package viewmodels.journeys.adjustments
 
 import models.common.{TaxYear, UserType}
-import models.journeys.adjustments.ProfitOrLoss.Profit
+import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
@@ -38,21 +38,21 @@ object AdjustedTaxableProfitOrLossSummary {
   def buildTables(adjustedTaxableProfitOrLoss: BigDecimal,
                   netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
                   taxYear: TaxYear,
-                  profitOrLoss: ProfitOrLoss,
+                  journeyIsProfitOrLoss: ProfitOrLoss,
                   userType: UserType)(implicit messages: Messages): AdjustedTaxableProfitOrLossSummary = {
     val goodsAndServicesForOwnUse = netBusinessProfitOrLossValues.goodsAndServicesForOwnUse
     val adjustments               = netBusinessProfitOrLossValues.outstandingBusinessIncome
 
     AdjustedTaxableProfitOrLossSummary(
-      buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitOrLoss, adjustments, netBusinessProfitOrLossValues, taxYear, profitOrLoss),
-      NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(netBusinessProfitOrLossValues, profitOrLoss, doubleMarginClasses),
+      buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitOrLoss, adjustments, netBusinessProfitOrLossValues, taxYear, journeyIsProfitOrLoss),
+      NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, doubleMarginClasses),
       NetBusinessProfitOrLossSummary.buildExpensesTable(
         netBusinessProfitOrLossValues,
         goodsAndServicesForOwnUse,
-        profitOrLoss,
+        journeyIsProfitOrLoss,
         userType,
         doubleMarginClasses),
-      NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netBusinessProfitOrLossValues, profitOrLoss, topMarginClass),
+      NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, topMarginClass),
       buildAdjustmentsTable(adjustments, topMarginClass)
     )
   }
@@ -71,9 +71,10 @@ object AdjustedTaxableProfitOrLossSummary {
       else buildTableAmountRow(deductionsCaption(profitOrLoss), values.totalDeductions)
 
     val netProfitOrLossForTaxPurposesRow = {
-      val amount          = values.getNetBusinessProfitOrLossForTaxPurposes
-      val formattedAmount = formatSumMoneyNoNegative(List(amount))
-      buildTableRow(s"profitOrLossCalculation.adjustedTable.netForTaxPurposes.${values.netProfitOrLoss}", formattedAmount)
+      val amount                          = values.getNetBusinessProfitOrLossForTaxPurposes
+      val formattedAmount                 = formatSumMoneyNoNegative(List(amount))
+      val netForTaxPurposesIsProfitOrLoss = if (amount < 0) Loss else Profit
+      buildTableRow(s"profitOrLossCalculation.adjustedTable.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss", formattedAmount)
     }
 
     val rows =
