@@ -17,14 +17,16 @@
 package controllers.journeys.capitalallowances.balancingCharge
 
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
+import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.Page
+import pages.capitalallowances.balancingCharge.{BalancingChargeAmountPage, BalancingChargePage}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.capitalallowances.balancingCharge.{BalancingChargeAmountSummary, BalancingChargeSummary}
+import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 
 class BalancingChargeCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
@@ -43,8 +45,12 @@ class BalancingChargeCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
       messages: Messages): SummaryList =
     SummaryList(
       rows = List(
-        BalancingChargeSummary.row(userAnswers, taxYear, businessId, userType).value,
-        BalancingChargeAmountSummary.row(userAnswers, taxYear, businessId, userType).value
+        new BooleanSummary(BalancingChargePage, routes.BalancingChargeController.onPageLoad(taxYear, businessId, CheckMode))
+          .row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = Some(s"balancingCharge.subHeading.$userType"))
+          .value,
+        new BigDecimalSummary(BalancingChargeAmountPage, routes.BalancingChargeAmountController.onPageLoad(taxYear, businessId, CheckMode))
+          .row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = Some(s"balancingChargeAmount.title.$userType"))
+          .value
       ),
       classes = "govuk-!-margin-bottom-7"
     )

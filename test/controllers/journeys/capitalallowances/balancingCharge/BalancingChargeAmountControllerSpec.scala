@@ -18,7 +18,6 @@ package controllers.journeys.capitalallowances.balancingCharge
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import controllers.journeys
-import forms.capitalallowances.balancingCharge.BalancingChargeAmountFormProvider
 import models.NormalMode
 import models.common.UserType
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
@@ -27,7 +26,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Request
 import views.html.journeys.capitalallowances.balancingCharge.BalancingChargeAmountView
 
 class BalancingChargeAmountControllerSpec
@@ -45,7 +44,7 @@ class BalancingChargeAmountControllerSpec
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
-  override def createForm(userType: UserType): Form[BigDecimal] = new BalancingChargeAmountFormProvider()(userType)
+  override def createForm(userType: UserType): Form[BigDecimal] = form(page, userType)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

@@ -18,7 +18,7 @@ package controllers.journeys.capitalallowances.balancingCharge
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
-import controllers.journeys.capitalallowances.balancingCharge
+import models.CheckMode
 import models.common.Journey.CapitalAllowancesBalancingCharge
 import models.common._
 import models.journeys.capitalallowances.balancingCharge.BalancingChargeAnswers
@@ -29,12 +29,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.capitalallowances.balancingCharge.{BalancingChargeAmountSummary, BalancingChargeSummary}
+import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class BalancingChargeCYAController @Inject() (override val messagesApi: MessagesApi,
@@ -55,8 +55,20 @@ class BalancingChargeCYAController @Inject() (override val messagesApi: Messages
       val summaryList =
         SummaryListCYA.summaryListOpt(
           List(
-            BalancingChargeSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-            BalancingChargeAmountSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+            new BooleanSummary(BalancingChargePage, routes.BalancingChargeController.onPageLoad(taxYear, businessId, CheckMode))
+              .row(
+                request.userAnswers,
+                taxYear,
+                businessId,
+                request.userType,
+                overrideKeyMessage = Some(s"balancingCharge.subHeading.${request.userType}")),
+            new BigDecimalSummary(BalancingChargeAmountPage, routes.BalancingChargeAmountController.onPageLoad(taxYear, businessId, CheckMode))
+              .row(
+                request.userAnswers,
+                taxYear,
+                businessId,
+                request.userType,
+                overrideKeyMessage = Some(s"balancingChargeAmount.title.${request.userType}"))
           ))
 
       Ok(
@@ -65,8 +77,7 @@ class BalancingChargeCYAController @Inject() (override val messagesApi: Messages
           taxYear,
           request.userType,
           summaryList,
-          balancingCharge.routes.BalancingChargeCYAController.onSubmit(taxYear, businessId)
-        ))
+          routes.BalancingChargeCYAController.onSubmit(taxYear, businessId)))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireAnswers) async {
