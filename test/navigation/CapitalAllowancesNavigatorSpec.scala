@@ -23,6 +23,7 @@ import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
+import pages.capitalallowances.balancingCharge.BalancingChargePage
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import play.api.libs.json.Json
@@ -168,6 +169,30 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
       nextPage(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
     }
 
+  }
+
+  "page is BalancingCharge" - {
+    "answer is true" - {
+      "navigate to BalancingChargeAmountController" in {
+        val data           = Json.obj("balancingCharge" -> true)
+        val expectedResult = balancingCharge.routes.BalancingChargeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+
+        nextPage(BalancingChargePage, buildUserAnswers(data)) shouldBe expectedResult
+      }
+    }
+//    "answer is false" - {
+//      "navigate to BalancingChargeCYAController" in {
+//        val data           = Json.obj("balancingCharge" -> false)
+//        val expectedResult = tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+//
+//        nextPage(BalancingChargePage, buildUserAnswers(data)) shouldBe expectedResult
+//      }
+//    }
+    "answer is None or invalid" - {
+      "navigate to the ErrorRecoveryPage" in {
+        nextPage(BalancingChargePage, emptyUserAnswers) shouldBe errorRedirect
+      }
+    }
   }
 
   "CheckMode" - {

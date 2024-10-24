@@ -268,3 +268,19 @@ POST        /:taxYear/:businessId/capital-allowances/change-special-tax-sites/pr
 
 GET         /:taxYear/:businessId/capital-allowances/special-tax-sites/check                                                     controllers.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/capital-allowances/special-tax-sites/check                                                     controllers.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+
+########## Capital Allowances - Balancing Charge ##########
+
+GET         /:taxYear/:businessId/capital-allowances/balancing-charge                                                            controllers.journeys.capitalallowances.balancingCharge.BalancingChargeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/balancing-charge                                                            controllers.journeys.capitalallowances.balancingCharge.BalancingChargeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/capital-allowances/change-balancing-charge                                                     controllers.journeys.capitalallowances.balancingCharge.BalancingChargeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/capital-allowances/change-balancing-charge                                                     controllers.journeys.capitalallowances.balancingCharge.BalancingChargeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/capital-allowances/balancing-charge/total-amount                                               controllers.journeys.capitalallowances.balancingCharge.BalancingChargeAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/capital-allowances/balancing-charge/total-amount                                               controllers.journeys.capitalallowances.balancingCharge.BalancingChargeAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/capital-allowances/change-balancing-charge/total-amount                                        controllers.journeys.capitalallowances.balancingCharge.BalancingChargeAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/capital-allowances/change-balancing-charge/total-amount                                        controllers.journeys.capitalallowances.balancingCharge.BalancingChargeAmountController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET         /:taxYear/:businessId/capital-allowances/balancing-charge/check                                                      controllers.journeys.capitalallowances.balancingCharge.BalancingChargeCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/capital-allowances/balancing-charge/check                                                      controllers.journeys.capitalallowances.balancingCharge.BalancingChargeCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
