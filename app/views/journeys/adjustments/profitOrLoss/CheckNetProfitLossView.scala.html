@@ -15,7 +15,6 @@
  *@
 
 @import models.common.UserType
-@import models.journeys.adjustments.ProfitOrLoss
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 @import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
 @import views.html.components._
@@ -31,7 +30,6 @@
 )
 
 @(userType: UserType,
-        profitOrLoss: ProfitOrLoss,
         netBusinessProfitOrLossForTaxPurposes: BigDecimal,
         tables: NetBusinessProfitOrLossSummary,
         continueRedirect: Call

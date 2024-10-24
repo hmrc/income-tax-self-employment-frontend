@@ -108,7 +108,7 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
       val context             = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ProfitOrLoss)
       val submitAnswersResult = service.submitAnswers[ProfitOrLossJourneyAnswers](context, request.userAnswers)
       val redirectResult =
-        submitAnswersResult.map(_ => Redirect(routes.ProfitOrLossCalculationController.onPageLoad(context.taxYear, context.businessId)))
+        submitAnswersResult.map(_ => Redirect(routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId)))
       handleResultT(redirectResult)
   }
 }

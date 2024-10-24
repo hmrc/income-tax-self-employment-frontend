@@ -15,7 +15,6 @@
  *@
 
 @import models.common.{TaxYear, UserType}
-@import models.journeys.adjustments.ProfitOrLoss
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 @import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 @import views.html.components._
@@ -36,7 +35,6 @@
         adjustedTaxableProfitOrLoss: BigDecimal,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
-        journeyIsProfitOrLoss: ProfitOrLoss,
         tables: AdjustedTaxableProfitOrLossSummary,
         nicsExemptionMessage: Option[String],
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)

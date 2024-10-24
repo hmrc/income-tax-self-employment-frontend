@@ -126,8 +126,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
 
           val expectedView = {
             val view = application.injector.instanceOf[ProfitOrLossCalculationView]
-            view(Individual, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, profitOrLoss, tables, None, onwardRoute)(onPageLoadRequest, msg)
-              .toString()
+            view(Individual, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, tables, None, onwardRoute)(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK

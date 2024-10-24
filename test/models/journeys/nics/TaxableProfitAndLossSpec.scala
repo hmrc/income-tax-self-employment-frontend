@@ -16,12 +16,9 @@
 
 package models.journeys.nics
 
-import base.SpecBase.{businessId, convertScalaFuture, ec, taxYear}
+import base.SpecBase.taxYear
 import builders.BusinessDataBuilder._
-import models.common.BusinessId
 import models.common.TaxYear.{currentTaxYearStartDate, dateNow}
-import models.errors.ServiceError
-import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.getThresholdForTaxYear
 import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
 import org.scalatest.freespec.AnyFreeSpec
@@ -96,31 +93,6 @@ class TaxableProfitAndLossSpec extends AnyFreeSpec with ScalaCheckPropertyChecks
 
         assert(result === expectedResult)
       }
-    }
-  }
-
-  "returnSingleBusinessProfitOrLoss" - {
-    val profitAndLossesList =
-      List(
-        TaxableProfitAndLoss(businessId, 5000, 30),
-        TaxableProfitAndLoss(BusinessId("other-id"), 1000, 0),
-        TaxableProfitAndLoss(BusinessId("different-id"), 0, 2000))
-    "must return return the taxableProfitOrLoss value in a Right when business ID matches data" - {
-      "when is taxable profit" in {
-        val result = TaxableProfitAndLoss.returnSingleBusinessProfitOrLoss(profitAndLossesList, businessId, Profit).value.futureValue
-
-        assert(result === Right(5000))
-      }
-      "when is taxable loss" in {
-        val result = TaxableProfitAndLoss.returnSingleBusinessProfitOrLoss(profitAndLossesList, businessId, Loss).value.futureValue
-
-        assert(result === Right(30))
-      }
-    }
-    "must return return a BusinessNotFoundError in a Left when business ID does not match data" in {
-      val result = TaxableProfitAndLoss.returnSingleBusinessProfitOrLoss(profitAndLossesList, BusinessId("incorrect-id"), Profit).value.futureValue
-
-      assert(result === Left(ServiceError.BusinessNotFoundError(BusinessId("incorrect-id"))))
     }
   }
 }

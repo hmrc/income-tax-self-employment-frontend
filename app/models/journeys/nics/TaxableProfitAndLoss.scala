@@ -41,13 +41,6 @@ object TaxableProfitAndLoss {
   def fromBusinessIncomeSourcesSummary(biss: BusinessIncomeSourcesSummary): TaxableProfitAndLoss =
     TaxableProfitAndLoss(BusinessId(biss.incomeSourceId), biss.taxableProfit, biss.taxableLoss)
 
-  def returnSingleBusinessProfitOrLoss(allUserProfitsAndLosses: List[TaxableProfitAndLoss], businessId: BusinessId, profitOrLoss: ProfitOrLoss)(
-      implicit ec: ExecutionContext): EitherT[Future, BusinessNotFoundError, BigDecimal] =
-    allUserProfitsAndLosses
-      .find(_.businessId == businessId)
-      .map(profitOrLossValues => EitherT.rightT[Future, BusinessNotFoundError](profitOrLossValues.taxableProfitOrLoss(profitOrLoss)))
-      .getOrElse(EitherT.leftT[Future, BigDecimal](ServiceError.BusinessNotFoundError(businessId)))
-
   def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], userDoB: LocalDate, taxYear: TaxYear): NicClassExemption = {
 
     def class2Eligible: Boolean = {

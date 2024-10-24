@@ -20,7 +20,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleResultT
 import models.NormalMode
 import models.common._
-import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+import models.journeys.adjustments.ProfitOrLoss.Profit
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -51,26 +51,17 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         netBusinessProfitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         netBusinessProfitOrLossForTaxPurposes = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
         profitOrLoss                          = incomeSummary.journeyIsNetProfitOrLoss
-
         tables = NetBusinessProfitOrLossSummary.buildTables(
           netBusinessProfitOrLossValues,
           request.userAnswers,
           profitOrLoss,
           request.userType,
           businessId)
-        redirectLocation = profitOrLoss match {
-          case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
-          case Loss   => routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
-        }
-      } yield Ok(
-        view(
-          request.userType,
-          profitOrLoss,
-          netBusinessProfitOrLossForTaxPurposes,
-          tables,
-          redirectLocation
-        )
-      )
+        redirectLocation =
+          if (profitOrLoss == Profit) routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
+          else routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
+      } yield Ok(view(request.userType, netBusinessProfitOrLossForTaxPurposes, tables, redirectLocation))
+
       handleResultT(result)
   }
 }
