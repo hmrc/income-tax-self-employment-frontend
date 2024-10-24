@@ -172,7 +172,7 @@ class CapitalAllowancesNavigator @Inject() {
     case BalancingChargeAmountPage =>
       _ =>
         taxYear =>
-          businessId =>
+          _ =>
             // Temp redirect to task-list until CYA Implemented.
             journeys.routes.TaskListController.onPageLoad(taxYear)
 //            balancingCharge.routes.BalancingChargeCYAController.onPageLoad(

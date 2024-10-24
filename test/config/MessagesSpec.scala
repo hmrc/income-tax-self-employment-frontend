@@ -32,7 +32,7 @@ class MessagesSpec extends SpecBase {
   private val defaults              = messagesApi.messages("default")
   private val english               = messagesApi.messages("en")
 
-  private val exclusionKeys: Set[String] = Set(
+  private val exclusionKeysGeneral: Set[String] = Set(
     "global.error.badRequest400.message",
     "global.error.pageNotFound404.message",
     "global.error.fallbackClientError4xx.heading",
@@ -41,16 +41,8 @@ class MessagesSpec extends SpecBase {
     "language.day.singular"
   )
 
-  /*  List of keys that repeat values of other keys (those other keys are NOT in this list)
-      TODO merge identical values into one aptly-named key
-   */
   private val exclusionKeysEn: Set[String] = Set(
-    "continueClaimingAllowanceForExistingSite.title.agent",
-    "wdaSpecialRateClaimAmount.l6.individual",
     "wdaSpecialRateClaimAmount.p4",
-    "site.day",
-    "date.month",
-    "sectionCompletedState.yes",
     "structuresBuildingsPreviousClaimUse.title.agent",
     "structuresBuildingsQualifyingUseDate.subHeading",
     "qualifyingUseStartDate.change.hidden",
@@ -58,14 +50,12 @@ class MessagesSpec extends SpecBase {
     "writingDownAllowance.l1.agent",
     "wdaMainRateClaimAmount.details.individual",
     "wdaMainRateClaimAmount.p2.agent",
-    "site.no",
     "structuresBuildingsQualifyingUseDate.title",
     "income.otherBusinessIncome",
     "wdaSpecialRateClaimAmount.details.individual",
     "wdaSpecialRateClaimAmount.l2.agent",
     "structuresBuildingsClaimedAmount.l2",
     "wdaMainRateClaimAmount.p5",
-    "date.day",
     "doYouHaveAContinuingClaim.change.hidden",
     "structuresBuildingsQualifyingUseDate.hint.individual",
     "disallowableStaffCosts.l1.individual",
@@ -75,10 +65,8 @@ class MessagesSpec extends SpecBase {
     "wdaMainRateClaimAmount.l5.individual",
     "specialTaxSiteLocation.change.hidden",
     "existingSiteClaimingAmount.details.p3",
-    "prepopTastList.hint",
     "wdaMainRateClaimAmount.l4.individual",
     "siteSummary.title.agent",
-    "qualifyingUseStartDate.title",
     "structuresBuildingsPreviousClaimUse.p3.link",
     "wdaSpecialRateClaimAmount.l6.agent",
     "structuresBuildingsClaimedAmount.p3",
@@ -89,17 +77,14 @@ class MessagesSpec extends SpecBase {
     "wdaMainRateClaimAmount.l2.agent",
     "siteSummary.title.individual",
     "wdaSpecialRateClaimAmount.p6",
-    "continueClaimingAllowanceForExistingSite.title.individual",
     "newTaxSites.remove.hidden",
     "zegvAllowance.p2.individual",
     "wdaMainRateClaimAmount.l5.agent",
     "wdaSpecialRateClaimAmount.p2",
-    "site.yes",
     "existingSiteClaimingAmount.details.l2",
     "wdaSpecialRateClaimAmount.l3.individual",
     "zecOnlyForSelfEmployment.no.agent",
     "structuresBuildingsRemove.error.required.agent",
-    "site.month",
     "structuresBuildingsEligibleClaim.change.hidden",
     "qualifyingUseStartDate.error.tooLate",
     "structuresBuildingsPreviousClaimUse.hint.individual",
@@ -118,7 +103,6 @@ class MessagesSpec extends SpecBase {
     "qualifyingUseStartDate.hint.individual",
     "removeSpecialTaxSite.error.required.individual",
     "wdaMainRateClaimAmount.p3",
-    "common.opensInNewTab",
     "zegvOnlyForSelfEmployment.no.individual",
     "qualifyingUseStartDate.error.required",
     "existingSiteClaimingAmount.title",
@@ -135,43 +119,32 @@ class MessagesSpec extends SpecBase {
     "structuresBuildingsEligibleClaim.l3.href",
     "removeSpecialTaxSite.error.required.agent",
     "expenses.contributions.individual",
-    "date.year",
-    "wdaMainRateClaimAmount.l6.agent",
     "wdaSpecialRateClaimAmount.l2.individual",
-    "wdaMainRateClaimAmount.l6.individual",
     "wdaMainRateClaimAmount.heading",
     "continueClaimingAllowanceForExistingSite.change.hidden",
     "wdaMainRateClaimAmount.l2.individual",
     "wdaSpecialRateClaimAmount.p5.agent",
     "wdaSpecialRateClaimAmount.l4.individual",
-    "qualifyingUseStartDate.p1",
     "zecHowMuchDoYouWantToClaim.error.required.individual",
     "wdaSpecialRateClaimAmount.l5.agent",
     "wdaSpecialRateClaimAmount.l4.agent",
-    "balancingAllowance.p7.tab",
     "structuresBuildingsLocation.error.postcode.individual",
-    "sectionCompletedState.no",
     "zegvHowMuchDoYouWantToClaim.error.required.individual",
     "newTaxSites.change.hidden",
     "zegvOnlyForSelfEmployment.no.agent",
     "structuresBuildingsQualifyingUseDate.error",
-    "capitalAllowance.fullCost",
     "adjustments.outstandingBusinessIncome",
     "wdaSpecialRateClaimAmount.p5.individual",
-    "site.year",
     "wdaMainRateClaimAmount.details.agent",
-    "zegvHowMuchDoYouWantToClaim.fullCost",
     "capitalAllowance.useFirstYearAllowance",
     "structuresBuildingsEligibleClaim.href",
     "wdaMainRateClaimAmount.l3",
     "structuresBuildingsQualifyingUseDate.error.inFuture",
-    "prepop.useReportingSoftware",
     "wdaMainRateClaimAmount.p4.agent",
     "profitOrLoss.capitalAllowances",
     "class4NICs.l4.individual",
     "unusedLossAmount.title.individual",
-    "unusedLossAmount.error.required.individual",
-    "class4NICs.l3.individual"
+    "unusedLossAmount.error.required.individual"
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(
@@ -228,9 +201,9 @@ class MessagesSpec extends SpecBase {
     } key should not contain char
   }
 
-  "there should be no duplicate messages(values) in the" - {
+  "there should be no duplicate message values in the" - {
     "default messages" in {
-      val messages: List[(String, String)] = filterExcludedKeys(defaults.toList, exclusionKeys, exclusionKeySubstrings)
+      val messages: List[(String, String)] = filterExcludedKeys(defaults.toList, exclusionKeysGeneral, exclusionKeySubstrings)
 
       val result = checkMessagesAreUnique(messages, messages)
 
@@ -269,7 +242,11 @@ class MessagesSpec extends SpecBase {
     }
   }
 
-  "make sure user specific messages have also agent version" in {
+  "message keys must not have blank values" in {
+    checkForBlankMessageValues(english.toList) mustBe Set.empty
+  }
+
+  "user specific messages must also have agent versions" in {
     val missingAgentVersionMessages = english.toList
       .filterNot(_._1.endsWith("hidden"))
       .filterNot { case (msgKey, _) =>
@@ -360,6 +337,21 @@ class MessagesSpec extends SpecBase {
         result mustBe Set("example4", "example5")
       }
     }
+
+    "checkForBlankMessageValues" - {
+      "should return a list of any keys that have an empty value" in {
+        val exampleMessages = List(
+          ("key1.example1", "this is the example text"),
+          ("key2.example2", "  "),
+          ("key3.example3", ""),
+          ("key4.example4", "\n"),
+          ("key5.example5", "this is other example text")
+        )
+        val result = checkForBlankMessageValues(exampleMessages)
+
+        result mustBe Set("key2.example2", "key3.example3", "key4.example4")
+      }
+    }
   }
 
   private def filterExcludedKeys(messages: List[(String, String)], exclusionKeys: Set[String], exclusionSubKeys: Set[String]) =
@@ -394,6 +386,14 @@ class MessagesSpec extends SpecBase {
         } else {
           checkForIllegalCharacters(tail, illegalCharacters, result)
         }
+    }
+
+  @tailrec
+  private def checkForBlankMessageValues(remaining: List[(String, String)], result: Set[String] = Set.empty): Set[String] =
+    remaining match {
+      case Nil => result
+      case (key, value) :: tail =>
+        if (value.replaceAll("\\s+", "").isBlank) checkForBlankMessageValues(tail, result + key) else checkForBlankMessageValues(tail, result)
     }
 
 }
