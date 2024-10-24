@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
-import pages.capitalallowances.balancingCharge.BalancingChargePage
+import pages.capitalallowances.balancingCharge.{BalancingChargeAmountPage, BalancingChargePage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
 import pages.capitalallowances.zeroEmissionCars._
 import play.api.libs.json.Json
@@ -180,14 +180,22 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
         nextPage(BalancingChargePage, buildUserAnswers(data)) shouldBe expectedResult
       }
     }
-//    "answer is false" - {
-//      "navigate to BalancingChargeCYAController" in {
-//        val data           = Json.obj("balancingCharge" -> false)
-//        val expectedResult = tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
-//
-//        nextPage(BalancingChargePage, buildUserAnswers(data)) shouldBe expectedResult
-//      }
-//    }
+    "answer is false" - {
+      "navigate to BalancingChargeCYAController" in {
+        val data           = Json.obj("balancingCharge" -> false)
+        val expectedResult = balancingCharge.routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId)
+
+        nextPage(BalancingChargePage, buildUserAnswers(data)) shouldBe expectedResult
+      }
+    }
+
+    "navigate to BalancingChargeCYAPage from BalancingChargeAmountPage" in {
+      val data           = Json.obj("balancingCharge" -> true, "balancingChargeAmount" -> 123.00)
+      val expectedResult = balancingCharge.routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId)
+
+      nextPage(BalancingChargeAmountPage, buildUserAnswers(data)) shouldBe expectedResult
+    }
+
     "answer is None or invalid" - {
       "navigate to the ErrorRecoveryPage" in {
         nextPage(BalancingChargePage, emptyUserAnswers) shouldBe errorRedirect
@@ -220,6 +228,14 @@ class CapitalAllowancesNavigatorSpec extends SpecBase {
 
     "navigate to journey recovery when there is no page match" in {
       nextPageViaCheckMode(UnknownPage, emptyUserAnswers) shouldBe errorRedirect
+    }
+  }
+
+  "page is BalancingChargePage or BalancingChargeAmountPage" - {
+    "navigate to BalancingAllowanceAmountController" in {
+      List(BalancingChargePage, BalancingChargeAmountPage).foreach {
+        nextPageViaCheckMode(_, emptyUserAnswers) shouldBe balancingCharge.routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId)
+      }
     }
   }
 }

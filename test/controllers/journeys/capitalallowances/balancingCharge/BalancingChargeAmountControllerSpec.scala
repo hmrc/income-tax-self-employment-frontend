@@ -17,7 +17,6 @@
 package controllers.journeys.capitalallowances.balancingCharge
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
-import controllers.journeys
 import models.NormalMode
 import models.common.UserType
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
@@ -26,7 +25,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.inject.{Binding, bind}
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import views.html.journeys.capitalallowances.balancingCharge.BalancingChargeAmountView
 
 class BalancingChargeAmountControllerSpec
@@ -38,9 +37,7 @@ class BalancingChargeAmountControllerSpec
   lazy val onPageLoadRoute = routes.BalancingChargeAmountController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute   = routes.BalancingChargeAmountController.onSubmit(taxYear, businessId, NormalMode).url
 
-  override val onwardRoute = journeys.routes.TaskListController.onPageLoad(taxYear)
-  // Change to below when CYA page enabled
-  // override val onwardRoute: Call = routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId)
+  override val onwardRoute: Call = routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId)
 
   override val bindings: List[Binding[_]] = List(bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute)))
 
