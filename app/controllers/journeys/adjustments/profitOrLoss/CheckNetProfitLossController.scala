@@ -20,13 +20,12 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleResultT
 import models.NormalMode
 import models.common._
-import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+import models.journeys.adjustments.ProfitOrLoss.Profit
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
@@ -50,24 +49,19 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
       val result = for {
         incomeSummary                 <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
         netBusinessProfitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
-        netAmount          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes()
-        profitOrLoss       = incomeSummary.returnProfitOrLoss()
-        formattedNetAmount = formatSumMoneyNoNegative(List(netAmount))
-
-        tables = NetBusinessProfitOrLossSummary.buildTables(netBusinessProfitOrLossValues, profitOrLoss)
-        redirectLocation = profitOrLoss match {
-          case Profit => routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
-          case Loss   => routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
-        }
-      } yield Ok(
-        view(
-          request.userType,
+        netBusinessProfitOrLossForTaxPurposes = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
+        profitOrLoss                          = incomeSummary.journeyIsNetProfitOrLoss
+        tables = NetBusinessProfitOrLossSummary.buildTables(
+          netBusinessProfitOrLossValues,
+          request.userAnswers,
           profitOrLoss,
-          formattedNetAmount,
-          tables,
-          redirectLocation
-        )
-      )
+          request.userType,
+          businessId)
+        redirectLocation =
+          if (profitOrLoss == Profit) routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
+          else routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
+      } yield Ok(view(request.userType, netBusinessProfitOrLossForTaxPurposes, tables, redirectLocation))
+
       handleResultT(result)
   }
 }

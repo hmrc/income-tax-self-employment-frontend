@@ -16,9 +16,9 @@
 
 @this()
 
-@(summaryText: String, marginBottomThree: Boolean = true)(details: Html)
+@(summaryText: String, extraClasses: String = "")(details: Html)
 
-<details class="govuk-details @{if(marginBottomThree) "govuk-!-margin-bottom-3" else ""}" data-module="govuk-details">
+<details class="govuk-details @{extraClasses}" data-module="govuk-details">
     <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
             @summaryText

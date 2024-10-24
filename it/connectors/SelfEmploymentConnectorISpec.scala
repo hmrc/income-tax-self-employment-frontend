@@ -76,7 +76,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     totalAdditions = 60,
     capitalAllowances = 0,
     turnoverNotTaxableAsBusinessProfit = 50,
-    totalDeductions = 70
+    totalDeductions = 70,
+    0
   )
 
   private val connector = new SelfEmploymentConnector(httpClient, appConfig)

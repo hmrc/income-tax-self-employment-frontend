@@ -37,7 +37,7 @@
     <div class="govuk-body">
         <p>@messages("wdaSpecialRateClaimAmount.p1")<p>
 
-        @foldableDetails(messages(s"wdaSpecialRateClaimAmount.details.$userType")) {
+        @foldableDetails(messages(s"wdaSpecialRateClaimAmount.details.$userType"), "govuk-!-margin-bottom-3") {
             <p>@messages("wdaSpecialRateClaimAmount.p2")</p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages("wdaSpecialRateClaimAmount.l1")</li>

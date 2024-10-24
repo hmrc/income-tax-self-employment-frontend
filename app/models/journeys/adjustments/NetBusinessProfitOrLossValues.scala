@@ -30,14 +30,16 @@ case class NetBusinessProfitOrLossValues(turnover: BigDecimal,
                                          totalAdditions: BigDecimal,
                                          capitalAllowances: BigDecimal,
                                          turnoverNotTaxableAsBusinessProfit: BigDecimal,
-                                         totalDeductions: BigDecimal) {
+                                         totalDeductions: BigDecimal,
+                                         outstandingBusinessIncome: BigDecimal) {
 
   val netProfitOrLoss: ProfitOrLoss     = if (netLoss > 0) Loss else Profit
   val netProfitOrLossAmount: BigDecimal = if (netProfitOrLoss == Profit) netProfit else netLoss
+
+  def getNetBusinessProfitOrLossForTaxPurposes: BigDecimal =
+    if (netProfitOrLoss == Profit) netProfit + totalAdditions - totalDeductions else netLoss - totalAdditions + totalDeductions
 }
 
 object NetBusinessProfitOrLossValues {
   implicit val formats: Format[NetBusinessProfitOrLossValues] = Json.format[NetBusinessProfitOrLossValues]
-
-  val empty = NetBusinessProfitOrLossValues(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 }
