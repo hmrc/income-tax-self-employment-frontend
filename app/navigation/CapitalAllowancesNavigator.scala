@@ -160,12 +160,10 @@ class CapitalAllowancesNavigator @Inject() {
                   NormalMode
                 )
               case Some(false) =>
-                // Temp redirect to task-list until CYA Implemented.
-                journeys.routes.TaskListController.onPageLoad(taxYear)
-//                balancingCharge.routes.BalancingChargeCYAController.onPageLoad(
-//                  taxYear,
-//                  businessId
-//                )
+                balancingCharge.routes.BalancingChargeCYAController.onPageLoad(
+                  taxYear,
+                  businessId
+                )
               case _ => standard.routes.JourneyRecoveryController.onPageLoad()
             }
 
@@ -173,12 +171,10 @@ class CapitalAllowancesNavigator @Inject() {
       _ =>
         taxYear =>
           businessId =>
-            // Temp redirect to task-list until CYA Implemented.
-            journeys.routes.TaskListController.onPageLoad(taxYear)
-//            balancingCharge.routes.BalancingChargeCYAController.onPageLoad(
-//              taxYear,
-//              businessId
-//            )
+            balancingCharge.routes.BalancingChargeCYAController.onPageLoad(
+              taxYear,
+              businessId
+            )
 
     case StructuresBuildingsAllowancePage =>
       userAnswers =>
@@ -224,6 +220,9 @@ class CapitalAllowancesNavigator @Inject() {
 
     case BalancingAllowancePage | BalancingAllowanceAmountPage =>
       _ => taxYear => businessId => balancingAllowance.routes.BalancingAllowanceCYAController.onPageLoad(taxYear, businessId)
+
+    case BalancingChargePage | BalancingChargeAmountPage =>
+      _ => taxYear => businessId => balancingCharge.routes.BalancingChargeCYAController.onPageLoad(taxYear, businessId)
 
     case StructuresBuildingsClaimedPage | StructuresBuildingsPreviousClaimedAmountPage | StructuresBuildingsNewClaimAmountPage |
         StructuresBuildingsAllowancePage =>

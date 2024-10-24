@@ -77,17 +77,15 @@ class BalancingChargeController @Inject() (override val messagesApi: MessagesApi
                                     request: DataRequest[_],
                                     mode: Mode,
                                     businessId: BusinessId): Future[(UserAnswers, Mode)] = {
-    val pagesToBeCleared: List[Settable[_]] =
-      List(
-        BalancingChargeAmountPage
-      )
-    val clearUserAnswerDataIfNeeded = currentAnswer match {
-      case false => Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
-      case true  => Future(request.userAnswers)
+    val pagesToBeCleared: List[Settable[_]] = List(BalancingChargeAmountPage)
+    val clearUserAnswerDataIfNeeded = if (currentAnswer) {
+      Future(request.userAnswers)
+    } else {
+      Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToBeCleared, Some(businessId)))
     }
     val redirectMode = request.getValue(BalancingChargePage, businessId) match {
-      case Some(false) if currentAnswer == true => NormalMode
-      case _                                    => mode
+      case Some(false) if currentAnswer => NormalMode
+      case _                            => mode
     }
     clearUserAnswerDataIfNeeded.map(editedUserAnswers => (editedUserAnswers, redirectMode))
   }
