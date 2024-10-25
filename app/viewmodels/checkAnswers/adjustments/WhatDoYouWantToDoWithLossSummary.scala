@@ -33,7 +33,7 @@ object WhatDoYouWantToDoWithLossSummary {
       buildRowString(
         answers.map(answer => messages(s"whatDoYouWantToDoWithLoss.$answer")).mkString(", "),
         routes.CurrentYearLossController.onPageLoad(taxYear, businessId, CheckMode),
-        messages(s"whatDoYouWantToDoWithLoss.checkYourAnswersLabel.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
+        messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString),
         messages("whatDoYouWantToDoWithLoss.change.hidden", taxYear.startYear.toString, taxYear.endYear.toString),
         rightTextAlign
       )

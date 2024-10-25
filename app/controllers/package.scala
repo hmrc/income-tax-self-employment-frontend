@@ -22,7 +22,7 @@ import models.domain.{ApiResultT, BusinessData}
 import models.errors.ServiceError
 import models.requests.DataRequest
 import play.api.Logger
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import queries.Gettable
 import utils.Logging
@@ -69,13 +69,6 @@ package object controllers extends Logging {
   // path tickets (JIRA TBA).
   def handleSubmitAnswersResult(ctx: JourneyContext, result: ApiResultT[_])(implicit ec: ExecutionContext, logger: Logger): Future[Result] = {
     val resultT = result.map(_ => redirectJourneyCompletedState(ctx.taxYear, ctx.businessId, ctx.journey))
-    handleResultT(resultT)
-  }
-
-  def handleSubmitAnswersResultAndRedirect(result: ApiResultT[_], redirectLocation: Call)(implicit
-      ec: ExecutionContext,
-      logger: Logger): Future[Result] = {
-    val resultT = result.map(_ => Redirect(redirectLocation))
     handleResultT(resultT)
   }
 

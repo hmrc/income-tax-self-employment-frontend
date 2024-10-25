@@ -17,16 +17,13 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import controllers.handleSubmitAnswersResultAndRedirect
 import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import pages.Page
 import controllers.handleResultT
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
-import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.adjustments.ProfitOrLossJourneyAnswers
 import pages.adjustments.profitOrLoss._
-import pages.Page
 import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -83,10 +80,20 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
               overrideChangeMessage = Some(goodsAndServicesAmountChangeMessage)
             ),
           new BooleanSummary(ClaimLossReliefPage, routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, CheckMode))
-            .row(request.userAnswers, taxYear, businessId, request.userType),
+            .row(
+              request.userAnswers,
+              taxYear,
+              businessId,
+              request.userType,
+              overrideKeyMessage = Some(s"claimLossRelief.subHeading.${request.userType}")),
           WhatDoYouWantToDoWithLossSummary.row(request.userAnswers, request.userType, taxYear, businessId),
           new BooleanSummary(CarryLossForwardPage, routes.CurrentYearLossController.onPageLoad(taxYear, businessId, CheckMode))
-            .row(request.userAnswers, taxYear, businessId, request.userType),
+            .row(
+              request.userAnswers,
+              taxYear,
+              businessId,
+              request.userType,
+              overrideKeyMessage = Some(s"carryLossForward.subHeading.$request.userType")),
           new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
             .row(
               request.userAnswers,
