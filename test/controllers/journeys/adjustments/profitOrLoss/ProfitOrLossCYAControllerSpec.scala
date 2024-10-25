@@ -91,11 +91,11 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
           )
           .value,
         new BooleanSummary(ClaimLossReliefPage, routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, CheckMode))
-          .row(userAnswers, taxYear, businessId, userType)
+          .row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = Some(s"claimLossRelief.subHeading.$userType"))
           .value,
         WhatDoYouWantToDoWithLossSummary.row(userAnswers, userType, taxYear, businessId).value,
         new BooleanSummary(CarryLossForwardPage, routes.CurrentYearLossController.onPageLoad(taxYear, businessId, CheckMode))
-          .row(userAnswers, taxYear, businessId, userType)
+          .row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = Some(s"carryLossForward.subHeading.$userType"))
           .value,
         new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
           .row(

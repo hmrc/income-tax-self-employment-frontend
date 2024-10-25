@@ -93,7 +93,7 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
               taxYear,
               businessId,
               request.userType,
-              overrideKeyMessage = Some(s"carryLossForward.subHeading.$request.userType")),
+              overrideKeyMessage = Some(s"carryLossForward.subHeading.${request.userType}")),
           new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
             .row(
               request.userAnswers,
