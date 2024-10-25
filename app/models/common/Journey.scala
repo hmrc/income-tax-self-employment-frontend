@@ -23,6 +23,7 @@ import pages.abroad.SelfEmploymentAbroadPage
 import pages.adjustments.profitOrLoss._
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
+import pages.capitalallowances.balancingCharge.{BalancingChargeAmountPage, BalancingChargePage}
 import pages.capitalallowances.specialTaxSites._
 import pages.capitalallowances.structuresBuildingsAllowance._
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}
@@ -250,7 +251,10 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object CapitalAllowancesBalancingCharge extends CapitalAllowanceBaseJourney("capital-allowances-balancing-charge") {
-    override val answerPages: List[Settable[_]] = List.empty[Settable[_]]
+    override val answerPages: List[Settable[_]] = List(
+      BalancingChargePage,
+      BalancingChargeAmountPage
+    )
   }
 
   case object CapitalAllowancesAnnualInvestmentAllowance extends CapitalAllowanceBaseJourney("capital-allowances-annual-investment-allowance") {

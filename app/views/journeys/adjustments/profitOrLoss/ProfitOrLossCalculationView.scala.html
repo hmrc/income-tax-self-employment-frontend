@@ -15,9 +15,10 @@
  *@
 
 @import models.common.{TaxYear, UserType}
-@import views.html.components._
-@import models.journeys.adjustments.ProfitOrLoss
+@import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 @import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
+@import views.html.components._
+@import utils.MoneyUtils.formatSumMoneyNoNegative
 
 @this(
         layout: templates.Layout,
@@ -31,35 +32,44 @@
 )
 
 @(userType: UserType,
-        netAmount: String,
+        adjustedTaxableProfitOrLoss: BigDecimal,
+        netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
-        profitOrLoss: ProfitOrLoss,
         tables: AdjustedTaxableProfitOrLossSummary,
         nicsExemptionMessage: Option[String],
-        showClass4AgeExemptionMessage: Boolean,
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$profitOrLoss", netAmount))) {
+@adjustedTaxableIsProfitOrLoss = @{if (adjustedTaxableProfitOrLoss < 0) Loss else Profit}
+@adjustedTaxableProfitOrLossAmount: String = @{formatSumMoneyNoNegative(List(adjustedTaxableProfitOrLoss))}
+
+@netProfitOrLossForTaxPurposesContent = @{
+    val formattedAmount                 = formatSumMoneyNoNegative(List(netProfitOrLossForTaxPurposes))
+    val netForTaxPurposesIsProfitOrLoss = if (netProfitOrLossForTaxPurposes < 0) Loss else Profit
+    <p class="govuk-body govuk-!-margin-bottom-9">{messages(s"profitOrLoss.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss")} <strong>{formattedAmount}</strong></p>
+}
+
+@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$adjustedTaxableIsProfitOrLoss", adjustedTaxableProfitOrLossAmount))) {
 
     @formHelper(action = continueRedirect) {
 
         @caption(taxYear)
-        @heading(s"profitOrLossCalculation.title.$profitOrLoss", Some(netAmount))
+        @heading(s"profitOrLossCalculation.title.$adjustedTaxableIsProfitOrLoss", Some(adjustedTaxableProfitOrLossAmount))
 
         @govukTable(tables.adjustedProfitOrLossTable)
-        @foldableDetails(messages("profitOrLoss.showCalculations"), marginBottomThree = false){
+        @foldableDetails(messages("profitOrLoss.showCalculations"), "govuk-!-margin-bottom-9"){
             @govukTable(tables.netProfitOrLossTable)
             @govukTable(tables.expensesTable)
             @govukTable(tables.capitalAllowanceTable)
-            <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$profitOrLoss")} <strong>@{netAmount}</strong></p>
+            @netProfitOrLossForTaxPurposesContent
             @govukTable(tables.adjustmentsTable)
-            <p class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$profitOrLoss", taxYear.startYear.toString, taxYear.endYear.toString, netAmount)}</p>
+            <p class="govuk-body govuk-!-font-weight-bold">
+                @{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$adjustedTaxableIsProfitOrLoss",
+                    taxYear.startYear.toString, taxYear.endYear.toString, adjustedTaxableProfitOrLossAmount)
+                }
+            </p>
         }
         @nicsExemptionMessage.map { exemptionReason =>
             <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>
-        }
-        @if(showClass4AgeExemptionMessage) {
-            <p class="govuk-inset-text">@messages("profitOrLossCalculation.class4Exempt.age")</p>
         }
 
         @submitButton(name = messages("site.saveAndContinue"))

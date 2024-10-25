@@ -16,11 +16,13 @@
 
 package viewmodels.checkAnswers.income
 
+import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.income.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.income.TradingAllowanceAmountPage
+import models.journeys.income.HowMuchTradingAllowance
+import pages.income.{HowMuchTradingAllowancePage, TradingAllowanceAmountPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.MoneyUtils
@@ -28,14 +30,19 @@ import viewmodels.checkAnswers.buildRowBigDecimal
 
 object TradingAllowanceAmountSummary extends MoneyUtils {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TradingAllowanceAmountPage, Some(businessId)).map { answer =>
-      buildRowBigDecimal(
-        answer,
-        routes.TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode),
-        s"tradingAllowanceAmount.title.$userType",
-        "tradingAllowanceAmount.change.hidden"
-      )
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] = {
+    val howMuchAllowance = answers.get(HowMuchTradingAllowancePage, Some(businessId))
+    val allowanceAmount  = answers.get(TradingAllowanceAmountPage, Some(businessId))
+    (howMuchAllowance, allowanceAmount) match {
+      case (Some(HowMuchTradingAllowance.LessThan), Some(amount)) =>
+        buildRowBigDecimal(
+          amount,
+          routes.TradingAllowanceAmountController.onPageLoad(taxYear, businessId, CheckMode),
+          s"tradingAllowanceAmount.title.$userType",
+          "tradingAllowanceAmount.change.hidden"
+        ).some
+      case _ => None
     }
+  }
 
 }

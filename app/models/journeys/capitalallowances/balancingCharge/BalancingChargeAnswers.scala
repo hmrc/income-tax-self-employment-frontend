@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package models.journeys.capitalallowances.balancingCharge
 
-@(summaryText: String, extraClasses: String = "")(details: Html)
+import play.api.libs.json.{Format, Json}
 
-<details class="govuk-details @{extraClasses}" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-            @summaryText
-        </span>
-    </summary>
-    <div class="govuk-details__text">
-        @details
-    </div>
-</details>
+case class BalancingChargeAnswers(balancingCharge: Boolean, balancingChargeAmount: Option[BigDecimal])
+
+object BalancingChargeAnswers {
+  implicit val formats: Format[BalancingChargeAnswers] = Json.format[BalancingChargeAnswers]
+}

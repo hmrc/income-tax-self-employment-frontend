@@ -253,10 +253,12 @@ class SelfEmploymentServiceImpl @Inject() (
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] = {
     val pagesToClear = allExpensesJourneyPages ++ allCapitalAllowanceJourneyPages
-    val result = Future
-      .fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
-      .flatMap(_ => connector.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value)
-    EitherT(result)
+    val resultT = for {
+      updateUserAnswers <- Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
+      _                 <- sessionRepository.set(updateUserAnswers)
+      result            <- connector.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value
+    } yield result
+    EitherT(resultT)
   }
 
 }

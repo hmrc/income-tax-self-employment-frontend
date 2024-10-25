@@ -20,10 +20,10 @@ import cats.data.EitherT
 import cats.implicits.{catsSyntaxEitherId, catsSyntaxOptionId}
 import controllers.{journeys, standard}
 import models.NormalMode
+import models.common.Journey
 import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
-import models.common.Journey
 import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.libs.json.JsObject
@@ -38,22 +38,21 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
   protected val journey: Journey
   protected val submissionData: JsObject
 
-  protected val customSuccessRedirectLocation: Option[String] = None
-
   protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitCall(taxYear, businessId).url)
 
   private val userAnswers: UserAnswers = buildUserAnswers(submissionData)
+
+  lazy val onwardRoute: String = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url
 
   "submitting a page" - {
     "journey answers submitted successfully" - {
       "redirect to next page" in new TestScenario(Individual, userAnswers.some) {
         mockService.submitAnswers(*, *, *)(*, *) returns EitherT(Future.successful(().asRight))
         val result: Future[Result] = route(application, postRequest).value
-        val successRedirectLocation: String = customSuccessRedirectLocation
-          .getOrElse(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url)
 
         status(result) shouldBe 303
-        redirectLocation(result).value should endWith(successRedirectLocation)
+
+        redirectLocation(result).value shouldBe onwardRoute
       }
     }
 

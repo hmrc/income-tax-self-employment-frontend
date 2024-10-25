@@ -16,22 +16,30 @@
 
 package models.journeys.nics
 
-import models.common.TaxYear
+import cats.data.EitherT
+import models.common.{BusinessId, TaxYear}
 import models.domain.BusinessIncomeSourcesSummary
+import models.errors.ServiceError
+import models.errors.ServiceError.BusinessNotFoundError
+import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
 import models.journeys.nics.NICsThresholds.{Class2NICsThresholds, Class4NICsFigures}
 import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
+import scala.concurrent.{ExecutionContext, Future}
 
-case class TaxableProfitAndLoss(taxableProfit: BigDecimal, taxableLoss: BigDecimal)
+case class TaxableProfitAndLoss(businessId: BusinessId, taxableProfit: BigDecimal, taxableLoss: BigDecimal) {
+
+  def taxableProfitOrLoss(profitOrLoss: ProfitOrLoss): BigDecimal = if (profitOrLoss == ProfitOrLoss.Profit) taxableProfit else taxableLoss
+}
 
 object TaxableProfitAndLoss {
   implicit val formats: Format[TaxableProfitAndLoss] = Json.format[TaxableProfitAndLoss]
 
   def fromBusinessIncomeSourcesSummary(biss: BusinessIncomeSourcesSummary): TaxableProfitAndLoss =
-    TaxableProfitAndLoss(biss.taxableProfit, biss.taxableLoss)
+    TaxableProfitAndLoss(BusinessId(biss.incomeSourceId), biss.taxableProfit, biss.taxableLoss)
 
   def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], userDoB: LocalDate, taxYear: TaxYear): NicClassExemption = {
 
@@ -62,9 +70,4 @@ object TaxableProfitAndLoss {
     taxableProfitsAndLosses.map(_.taxableProfit).sum > BigDecimal(class4Threshold)
   }
 
-  def betweenClass2AndClass4Threshold(taxableProfitsAndLosses: List[TaxableProfitAndLoss], taxYear: TaxYear): Boolean = {
-    val class2Eligible = areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
-    val class4Eligible = areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
-    !class2Eligible && !class4Eligible
-  }
 }

@@ -20,7 +20,35 @@ import models.journeys.adjustments.NetBusinessProfitOrLossValues
 
 object NetBusinessProfitOrLossValuesBuilder {
   val aNetBusinessProfitValues: NetBusinessProfitOrLossValues =
-    NetBusinessProfitOrLossValues(100, 0, 0, netProfit = 100, netLoss = 0, 100, 100, 100, 0, 100, 0, 100)
+    NetBusinessProfitOrLossValues(
+      turnover = 100,
+      incomeNotCountedAsTurnover = 0,
+      totalExpenses = 100,
+      netProfit = 100,
+      netLoss = 0,
+      balancingCharge = 100,
+      goodsAndServicesForOwnUse = 100,
+      disallowableExpenses = 100,
+      totalAdditions = 200,
+      capitalAllowances = 100,
+      turnoverNotTaxableAsBusinessProfit = 0,
+      totalDeductions = 0,
+      outstandingBusinessIncome = 500
+    )
   val aNetBusinessLossValues: NetBusinessProfitOrLossValues =
-    NetBusinessProfitOrLossValues(100, 0, 0, netProfit = 0, netLoss = 100, 100, 100, 100, 0, 100, 0, 100)
+    NetBusinessProfitOrLossValues(
+      turnover = 100,
+      incomeNotCountedAsTurnover = 0,
+      totalExpenses = 100,
+      netProfit = 0,
+      netLoss = 100,
+      balancingCharge = 100,
+      goodsAndServicesForOwnUse = 100,
+      disallowableExpenses = 100,
+      totalAdditions = 0,
+      capitalAllowances = 100,
+      turnoverNotTaxableAsBusinessProfit = 0,
+      totalDeductions = 200,
+      outstandingBusinessIncome = 500
+    )
 }

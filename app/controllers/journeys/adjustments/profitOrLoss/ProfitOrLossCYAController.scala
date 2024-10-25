@@ -20,10 +20,14 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.handleSubmitAnswersResultAndRedirect
 import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import pages.Page
+import controllers.handleResultT
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
+import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.adjustments.ProfitOrLossJourneyAnswers
 import pages.adjustments.profitOrLoss._
+import pages.Page
+import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
@@ -110,9 +114,10 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData).async {
     implicit request =>
-      val context          = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ProfitOrLoss)
-      val result           = service.submitAnswers[ProfitOrLossJourneyAnswers](context, request.userAnswers)
-      val redirectLocation = controllers.journeys.adjustments.profitOrLoss.routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId)
-      handleSubmitAnswersResultAndRedirect(result, redirectLocation)
+      val context             = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ProfitOrLoss)
+      val submitAnswersResult = service.submitAnswers[ProfitOrLossJourneyAnswers](context, request.userAnswers)
+      val redirectResult =
+        submitAnswersResult.map(_ => Redirect(routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId)))
+      handleResultT(redirectResult)
   }
 }
