@@ -35,7 +35,7 @@
 
 @accrualDependentDetails = {
     @if(accountingType == AccountingType.Accrual){
-        @foldableDetails(messages("capitalAllowances.understandingCapitalAllowances")) {
+        @foldableDetails(messages("capitalAllowances.understandingCapitalAllowances"), "govuk-!-margin-bottom-3") {
             <p>@messages(s"capitalAllowances.p1.$userType")</p>
             <p>@messages(s"capitalAllowances.p2.$userType")</p>
             <ul class="govuk-list govuk-list--bullet">

@@ -30,12 +30,14 @@ case class BusinessIncomeSourcesSummary(incomeSourceId: String,
                                         accountingAdjustments: Option[BigDecimal],
                                         taxableProfit: BigDecimal,
                                         taxableLoss: BigDecimal) {
-  def getNetBusinessProfitOrLossForTaxPurposes(): BigDecimal =
-    if (returnProfitOrLoss() == Profit)
-      netProfit + totalAdditions.getOrElse(0) - totalDeductions.getOrElse(0)
-    else
-      netLoss - totalAdditions.getOrElse(0) + totalDeductions.getOrElse(0)
-  def returnProfitOrLoss(): ProfitOrLoss = if (netLoss > 0) Loss else Profit
+
+  def journeyIsNetProfitOrLoss: ProfitOrLoss = if (netLoss > 0) Loss else Profit
+
+  def getNetBusinessProfitOrLossForTaxPurposes: BigDecimal =
+    if (journeyIsNetProfitOrLoss == Profit) netProfit + totalAdditions.getOrElse(0) - totalDeductions.getOrElse(0)
+    else netLoss - totalAdditions.getOrElse(0) + totalDeductions.getOrElse(0)
+
+  def getTaxableProfitOrLossAmount: BigDecimal = if (taxableLoss > 0) taxableLoss else taxableProfit
 }
 
 object BusinessIncomeSourcesSummary {
