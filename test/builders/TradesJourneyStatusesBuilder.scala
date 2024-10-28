@@ -34,7 +34,8 @@ object TradesJourneyStatusesBuilder {
       JourneyNameAndStatus(Income, JourneyStatus.InProgress),
       JourneyNameAndStatus(ExpensesTailoring, JourneyStatus.CheckOurRecords),
       JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.CheckOurRecords),
-      JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.CheckOurRecords)
+      JourneyNameAndStatus(NationalInsuranceContributions, JourneyStatus.CheckOurRecords),
+      JourneyNameAndStatus(CapitalAllowancesBalancingCharge, JourneyStatus.Completed)
     )
   )
 

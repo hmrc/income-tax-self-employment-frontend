@@ -23,6 +23,7 @@ import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.TaskListWithRequest
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import models.journeys.capitalallowances.balancingCharge.BalancingChargeAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
@@ -77,7 +78,11 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         Journey.CapitalAllowancesTailoring
       ) // TODO 10281 fetch Profit or Loss journey answers
       nicsUpdated <- loadNicsAnswers[NICsJourneyAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.NationalInsuranceContributions)
-    } yield TaskListWithRequest(taskList, nicsUpdated)
+      balancingChargeUpdated <- loadAnswers[BalancingChargeAnswers](taxYear, businesses,
+        nicsUpdated,
+        Journey.CapitalAllowancesBalancingCharge
+      )
+    } yield TaskListWithRequest(taskList, balancingChargeUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,

@@ -44,7 +44,7 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
       val ctx: OptionalDataRequest[_] => JourneyAnswersContext =
         req => JourneyAnswersContext(taxYear, req.nino, businessId, req.mtditid, Journey.TradeDetails)
-      val result = underTest[JsObject](ctx)
+      val result: SubmittedDataRetrievalAction = underTest[JsObject](ctx)
       result shouldBe a[SubmittedDataRetrievalActionImpl[_]]
     }
   }
@@ -57,9 +57,9 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
 
-      val result = await(underTest.loadTaskList(taxYear, fakeOptionalRequest).value)
+      val result: Either[ServiceError, TaskListWithRequest] = await(underTest.loadTaskList(taxYear, fakeOptionalRequest).value)
 
-      val expected = TaskListWithRequest(aTaskList, fakeOptionalRequest)
+      val expected: TaskListWithRequest = TaskListWithRequest(aTaskList, fakeOptionalRequest)
       result shouldBe Right(expected)
     }
 
@@ -69,14 +69,14 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)
 
-      val result = underTest.loadTaskList(taxYear, fakeOptionalRequest).value.futureValue
+      val result: Either[ServiceError, TaskListWithRequest] = underTest.loadTaskList(taxYear, fakeOptionalRequest).value.futureValue
 
       result shouldBe Left(ServiceError.ConnectorResponseError("method", "url", HttpError(404, HttpErrorBody.parsingError)))
     }
   }
 
   trait TestCase {
-    val connector = mock[SelfEmploymentConnector]
-    val repo      = mock[SessionRepository]
+    val connector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
+    val repo: SessionRepository = mock[SessionRepository]
   }
 }
