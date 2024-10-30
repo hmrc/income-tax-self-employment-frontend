@@ -28,8 +28,5 @@ case object GoodsAndServicesAmountPage extends AdjustmentsBasePage[BigDecimal] {
     routes.CheckNetProfitLossController.onPageLoad(taxYear, businessId)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(
-      businessId,
-      userAnswers
-    ) // TODO if no losses this year check PreviousUnusedLossesPage instead of ClaimLossReliefPage
+    userAnswers.get(this, businessId).isDefined && PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, userAnswers)
 }

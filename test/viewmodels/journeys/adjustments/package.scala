@@ -79,7 +79,8 @@ package object adjustments {
       s"List(TableRow(HtmlContent(profitOrLoss.additions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(additionsAmount)}),None,govuk-!-text-align-right ,None,None,Map()))"
     val deductionsRow =
       s"List(TableRow(HtmlContent(profitOrLoss.deductions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(deductionsAmount)}),None,govuk-!-text-align-right ,None,None,Map()))"
-    val netForTaxPurposesProfitOrLoss = if (netForTaxPurposes < 0) Loss else Profit
+    val netForTaxPurposesProfitOrLoss       = if (netForTaxPurposes < 0) Loss else Profit
+    val adjustedTaxableAmountIsProfitOrLoss = if (adjustedTaxableProfitForCurrentYear < 0) Loss else Profit
 
     s"""|List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          netProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
@@ -90,7 +91,7 @@ package object adjustments {
          netForTaxPurposes)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(journeys.adjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$profitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          adjustedTaxableProfitForCurrentYear)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
   }
 

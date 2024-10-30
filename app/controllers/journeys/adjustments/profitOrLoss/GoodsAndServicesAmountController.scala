@@ -21,9 +21,9 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.standard.CurrencyFormProvider
-import models.Mode
 import models.common.{AccountingType, BusinessId, TaxYear, UserType}
-import pages.adjustments.profitOrLoss.GoodsAndServicesAmountPage
+import models.{CheckMode, Mode}
+import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, PreviousUnusedLossesPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -57,10 +57,12 @@ class GoodsAndServicesAmountController @Inject() (override val messagesApi: Mess
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val accountingType                               = returnAccountingType(businessId)
+      val accountingType          = returnAccountingType(businessId)
+      val toCyaIfAllPagesAnswered = if (PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, request.userAnswers)) CheckMode else mode
+
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode, accountingType))
 
-      selfEmploymentService.defaultHandleForm(form(request.userType, accountingType), page, businessId, taxYear, mode, handleError)
+      selfEmploymentService.defaultHandleForm(form(request.userType, accountingType), page, businessId, taxYear, toCyaIfAllPagesAnswered, handleError)
   }
 
 }
