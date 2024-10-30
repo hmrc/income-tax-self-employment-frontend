@@ -17,19 +17,20 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
+import pages.Page
 import controllers.handleResultT
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
-import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.adjustments.ProfitOrLossJourneyAnswers
-import pages.Page
+import pages.adjustments.profitOrLoss._
 import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.adjustments.WhichYearIsLossReportedSummary
+import viewmodels.checkAnswers.adjustments.{WhatDoYouWantToDoWithLossSummary, WhichYearIsLossReportedSummary}
 import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
@@ -78,6 +79,21 @@ class ProfitOrLossCYAController @Inject() (override val messagesApi: MessagesApi
               overrideKeyMessage = Some(goodsAndServicesAmountKeyMessage),
               overrideChangeMessage = Some(goodsAndServicesAmountChangeMessage)
             ),
+          new BooleanSummary(ClaimLossReliefPage, routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(
+              request.userAnswers,
+              taxYear,
+              businessId,
+              request.userType,
+              overrideKeyMessage = Some(s"claimLossRelief.subHeading.${request.userType}")),
+          WhatDoYouWantToDoWithLossSummary.row(request.userAnswers, request.userType, taxYear, businessId),
+          new BooleanSummary(CarryLossForwardPage, routes.CurrentYearLossController.onPageLoad(taxYear, businessId, CheckMode))
+            .row(
+              request.userAnswers,
+              taxYear,
+              businessId,
+              request.userType,
+              overrideKeyMessage = Some(s"carryLossForward.subHeading.${request.userType}")),
           new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
             .row(
               request.userAnswers,

@@ -2141,6 +2141,7 @@ claimLossRelief.subHeading.individual = Do you want to claim a loss relief?
 claimLossRelief.subHeading.agent = Does your client want to claim a loss relief?
 claimLossRelief.error.required.individual = Select yes if you want to claim a loss relief
 claimLossRelief.error.required.agent = Select yes if your client wants to claim a loss relief
+claimLossRelief.change.hidden = Change if you want to claim a loss relief
 
 whatDoYouWantToDoWithLoss.title.individual = What do you want to do with the loss for the {0} to {1} tax year?
 whatDoYouWantToDoWithLoss.title.agent = What does your client want to do with the loss for the {0} to {1} tax year?
@@ -2149,6 +2150,7 @@ whatDoYouWantToDoWithLoss.deductFromOtherTypes = Deduct it from other types of t
 whatDoYouWantToDoWithLoss.carryItForward = Carry it forward to next year
 whatDoYouWantToDoWithLoss.error.required.individual = Select if you want to deduct the loss from other types of taxable income this year and or carry it forward to next year
 whatDoYouWantToDoWithLoss.error.required.agent = Select if your client wants to deduct the loss from other types of taxable income this year and or carry it forward to next year
+whatDoYouWantToDoWithLoss.change.hidden = Change what you want to do with the loss for the {0} to {1} tax year
 
 carryLossForward.title = Loss for the {0} to {1} tax year
 carryLossForward.p1.individual = You can claim a loss relief to reduce the amount of tax you may need to pay by carrying it forward to a future tax year.

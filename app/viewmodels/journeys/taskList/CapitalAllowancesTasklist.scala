@@ -16,7 +16,6 @@
 
 package viewmodels.journeys.taskList
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances
 import models.NormalMode
 import models.common.AccountingType.Cash
