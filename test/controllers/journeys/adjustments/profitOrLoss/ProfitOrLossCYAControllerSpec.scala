@@ -19,16 +19,16 @@ package controllers.journeys.adjustments.profitOrLoss
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
-import models.common.{AccountingType, BusinessId, Journey, TaxYear, UserType}
+import models.common._
 import models.database.UserAnswers
-import models.journeys.adjustments.WhichYearIsLossReported
+import models.journeys.adjustments.{WhatDoYouWantToDoWithLoss, WhichYearIsLossReported}
 import pages.Page
-import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
+import pages.adjustments.profitOrLoss._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.adjustments.WhichYearIsLossReportedSummary
+import viewmodels.checkAnswers.adjustments.{WhatDoYouWantToDoWithLossSummary, WhichYearIsLossReportedSummary}
 import viewmodels.checkAnswers.{BigDecimalSummary, BooleanSummary}
 
 class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
@@ -38,10 +38,15 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
   private val goodsAndServicesAmount  = BigDecimal(100)
   private val unusedLossAmount        = BigDecimal(200.00)
   private val whichYearIsLossReported = WhichYearIsLossReported.Year2018to2019.toString
+  private val whatDoYouWantToDoWithLoss =
+    List(WhatDoYouWantToDoWithLoss.CarryItForward.toString, WhatDoYouWantToDoWithLoss.DeductFromOtherTypes.toString)
 
   override val submissionData: JsObject = Json.obj(
     "goodsAndServicesForYourOwnUse" -> true,
     "goodsAndServicesAmount"        -> goodsAndServicesAmount,
+    "claimLossRelief"               -> true,
+    "whatDoYouWantToDoWithLoss"     -> whatDoYouWantToDoWithLoss,
+    "carryLossForward"              -> true,
     "previousUnusedLosses"          -> true,
     "unusedLossAmount"              -> unusedLossAmount,
     "whichYearIsLossReported"       -> whichYearIsLossReported,
@@ -51,6 +56,8 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
   override val testDataCases: List[JsObject] = List(submissionData)
 
   override protected val journey: Journey = ProfitOrLoss
+
+  override lazy val onwardRoute: String = routes.ProfitOrLossCalculationController.onPageLoad(taxYear, businessId).url
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ProfitOrLossCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ProfitOrLossCYAController.onSubmit
@@ -82,6 +89,13 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
             overrideKeyMessage = Some(goodsAndServicesAmountKeyMessage),
             overrideChangeMessage = Some(goodsAndServicesAmountChangeMessage)
           )
+          .value,
+        new BooleanSummary(ClaimLossReliefPage, routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, CheckMode))
+          .row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = Some(s"claimLossRelief.subHeading.$userType"))
+          .value,
+        WhatDoYouWantToDoWithLossSummary.row(userAnswers, userType, taxYear, businessId).value,
+        new BooleanSummary(CarryLossForwardPage, routes.CurrentYearLossController.onPageLoad(taxYear, businessId, CheckMode))
+          .row(userAnswers, taxYear, businessId, userType, overrideKeyMessage = Some(s"carryLossForward.subHeading.$userType"))
           .value,
         new BooleanSummary(PreviousUnusedLossesPage, routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, CheckMode))
           .row(
