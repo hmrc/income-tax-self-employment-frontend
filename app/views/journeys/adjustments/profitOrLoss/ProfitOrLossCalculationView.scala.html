@@ -24,7 +24,6 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
-        govukTable: GovukTable,
         foldableDetails: FoldableDetails,
         submitButton: SubmitButton,
         heading: Heading,
@@ -35,7 +34,7 @@
         adjustedTaxableProfitOrLoss: BigDecimal,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
-        tables: AdjustedTaxableProfitOrLossSummary,
+        summaryLists: AdjustedTaxableProfitOrLossSummary,
         nicsExemptionMessage: Option[String],
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
@@ -55,13 +54,13 @@
         @caption(taxYear)
         @heading(s"profitOrLossCalculation.title.$adjustedTaxableIsProfitOrLoss", Some(adjustedTaxableProfitOrLossAmount))
 
-        @govukTable(tables.adjustedProfitOrLossTable)
+        @govukSummaryList(summaryLists.adjustedProfitOrLossSummaryList)
         @foldableDetails(messages("profitOrLoss.showCalculations"), "govuk-!-margin-bottom-9"){
-            @govukTable(tables.netProfitOrLossTable)
-            @govukTable(tables.expensesTable)
-            @govukTable(tables.capitalAllowanceTable)
+            @govukSummaryList(summaryLists.netProfitOrLossSummaryList)
+            @govukSummaryList(summaryLists.expensesSummaryList)
+            @govukSummaryList(summaryLists.capitalAllowanceSummaryList)
             @netProfitOrLossForTaxPurposesContent
-            @govukTable(tables.adjustmentsTable)
+            @govukSummaryList(summaryLists.adjustmentsSummaryList)
             <p class="govuk-body govuk-!-font-weight-bold">
                 @{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$adjustedTaxableIsProfitOrLoss",
                     taxYear.startYear.toString, taxYear.endYear.toString, adjustedTaxableProfitOrLossAmount)

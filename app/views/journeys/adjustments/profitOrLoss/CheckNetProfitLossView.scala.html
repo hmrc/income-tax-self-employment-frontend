@@ -24,14 +24,14 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         foldableDetails: FoldableDetails,
-        govukTable: GovukTable,
+        govukSummaryList: GovukSummaryList,
         submitButton: SubmitButton,
         heading: Heading
 )
 
 @(userType: UserType,
         netBusinessProfitOrLossForTaxPurposes: BigDecimal,
-        tables: NetBusinessProfitOrLossSummary,
+        summaryLists: NetBusinessProfitOrLossSummary,
         continueRedirect: Call
 )(implicit request: Request[_], messages: Messages)
 
@@ -45,9 +45,9 @@
         @heading(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", Some(formattedNetAmount))
 
         @foldableDetails(messages("profitOrLoss.showCalculations")){
-            @govukTable(tables.netProfitLossTable)
-            @govukTable(tables.expensesTable)
-            @govukTable(tables.capitalAllowancesTable)
+            @govukSummaryList(summaryLists.netProfitLossSummaryList)
+            @govukSummaryList(summaryLists.expensesSummaryList)
+            @govukSummaryList(summaryLists.capitalAllowancesSummaryList)
             <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$netBusinessProfitOrLoss")} <strong>@{formattedNetAmount}</strong></p>
         }
 
