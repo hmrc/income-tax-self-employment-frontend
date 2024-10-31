@@ -76,6 +76,7 @@ object AdjustedTaxableProfitOrLossSummary {
       val netForTaxPurposesIsProfitOrLoss = if (amount < 0) Loss else Profit
       buildTableRow(s"profitOrLossCalculation.adjustedTable.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss", formattedAmount)
     }
+    val adjustedTaxableAmountIsProfitOrLoss = if (adjustedTaxableProfitOrLoss < 0) Loss else Profit
 
     val rows =
       List(
@@ -85,7 +86,7 @@ object AdjustedTaxableProfitOrLossSummary {
         netProfitOrLossForTaxPurposesRow,
         buildTableAmountRow("journeys.adjustments", adjustments),
         buildTableAmountRow(
-          s"profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$profitOrLoss",
+          s"profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss",
           adjustedTaxableProfitOrLoss,
           classes = "govuk-!-font-weight-bold",
           optArgs = Seq(startYear, endYear)
