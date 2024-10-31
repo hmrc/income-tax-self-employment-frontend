@@ -39,7 +39,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   /** Used only for the UI tests
     */
   def clearDatabase()(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl("test-only/test-clear-all-data")
+    val url      = s"${appConfig.selfEmploymentBEBaseUrl}/test-only/income-tax-self-employment/test-clear-all-data"
     val response = post(http, url, Mtditid("mtditid-test-only"), "")
     EitherT(response)
   }
