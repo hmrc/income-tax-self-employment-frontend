@@ -54,8 +54,8 @@ object AdjustedTaxableProfitOrLossSummary {
         journeyIsProfitOrLoss,
         userType,
         marginBottomClass),
-      NetBusinessProfitOrLossSummary.buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, "topMarginClass"),
-      buildAdjustmentsSummaryList(adjustments, "topMarginClass")
+      NetBusinessProfitOrLossSummary.buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, ""),
+      buildAdjustmentsSummaryList(adjustments, "")
     )
   }
 
