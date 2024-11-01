@@ -127,28 +127,27 @@ package object checkAnswers {
       )
     )
 
-  def buildBigDecimalKeyValueRow(keyMessage: String, value: BigDecimal, classes: String = "", optArgs: Seq[String] = Seq.empty)(implicit
-      messages: Messages): SummaryListRow =
-    buildKeyValueRow(keyMessage, value.toString(), classes, optArgs)
+  def buildBigDecimalKeyValueRow(keyMessage: String,
+                                 value: BigDecimal,
+                                 classes: String = "",
+                                 optKeyArgs: Seq[String] = Seq.empty,
+                                 contentInBold: Boolean = false)(implicit messages: Messages): SummaryListRow =
+    buildKeyValueRow(keyMessage, formatPosNegMoneyWithPounds(value), classes, optKeyArgs, contentInBold)
 
-  def buildKeyValueRow(keyMessage: String, value: String, classes: String = "", optArgs: Seq[String] = Seq.empty)(implicit
-      messages: Messages): SummaryListRow =
+  def buildKeyValueRow(keyMessage: String, value: String, classes: String = "", optKeyArgs: Seq[String] = Seq.empty, contentInBold: Boolean = false)(
+      implicit messages: Messages): SummaryListRow = {
+    val fontWeight = if (contentInBold) "govuk-!-font-weight-bold" else "govuk-!-font-weight-regular"
     SummaryListRowViewModel(
       key = Key(
-        content = keyMessage,
-        classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
+        content = HtmlContent(messages(keyMessage, optKeyArgs: _*)),
+        classes = s"$fontWeight hmrc-summary-list__key"
       ),
       value = Value(
-        content = HtmlContent(messages(value, optArgs)),
-        classes = "govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right"
+        content = HtmlContent(messages(value)),
+        classes = s"$fontWeight hmrc-summary-list__key govuk-!-text-align-right"
       )
     ).withCssClass(classes)
-
-  def buildTableRow(key: String, answer: String, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
-    Seq(
-      TableRow(content = HtmlContent(messages(key)), classes = classes),
-      TableRow(content = HtmlContent(answer), classes = s"govuk-!-text-align-right $classes")
-    )
+  }
 
   def buildTableAmountRow(key: String, answer: BigDecimal, classes: String = "", optArgs: Seq[String] = Seq.empty)(implicit
       messages: Messages): Seq[TableRow] =

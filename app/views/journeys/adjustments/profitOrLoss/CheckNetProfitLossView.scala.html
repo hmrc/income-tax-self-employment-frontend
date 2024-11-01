@@ -15,10 +15,12 @@
  *@
 
 @import models.common.UserType
+@import models.journeys.adjustments.ProfitOrLoss
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
-@import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
-@import views.html.components._
 @import utils.MoneyUtils.formatSumMoneyNoNegative
+@import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
+@import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
+@import views.html.components._
 
 @this(
         layout: templates.Layout,
@@ -30,6 +32,7 @@
 )
 
 @(userType: UserType,
+        journeyIsProfitOrLoss: ProfitOrLoss,
         netBusinessProfitOrLossForTaxPurposes: BigDecimal,
         summaryLists: NetBusinessProfitOrLossSummary,
         continueRedirect: Call
@@ -45,9 +48,19 @@
         @heading(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", Some(formattedNetAmount))
 
         @foldableDetails(messages("profitOrLoss.showCalculations")){
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLoss.netProfitOrLoss.$journeyIsProfitOrLoss")}</span>
             @govukSummaryList(summaryLists.netProfitLossSummaryList)
+
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages(
+                if (journeyIsProfitOrLoss == Profit) additionsCaption(journeyIsProfitOrLoss) else deductionsCaption(journeyIsProfitOrLoss))
+            }</span>
             @govukSummaryList(summaryLists.expensesSummaryList)
+
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages(
+                if (journeyIsProfitOrLoss == Profit) deductionsCaption(journeyIsProfitOrLoss) else additionsCaption(journeyIsProfitOrLoss))
+            }</span>
             @govukSummaryList(summaryLists.capitalAllowancesSummaryList)
+
             <p class="govuk-body">@{messages(s"profitOrLoss.netForTaxPurposes.$netBusinessProfitOrLoss")} <strong>@{formattedNetAmount}</strong></p>
         }
 

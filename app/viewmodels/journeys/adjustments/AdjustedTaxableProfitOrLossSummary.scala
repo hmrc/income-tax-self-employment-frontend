@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.checkAnswers.{buildBigDecimalKeyValueRow, buildKeyValueRow}
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption, marginBottomClass}
 
 case class AdjustedTaxableProfitOrLossSummary(adjustedProfitOrLossSummaryList: SummaryList,
                                               netProfitOrLossSummaryList: SummaryList,
@@ -31,9 +31,6 @@ case class AdjustedTaxableProfitOrLossSummary(adjustedProfitOrLossSummaryList: S
                                               capitalAllowanceSummaryList: SummaryList,
                                               adjustmentsSummaryList: SummaryList)
 object AdjustedTaxableProfitOrLossSummary {
-
-  val topMarginClass: String      = "govuk-!-margin-top-6"
-  val doubleMarginClasses: String = s"$topMarginClass govuk-!-margin-bottom-9"
 
   def buildSummaryLists(adjustedTaxableProfitOrLoss: BigDecimal,
                         netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
@@ -50,15 +47,15 @@ object AdjustedTaxableProfitOrLossSummary {
         netBusinessProfitOrLossValues,
         taxYear,
         journeyIsProfitOrLoss),
-      NetBusinessProfitOrLossSummary.buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, doubleMarginClasses),
+      NetBusinessProfitOrLossSummary.buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, marginBottomClass),
       NetBusinessProfitOrLossSummary.buildExpensesSummaryList(
         netBusinessProfitOrLossValues,
         goodsAndServicesForOwnUse,
         journeyIsProfitOrLoss,
         userType,
-        doubleMarginClasses),
-      NetBusinessProfitOrLossSummary.buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, topMarginClass),
-      buildAdjustmentsSummaryList(adjustments, topMarginClass)
+        marginBottomClass),
+      NetBusinessProfitOrLossSummary.buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, "topMarginClass"),
+      buildAdjustmentsSummaryList(adjustments, "topMarginClass")
     )
   }
 
@@ -79,8 +76,9 @@ object AdjustedTaxableProfitOrLossSummary {
       val amount                          = values.getNetBusinessProfitOrLossForTaxPurposes
       val formattedAmount                 = formatSumMoneyNoNegative(List(amount))
       val netForTaxPurposesIsProfitOrLoss = if (amount < 0) Loss else Profit
-      buildKeyValueRow(s"profitOrLossCalculation.adjustedSummaryList.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss", formattedAmount)
+      buildKeyValueRow(s"profitOrLossCalculation.adjustedSummary.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss", formattedAmount)
     }
+    val adjustedTaxableAmountIsProfitOrLoss = if (adjustedTaxableProfitOrLoss < 0) Loss else Profit
 
     val rows =
       List(
@@ -90,10 +88,10 @@ object AdjustedTaxableProfitOrLossSummary {
         netProfitOrLossForTaxPurposesRow,
         buildBigDecimalKeyValueRow("journeys.adjustments", adjustments),
         buildBigDecimalKeyValueRow(
-          s"profitOrLossCalculation.adjustedSummaryList.adjustedTaxableProfitOrLoss.$profitOrLoss",
+          s"profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss",
           adjustedTaxableProfitOrLoss,
-          classes = "govuk-!-font-weight-bold",
-          optArgs = Seq(startYear, endYear)
+          optKeyArgs = Seq(startYear, endYear),
+          contentInBold = true
         )
       )
     SummaryList(rows)

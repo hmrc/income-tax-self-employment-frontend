@@ -24,14 +24,15 @@ import viewmodels.checkAnswers.{buildBigDecimalKeyValueRow, buildKeyValueRow}
 object AssetBasedAllowanceSummary {
 
   def buildNetProfitOrLossSummaryList(answers: NetBusinessProfitOrLossValues)(implicit messages: Messages): SummaryList = {
+    val formattedExpensesValue = {
+      val expenses = answers.totalExpenses
+      if (expenses > 0) s"(£$expenses)" else s"£$expenses"
+    }
     val rows = Seq(
       buildBigDecimalKeyValueRow("profitOrLoss.turnover", answers.turnover),
       buildBigDecimalKeyValueRow("profitOrLoss.incomeNotCountedAsTurnover", answers.incomeNotCountedAsTurnover),
-      buildKeyValueRow("profitOrLoss.totalExpenses", s"(£${answers.totalExpenses})"),
-      buildBigDecimalKeyValueRow(
-        s"profitOrLoss.netProfitOrLoss.${answers.netProfitOrLoss}",
-        answers.netProfitOrLossAmount,
-        classes = "govuk-!-font-weight-bold")
+      buildKeyValueRow("profitOrLoss.totalExpenses", formattedExpensesValue),
+      buildBigDecimalKeyValueRow(s"profitOrLoss.netProfitOrLoss.${answers.netProfitOrLoss}", answers.netProfitOrLossAmount, contentInBold = true)
     )
 
     SummaryList(rows)

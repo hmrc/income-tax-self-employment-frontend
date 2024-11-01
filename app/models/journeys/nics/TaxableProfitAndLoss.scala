@@ -16,11 +16,8 @@
 
 package models.journeys.nics
 
-import cats.data.EitherT
 import models.common.{BusinessId, TaxYear}
 import models.domain.BusinessIncomeSourcesSummary
-import models.errors.ServiceError
-import models.errors.ServiceError.BusinessNotFoundError
 import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
 import models.journeys.nics.NICsThresholds.{Class2NICsThresholds, Class4NICsFigures}
@@ -28,7 +25,6 @@ import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
 
 case class TaxableProfitAndLoss(businessId: BusinessId, taxableProfit: BigDecimal, taxableLoss: BigDecimal) {
 

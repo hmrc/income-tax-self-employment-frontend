@@ -31,6 +31,8 @@ case class NetBusinessProfitOrLossSummary(netProfitLossSummaryList: SummaryList,
 
 object NetBusinessProfitOrLossSummary {
 
+  val marginBottomClass: String = "govuk-!-margin-bottom-9"
+
   def totalAdditionsCaption(profitOrLoss: ProfitOrLoss)  = s"profitOrLoss.totalAdditions.$profitOrLoss"
   def totalDeductionsCaption(profitOrLoss: ProfitOrLoss) = s"profitOrLoss.totalDeductions.$profitOrLoss"
   def additionsCaption(profitOrLoss: ProfitOrLoss)       = s"profitOrLoss.additions.$profitOrLoss"
@@ -43,8 +45,8 @@ object NetBusinessProfitOrLossSummary {
                         businessId: BusinessId)(implicit messages: Messages): NetBusinessProfitOrLossSummary = {
     val goodsAndServicesForOwnUse: BigDecimal = userAnswers.get(GoodsAndServicesAmountPage, businessId).getOrElse(0)
     NetBusinessProfitOrLossSummary(
-      buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues, profitOrLoss, "govuk-!-margin-top-6 govuk-!-margin-bottom-9"),
-      buildExpensesSummaryList(netBusinessProfitOrLossValues, goodsAndServicesForOwnUse, profitOrLoss, userType, "govuk-!-margin-bottom-9"),
+      buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues, profitOrLoss, marginBottomClass),
+      buildExpensesSummaryList(netBusinessProfitOrLossValues, goodsAndServicesForOwnUse, profitOrLoss, userType, marginBottomClass),
       buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, profitOrLoss, classes = "")
     )
   }
