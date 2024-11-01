@@ -127,20 +127,22 @@ package object checkAnswers {
       )
     )
 
-  def buildBigDecimalKeyValueRow(keyMessage: String, value: BigDecimal)(implicit messages: Messages): SummaryListRow =
-    buildKeyValueRow(keyMessage, value.toString())
+  def buildBigDecimalKeyValueRow(keyMessage: String, value: BigDecimal, classes: String = "", optArgs: Seq[String] = Seq.empty)(implicit
+      messages: Messages): SummaryListRow =
+    buildKeyValueRow(keyMessage, value.toString(), classes, optArgs)
 
-  def buildKeyValueRow(keyMessage: String, value: String)(implicit messages: Messages): SummaryListRow =
+  def buildKeyValueRow(keyMessage: String, value: String, classes: String = "", optArgs: Seq[String] = Seq.empty)(implicit
+      messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = Key(
         content = keyMessage,
         classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
       ),
       value = Value(
-        content = HtmlContent(value),
-        classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
+        content = HtmlContent(messages(value, optArgs)),
+        classes = "govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right"
       )
-    )
+    ).withCssClass(classes)
 
   def buildTableRow(key: String, answer: String, classes: String = "")(implicit messages: Messages): Seq[TableRow] =
     Seq(

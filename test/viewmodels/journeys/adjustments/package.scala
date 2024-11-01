@@ -86,11 +86,11 @@ package object adjustments {
         |${if (profitOrLoss == Profit) additionsRow else deductionsRow}
         |${if (profitOrLoss == Profit) deductionsRow
        else additionsRow}
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.netForTaxPurposes.$netForTaxPurposesProfitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedSummary.netForTaxPurposes.$netForTaxPurposesProfitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          netForTaxPurposes)}),None,govuk-!-text-align-right ,None,None,Map()))
         |List(TableRow(HtmlContent(journeys.adjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$profitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
+        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.$profitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
          adjustedTaxableProfitForCurrentYear)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
   }
 

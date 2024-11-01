@@ -22,8 +22,7 @@ import models.journeys.adjustments.ProfitOrLoss.Profit
 import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import pages.adjustments.profitOrLoss.GoodsAndServicesAmountPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.checkAnswers.buildBigDecimalKeyValueRow
 
 case class NetBusinessProfitOrLossSummary(netProfitLossSummaryList: SummaryList,
@@ -46,13 +45,12 @@ object NetBusinessProfitOrLossSummary {
     NetBusinessProfitOrLossSummary(
       buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues, profitOrLoss, "govuk-!-margin-top-6 govuk-!-margin-bottom-9"),
       buildExpensesSummaryList(netBusinessProfitOrLossValues, goodsAndServicesForOwnUse, profitOrLoss, userType, "govuk-!-margin-bottom-9"),
-      buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, profitOrLoss, "")
+      buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, profitOrLoss, classes = "")
     )
   }
 
-  def buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
-                                      profitOrLoss: ProfitOrLoss,
-                                      SummaryListClasses: String)(implicit messages: Messages): SummaryList = {
+  def buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss, classes: String)(
+      implicit messages: Messages): SummaryList = {
 
     val rows: Seq[SummaryListRow] = Seq(
       buildBigDecimalKeyValueRow("profitOrLoss.turnover", netBusinessProfitOrLossValues.turnover),
@@ -61,17 +59,15 @@ object NetBusinessProfitOrLossSummary {
       buildBigDecimalKeyValueRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", netBusinessProfitOrLossValues.netProfitOrLossAmount)
     )
 
-    SummaryList(rows)
-//    buildSummaryList(None, rows, caption = Some(messages(s"profitOrLoss.netProfitOrLoss.$profitOrLoss")), SummaryListClasses)
+    SummaryList(rows, classes = classes)
   }
 
   def buildExpensesSummaryList(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
                                goodsAndServicesForOwnUse: BigDecimal,
                                profitOrLoss: ProfitOrLoss,
                                userType: UserType,
-                               SummaryListClasses: String)(implicit messages: Messages): SummaryList = {
+                               classes: String)(implicit messages: Messages): SummaryList = {
     def additionsCaptionIfProfit: String = if (profitOrLoss == Profit) totalAdditionsCaption(profitOrLoss) else totalDeductionsCaption(profitOrLoss)
-    def additionsTitleIfProfit: String   = if (profitOrLoss == Profit) additionsCaption(profitOrLoss) else deductionsCaption(profitOrLoss)
     val rows: Seq[SummaryListRow] = Seq(
       buildBigDecimalKeyValueRow("selectCapitalAllowances.balancingCharge", netBusinessProfitOrLossValues.balancingCharge),
       buildBigDecimalKeyValueRow(s"goodsAndServicesForYourOwnUse.title.$userType", goodsAndServicesForOwnUse),
@@ -79,23 +75,19 @@ object NetBusinessProfitOrLossSummary {
       buildBigDecimalKeyValueRow(additionsCaptionIfProfit, netBusinessProfitOrLossValues.totalAdditions)
     )
 
-    SummaryList(rows)
-//    buildSummaryList(None, rows, caption = Some(messages(additionsTitleIfProfit)), SummaryListClasses)
+    SummaryList(rows, classes = classes)
   }
 
-  def buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
-                                        profitOrLoss: ProfitOrLoss,
-                                        SummaryListClasses: String)(implicit messages: Messages): SummaryList = {
+  def buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues, profitOrLoss: ProfitOrLoss, classes: String)(
+      implicit messages: Messages): SummaryList = {
     def deductionsCaptionIfProfit: String = if (profitOrLoss == Profit) totalDeductionsCaption(profitOrLoss) else totalAdditionsCaption(profitOrLoss)
-    def deductionsTitleIfProfit: String   = if (profitOrLoss == Profit) deductionsCaption(profitOrLoss) else additionsCaption(profitOrLoss)
     val rows: Seq[SummaryListRow] = Seq(
       buildBigDecimalKeyValueRow("profitOrLoss.capitalAllowances", netBusinessProfitOrLossValues.capitalAllowances),
       buildBigDecimalKeyValueRow("profitOrLoss.turnoverNotTaxable", netBusinessProfitOrLossValues.turnoverNotTaxableAsBusinessProfit),
       buildBigDecimalKeyValueRow(deductionsCaptionIfProfit, netBusinessProfitOrLossValues.totalDeductions)
     )
 
-    SummaryList(rows)
-//    buildSummaryList(None, rows, caption = Some(messages(deductionsTitleIfProfit)), SummaryListClasses)
+    SummaryList(rows, classes = classes)
   }
 
 }

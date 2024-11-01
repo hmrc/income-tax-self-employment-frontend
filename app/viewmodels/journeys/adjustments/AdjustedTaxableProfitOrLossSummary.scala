@@ -91,20 +91,19 @@ object AdjustedTaxableProfitOrLossSummary {
         buildBigDecimalKeyValueRow("journeys.adjustments", adjustments),
         buildBigDecimalKeyValueRow(
           s"profitOrLossCalculation.adjustedSummaryList.adjustedTaxableProfitOrLoss.$profitOrLoss",
-          adjustedTaxableProfitOrLoss
-//          classes = "govuk-!-font-weight-bold",
-//          optArgs = Seq(startYear, endYear)
+          adjustedTaxableProfitOrLoss,
+          classes = "govuk-!-font-weight-bold",
+          optArgs = Seq(startYear, endYear)
         )
       )
     SummaryList(rows)
   }
 
-  def buildAdjustmentsSummaryList(adjustments: BigDecimal, SummaryListClasses: String)(implicit messages: Messages): SummaryList = {
+  def buildAdjustmentsSummaryList(adjustments: BigDecimal, classes: String)(implicit messages: Messages): SummaryList = {
     val rows = Seq(
       buildBigDecimalKeyValueRow("adjustments.anyOtherBusinessIncome", adjustments),
       buildBigDecimalKeyValueRow("adjustments.totalAdjustments", adjustments)
     )
-    SummaryList(rows)
-//    buildSummaryList(None, rows, caption = Some(messages("journeys.adjustments")), SummaryListClasses)
+    SummaryList(rows, classes = classes)
   }
 }

@@ -1346,7 +1346,7 @@ claimCapitalAllowances.taxCalculation.profit.individual = We have calculated tha
 claimCapitalAllowances.taxCalculation.loss.individual = We have calculated that for the tax year {0} to {1} you made a net loss of
 claimCapitalAllowances.taxCalculation.profit.agent = We have calculated that for the tax year {0} to {1} your client made a net profit of
 claimCapitalAllowances.taxCalculation.loss.agent = We have calculated that for the tax year {0} to {1} your client made a net loss of
-claimCapitalAllowances.tableHeader = This is based on the figures that you’ve given us:
+claimCapitalAllowances.summaryHeader = This is based on the figures that you’ve given us:
 claimCapitalAllowances.p1.individual.CASH = You can claim ‘capital’ allowances for cars and certain items or assets used in your business
 claimCapitalAllowances.p1.agent.CASH = Your client can claim ‘capital’ allowances for cars and certain items or assets used in their business
 claimCapitalAllowances.p1.individual.ACCRUAL = You can claim ‘capital’ allowances for vehicles, equipment and certain buildings used in your business.
@@ -2079,12 +2079,12 @@ profitOrLoss.incomeNotCountedAsTurnover = Income you’re not counting as turnov
 
 profitOrLossCalculation.title.profit = Adjusted taxable profit: {0}
 profitOrLossCalculation.title.loss = Adjusted loss: {0}
-profitOrLossCalculation.adjustedTable.netForTaxPurposes.profit = Net business profit for tax purposes
-profitOrLossCalculation.adjustedTable.netForTaxPurposes.loss = Net business loss for tax purposes
-profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.profit = Adjusted taxable profit for {0} to {1}
-profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.loss = Adjusted loss for {0} to {1}
-profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
-profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
+profitOrLossCalculation.adjustedSummary.netForTaxPurposes.profit = Net business profit for tax purposes
+profitOrLossCalculation.adjustedSummary.netForTaxPurposes.loss = Net business loss for tax purposes
+profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.profit = Adjusted taxable profit for {0} to {1}
+profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.loss = Adjusted loss for {0} to {1}
+profitOrLossCalculation.adjustedSummary.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
+profitOrLossCalculation.adjustedSummary.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use

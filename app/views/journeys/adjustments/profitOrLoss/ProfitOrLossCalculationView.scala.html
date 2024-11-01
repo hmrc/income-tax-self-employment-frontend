@@ -15,10 +15,12 @@
  *@
 
 @import models.common.{TaxYear, UserType}
+@import models.journeys.adjustments.ProfitOrLoss
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
-@import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
-@import views.html.components._
 @import utils.MoneyUtils.formatSumMoneyNoNegative
+@import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
+@import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
+@import views.html.components._
 
 @this(
         layout: templates.Layout,
@@ -31,6 +33,7 @@
 )
 
 @(userType: UserType,
+        journeyIsProfitOrLoss: ProfitOrLoss,
         adjustedTaxableProfitOrLoss: BigDecimal,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
@@ -56,17 +59,32 @@
 
         @govukSummaryList(summaryLists.adjustedProfitOrLossSummaryList)
         @foldableDetails(messages("profitOrLoss.showCalculations"), "govuk-!-margin-bottom-9"){
+
+            <p class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLoss.netProfitOrLoss.$journeyIsProfitOrLoss")}</p>
             @govukSummaryList(summaryLists.netProfitOrLossSummaryList)
+
+            <p class="govuk-body govuk-!-font-weight-bold">@{messages(
+                if (journeyIsProfitOrLoss == Profit) additionsCaption(journeyIsProfitOrLoss) else deductionsCaption(journeyIsProfitOrLoss))
+            }</p>
             @govukSummaryList(summaryLists.expensesSummaryList)
+
+            <p class="govuk-body govuk-!-font-weight-bold">@{messages(
+                if (journeyIsProfitOrLoss == Profit) deductionsCaption(journeyIsProfitOrLoss) else additionsCaption(journeyIsProfitOrLoss))
+            }</p>
             @govukSummaryList(summaryLists.capitalAllowanceSummaryList)
+
             @netProfitOrLossForTaxPurposesContent
+
+            <p class="govuk-body govuk-!-font-weight-bold">@{messages("journeys.adjustments")}</p>
             @govukSummaryList(summaryLists.adjustmentsSummaryList)
+
             <p class="govuk-body govuk-!-font-weight-bold">
-                @{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$adjustedTaxableIsProfitOrLoss",
+                @{messages(s"profitOrLossCalculation.adjustedSummary.taxableProfitOrLoss.$adjustedTaxableIsProfitOrLoss",
                     taxYear.startYear.toString, taxYear.endYear.toString, adjustedTaxableProfitOrLossAmount)
                 }
             </p>
         }
+
         @nicsExemptionMessage.map { exemptionReason =>
             <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>
         }

@@ -18,21 +18,22 @@ package viewmodels.journeys.capitalallowances
 
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.{buildBigDecimalKeyValueRow, buildKeyValueRow}
 
 object AssetBasedAllowanceSummary {
 
-  def buildNetProfitOrLossTable(answers: NetBusinessProfitOrLossValues)(implicit messages: Messages): Table = {
-    val tableRows = Seq(
-      buildTableAmountRow("profitOrLoss.turnover", answers.turnover),
-      buildTableAmountRow("profitOrLoss.incomeNotCountedAsTurnover", answers.incomeNotCountedAsTurnover),
-      buildTableRow("profitOrLoss.totalExpenses", s"(£${answers.totalExpenses})"),
-      buildTableAmountRow(
+  def buildNetProfitOrLossSummaryList(answers: NetBusinessProfitOrLossValues)(implicit messages: Messages): SummaryList = {
+    val rows = Seq(
+      buildBigDecimalKeyValueRow("profitOrLoss.turnover", answers.turnover),
+      buildBigDecimalKeyValueRow("profitOrLoss.incomeNotCountedAsTurnover", answers.incomeNotCountedAsTurnover),
+      buildKeyValueRow("profitOrLoss.totalExpenses", s"(£${answers.totalExpenses})"),
+      buildBigDecimalKeyValueRow(
         s"profitOrLoss.netProfitOrLoss.${answers.netProfitOrLoss}",
         answers.netProfitOrLossAmount,
         classes = "govuk-!-font-weight-bold")
     )
-    buildTable(None, tableRows)
+
+    SummaryList(rows)
   }
 }

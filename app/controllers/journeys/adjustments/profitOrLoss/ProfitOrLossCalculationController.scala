@@ -60,7 +60,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         netPoLForTaxPurposes  = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
         summaryLists          = buildSummaryLists(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
         nicsExemptionMessage <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
-      } yield Ok(view(request.userType, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, summaryLists, nicsExemptionMessage, onwardRoute))
+      } yield Ok(view(request.userType, journeyIsProfitOrLoss, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, summaryLists, nicsExemptionMessage, onwardRoute))
 
       handleResultT(result)
   }
