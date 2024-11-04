@@ -23,82 +23,82 @@ import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{totalAddi
 
 package object adjustments {
 
-  def expectedNetProfitLossTable(profitOrLoss: ProfitOrLoss,
-                                 turnover: BigDecimal,
-                                 incomeNotCountedAsTurnover: BigDecimal,
-                                 totalExpenses: BigDecimal,
-                                 netProfitOrLoss: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(profitOrLoss.turnover),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         turnover)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(incomeNotCountedAsTurnover.title),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         incomeNotCountedAsTurnover)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.totalExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         totalExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         netProfitOrLoss)}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
+  def expectedNetProfitLossSummaryList(profitOrLoss: ProfitOrLoss,
+                                       turnover: BigDecimal,
+                                       incomeNotCountedAsTurnover: BigDecimal,
+                                       totalExpenses: BigDecimal,
+                                       netProfitOrLoss: BigDecimal): String =
+    s"""|SummaryListRow(Key(HtmlContent(profitOrLoss.turnover),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         turnover)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(incomeNotCountedAsTurnover.title),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         incomeNotCountedAsTurnover)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(profitOrLoss.totalExpenses),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         totalExpenses)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         netProfitOrLoss)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)""".stripMargin
 
-  def expectedExpensesTable(profitOrLoss: ProfitOrLoss,
-                            balancingCharge: BigDecimal,
-                            goodsAndServices: BigDecimal,
-                            disallowableExpenses: BigDecimal,
-                            totalAdditionsOrDeductions: BigDecimal): String = {
+  def expectedExpensesSummaryList(profitOrLoss: ProfitOrLoss,
+                                  balancingCharge: BigDecimal,
+                                  goodsAndServices: BigDecimal,
+                                  disallowableExpenses: BigDecimal,
+                                  totalAdditionsOrDeductions: BigDecimal): String = {
     val additionsDeductionCaption = if (profitOrLoss == Profit) { totalAdditionsCaption(profitOrLoss) }
     else { totalDeductionsCaption(profitOrLoss) }
-    s"""|List(TableRow(HtmlContent(selectCapitalAllowances.balancingCharge),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         balancingCharge)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(goodsAndServicesForYourOwnUse.title.individual),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         goodsAndServices)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.disallowableExpenses),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         disallowableExpenses)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent($additionsDeductionCaption),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         totalAdditionsOrDeductions)}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
+    s"""|SummaryListRow(Key(HtmlContent(selectCapitalAllowances.balancingCharge),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         balancingCharge)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(goodsAndServicesForYourOwnUse.title.individual),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         goodsAndServices)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(profitOrLoss.disallowableExpenses),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         disallowableExpenses)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent($additionsDeductionCaption),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         totalAdditionsOrDeductions)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)""".stripMargin
   }
 
-  def expectedCapitalAllowancesTable(profitOrLoss: ProfitOrLoss,
-                                     capitalAllowances: BigDecimal,
-                                     turnoverNotTaxable: BigDecimal,
-                                     totalDeductionsOrAdditions: BigDecimal): String = {
+  def expectedCapitalAllowancesSummaryList(profitOrLoss: ProfitOrLoss,
+                                           capitalAllowances: BigDecimal,
+                                           turnoverNotTaxable: BigDecimal,
+                                           totalDeductionsOrAdditions: BigDecimal): String = {
     val deductionsAdditionsCaption = if (profitOrLoss == Profit) { totalDeductionsCaption(profitOrLoss) }
     else { totalAdditionsCaption(profitOrLoss) }
-    s"""|List(TableRow(HtmlContent(profitOrLoss.capitalAllowances),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         capitalAllowances)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLoss.turnoverNotTaxable),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         turnoverNotTaxable)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent($deductionsAdditionsCaption),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         totalDeductionsOrAdditions)}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
+    s"""|SummaryListRow(Key(HtmlContent(profitOrLoss.capitalAllowances),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         capitalAllowances)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(profitOrLoss.turnoverNotTaxable),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         turnoverNotTaxable)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent($deductionsAdditionsCaption),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         totalDeductionsOrAdditions)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)""".stripMargin
   }
 
-  def expectedYourAdjustedProfitOrLossTable(profitOrLoss: ProfitOrLoss,
-                                            netProfit: BigDecimal,
-                                            additionsAmount: BigDecimal,
-                                            deductionsAmount: BigDecimal,
-                                            netForTaxPurposes: BigDecimal,
-                                            adjustments: BigDecimal,
-                                            adjustedTaxableProfitForCurrentYear: BigDecimal): String = {
+  def expectedYourAdjustedProfitOrLossSummaryList(profitOrLoss: ProfitOrLoss,
+                                                  netProfit: BigDecimal,
+                                                  additionsAmount: BigDecimal,
+                                                  deductionsAmount: BigDecimal,
+                                                  netForTaxPurposes: BigDecimal,
+                                                  adjustments: BigDecimal,
+                                                  adjustedTaxableProfitForCurrentYear: BigDecimal): String = {
     val additionsRow =
-      s"List(TableRow(HtmlContent(profitOrLoss.additions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(additionsAmount)}),None,govuk-!-text-align-right ,None,None,Map()))"
+      s"SummaryListRow(Key(HtmlContent(profitOrLoss.additions.$profitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(additionsAmount)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)"
     val deductionsRow =
-      s"List(TableRow(HtmlContent(profitOrLoss.deductions.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(deductionsAmount)}),None,govuk-!-text-align-right ,None,None,Map()))"
+      s"SummaryListRow(Key(HtmlContent(profitOrLoss.deductions.$profitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(deductionsAmount)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)"
     val netForTaxPurposesProfitOrLoss       = if (netForTaxPurposes < 0) Loss else Profit
     val adjustedTaxableAmountIsProfitOrLoss = if (adjustedTaxableProfitForCurrentYear < 0) Loss else Profit
 
-    s"""|List(TableRow(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         netProfit)}),None,govuk-!-text-align-right ,None,None,Map()))
+    s"""|SummaryListRow(Key(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         netProfit)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
         |${if (profitOrLoss == Profit) additionsRow else deductionsRow}
         |${if (profitOrLoss == Profit) deductionsRow
        else additionsRow}
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.netForTaxPurposes.$netForTaxPurposesProfitOrLoss),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         netForTaxPurposes)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(journeys.adjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss),None,govuk-!-font-weight-bold,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         adjustedTaxableProfitForCurrentYear)}),None,govuk-!-text-align-right govuk-!-font-weight-bold,None,None,Map()))""".stripMargin
+        |SummaryListRow(Key(HtmlContent(profitOrLossCalculation.adjustedSummary.netForTaxPurposes.$netForTaxPurposesProfitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         netForTaxPurposes)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(journeys.adjustments),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         adjustments)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss),govuk-!-font-weight-bold hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         adjustedTaxableProfitForCurrentYear)}),govuk-!-font-weight-bold hmrc-summary-list__key govuk-!-text-align-right), ,None)""".stripMargin
   }
 
-  def expectedAdjustmentsTable(adjustments: BigDecimal): String =
-    s"""|List(TableRow(HtmlContent(adjustments.anyOtherBusinessIncome),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))
-        |List(TableRow(HtmlContent(adjustments.totalAdjustments),None,,None,None,Map()), TableRow(HtmlContent(${formatPosNegMoneyWithPounds(
-         adjustments)}),None,govuk-!-text-align-right ,None,None,Map()))""".stripMargin
+  def expectedAdjustmentsSummaryList(adjustments: BigDecimal): String =
+    s"""|SummaryListRow(Key(HtmlContent(adjustments.anyOtherBusinessIncome),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         adjustments)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
+        |SummaryListRow(Key(HtmlContent(adjustments.totalAdjustments),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
+         adjustments)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)""".stripMargin
 
 }

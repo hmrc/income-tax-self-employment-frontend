@@ -51,7 +51,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         netBusinessProfitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         netBusinessProfitOrLossForTaxPurposes = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
         profitOrLoss                          = incomeSummary.journeyIsNetProfitOrLoss
-        tables = NetBusinessProfitOrLossSummary.buildTables(
+        summaryLists = NetBusinessProfitOrLossSummary.buildSummaryLists(
           netBusinessProfitOrLossValues,
           request.userAnswers,
           profitOrLoss,
@@ -60,7 +60,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         redirectLocation =
           if (profitOrLoss == Profit) routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           else routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
-      } yield Ok(view(request.userType, netBusinessProfitOrLossForTaxPurposes, tables, redirectLocation))
+      } yield Ok(view(request.userType, profitOrLoss, netBusinessProfitOrLossForTaxPurposes, summaryLists, redirectLocation))
 
       handleResultT(result)
   }

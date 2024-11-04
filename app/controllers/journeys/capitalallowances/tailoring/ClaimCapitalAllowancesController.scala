@@ -34,11 +34,11 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildNetProfitOrLossTable
+import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildNetProfitOrLossSummaryList
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
 import javax.inject.{Inject, Singleton}
@@ -65,10 +65,10 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val result = service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid).map { profitOrLossValues =>
-        val profitOrLoss         = profitOrLossValues.netProfitOrLoss
-        val netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLossValues)
-        val filledForm           = fillForm(page, businessId, formProvider(page, request.userType))
-        val formattedNetAmount   = formattedNetProfitOrLossAmount(profitOrLossValues.netProfitOrLossAmount)
+        val profitOrLoss               = profitOrLossValues.netProfitOrLoss
+        val netProfitOrLossSummaryList = buildNetProfitOrLossSummaryList(profitOrLossValues)
+        val filledForm                 = fillForm(page, businessId, formProvider(page, request.userType))
+        val formattedNetAmount         = formattedNetProfitOrLossAmount(profitOrLossValues.netProfitOrLossAmount)
 
         Ok(
           view(
@@ -80,24 +80,24 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
             profitOrLoss,
             businessId,
             formattedNetAmount,
-            netProfitOrLossTable))
+            netProfitOrLossSummaryList))
       }
       handleResultT(result)
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleForm(profitOrLoss: ProfitOrLoss, netProfitOrLossTable: Table, formattedNetAmount: String): Future[Result] =
+      def handleForm(profitOrLoss: ProfitOrLoss, netProfitOrLossSummaryList: SummaryList, formattedNetAmount: String): Future[Result] =
         formProvider(page, request.userType)
           .bindFromRequest()
           .fold(
-            formErrors => handleFormError(formErrors, profitOrLoss, netProfitOrLossTable, formattedNetAmount),
+            formErrors => handleFormError(formErrors, profitOrLoss, netProfitOrLossSummaryList, formattedNetAmount),
             value => handleFormSuccess(value)
           )
 
       def handleFormError(formWithErrors: Form[Boolean],
                           profitOrLoss: ProfitOrLoss,
-                          netProfitOrLossTable: Table,
+                          netProfitOrLossSummaryList: SummaryList,
                           formattedNetAmount: String): Future[Result] = Future.successful(
         BadRequest(
           view(
@@ -109,7 +109,7 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
             profitOrLoss,
             businessId,
             formattedNetAmount,
-            netProfitOrLossTable)))
+            netProfitOrLossSummaryList)))
       def handleFormSuccess(answer: Boolean): Future[Result] =
         for {
           (editedUserAnswers, redirectMode) <- handleGatewayQuestion(answer, request, mode, businessId)
@@ -118,9 +118,9 @@ class ClaimCapitalAllowancesController @Inject() (override val messagesApi: Mess
 
       val resultT: EitherT[Future, ServiceError, Result] = for {
         profitOrLossValues <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
-        netProfitOrLossTable = buildNetProfitOrLossTable(profitOrLossValues)
-        formattedNetAmount   = formattedNetProfitOrLossAmount(profitOrLossValues.netProfitOrLossAmount)
-        result <- EitherT.right[ServiceError](handleForm(profitOrLossValues.netProfitOrLoss, netProfitOrLossTable, formattedNetAmount))
+        netProfitOrLossSummaryList = buildNetProfitOrLossSummaryList(profitOrLossValues)
+        formattedNetAmount         = formattedNetProfitOrLossAmount(profitOrLossValues.netProfitOrLossAmount)
+        result <- EitherT.right[ServiceError](handleForm(profitOrLossValues.netProfitOrLoss, netProfitOrLossSummaryList, formattedNetAmount))
       } yield result
       handleResultT(resultT)
   }

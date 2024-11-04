@@ -30,7 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.buildTables
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.buildSummaryLists
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
 import javax.inject.{Inject, Singleton}
@@ -58,9 +58,18 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         journeyIsProfitOrLoss = incomeSummary.journeyIsNetProfitOrLoss
         adjustedTaxablePoL    = incomeSummary.getTaxableProfitOrLossAmount
         netPoLForTaxPurposes  = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-        tables                = buildTables(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
+        summaryLists          = buildSummaryLists(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
         nicsExemptionMessage <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
-      } yield Ok(view(request.userType, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, tables, nicsExemptionMessage, onwardRoute))
+      } yield Ok(
+        view(
+          request.userType,
+          journeyIsProfitOrLoss,
+          adjustedTaxablePoL,
+          netPoLForTaxPurposes,
+          taxYear,
+          summaryLists,
+          nicsExemptionMessage,
+          onwardRoute))
 
       handleResultT(result)
   }

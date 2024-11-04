@@ -23,8 +23,8 @@ import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import org.scalatest
 import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Table
-import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.doubleMarginClasses
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.marginBottomClass
 
 class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPropertyChecks {
 
@@ -34,7 +34,7 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
   private val taxableProfit = 4400.00
   private val taxableLoss   = 2200.00
 
-  private def assertWithClue(result: Table, expectedResult: String): scalatest.Assertion = withClue(s"""
+  private def assertWithClue(result: SummaryList, expectedResult: String): scalatest.Assertion = withClue(s"""
      |Result:
      |${result.rows.mkString("\n")}
      |did not equal expected result:
@@ -47,9 +47,9 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
   "buildTables must return all five AdjustedTaxableProfitOrLossSummary tables" - {
     "when a net profit" in {
       val result =
-        AdjustedTaxableProfitOrLossSummary.buildTables(taxableProfit, aNetBusinessProfitValues, taxYear, Profit, Individual)(messages)
+        AdjustedTaxableProfitOrLossSummary.buildSummaryLists(taxableProfit, aNetBusinessProfitValues, taxYear, Profit, Individual)(messages)
 
-      val yourAdjustedProfitOrLossTable = expectedYourAdjustedProfitOrLossTable(
+      val yourAdjustedProfitOrLossSummaryList = expectedYourAdjustedProfitOrLossSummaryList(
         Profit,
         aNetBusinessProfitValues.netProfitOrLossAmount,
         aNetBusinessProfitValues.totalAdditions,
@@ -58,40 +58,40 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
         adjustments,
         taxableProfit
       )
-      val netProfitOrLossTable = expectedNetProfitLossTable(
+      val netProfitOrLossSummaryList = expectedNetProfitLossSummaryList(
         Profit,
         aNetBusinessProfitValues.turnover,
         aNetBusinessProfitValues.incomeNotCountedAsTurnover,
         aNetBusinessProfitValues.totalExpenses,
         aNetBusinessProfitValues.netProfitOrLossAmount
       )
-      val expensesTable = expectedExpensesTable(
+      val expensesSummaryList = expectedExpensesSummaryList(
         Profit,
         aNetBusinessProfitValues.balancingCharge,
         aNetBusinessProfitValues.goodsAndServicesForOwnUse,
         aNetBusinessProfitValues.disallowableExpenses,
         aNetBusinessProfitValues.totalAdditions
       )
-      val capitalAllowancesTable = expectedCapitalAllowancesTable(
+      val capitalAllowancesSummaryList = expectedCapitalAllowancesSummaryList(
         Profit,
         aNetBusinessProfitValues.capitalAllowances,
         aNetBusinessProfitValues.turnoverNotTaxableAsBusinessProfit,
         aNetBusinessProfitValues.totalDeductions
       )
-      val adjustmentsTable = expectedAdjustmentsTable(adjustments)
+      val adjustmentsSummaryList = expectedAdjustmentsSummaryList(adjustments)
 
-      assertWithClue(result.adjustedProfitOrLossTable, expectedResult = yourAdjustedProfitOrLossTable)
-      assertWithClue(result.netProfitOrLossTable, expectedResult = netProfitOrLossTable)
-      assertWithClue(result.expensesTable, expectedResult = expensesTable)
-      assertWithClue(result.capitalAllowanceTable, expectedResult = capitalAllowancesTable)
-      assertWithClue(result.adjustmentsTable, expectedResult = adjustmentsTable)
+      assertWithClue(result.adjustedProfitOrLossSummaryList, expectedResult = yourAdjustedProfitOrLossSummaryList)
+      assertWithClue(result.netProfitOrLossSummaryList, expectedResult = netProfitOrLossSummaryList)
+      assertWithClue(result.expensesSummaryList, expectedResult = expensesSummaryList)
+      assertWithClue(result.capitalAllowanceSummaryList, expectedResult = capitalAllowancesSummaryList)
+      assertWithClue(result.adjustmentsSummaryList, expectedResult = adjustmentsSummaryList)
     }
 
     "when a net loss" in {
       val result =
-        AdjustedTaxableProfitOrLossSummary.buildTables(taxableLoss, aNetBusinessLossValues, taxYear, Loss, Individual)(messages)
+        AdjustedTaxableProfitOrLossSummary.buildSummaryLists(taxableLoss, aNetBusinessLossValues, taxYear, Loss, Individual)(messages)
 
-      val yourAdjustedProfitOrLossTable = expectedYourAdjustedProfitOrLossTable(
+      val yourAdjustedProfitOrLossSummaryList = expectedYourAdjustedProfitOrLossSummaryList(
         Loss,
         aNetBusinessLossValues.netProfitOrLossAmount,
         aNetBusinessLossValues.totalAdditions,
@@ -100,40 +100,45 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
         adjustments,
         taxableLoss
       )
-      val netProfitOrLossTable = expectedNetProfitLossTable(
+      val netProfitOrLossSummaryList = expectedNetProfitLossSummaryList(
         Loss,
         aNetBusinessLossValues.turnover,
         aNetBusinessLossValues.incomeNotCountedAsTurnover,
         aNetBusinessLossValues.totalExpenses,
         aNetBusinessLossValues.netProfitOrLossAmount
       )
-      val expensesTable = expectedExpensesTable(
+      val expensesSummaryList = expectedExpensesSummaryList(
         Loss,
         aNetBusinessLossValues.balancingCharge,
         aNetBusinessLossValues.goodsAndServicesForOwnUse,
         aNetBusinessLossValues.disallowableExpenses,
         aNetBusinessLossValues.totalAdditions
       )
-      val capitalAllowancesTable = expectedCapitalAllowancesTable(
+      val capitalAllowancesSummaryList = expectedCapitalAllowancesSummaryList(
         Loss,
         aNetBusinessLossValues.capitalAllowances,
         aNetBusinessLossValues.turnoverNotTaxableAsBusinessProfit,
         aNetBusinessLossValues.totalDeductions)
-      val adjustmentsTable = expectedAdjustmentsTable(adjustments)
+      val adjustmentsSummaryList = expectedAdjustmentsSummaryList(adjustments)
 
-      assertWithClue(result.adjustedProfitOrLossTable, expectedResult = yourAdjustedProfitOrLossTable)
-      assertWithClue(result.netProfitOrLossTable, expectedResult = netProfitOrLossTable)
-      assertWithClue(result.expensesTable, expectedResult = expensesTable)
-      assertWithClue(result.capitalAllowanceTable, expectedResult = capitalAllowancesTable)
-      assertWithClue(result.adjustmentsTable, expectedResult = adjustmentsTable)
+      assertWithClue(result.adjustedProfitOrLossSummaryList, expectedResult = yourAdjustedProfitOrLossSummaryList)
+      assertWithClue(result.netProfitOrLossSummaryList, expectedResult = netProfitOrLossSummaryList)
+      assertWithClue(result.expensesSummaryList, expectedResult = expensesSummaryList)
+      assertWithClue(result.capitalAllowanceSummaryList, expectedResult = capitalAllowancesSummaryList)
+      assertWithClue(result.adjustmentsSummaryList, expectedResult = adjustmentsSummaryList)
     }
   }
 
-  "buildYourAdjustedProfitOrLossTable must create a Table with the correct content" - {
+  "buildYourAdjustedProfitOrLossSummaryList must create a SummaryList with the correct content" - {
     "when a new profit" in {
-      val table =
-        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossTable(taxableProfit, adjustments, aNetBusinessProfitValues, taxYear, Profit)
-      val expectedTable = expectedYourAdjustedProfitOrLossTable(
+      val summaryList =
+        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossSummaryList(
+          taxableProfit,
+          adjustments,
+          aNetBusinessProfitValues,
+          taxYear,
+          Profit)
+      val expectedSummaryList = expectedYourAdjustedProfitOrLossSummaryList(
         Profit,
         aNetBusinessProfitValues.netProfitOrLossAmount,
         aNetBusinessProfitValues.totalAdditions,
@@ -143,13 +148,13 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
         taxableProfit
       )
 
-      assertWithClue(result = table, expectedResult = expectedTable)
+      assertWithClue(result = summaryList, expectedResult = expectedSummaryList)
     }
 
     "when a net loss" in {
-      val table =
-        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossTable(taxableLoss, adjustments, aNetBusinessLossValues, taxYear, Loss)
-      val expectedTable = expectedYourAdjustedProfitOrLossTable(
+      val summary =
+        AdjustedTaxableProfitOrLossSummary.buildYourAdjustedProfitOrLossSummaryList(taxableLoss, adjustments, aNetBusinessLossValues, taxYear, Loss)
+      val expectedSummaryList = expectedYourAdjustedProfitOrLossSummaryList(
         Loss,
         aNetBusinessLossValues.netProfitOrLossAmount,
         aNetBusinessLossValues.totalAdditions,
@@ -159,17 +164,15 @@ class AdjustedTaxableProfitOrLossSummarySpec extends SpecBase with TableDrivenPr
         taxableLoss
       )
 
-      assertWithClue(result = table, expectedResult = expectedTable)
+      assertWithClue(result = summary, expectedResult = expectedSummaryList)
     }
   }
 
-  "buildAdjustmentsTable must create a Table with the correct content" in {
-    val table           = AdjustedTaxableProfitOrLossSummary.buildAdjustmentsTable(adjustments, doubleMarginClasses)
-    val expectedTable   = expectedAdjustmentsTable(adjustments)
-    val expectedCaption = Some("journeys.adjustments")
+  "buildAdjustmentsSummaryList must create a SummaryList with the correct content" in {
+    val summaryList         = AdjustedTaxableProfitOrLossSummary.buildAdjustmentsSummaryList(adjustments, marginBottomClass)
+    val expectedSummaryList = expectedAdjustmentsSummaryList(adjustments)
 
-    assert(table.caption == expectedCaption)
-    assertWithClue(result = table, expectedResult = expectedTable)
+    assertWithClue(result = summaryList, expectedResult = expectedSummaryList)
   }
 
 }
