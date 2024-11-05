@@ -18,6 +18,7 @@
 @import models.journeys.adjustments.ProfitOrLoss
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 @import utils.MoneyUtils.formatSumMoneyNoNegative
+@import models.journeys.adjustments.ProfitOrLoss
 @import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 @import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
 @import views.html.components._
@@ -35,13 +36,14 @@
 @(userType: UserType,
         journeyIsProfitOrLoss: ProfitOrLoss,
         adjustedTaxableProfitOrLoss: BigDecimal,
+        adjustedTaxableIsProfitOrLoss: ProfitOrLoss,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
         summaryLists: AdjustedTaxableProfitOrLossSummary,
+        taxableProfitWhenProfitAndLossDeclared: Option[BigDecimal],
         nicsExemptionMessage: Option[String],
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@adjustedTaxableIsProfitOrLoss = @{if (adjustedTaxableProfitOrLoss < 0) Loss else Profit}
 @adjustedTaxableProfitOrLossAmount: String = @{formatSumMoneyNoNegative(List(adjustedTaxableProfitOrLoss))}
 
 @netProfitOrLossForTaxPurposesContent = @{
@@ -85,6 +87,9 @@
             </p>
         }
 
+        @taxableProfitWhenProfitAndLossDeclared.map { taxableProfit =>
+            <p class="govuk-body govuk-!-margin-bottom-9">@{messages(s"profitOrLossCalculation.taxableProfit.profitAndLossDeclared.$userType", taxableProfit)}</p>
+        }
         @nicsExemptionMessage.map { exemptionReason =>
             <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>
         }

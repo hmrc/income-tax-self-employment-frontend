@@ -2070,6 +2070,8 @@ profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.profit = Adj
 profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.loss = Adjusted loss for {0} to {1}
 profitOrLossCalculation.adjustedSummary.taxableProfitOrLoss.profit = Taxable profit for {0} to {1}: {2}
 profitOrLossCalculation.adjustedSummary.taxableProfitOrLoss.loss = Loss for {0} to {1}: {2}
+profitOrLossCalculation.taxableProfit.profitAndLossDeclared.individual = You also have a taxable profit of £{0}, which is separate to the loss above. You may be able to offset this loss against other types of taxable income or carry it forward to a future tax year.
+profitOrLossCalculation.taxableProfit.profitAndLossDeclared.agent = Your client also has a taxable profit of £{0}, which is separate to the loss above. They may be able to offset this loss against other types of taxable income or carry it forward to a future tax year.
 
 goodsAndServicesForYourOwnUse.title.individual = Goods and services for your own use
 goodsAndServicesForYourOwnUse.title.agent = Goods and services for your client’s own use
