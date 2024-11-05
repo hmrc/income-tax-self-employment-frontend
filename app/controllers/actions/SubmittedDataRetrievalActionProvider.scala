@@ -23,6 +23,7 @@ import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.TaskListWithRequest
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import models.journeys.adjustments.ProfitOrLossJourneyAnswers
 import models.journeys.capitalallowances.balancingCharge.BalancingChargeAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
@@ -76,11 +77,17 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         businesses,
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring
-      ) // TODO 10281 fetch Profit or Loss journey answers
-      balancingChargeUpdated <- loadAnswers[BalancingChargeAnswers](
+      )
+      profitAndLossUpdated <- loadAnswers[ProfitOrLossJourneyAnswers](
         taxYear,
         businesses,
         capitalAllowancesUpdated,
+        Journey.ProfitOrLoss
+      )
+      balancingChargeUpdated <- loadAnswers[BalancingChargeAnswers](
+        taxYear,
+        businesses,
+        profitAndLossUpdated,
         Journey.CapitalAllowancesBalancingCharge)
       nicsUpdated <- loadNicsAnswers[NICsJourneyAnswers](taxYear, businesses, balancingChargeUpdated, Journey.NationalInsuranceContributions)
 
