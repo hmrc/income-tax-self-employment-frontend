@@ -77,12 +77,14 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
         gtsouUpdated,
         Journey.CapitalAllowancesTailoring
       ) // TODO 10281 fetch Profit or Loss journey answers
-      nicsUpdated <- loadNicsAnswers[NICsJourneyAnswers](taxYear, businesses, capitalAllowancesUpdated, Journey.NationalInsuranceContributions)
-      balancingChargeUpdated <- loadAnswers[BalancingChargeAnswers](taxYear, businesses,
-        nicsUpdated,
-        Journey.CapitalAllowancesBalancingCharge
-      )
-    } yield TaskListWithRequest(taskList, balancingChargeUpdated)
+      balancingChargeUpdated <- loadAnswers[BalancingChargeAnswers](
+        taxYear,
+        businesses,
+        capitalAllowancesUpdated,
+        Journey.CapitalAllowancesBalancingCharge)
+      nicsUpdated <- loadNicsAnswers[NICsJourneyAnswers](taxYear, businesses, balancingChargeUpdated, Journey.NationalInsuranceContributions)
+
+    } yield TaskListWithRequest(taskList, nicsUpdated)
   }
 
   private def loadAnswers[A: Format](taxYear: TaxYear,

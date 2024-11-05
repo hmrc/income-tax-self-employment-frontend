@@ -77,6 +77,6 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
   trait TestCase {
     val connector: SelfEmploymentConnector = mock[SelfEmploymentConnector]
-    val repo: SessionRepository = mock[SessionRepository]
+    val repo: SessionRepository            = mock[SessionRepository]
   }
 }
