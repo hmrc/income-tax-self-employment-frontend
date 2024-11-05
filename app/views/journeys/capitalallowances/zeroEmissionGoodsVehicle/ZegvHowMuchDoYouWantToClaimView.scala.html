@@ -83,7 +83,7 @@
                 @missingRadioErrorMsg
 
                 @conditionalRadio("howMuchDoYouWantToClaim", form, List(
-                    ConditionalRadioWithOptions("fullCost", messages("zegvHowMuchDoYouWantToClaim.fullCost", fullCostAmount), None),
+                    ConditionalRadioWithOptions("fullCost", messages("capitalAllowance.fullCost", fullCostAmount), None),
                     ConditionalRadioWithOptions("lowerAmount", messages("common.lowerAmount"), Some(
                         RadioIdWithLabel("totalCost", messages("site.enterTheAmount"), hasPound = true, amountInputErrorMsg)
                     ))

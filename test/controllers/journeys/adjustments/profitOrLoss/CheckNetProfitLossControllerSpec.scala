@@ -29,7 +29,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, route, status, writeableOf_AnyContentAsEmpty}
 import stubs.services.SelfEmploymentServiceStub
 import utils.Assertions.assertEqualWithDiff
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.buildTables
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.buildSummaryLists
 import views.html.journeys.adjustments.profitOrLoss.CheckNetProfitLossView
 
 class CheckNetProfitLossControllerSpec extends ControllerSpec {
@@ -56,11 +56,11 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           implicit val msg = SpecBase.messages(application)
           val result       = route(application, onPageLoadRequest).value
           val netAmount    = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val tables       = buildTables(netBusinessProfitOrLossValues, userAnswers, Loss, userType, businessId)
+          val summaryLists = buildSummaryLists(netBusinessProfitOrLossValues, userAnswers, Loss, userType, businessId)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, netAmount, tables, onwardLossRoute)(onPageLoadRequest, msg).toString()
+            view(userType, Loss, netAmount, summaryLists, onwardLossRoute)(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK
@@ -77,11 +77,11 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
           implicit val msg = SpecBase.messages(application)
           val result       = route(application, onPageLoadRequest).value
           val netAmount    = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val tables       = buildTables(netBusinessProfitOrLossValues, userAnswers, Profit, userType, businessId)
+          val summaryLists = buildSummaryLists(netBusinessProfitOrLossValues, userAnswers, Profit, userType, businessId)
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, netAmount, tables, onwardProfitRoute)(onPageLoadRequest, msg).toString()
+            view(userType, Profit, netAmount, summaryLists, onwardProfitRoute)(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK

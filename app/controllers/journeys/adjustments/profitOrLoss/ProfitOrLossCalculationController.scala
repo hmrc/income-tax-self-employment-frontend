@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.buildTables
+import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary.buildSummaryLists
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
 import javax.inject.{Inject, Singleton}
@@ -60,17 +60,18 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         adjustedTaxablePoL            = incomeSummary.getTaxableProfitOrLossAmount
         adjustedTaxableIsProfitOrLoss = if (incomeSummary.taxableLoss > 0) Loss else Profit
         netPoLForTaxPurposes          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-        tables                        = buildTables(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
+        summaryLists                  = buildSummaryLists(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
         taxableProfitWhenProfitAndLossDeclared =
           if (incomeSummary.taxableProfit > 0 && incomeSummary.taxableLoss > 0) Some(incomeSummary.taxableProfit) else None
         nicsExemptionMessage <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
       } yield Ok(view(
         request.userType,
+        journeyIsProfitOrLoss,
         adjustedTaxablePoL,
         adjustedTaxableIsProfitOrLoss,
         netPoLForTaxPurposes,
         taxYear,
-        tables,
+        summaryLists,
         taxableProfitWhenProfitAndLossDeclared,
         nicsExemptionMessage,
         onwardRoute

@@ -15,17 +15,18 @@
  *@
 
 @import models.common.{TaxYear, UserType}
+@import models.journeys.adjustments.ProfitOrLoss
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+@import utils.MoneyUtils.formatSumMoneyNoNegative
 @import models.journeys.adjustments.ProfitOrLoss
 @import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
+@import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
 @import views.html.components._
-@import utils.MoneyUtils.formatSumMoneyNoNegative
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
-        govukTable: GovukTable,
         foldableDetails: FoldableDetails,
         submitButton: SubmitButton,
         heading: Heading,
@@ -33,11 +34,12 @@
 )
 
 @(userType: UserType,
+        journeyIsProfitOrLoss: ProfitOrLoss,
         adjustedTaxableProfitOrLoss: BigDecimal,
         adjustedTaxableIsProfitOrLoss: ProfitOrLoss,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
-        tables: AdjustedTaxableProfitOrLossSummary,
+        summaryLists: AdjustedTaxableProfitOrLossSummary,
         taxableProfitWhenProfitAndLossDeclared: Option[BigDecimal],
         nicsExemptionMessage: Option[String],
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
@@ -57,19 +59,34 @@
         @caption(taxYear)
         @heading(s"profitOrLossCalculation.title.$adjustedTaxableIsProfitOrLoss", Some(adjustedTaxableProfitOrLossAmount))
 
-        @govukTable(tables.adjustedProfitOrLossTable)
+        @govukSummaryList(summaryLists.adjustedProfitOrLossSummaryList)
         @foldableDetails(messages("profitOrLoss.showCalculations"), "govuk-!-margin-bottom-9"){
-            @govukTable(tables.netProfitOrLossTable)
-            @govukTable(tables.expensesTable)
-            @govukTable(tables.capitalAllowanceTable)
+
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages(s"profitOrLoss.netProfitOrLoss.$journeyIsProfitOrLoss")}</span>
+            @govukSummaryList(summaryLists.netProfitOrLossSummaryList)
+
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages(
+                if (journeyIsProfitOrLoss == Profit) additionsCaption(journeyIsProfitOrLoss) else deductionsCaption(journeyIsProfitOrLoss))
+            }</span>
+            @govukSummaryList(summaryLists.expensesSummaryList)
+
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages(
+                if (journeyIsProfitOrLoss == Profit) deductionsCaption(journeyIsProfitOrLoss) else additionsCaption(journeyIsProfitOrLoss))
+            }</span>
+            @govukSummaryList(summaryLists.capitalAllowanceSummaryList)
+
             @netProfitOrLossForTaxPurposesContent
-            @govukTable(tables.adjustmentsTable)
+
+            <span class="govuk-body govuk-!-font-weight-bold">@{messages("journeys.adjustments")}</span>
+            @govukSummaryList(summaryLists.adjustmentsSummaryList)
+
             <p class="govuk-body govuk-!-font-weight-bold">
-                @{messages(s"profitOrLossCalculation.adjustedTable.taxableProfitOrLoss.$adjustedTaxableIsProfitOrLoss",
+                @{messages(s"profitOrLossCalculation.adjustedSummary.taxableProfitOrLoss.$adjustedTaxableIsProfitOrLoss",
                     taxYear.startYear.toString, taxYear.endYear.toString, adjustedTaxableProfitOrLossAmount)
                 }
             </p>
         }
+
         @taxableProfitWhenProfitAndLossDeclared.map { taxableProfit =>
             <p class="govuk-body govuk-!-margin-bottom-9">@{messages(s"profitOrLossCalculation.taxableProfit.profitAndLossDeclared.$userType", taxableProfit)}</p>
         }
@@ -77,6 +94,6 @@
             <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>
         }
 
-        @submitButton(name = messages("site.saveAndContinue"))
+        @submitButton(name = messages("site.continue"))
     }
 }

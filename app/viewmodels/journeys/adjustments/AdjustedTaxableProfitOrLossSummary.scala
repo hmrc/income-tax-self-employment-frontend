@@ -20,85 +20,88 @@ import models.common.{TaxYear, UserType}
 import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import models.journeys.adjustments.{NetBusinessProfitOrLossValues, ProfitOrLoss}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.checkAnswers.{buildTable, buildTableAmountRow, buildTableRow}
-import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
+import viewmodels.checkAnswers.{buildBigDecimalKeyValueRow, buildKeyValueRow}
+import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption, marginBottomClass}
 
-case class AdjustedTaxableProfitOrLossSummary(adjustedProfitOrLossTable: Table,
-                                              netProfitOrLossTable: Table,
-                                              expensesTable: Table,
-                                              capitalAllowanceTable: Table,
-                                              adjustmentsTable: Table)
+case class AdjustedTaxableProfitOrLossSummary(adjustedProfitOrLossSummaryList: SummaryList,
+                                              netProfitOrLossSummaryList: SummaryList,
+                                              expensesSummaryList: SummaryList,
+                                              capitalAllowanceSummaryList: SummaryList,
+                                              adjustmentsSummaryList: SummaryList)
 object AdjustedTaxableProfitOrLossSummary {
 
-  val topMarginClass: String      = "govuk-!-margin-top-6"
-  val doubleMarginClasses: String = s"$topMarginClass govuk-!-margin-bottom-9"
-
-  def buildTables(adjustedTaxableProfitOrLoss: BigDecimal,
-                  netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
-                  taxYear: TaxYear,
-                  journeyIsProfitOrLoss: ProfitOrLoss,
-                  userType: UserType)(implicit messages: Messages): AdjustedTaxableProfitOrLossSummary = {
+  def buildSummaryLists(adjustedTaxableProfitOrLoss: BigDecimal,
+                        netBusinessProfitOrLossValues: NetBusinessProfitOrLossValues,
+                        taxYear: TaxYear,
+                        journeyIsProfitOrLoss: ProfitOrLoss,
+                        userType: UserType)(implicit messages: Messages): AdjustedTaxableProfitOrLossSummary = {
     val goodsAndServicesForOwnUse = netBusinessProfitOrLossValues.goodsAndServicesForOwnUse
     val adjustments               = netBusinessProfitOrLossValues.outstandingBusinessIncome
 
     AdjustedTaxableProfitOrLossSummary(
-      buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitOrLoss, adjustments, netBusinessProfitOrLossValues, taxYear, journeyIsProfitOrLoss),
-      NetBusinessProfitOrLossSummary.buildNetProfitOrLossTable(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, doubleMarginClasses),
-      NetBusinessProfitOrLossSummary.buildExpensesTable(
+      buildYourAdjustedProfitOrLossSummaryList(
+        adjustedTaxableProfitOrLoss,
+        adjustments,
+        netBusinessProfitOrLossValues,
+        taxYear,
+        journeyIsProfitOrLoss),
+      NetBusinessProfitOrLossSummary.buildNetProfitOrLossSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, marginBottomClass),
+      NetBusinessProfitOrLossSummary.buildExpensesSummaryList(
         netBusinessProfitOrLossValues,
         goodsAndServicesForOwnUse,
         journeyIsProfitOrLoss,
         userType,
-        doubleMarginClasses),
-      NetBusinessProfitOrLossSummary.buildCapitalAllowancesTable(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, topMarginClass),
-      buildAdjustmentsTable(adjustments, topMarginClass)
+        marginBottomClass),
+      NetBusinessProfitOrLossSummary.buildCapitalAllowancesSummaryList(netBusinessProfitOrLossValues, journeyIsProfitOrLoss, ""),
+      buildAdjustmentsSummaryList(adjustments, "")
     )
   }
 
-  def buildYourAdjustedProfitOrLossTable(adjustedTaxableProfitOrLoss: BigDecimal,
-                                         adjustments: BigDecimal,
-                                         values: NetBusinessProfitOrLossValues,
-                                         taxYear: TaxYear,
-                                         profitOrLoss: ProfitOrLoss)(implicit messages: Messages): Table = {
+  def buildYourAdjustedProfitOrLossSummaryList(adjustedTaxableProfitOrLoss: BigDecimal,
+                                               adjustments: BigDecimal,
+                                               values: NetBusinessProfitOrLossValues,
+                                               taxYear: TaxYear,
+                                               profitOrLoss: ProfitOrLoss)(implicit messages: Messages): SummaryList = {
     val startYear = taxYear.startYear.toString
     val endYear   = taxYear.toString
     val isProfit  = profitOrLoss == Profit
 
     def additionsOrDeductionsRow(returnAdditionsRow: Boolean) =
-      if (returnAdditionsRow) buildTableAmountRow(additionsCaption(profitOrLoss), values.totalAdditions)
-      else buildTableAmountRow(deductionsCaption(profitOrLoss), values.totalDeductions)
+      if (returnAdditionsRow) buildBigDecimalKeyValueRow(additionsCaption(profitOrLoss), values.totalAdditions)
+      else buildBigDecimalKeyValueRow(deductionsCaption(profitOrLoss), values.totalDeductions)
 
     val netProfitOrLossForTaxPurposesRow = {
       val amount                          = values.getNetBusinessProfitOrLossForTaxPurposes
       val formattedAmount                 = formatSumMoneyNoNegative(List(amount))
       val netForTaxPurposesIsProfitOrLoss = if (amount < 0) Loss else Profit
-      buildTableRow(s"profitOrLossCalculation.adjustedTable.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss", formattedAmount)
+      buildKeyValueRow(s"profitOrLossCalculation.adjustedSummary.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss", formattedAmount)
     }
+    val adjustedTaxableAmountIsProfitOrLoss = if (adjustedTaxableProfitOrLoss < 0) Loss else Profit
 
     val rows =
       List(
-        buildTableAmountRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", values.netProfitOrLossAmount),
+        buildBigDecimalKeyValueRow(s"profitOrLoss.netProfitOrLoss.$profitOrLoss", values.netProfitOrLossAmount),
         additionsOrDeductionsRow(returnAdditionsRow = isProfit),
         additionsOrDeductionsRow(returnAdditionsRow = !isProfit),
         netProfitOrLossForTaxPurposesRow,
-        buildTableAmountRow("journeys.adjustments", adjustments),
-        buildTableAmountRow(
-          s"profitOrLossCalculation.adjustedTable.adjustedTaxableProfitOrLoss.$profitOrLoss",
+        buildBigDecimalKeyValueRow("journeys.adjustments", adjustments),
+        buildBigDecimalKeyValueRow(
+          s"profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss",
           adjustedTaxableProfitOrLoss,
-          classes = "govuk-!-font-weight-bold",
-          optArgs = Seq(startYear, endYear)
+          optKeyArgs = Seq(startYear, endYear),
+          contentInBold = true
         )
       )
-    buildTable(None, rows)
+    SummaryList(rows)
   }
 
-  def buildAdjustmentsTable(adjustments: BigDecimal, tableClasses: String)(implicit messages: Messages): Table = {
+  def buildAdjustmentsSummaryList(adjustments: BigDecimal, classes: String)(implicit messages: Messages): SummaryList = {
     val rows = Seq(
-      buildTableAmountRow("adjustments.anyOtherBusinessIncome", adjustments),
-      buildTableAmountRow("adjustments.totalAdjustments", adjustments)
+      buildBigDecimalKeyValueRow("adjustments.anyOtherBusinessIncome", adjustments),
+      buildBigDecimalKeyValueRow("adjustments.totalAdjustments", adjustments)
     )
-    buildTable(None, rows, caption = Some(messages("journeys.adjustments")), tableClasses)
+    SummaryList(rows, classes = classes)
   }
 }

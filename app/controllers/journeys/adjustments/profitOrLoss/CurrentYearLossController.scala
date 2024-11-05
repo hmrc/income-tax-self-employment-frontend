@@ -20,10 +20,10 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
 import forms.standard.BooleanFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
-import pages.adjustments.profitOrLoss.{CarryLossForwardPage, WhatDoYouWantToDoWithLossPage}
+import models.{CheckMode, Mode}
+import pages.adjustments.profitOrLoss.{CarryLossForwardPage, PreviousUnusedLossesPage, WhatDoYouWantToDoWithLossPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -66,6 +66,8 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val toCyaIfAllPagesAnswered = if (PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, request.userAnswers)) CheckMode else mode
+
       // TODO retrieve whether the user has other incomes from API 2085 and pension income in SASS-9566
       val hasOtherIncomes = true
       if (hasOtherIncomes) {
@@ -73,7 +75,7 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
           whatDoYouWantToDoWithLossView(formWithErrors, taxYear, businessId, request.userType, mode)
         )
         def handleSuccess(answer: Set[WhatDoYouWantToDoWithLoss]): Future[Result] =
-          service.persistAnswerAndRedirect(whatDoYouWantToDoWithLossPage, businessId, request, answer, taxYear, mode)
+          service.persistAnswerAndRedirect(whatDoYouWantToDoWithLossPage, businessId, request, answer, taxYear, toCyaIfAllPagesAnswered)
 
         service.handleForm(formProvider(whatDoYouWantToDoWithLossPage, request.userType), handleError, handleSuccess)
       } else {
@@ -85,7 +87,7 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
           carryLossForwardPage,
           businessId,
           taxYear,
-          mode,
+          toCyaIfAllPagesAnswered,
           handleError)
       }
   }

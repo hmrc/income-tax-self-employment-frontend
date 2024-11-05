@@ -16,7 +16,6 @@
 
 package viewmodels.journeys.taskList
 
-import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances
 import models.NormalMode
 import models.common.AccountingType.Cash
@@ -31,8 +30,8 @@ import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.journeys.{conditionPassedForViewableLink, _}
 import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
+import viewmodels.journeys._
 
 object CapitalAllowancesTasklist {
 

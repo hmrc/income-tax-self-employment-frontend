@@ -33,9 +33,11 @@ case object OtherIncomeAmountPage extends IncomeBasePage[BigDecimal] {
     routes.TradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)
   )
 
+  def validNextPagesAreAnswered(businessId: BusinessId, userAnswers: UserAnswers): Boolean = userAnswers.getAccountingType(businessId) match {
+    case Accrual => TurnoverNotTaxablePage.hasAllFurtherAnswers(businessId, userAnswers)
+    case Cash    => TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
+  }
+
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(this, businessId).isDefined && (userAnswers.getAccountingType(businessId) match {
-      case Accrual => TurnoverNotTaxablePage.hasAllFurtherAnswers(businessId, userAnswers)
-      case Cash    => TradingAllowancePage.hasAllFurtherAnswers(businessId, userAnswers)
-    })
+    userAnswers.get(this, businessId).isDefined && validNextPagesAreAnswered(businessId, userAnswers)
 }

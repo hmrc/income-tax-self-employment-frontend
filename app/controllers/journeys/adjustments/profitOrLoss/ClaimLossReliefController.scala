@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.adjustments.profitOrLoss.ClaimLossReliefView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class ClaimLossReliefController @Inject() (override val messagesApi: MessagesApi,
@@ -55,7 +56,10 @@ class ClaimLossReliefController @Inject() (override val messagesApi: MessagesApi
     implicit request =>
       def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
 
-      service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
+      def handleSuccess(answer: Boolean): Future[Result] =
+        service.submitGatewayQuestionAndRedirect(page, businessId, request.userAnswers, answer, taxYear, mode)
+
+      service.handleForm(formProvider(page, request.userType), handleError, handleSuccess)
   }
 
 }

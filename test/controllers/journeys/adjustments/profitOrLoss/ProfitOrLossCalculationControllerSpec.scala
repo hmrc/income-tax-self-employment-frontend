@@ -131,12 +131,14 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
 
           val result               = route(application, onPageLoadRequest).value
           val adjustedProfitOrLoss = allTaxableProfitsAndLosses.headOption.get.taxableProfitOrLoss(profitOrLoss)
-          val tables = AdjustedTaxableProfitOrLossSummary.buildTables(adjustedProfitOrLoss, netProfitOrLossValues, taxYear, profitOrLoss, Individual)
+          val tables =
+            AdjustedTaxableProfitOrLossSummary.buildSummaryLists(adjustedProfitOrLoss, netProfitOrLossValues, taxYear, profitOrLoss, Individual)
 
           val expectedView = {
             val view = application.injector.instanceOf[ProfitOrLossCalculationView]
             view(
               Individual,
+              profitOrLoss,
               adjustedTaxablePoL,
               adjustedTaxableIsProfitOrLoss,
               netPoLForTaxPurposes,

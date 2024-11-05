@@ -20,6 +20,9 @@ import play.api.libs.json.{Json, OFormat}
 
 case class ProfitOrLossJourneyAnswers(goodsAndServicesForYourOwnUse: Boolean,
                                       goodsAndServicesAmount: Option[BigDecimal],
+                                      claimLossRelief: Option[Boolean],
+                                      whatDoYouWantToDoWithLoss: Option[Seq[WhatDoYouWantToDoWithLoss]],
+                                      carryLossForward: Option[Boolean],
                                       previousUnusedLosses: Boolean,
                                       unusedLossAmount: Option[BigDecimal],
                                       whichYearIsLossReported: Option[WhichYearIsLossReported])

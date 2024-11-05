@@ -20,8 +20,8 @@ import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
-import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
+import models.{CheckMode, Mode}
 import pages.income.OtherIncomeAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,11 +57,12 @@ class OtherIncomeAmountController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val toCyaIfAllPagesAnswered = if (page.validNextPagesAreAnswered(businessId, request.userAnswers)) CheckMode else mode
       form(request.userType)
         .bindFromRequest()
         .fold(
           formErrors => Future.successful(BadRequest(view(formErrors, mode, request.userType, taxYear, businessId))),
-          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
+          answer => service.persistAnswerAndRedirect(page, businessId, request, answer, taxYear, toCyaIfAllPagesAnswered)
         )
   }
 
