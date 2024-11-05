@@ -16,6 +16,7 @@
 
 @import models.common.{TaxYear, UserType}
 @import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
+@import models.journeys.adjustments.ProfitOrLoss
 @import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 @import views.html.components._
 @import utils.MoneyUtils.formatSumMoneyNoNegative
@@ -33,13 +34,14 @@
 
 @(userType: UserType,
         adjustedTaxableProfitOrLoss: BigDecimal,
+        adjustedTaxableIsProfitOrLoss: ProfitOrLoss,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
         tables: AdjustedTaxableProfitOrLossSummary,
+        taxableProfitWhenProfitAndLossDeclared: Option[BigDecimal],
         nicsExemptionMessage: Option[String],
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
-@adjustedTaxableIsProfitOrLoss = @{if (adjustedTaxableProfitOrLoss < 0) Loss else Profit}
 @adjustedTaxableProfitOrLossAmount: String = @{formatSumMoneyNoNegative(List(adjustedTaxableProfitOrLoss))}
 
 @netProfitOrLossForTaxPurposesContent = @{
@@ -67,6 +69,9 @@
                     taxYear.startYear.toString, taxYear.endYear.toString, adjustedTaxableProfitOrLossAmount)
                 }
             </p>
+        }
+        @taxableProfitWhenProfitAndLossDeclared.map { taxableProfit =>
+            <p class="govuk-body govuk-!-margin-bottom-9">@{messages(s"profitOrLossCalculation.taxableProfit.profitAndLossDeclared.$userType", taxableProfit)}</p>
         }
         @nicsExemptionMessage.map { exemptionReason =>
             <p class="govuk-inset-text">@messages(s"nics.$exemptionReason.$userType")</p>

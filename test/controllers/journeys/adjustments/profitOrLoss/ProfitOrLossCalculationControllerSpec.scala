@@ -17,7 +17,11 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.{ControllerSpec, SpecBase}
-import builders.BusinessIncomeSourcesSummaryBuilder.{aBusinessIncomeSourcesSummaryWithNetLoss, aBusinessIncomeSourcesSummaryWithNetProfit}
+import builders.BusinessIncomeSourcesSummaryBuilder.{
+  aBusinessIncomeSourcesSummary,
+  aBusinessIncomeSourcesSummaryWithNetLoss,
+  aBusinessIncomeSourcesSummaryWithNetProfit
+}
 import builders.NetBusinessProfitOrLossValuesBuilder.{aNetBusinessLossValues, aNetBusinessProfitValues}
 import builders.UserBuilder.aUserDateOfBirth
 import common.TestApp.buildAppFromUserType
@@ -114,8 +118,13 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             getAllBusinessesTaxableProfitAndLossResult = Right(allTaxableProfitsAndLosses),
             getNetBusinessProfitOrLossValuesResult = Right(netProfitOrLossValues)
           )
-          val adjustedTaxablePoL   = incomeSourceSummary.getTaxableProfitOrLossAmount
-          val netPoLForTaxPurposes = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
+          val adjustedTaxablePoL            = incomeSourceSummary.getTaxableProfitOrLossAmount
+          val netPoLForTaxPurposes          = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
+          val adjustedTaxableIsProfitOrLoss = if (incomeSourceSummary.taxableLoss > 0) Loss else Profit
+          val taxableProfitWhenProfitAndLossDeclared =
+            if (incomeSourceSummary.taxableProfit > 0 && incomeSourceSummary.taxableLoss > 0)
+              Some(incomeSourceSummary.taxableProfit)
+            else None
 
           val application            = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
           implicit val msg: Messages = SpecBase.messages(application)
@@ -126,7 +135,17 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
 
           val expectedView = {
             val view = application.injector.instanceOf[ProfitOrLossCalculationView]
-            view(Individual, adjustedTaxablePoL, netPoLForTaxPurposes, taxYear, tables, None, onwardRoute)(onPageLoadRequest, msg).toString()
+            view(
+              Individual,
+              adjustedTaxablePoL,
+              adjustedTaxableIsProfitOrLoss,
+              netPoLForTaxPurposes,
+              taxYear,
+              tables,
+              taxableProfitWhenProfitAndLossDeclared,
+              None,
+              onwardRoute
+            )(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK
@@ -151,6 +170,22 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             assert(contentAsString(result) contains expectedNicsMessage)
           }
         }
+      }
+
+      "should display the taxable profit when both profit and loss declared" in {
+
+        val stubService = SelfEmploymentServiceStub(
+          getBusinessIncomeSourcesSummaryResult = Right(aBusinessIncomeSourcesSummary)
+        )
+
+        val application = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
+
+        val result = route(application, onPageLoadRequest).value
+
+        val expectedMessage =
+          s"You also have a taxable profit of £${aBusinessIncomeSourcesSummary.taxableProfit}, which is separate to the loss above. You may be able to offset this loss against other types of taxable income or carry it forward to a future tax year."
+
+        assert(contentAsString(result).contains(expectedMessage))
       }
     }
   }
