@@ -18,7 +18,6 @@ package models.journeys.nics
 
 import models.common.{BusinessId, TaxYear}
 import models.domain.BusinessIncomeSourcesSummary
-import models.journeys.adjustments.ProfitOrLoss
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.ageIsBetween16AndStatePension
 import models.journeys.nics.NICsThresholds.{Class2NICsThresholds, Class4NICsFigures}
 import models.journeys.nics.NicClassExemption.{Class2, Class4, NotEligible}
@@ -26,10 +25,7 @@ import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
-case class TaxableProfitAndLoss(businessId: BusinessId, taxableProfit: BigDecimal, taxableLoss: BigDecimal) {
-
-  def taxableProfitOrLoss(profitOrLoss: ProfitOrLoss): BigDecimal = if (profitOrLoss == ProfitOrLoss.Profit) taxableProfit else taxableLoss
-}
+case class TaxableProfitAndLoss(businessId: BusinessId, taxableProfit: BigDecimal, taxableLoss: BigDecimal)
 
 object TaxableProfitAndLoss {
   implicit val formats: Format[TaxableProfitAndLoss] = Json.format[TaxableProfitAndLoss]

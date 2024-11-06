@@ -128,8 +128,11 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
           val application            = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
           implicit val msg: Messages = SpecBase.messages(application)
 
-          val result               = route(application, onPageLoadRequest).value
-          val adjustedProfitOrLoss = allTaxableProfitsAndLosses.headOption.get.taxableProfitOrLoss(profitOrLoss)
+          val result = route(application, onPageLoadRequest).value
+          val adjustedProfitOrLoss: BigDecimal = {
+            val taxableProfitAndLoss = allTaxableProfitsAndLosses.headOption.get
+            if (profitOrLoss == Profit) taxableProfitAndLoss.taxableProfit else -taxableProfitAndLoss.taxableLoss
+          }
           val tables =
             AdjustedTaxableProfitOrLossSummary.buildSummaryLists(adjustedProfitOrLoss, netProfitOrLossValues, taxYear, profitOrLoss, Individual)
 
