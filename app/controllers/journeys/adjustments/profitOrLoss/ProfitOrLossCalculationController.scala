@@ -22,7 +22,6 @@ import models.NormalMode
 import models.common.Journey.ProfitOrLoss
 import models.common._
 import models.domain.ApiResultT
-import models.journeys.adjustments.ProfitOrLoss.{Loss, Profit}
 import models.journeys.nics.NICsThresholds.StatePensionAgeThresholds.{ageIsBetween16AndStatePension, ageIsUnder16, ageIsUnderStatePensionAge}
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
@@ -56,11 +55,10 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         taxableProfitsAndLosses <- service.getAllBusinessesTaxableProfitAndLoss(taxYear, request.nino, request.mtditid)
         netProfitOrLossValues   <- service.getNetBusinessProfitOrLossValues(taxYear, request.nino, businessId, request.mtditid)
         incomeSummary           <- service.getBusinessIncomeSourcesSummary(taxYear, request.nino, businessId, request.mtditid)
-        journeyIsProfitOrLoss         = incomeSummary.journeyIsNetProfitOrLoss
-        adjustedTaxablePoL            = incomeSummary.getTaxableProfitOrLossAmount
-        adjustedTaxableIsProfitOrLoss = if (incomeSummary.taxableLoss > 0) Loss else Profit
-        netPoLForTaxPurposes          = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
-        summaryLists                  = buildSummaryLists(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
+        journeyIsProfitOrLoss = incomeSummary.journeyIsNetProfitOrLoss
+        adjustedTaxablePoL    = incomeSummary.getTaxableProfitOrLossAmount
+        netPoLForTaxPurposes  = incomeSummary.getNetBusinessProfitOrLossForTaxPurposes
+        summaryLists          = buildSummaryLists(adjustedTaxablePoL, netProfitOrLossValues, taxYear, journeyIsProfitOrLoss, request.userType)
         taxableProfitWhenProfitAndLossDeclared =
           if (incomeSummary.taxableProfit > 0 && incomeSummary.taxableLoss > 0) Some(incomeSummary.taxableProfit) else None
         nicsExemptionMessage <- showNicsExemptionMessage(taxYear, taxableProfitsAndLosses)
@@ -68,7 +66,6 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
         request.userType,
         journeyIsProfitOrLoss,
         adjustedTaxablePoL,
-        adjustedTaxableIsProfitOrLoss,
         netPoLForTaxPurposes,
         taxYear,
         summaryLists,

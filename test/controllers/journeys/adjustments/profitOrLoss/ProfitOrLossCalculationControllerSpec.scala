@@ -118,9 +118,8 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             getAllBusinessesTaxableProfitAndLossResult = Right(allTaxableProfitsAndLosses),
             getNetBusinessProfitOrLossValuesResult = Right(netProfitOrLossValues)
           )
-          val adjustedTaxablePoL            = incomeSourceSummary.getTaxableProfitOrLossAmount
-          val netPoLForTaxPurposes          = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val adjustedTaxableIsProfitOrLoss = if (incomeSourceSummary.taxableLoss > 0) Loss else Profit
+          val adjustedTaxablePoL   = incomeSourceSummary.getTaxableProfitOrLossAmount
+          val netPoLForTaxPurposes = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
           val taxableProfitWhenProfitAndLossDeclared =
             if (incomeSourceSummary.taxableProfit > 0 && incomeSourceSummary.taxableLoss > 0)
               Some(incomeSourceSummary.taxableProfit)
@@ -140,7 +139,6 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
               Individual,
               profitOrLoss,
               adjustedTaxablePoL,
-              adjustedTaxableIsProfitOrLoss,
               netPoLForTaxPurposes,
               taxYear,
               tables,

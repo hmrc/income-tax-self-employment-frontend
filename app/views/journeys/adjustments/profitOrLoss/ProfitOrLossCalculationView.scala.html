@@ -36,7 +36,6 @@
 @(userType: UserType,
         journeyIsProfitOrLoss: ProfitOrLoss,
         adjustedTaxableProfitOrLoss: BigDecimal,
-        adjustedTaxableIsProfitOrLoss: ProfitOrLoss,
         netProfitOrLossForTaxPurposes: BigDecimal,
         taxYear: TaxYear,
         summaryLists: AdjustedTaxableProfitOrLossSummary,
@@ -45,6 +44,7 @@
         continueRedirect: Call)(implicit request: Request[_], messages: Messages)
 
 @adjustedTaxableProfitOrLossAmount: String = @{formatSumMoneyNoNegative(List(adjustedTaxableProfitOrLoss))}
+@adjustedTaxableIsProfitOrLoss: ProfitOrLoss = @{if (adjustedTaxableProfitOrLoss < 0) Loss else Profit}
 
 @netProfitOrLossForTaxPurposesContent = @{
     val formattedAmount                 = formatSumMoneyNoNegative(List(netProfitOrLossForTaxPurposes))
