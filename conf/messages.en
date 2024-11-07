@@ -1251,7 +1251,7 @@ irrecoverableDebtsDisallowableAmount.error.overAmount.individual = The disallowa
 irrecoverableDebtsDisallowableAmount.error.overAmount.agent = The disallowable amount in irrecoverable debts your client spent on office supplies must be the same as or less than £{0}
 irrecoverableDebtsDisallowableAmount.change.hidden = Change how much claimed in irrecoverable debts is disallowable
 
-irrecoverableDebtsCya.title.individual = Check you irrecoverable debts
+irrecoverableDebtsCya.title.individual = Check your irrecoverable debts
 irrecoverableDebtsCya.title.agent = Check your client’s irrecoverable debts
 
 ########## Expenses - Depreciation ##########
