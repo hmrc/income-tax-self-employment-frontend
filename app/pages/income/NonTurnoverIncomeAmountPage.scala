@@ -16,6 +16,7 @@
 
 package pages.income
 
+import config.TaxYearConfig
 import controllers.journeys.income.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -26,7 +27,11 @@ case object NonTurnoverIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "nonTurnoverIncomeAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    routes.TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    (userAnswers.get(NonTurnoverIncomeAmountPage, businessId), userAnswers.get(TurnoverIncomeAmountPage, businessId)) match {
+      case (Some(ntIncome), Some(tIncome)) if (ntIncome + tIncome) >= TaxYearConfig.incomeThreshold =>
+        routes.IncomeExpensesWarningController.onPageLoad(taxYear, businessId)
+      case _ => routes.TurnoverIncomeAmountController.onPageLoad(taxYear, businessId, NormalMode)
+    }
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && TurnoverIncomeAmountPage.hasAllFurtherAnswers(businessId, userAnswers)
