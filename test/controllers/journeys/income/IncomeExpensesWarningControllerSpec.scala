@@ -18,7 +18,7 @@ package controllers.journeys.income
 
 import base.ControllerSpec
 import cats.implicits.catsSyntaxEitherId
-import controllers.standard
+import controllers.{journeys, standard}
 import models.NormalMode
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
@@ -26,25 +26,33 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, POST, contentAsString, redirectLocation, route, running, status, writeableOf_AnyContentAsEmpty}
 import stubs.services.SelfEmploymentServiceStub
-import views.html.journeys.income.TradingAllowanceWarningView
+import views.html.journeys.income.IncomeExpensesWarningView
 
 class IncomeExpensesWarningControllerSpec extends ControllerSpec {
 
   lazy val onPageLoadRoute: String    = routes.IncomeExpensesWarningController.onPageLoad(taxYear, businessId).url
   lazy val onSubmitRoute: String      = routes.IncomeExpensesWarningController.onSubmit(taxYear, businessId).url
-  lazy val onwardRoute: String        = routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val onwardRoute: String        = routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
   lazy val errorRecoveryRoute: String = standard.routes.JourneyRecoveryController.onPageLoad().url
 
-  private val someUserAnswers = Some(buildUserAnswers(JsObject.empty))
+  def submissionData: JsObject = Json.obj(
+    "incomeNotCountedAsTurnover" -> false,
+    "turnoverIncomeAmount"       -> BigDecimal(100),
+    "anyOtherIncome"             -> false,
+    "turnoverNotTaxable"         -> false,
+    "tradingAllowance"           -> "declareExpenses"
+  )
+
+  private val someUserAnswers = Some(buildUserAnswers(submissionData))
   private val connectorError  = ConnectorResponseError("", "", HttpError(BAD_REQUEST, HttpErrorBody.parsingError)).asLeft
 
   def expectedView(scenario: TestStubbedScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
-    val view = application.injector.instanceOf[TradingAllowanceWarningView]
+    val view = application.injector.instanceOf[IncomeExpensesWarningView]
     view(scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
@@ -79,17 +87,18 @@ class IncomeExpensesWarningControllerSpec extends ControllerSpec {
       "when UserAnswers exist and clearing Expenses and CapitalAllowances data is successful" in new TestStubbedScenario(answers = someUserAnswers) {
         running(application) {
           val result                     = route(application, postRequest).value
-          val redirectMatchesOnwardRoute = redirectLocation(result).value.endsWith(onwardRoute)
 
           status(result) shouldBe SEE_OTHER
-          assert(redirectMatchesOnwardRoute)
+          redirectLocation(result).value shouldBe journeys.income.routes.IncomeCYAController
+            .onPageLoad(taxYear, businessId)
+            .url
         }
       }
     }
     "should redirect to the journey recovery controller" - {
       "when a service error is returned when trying to clear Expenses and CapitalAllowances data" in new TestStubbedScenario(
-        answers = someUserAnswers,
-        stubbedService = SelfEmploymentServiceStub(clearExpensesAndCapitalAllowancesResult = connectorError)) {
+        answers = Some(emptyUserAnswers),
+        stubbedService = SelfEmploymentServiceStub(clearSimplifiedExpensesDataResult = connectorError)) {
         running(application) {
           val result = route(application, postRequest).value
 

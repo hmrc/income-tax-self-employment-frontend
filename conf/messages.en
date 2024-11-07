@@ -375,11 +375,11 @@ tradingAllowanceAmount.error.overTurnover.individual = The amount of trading all
 tradingAllowanceAmount.error.overTurnover.agent = The amount of trading allowance your client wants to use must be less than £{0}
 tradingAllowanceAmount.change.hidden = Change trading allowance amount
 
-## Trading allowance warning
-incomeExpensesWarning.title.individual = Your consolidated expenses figure will be deleted
-incomeExpensesWarning.title.agent = Your consolidated expenses figure will be deleted
+## Income Expenses warning
+incomeExpensesWarning.title.individual =Your consolidated expenses figure will be deleted
+incomeExpensesWarning.title.agent = Your client’s consolidated expenses figure will be deleted
 incomeExpensesWarning.p1.individual = Because your income is now over £85,000, you will have to report your expenses in individual categories. This means the figure that you previously entered for consolidated expenses will be deleted.
-incomeExpensesWarning.p1.agent = Because your income is now over £85,000, you will have to report your expenses in individual categories. This means the figure that you previously entered for consolidated expenses will be deleted.
+incomeExpensesWarning.p1.agent = Because their income is now over £85,000, your client will have to report their expenses in individual categories. This means the figure that you previously entered for consolidated expenses will be deleted.
 
 ## Check your income (Income CYA)
 checkYourIncome.title.individual = Check your income

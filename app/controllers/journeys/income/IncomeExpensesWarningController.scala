@@ -16,28 +16,36 @@
 
 package controllers.journeys.income
 
+import cats.data.EitherT
+import config.TaxYearConfig.totalIncomeIsEqualOrAboveThreshold
 import controllers.actions._
-import controllers.handleResultT
-import models.NormalMode
-import models.common.{BusinessId, TaxYear}
+import controllers.{handleResultT, journeys}
+import models.common.Journey.Income
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.domain.ApiResultT
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
+import models.requests.DataRequest
+import pages.expenses.tailoring.ExpensesCategoriesPage
+import pages.income.{NonTurnoverIncomeAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.income.IncomeExpensesWarningView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IncomeExpensesWarningController @Inject()(override val messagesApi: MessagesApi,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                service: SelfEmploymentService,
-                                                view: IncomeExpensesWarningView)(implicit ec: ExecutionContext)
+class IncomeExpensesWarningController @Inject() (override val messagesApi: MessagesApi,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 service: SelfEmploymentService,
+                                                 view: IncomeExpensesWarningView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -45,11 +53,41 @@ class IncomeExpensesWarningController @Inject()(override val messagesApi: Messag
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getData andThen requireData)(implicit request => Ok(view(request.userType, taxYear, businessId)))
 
+  private def clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(
+      previousIncomeWasUnderThreshold: Boolean,
+      currentIncomeIsOverThreshold: Boolean,
+      expensesTailoringIsSimplified: Boolean,
+      ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] =
+    if (previousIncomeWasUnderThreshold && currentIncomeIsOverThreshold && expensesTailoringIsSimplified) {
+      service.clearSimplifiedExpensesData(ctx)
+    } else {
+      EitherT.rightT(())
+    }
+
+  private def maybeClearSimplifiedExpensesTailoringAnswers(
+      ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Unit] =
+    for {
+      maybeExistingTotalIncomeAmount <- returnOptionalTotalIncome(service.getTotalIncome(ctx))
+      currentAnswersTurnoverAmount   <- EitherT.fromEither[Future](request.valueOrNotFoundError(TurnoverIncomeAmountPage, ctx.businessId))
+      currentAnswersNonTurnoverAmount      = request.getValue[BigDecimal](NonTurnoverIncomeAmountPage, ctx.businessId).getOrElse(BigDecimal(0))
+      currentAnswersTotalIncomeAmount      = currentAnswersTurnoverAmount + currentAnswersNonTurnoverAmount
+      existingIncomeIsBelowThreshold       = maybeExistingTotalIncomeAmount.exists(!totalIncomeIsEqualOrAboveThreshold(_))
+      currentIncomeIsEqualOrAboveThreshold = totalIncomeIsEqualOrAboveThreshold(currentAnswersTotalIncomeAmount)
+      expensesTailoringIsSimplified        = request.getValue(ExpensesCategoriesPage, ctx.businessId).exists(_ != IndividualCategories)
+      _ <- clearSimplifiedExpensesIfTurnoverChangedToOverThreshold(
+        existingIncomeIsBelowThreshold,
+        currentIncomeIsEqualOrAboveThreshold,
+        expensesTailoringIsSimplified,
+        ctx)
+    } yield ()
+
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      val result = service
-        .clearExpensesAndCapitalAllowances(taxYear, request.nino, businessId, request.mtditid)
-        .map(_ => Redirect(routes.HowMuchTradingAllowanceController.onPageLoad(taxYear, businessId, NormalMode)))
+      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, Income)
+
+      val result = for {
+        _ <- maybeClearSimplifiedExpensesTailoringAnswers(context)
+      } yield Redirect(journeys.income.routes.IncomeCYAController.onPageLoad(taxYear, businessId))
 
       handleResultT(result)
   }
