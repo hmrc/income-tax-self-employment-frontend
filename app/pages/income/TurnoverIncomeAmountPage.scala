@@ -16,7 +16,6 @@
 
 package pages.income
 
-import config.TaxYearConfig
 import controllers.journeys.income.routes
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
@@ -26,12 +25,14 @@ import play.api.mvc.Call
 case object TurnoverIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "turnoverIncomeAmount"
 
+  override def cyaPage(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
+    if (isTotalIncomeEqualOrAboveThreshold(userAnswers, businessId))
+      routes.IncomeExpensesWarningController.onPageLoad(taxYear, businessId)
+    else
+      super.cyaPage(taxYear, businessId)
+
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
-    (userAnswers.get(NonTurnoverIncomeAmountPage, businessId), userAnswers.get(TurnoverIncomeAmountPage, businessId)) match {
-      case (Some(ntIncome), Some(tIncome)) if (ntIncome + tIncome) >= TaxYearConfig.incomeThreshold =>
-        routes.IncomeExpensesWarningController.onPageLoad(taxYear, businessId)
-      case _ => routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
-    }
+    routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
 
   override def hasAllFurtherAnswers(businessId: BusinessId, userAnswers: UserAnswers): Boolean =
     userAnswers.get(this, businessId).isDefined && AnyOtherIncomePage.hasAllFurtherAnswers(businessId, userAnswers)

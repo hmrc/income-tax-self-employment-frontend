@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
 
   "navigation" should {
-    "navigate to other-income page on valid answer" in {
+    "navigate to check your answers page on valid answer" in {
       val answers = emptyUserAnswers
         .set(TurnoverIncomeAmountPage, BigDecimal(1000), Some(businessId))
         .success
@@ -30,8 +30,8 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(1000), Some(businessId))
         .success
         .value
-      val result = TurnoverIncomeAmountPage.nextPageInNormalMode(answers, businessId, taxYear)
-      assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/other-income"))
+      val result = TurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
+      assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/check-your-income"))
     }
 
     "navigate to expenses warning page when total turnover and non turnover is more then 85000" in {
@@ -42,7 +42,17 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(85000), Some(businessId))
         .success
         .value
-      val result = TurnoverIncomeAmountPage.nextPageInNormalMode(answers, businessId, taxYear)
+      val result = TurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
+      assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/expenses-warning"))
+    }
+
+    "navigate to expenses warning page when turnover total is more then 85000" in {
+      val answers = emptyUserAnswers
+        .set(TurnoverIncomeAmountPage, BigDecimal(85000), Some(businessId))
+        .success
+        .value
+
+      val result = NonTurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
       assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/expenses-warning"))
     }
 
@@ -54,7 +64,7 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(80000), Some(businessId))
         .success
         .value
-      val result = TurnoverIncomeAmountPage.nextPageInNormalMode(answers, businessId, taxYear)
+      val result = TurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
       assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/expenses-warning"))
     }
   }

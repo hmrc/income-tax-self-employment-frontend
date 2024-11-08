@@ -86,7 +86,7 @@ class IncomeExpensesWarningControllerSpec extends ControllerSpec {
     "should redirect to the HowMuchTradingAllowance page" - {
       "when UserAnswers exist and clearing Expenses and CapitalAllowances data is successful" in new TestStubbedScenario(answers = someUserAnswers) {
         running(application) {
-          val result                     = route(application, postRequest).value
+          val result = route(application, postRequest).value
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).value shouldBe journeys.income.routes.IncomeCYAController
