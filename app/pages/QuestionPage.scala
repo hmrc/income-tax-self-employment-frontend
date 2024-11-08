@@ -67,7 +67,7 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
     val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
     val newPage: Call = updatedMode match {
       case NormalMode => nextPageInNormalMode(userAnswers, businessId, taxYear)
-      case CheckMode  => if(cyaPageWithUserAnswers) cyaPage(userAnswers, taxYear, businessId) else cyaPage(taxYear, businessId)
+      case CheckMode  => if (cyaPageWithUserAnswers) cyaPage(userAnswers, taxYear, businessId) else cyaPage(taxYear, businessId)
     }
 
     Redirect(newPage)
