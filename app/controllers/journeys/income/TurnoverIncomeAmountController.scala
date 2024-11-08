@@ -66,7 +66,7 @@ class TurnoverIncomeAmountController @Inject() (override val messagesApi: Messag
         for {
           updateUserAnswers <- clearAllowancePagesData(answerUnchanged, businessId, request.userAnswers)
           savedAnswers      <- service.persistAnswer(businessId, updateUserAnswers, answer, page)
-          result = page.redirectNext(mode, savedAnswers, businessId, taxYear)
+          result = page.redirectNext(mode, savedAnswers, businessId, taxYear, cyaPageWithUserAnswers = true)
         } yield result
       }
 

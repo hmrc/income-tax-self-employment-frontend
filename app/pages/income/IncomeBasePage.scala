@@ -21,16 +21,13 @@ import controllers.journeys.income.routes
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.journeys.expenses.ExpensesTailoring.TotalAmount
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import pages.OneQuestionPage
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.mvc.Call
 
 trait IncomeBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.IncomeCYAController.onPageLoad(taxYear, businessId)
-
-  def cyaPage(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
     routes.IncomeCYAController.onPageLoad(taxYear, businessId)
 
   def redirectForAccountingType(userAnswers: UserAnswers, businessId: BusinessId, accrualRedirect: Call, cashRedirect: Call): Call =
@@ -42,7 +39,8 @@ trait IncomeBasePage[A] extends OneQuestionPage[A] {
   def isTotalIncomeEqualOrAboveThreshold(userAnswers: UserAnswers, businessId: BusinessId): Boolean = {
     val nonTurnoverAmount: BigDecimal = userAnswers.get(NonTurnoverIncomeAmountPage, businessId).getOrElse(BigDecimal(0))
     val turnoverAmount: BigDecimal    = userAnswers.get(TurnoverIncomeAmountPage, businessId).getOrElse(BigDecimal(0))
+    val expensesCategories: Boolean   = userAnswers.get(ExpensesCategoriesPage, businessId).exists(_ != IndividualCategories)
     val total                         = nonTurnoverAmount + turnoverAmount
-    totalIncomeIsEqualOrAboveThreshold(total)
+    totalIncomeIsEqualOrAboveThreshold(total) && expensesCategories
   }
 }

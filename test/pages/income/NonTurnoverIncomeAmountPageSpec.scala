@@ -17,7 +17,9 @@
 package pages.income
 
 import base.SpecBase._
+import models.journeys.expenses.ExpensesTailoring.TotalAmount
 import org.scalatest.wordspec.AnyWordSpecLike
+import pages.expenses.tailoring.ExpensesCategoriesPage
 
 class NonTurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
 
@@ -43,6 +45,10 @@ class NonTurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(85000), Some(businessId))
         .success
         .value
+        .set(ExpensesCategoriesPage, TotalAmount, Some(businessId))
+        .success
+        .value
+
       val result = NonTurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
       assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/expenses-warning"))
     }
@@ -52,6 +58,10 @@ class NonTurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(85000), Some(businessId))
         .success
         .value
+        .set(ExpensesCategoriesPage, TotalAmount, Some(businessId))
+        .success
+        .value
+
       val result = NonTurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
       assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/expenses-warning"))
     }
@@ -62,6 +72,9 @@ class NonTurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .success
         .value
         .set(NonTurnoverIncomeAmountPage, BigDecimal(80000), Some(businessId))
+        .success
+        .value
+        .set(ExpensesCategoriesPage, TotalAmount, Some(businessId))
         .success
         .value
       val result = NonTurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)

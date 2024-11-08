@@ -17,7 +17,9 @@
 package pages.income
 
 import base.SpecBase._
+import models.journeys.expenses.ExpensesTailoring.{NoExpenses, TotalAmount}
 import org.scalatest.wordspec.AnyWordSpecLike
+import pages.expenses.tailoring.ExpensesCategoriesPage
 
 class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
 
@@ -30,6 +32,7 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(1000), Some(businessId))
         .success
         .value
+
       val result = TurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
       assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/check-your-income"))
     }
@@ -42,6 +45,9 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .set(NonTurnoverIncomeAmountPage, BigDecimal(85000), Some(businessId))
         .success
         .value
+        .set(ExpensesCategoriesPage, TotalAmount, Some(businessId))
+        .success
+        .value
       val result = TurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
       assert(result.url.endsWith(s"/$taxYear/SJPR05893938418/income/expenses-warning"))
     }
@@ -49,6 +55,9 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
     "navigate to expenses warning page when turnover total is more then 85000" in {
       val answers = emptyUserAnswers
         .set(TurnoverIncomeAmountPage, BigDecimal(85000), Some(businessId))
+        .success
+        .value
+        .set(ExpensesCategoriesPage, TotalAmount, Some(businessId))
         .success
         .value
 
@@ -62,6 +71,9 @@ class TurnoverIncomeAmountPageSpec extends AnyWordSpecLike {
         .success
         .value
         .set(NonTurnoverIncomeAmountPage, BigDecimal(80000), Some(businessId))
+        .success
+        .value
+        .set(ExpensesCategoriesPage, NoExpenses, Some(businessId))
         .success
         .value
       val result = TurnoverIncomeAmountPage.cyaPage(answers, taxYear, businessId)
