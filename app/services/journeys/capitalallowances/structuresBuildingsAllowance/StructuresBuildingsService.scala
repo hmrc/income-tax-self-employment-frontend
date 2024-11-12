@@ -107,6 +107,7 @@ class StructuresBuildingsService @Inject() (sessionRepository: SessionRepository
         case (StructuresBuildingsQualifyingUseDatePage, answer: LocalDate)          => structure.copy(qualifyingUse = answer.some)
         case (StructuresBuildingsLocationPage, answer: StructuresBuildingsLocation) => structure.copy(newStructureBuildingLocation = answer.some)
         case (StructuresBuildingsNewClaimAmountPage, answer: BigDecimal) => structure.copy(newStructureBuildingClaimingAmount = answer.some)
+        case (StructuresBuildingsQualifyingExpenditurePage, answer: BigDecimal) => structure.copy(newStructureBuildingQualifyingExpenditureAmount = answer.some)
         case _                                                           => newStructure
       }
     list.updated(index, updatedStructure)

@@ -40,7 +40,7 @@ class StructuresBuildingsQualifyingUseDateControllerSpec
 
   override def onSubmitRoute: String = routes.StructuresBuildingsQualifyingUseDateController.onSubmit(taxYear, businessId, 0, NormalMode).url
 
-  override def onwardRoute: Call = routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, 0, NormalMode)
+  override def onwardRoute: Call = routes.StructuresBuildingQualifyingExpenditureController.onPageLoad(taxYear, businessId, 0, NormalMode)
 
   override def validDate: LocalDate = LocalDate.of(2020, 2, 2)
 

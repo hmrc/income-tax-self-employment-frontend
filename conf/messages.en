@@ -1720,6 +1720,19 @@ structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building
 structuresBuildingsQualifyingUseDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction.
 structuresBuildingsQualifyingUseDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction.
 
+structuresBuildingQualifyingExpenditure.title = What was the total qualifying expenditure on this building?
+structuresBuildingQualifyingExpenditure.error.required.individual = Enter the total qualifying expenditure on this building
+structuresBuildingQualifyingExpenditure.error.required.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
+structuresBuildingQualifyingExpenditure.error.nonNumeric.individual = The amount must be a number
+structuresBuildingQualifyingExpenditure.error.nonNumeric.agent = The amount must be a number
+structuresBuildingQualifyingExpenditure.error.lessThanZero.individual =  The amount must be 0 or more
+structuresBuildingQualifyingExpenditure.error.lessThanZero.agent = The amount must be 0 or more
+structuresBuildingQualifyingExpenditure.error.overMax.individual = The amount must be less than 100,000,000,000
+structuresBuildingQualifyingExpenditure.error.overMax.agent = The amount must be less than 100,000,000,000
+structuresBuildingQualifyingExpenditure.cya.individual = Enter the total qualifying expenditure on this building
+structuresBuildingQualifyingExpenditure.cya.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
+structuresBuildingQualifyingExpenditure.change.hidden = Change the total qualifying expenditure on this building
+
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
 structuresBuildingsLocation.error.postcode.agent = Enter a postcode for the structure or building

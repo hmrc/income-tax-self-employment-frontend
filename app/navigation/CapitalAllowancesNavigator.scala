@@ -18,7 +18,7 @@ package navigation
 
 import cats.implicits.catsSyntaxOptionId
 import controllers.journeys.capitalallowances._
-import controllers.{journeys, standard}
+import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{CheckMode, Mode, NormalMode}
