@@ -62,7 +62,7 @@ class NonTurnoverIncomeAmountController @Inject() (override val messagesApi: Mes
         for {
           updateUserAnswers <- clearAllowancePagesData(answerUnchanged, businessId, request.userAnswers)
           savedAnswers      <- service.persistAnswer(businessId, updateUserAnswers, answer, page)
-          result = page.redirectNext(mode, savedAnswers, businessId, taxYear)
+          result = page.redirectNext(mode, savedAnswers, businessId, taxYear, cyaPageWithUserAnswers = true)
         } yield result
       }
 

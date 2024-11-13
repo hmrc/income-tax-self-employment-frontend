@@ -34,6 +34,8 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
 
   def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = ???
 
+  def cyaPage(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call = ???
+
   private def recoveryPage: Call = standard.routes.JourneyRecoveryController.onPageLoad()
 
   def redirectToRecoveryPage(reason: String): Result = {
@@ -57,11 +59,15 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] with Loggin
 
   val requiredErrorKey: String = s"$toString.error.required"
 
-  def redirectNext(originalMode: Mode, userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Result = {
+  def redirectNext(originalMode: Mode,
+                   userAnswers: UserAnswers,
+                   businessId: BusinessId,
+                   taxYear: TaxYear,
+                   cyaPageWithUserAnswers: Boolean = false): Result = {
     val updatedMode = if (hasAllFurtherAnswers(businessId, userAnswers)) originalMode else NormalMode
     val newPage: Call = updatedMode match {
       case NormalMode => nextPageInNormalMode(userAnswers, businessId, taxYear)
-      case CheckMode  => cyaPage(taxYear, businessId)
+      case CheckMode  => if (cyaPageWithUserAnswers) cyaPage(userAnswers, taxYear, businessId) else cyaPage(taxYear, businessId)
     }
 
     Redirect(newPage)

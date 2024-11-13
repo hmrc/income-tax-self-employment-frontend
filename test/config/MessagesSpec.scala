@@ -169,6 +169,7 @@ class MessagesSpec extends SpecBase {
     "howMuchTradingAllowance.subHeading.agent",
     "incomeNotCountedAsTurnover.p2",
     "peopleLivingAtBusinessPremises.p1.agent",
+    "incomeExpensesWarning.p1.agent",
     "sectionCompletedState.title",
     "selectCapitalAllowances.subText.annualInvestment",
     "selectCapitalAllowances.subText.balancing",

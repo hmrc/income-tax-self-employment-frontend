@@ -25,6 +25,12 @@ import play.api.mvc.Call
 case object TurnoverIncomeAmountPage extends IncomeBasePage[BigDecimal] {
   override def toString: String = "turnoverIncomeAmount"
 
+  override def cyaPage(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
+    if (isTotalIncomeEqualOrAboveThreshold(userAnswers, businessId))
+      routes.IncomeExpensesWarningController.onPageLoad(taxYear, businessId)
+    else
+      super.cyaPage(taxYear, businessId)
+
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     routes.AnyOtherIncomeController.onPageLoad(taxYear, businessId, NormalMode)
 

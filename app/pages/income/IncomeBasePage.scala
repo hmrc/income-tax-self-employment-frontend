@@ -16,11 +16,14 @@
 
 package pages.income
 
+import config.TaxYearConfig.totalIncomeIsEqualOrAboveThreshold
 import controllers.journeys.income.routes
 import models.common.AccountingType.{Accrual, Cash}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import pages.OneQuestionPage
+import pages.expenses.tailoring.ExpensesCategoriesPage
 import play.api.mvc.Call
 
 trait IncomeBasePage[A] extends OneQuestionPage[A] {
@@ -32,4 +35,12 @@ trait IncomeBasePage[A] extends OneQuestionPage[A] {
       case Accrual => accrualRedirect
       case Cash    => cashRedirect
     }
+
+  def isTotalIncomeEqualOrAboveThreshold(userAnswers: UserAnswers, businessId: BusinessId): Boolean = {
+    val nonTurnoverAmount: BigDecimal = userAnswers.get(NonTurnoverIncomeAmountPage, businessId).getOrElse(BigDecimal(0))
+    val turnoverAmount: BigDecimal    = userAnswers.get(TurnoverIncomeAmountPage, businessId).getOrElse(BigDecimal(0))
+    val expensesCategories: Boolean   = userAnswers.get(ExpensesCategoriesPage, businessId).exists(_ != IndividualCategories)
+    val total                         = nonTurnoverAmount + turnoverAmount
+    totalIncomeIsEqualOrAboveThreshold(total) && expensesCategories
+  }
 }
