@@ -21,16 +21,14 @@ import play.api.libs.json.{Format, Json}
 import java.time.LocalDate
 
 case class NewStructureBuilding(qualifyingUse: Option[LocalDate] = None,
-                                newStructureBuildingQualifyingExpenditureAmount : Option[BigDecimal] = None,
+                                newStructureBuildingQualifyingExpenditureAmount: Option[BigDecimal] = None,
                                 newStructureBuildingLocation: Option[StructuresBuildingsLocation] = None,
-                                newStructureBuildingClaimingAmount: Option[BigDecimal] = None
-                               ) {
+                                newStructureBuildingClaimingAmount: Option[BigDecimal] = None) {
   def isComplete: Boolean =
     qualifyingUse.isDefined &&
       newStructureBuildingQualifyingExpenditureAmount.isDefined &&
       newStructureBuildingLocation.isDefined &&
       newStructureBuildingClaimingAmount.isDefined
-
 
   def isEmpty: Boolean = Seq(
     qualifyingUse,

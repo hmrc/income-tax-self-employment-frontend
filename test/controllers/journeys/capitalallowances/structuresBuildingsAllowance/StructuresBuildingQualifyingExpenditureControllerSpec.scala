@@ -75,9 +75,9 @@ class StructuresBuildingQualifyingExpenditureControllerSpec
       "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
       "newStructuresBuildings" -> List(Json.obj(
-        "qualifyingUse"                      -> Some("2022-03-02"),
-        "structuresBuildingsLocation"        -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA")),
-        "newStructureBuildingQualifyingExpenditureAmount" -> Some(amount)
+        "qualifyingUse"                                   -> Some("2022-03-02"),
+        "newStructureBuildingQualifyingExpenditureAmount" -> Some(amount),
+        "structuresBuildingsLocation"                     -> Some(StructuresBuildingsLocation(Some("name"), None, "AA11AA"))
       ))
     ))
 

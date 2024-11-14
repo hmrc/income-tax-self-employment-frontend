@@ -36,9 +36,10 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
       "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,
       "newStructuresBuildings" -> List(Json.obj(
-        "qualifyingUse"                      -> Some("2022-03-02"),
-        "newStructureBuildingLocation"       -> Some(StructuresBuildingsLocation(Some("name"), Some("number"), "GU84NB")),
-        "newStructureBuildingClaimingAmount" -> Some(BigDecimal(2000))
+        "qualifyingUse"                                   -> Some("2022-03-02"),
+        "newStructureBuildingQualifyingExpenditureAmount" -> Some(BigDecimal(1000)),
+        "newStructureBuildingLocation"                    -> Some(StructuresBuildingsLocation(Some("name"), Some("number"), "GU84NB")),
+        "newStructureBuildingClaimingAmount"              -> Some(BigDecimal(2000))
       )),
       "structuresBuildingsClaimed"               -> true,
       "structuresBuildingsPreviousClaimUse"      -> true,

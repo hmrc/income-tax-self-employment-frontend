@@ -29,7 +29,7 @@ object StructuresBuildingsQualifyingExpenditureSummary {
     buildRowBigDecimal(
       answer,
       routes.StructuresBuildingQualifyingExpenditureController.onPageLoad(taxYear, businessId, index, CheckMode),
-      messages(s"structuresBuildingQualifyingExpenditure.cya.$userType"),
-      "structuresBuildingQualifyingExpenditure.change.hidden"
+      messages(s"structuresBuildingsQualifyingExpenditure.cya.$userType"),
+      "structuresBuildingsQualifyingExpenditure.change.hidden"
     )
 }

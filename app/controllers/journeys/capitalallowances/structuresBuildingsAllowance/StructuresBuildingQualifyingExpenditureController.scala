@@ -32,14 +32,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StructuresBuildingQualifyingExpenditureController @Inject()(override val messagesApi: MessagesApi,
-                                                             identify: IdentifierAction,
-                                                             getData: DataRetrievalAction,
-                                                             requireData: DataRequiredAction,
-                                                             service: StructuresBuildingsService,
-                                                             formProvider: CurrencyFormProvider,
-                                                             val controllerComponents: MessagesControllerComponents,
-                                                             view: StructuresBuildingQualifyingExpenditureView)(implicit ec: ExecutionContext)
+class StructuresBuildingQualifyingExpenditureController @Inject() (override val messagesApi: MessagesApi,
+                                                                   identify: IdentifierAction,
+                                                                   getData: DataRetrievalAction,
+                                                                   requireData: DataRequiredAction,
+                                                                   service: StructuresBuildingsService,
+                                                                   formProvider: CurrencyFormProvider,
+                                                                   val controllerComponents: MessagesControllerComponents,
+                                                                   view: StructuresBuildingQualifyingExpenditureView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

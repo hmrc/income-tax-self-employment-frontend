@@ -25,7 +25,7 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
 object StructuresBuildingsQualifyingExpenditurePage extends StructuresBuildingsBasePage[BigDecimal] {
-  override def toString: String = "newStructureBuildingQualifyingExpenditureAmount"
+  override def toString: String = "structuresBuildingsQualifyingExpenditure"
 
   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
     structure.newStructureBuildingQualifyingExpenditureAmount.isDefined & StructuresBuildingsLocationPage.hasAllFurtherAnswers(structure)
