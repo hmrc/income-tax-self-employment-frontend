@@ -41,10 +41,11 @@ trait StructuresBuildingsBasePage[A] extends OneQuestionPage[A] {
                            index: Int): Form[B] = {
     val existingStructure: Option[NewStructureBuilding] = getStructureFromIndex(request.userAnswers, businessId, index)
     val existingValue: Option[B] = page match {
-      case StructuresBuildingsQualifyingUseDatePage => existingStructure.flatMap(_.qualifyingUse)
-      case StructuresBuildingsLocationPage          => existingStructure.flatMap(_.newStructureBuildingLocation)
-      case StructuresBuildingsNewClaimAmountPage    => existingStructure.flatMap(_.newStructureBuildingClaimingAmount)
-      case _                                        => None
+      case StructuresBuildingsQualifyingUseDatePage     => existingStructure.flatMap(_.qualifyingUse)
+      case StructuresBuildingsLocationPage              => existingStructure.flatMap(_.newStructureBuildingLocation)
+      case StructuresBuildingsNewClaimAmountPage        => existingStructure.flatMap(_.newStructureBuildingClaimingAmount)
+      case StructuresBuildingsQualifyingExpenditurePage => existingStructure.flatMap(_.newStructureBuildingQualifyingExpenditureAmount)
+      case _                                            => None
     }
     existingValue.fold(form)(form.fill)
   }

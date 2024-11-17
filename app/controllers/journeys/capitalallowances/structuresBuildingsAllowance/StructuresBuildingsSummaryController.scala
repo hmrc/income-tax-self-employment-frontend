@@ -28,6 +28,7 @@ import utils.Logging
 import viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance.{
   StructureBuildingLocationSummary,
   StructuresBuildingsNewClaimAmountSummary,
+  StructuresBuildingsQualifyingExpenditureSummary,
   StructuresBuildingsUseDateSummary
 }
 import viewmodels.journeys.SummaryListCYA
@@ -55,6 +56,8 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
             SummaryListCYA.summaryListOpt(
               List(
                 structure.qualifyingUse.map(StructuresBuildingsUseDateSummary.row(_, taxYear, businessId, index)),
+                structure.newStructureBuildingQualifyingExpenditureAmount.map(
+                  StructuresBuildingsQualifyingExpenditureSummary.row(_, taxYear, businessId, request.userType, index)),
                 structure.newStructureBuildingLocation.map(StructureBuildingLocationSummary.row(_, taxYear, businessId, index)),
                 structure.newStructureBuildingClaimingAmount.map(
                   StructuresBuildingsNewClaimAmountSummary.row(_, taxYear, businessId, request.userType, index))
