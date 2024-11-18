@@ -16,25 +16,17 @@
 
 package controllers.journeys.income
 
-import cats.data.EitherT
-import config.TaxYearConfig.totalIncomeIsEqualOrAboveThreshold
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.{handleResultT, journeys}
 import models.NormalMode
 import models.common.Journey.Income
 import models.common._
 import models.database.UserAnswers
-import models.domain.ApiResultT
-import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.income.IncomeJourneyAnswers
-import models.requests.DataRequest
-import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.income.{NonTurnoverIncomeAmountPage, TurnoverIncomeAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.income._
@@ -42,7 +34,7 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.journeys.income.IncomeCYAView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IncomeCYAController @Inject() (override val messagesApi: MessagesApi,
