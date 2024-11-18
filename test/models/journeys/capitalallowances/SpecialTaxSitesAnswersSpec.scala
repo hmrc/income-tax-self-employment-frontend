@@ -30,6 +30,7 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
     LocalDate.now().some,
     LocalDate.now().some,
     LocalDate.now().some,
+    BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )
@@ -38,6 +39,7 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
     LocalDate.now().some,
     None,
     LocalDate.now().some,
+    BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )
@@ -46,6 +48,7 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
     None,
     LocalDate.now().some,
     LocalDate.now().some,
+    BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )
@@ -54,6 +57,7 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
     LocalDate.now().some,
     LocalDate.now().some,
     None,
+    BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )
@@ -62,6 +66,7 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
     LocalDate.now().some,
     LocalDate.now().some,
     LocalDate.now().some,
+    BigDecimal(20000).some,
     None,
     BigDecimal(10000).some
   )
@@ -70,6 +75,7 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
     LocalDate.now().some,
     LocalDate.now().some,
     LocalDate.now().some,
+    BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     None
   )

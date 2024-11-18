@@ -1955,6 +1955,9 @@ qualifyingUseStartDate.error.required = Enter the date when the building first c
 qualifyingUseStartDate.error.tooLate = The date when the building first came into qualifying use must be in the past
 qualifyingUseStartDate.change.hidden = Change when the building was first brought into qualifying use
 
+qualifyingExpenditure.error.required.individual = Enter the total amount of qualifying expenditure on the new building or renovation
+qualifyingExpenditure.cya.individual = Enter the total amount of qualifying expenditure on the new building or renovation
+
 specialTaxSiteLocation.title = Where is the special tax site located?
 specialTaxSiteLocation.error.building.individual = Enter a building number or name for the special tax site
 specialTaxSiteLocation.error.building.agent = Enter a building number or name for your client’s special tax site
