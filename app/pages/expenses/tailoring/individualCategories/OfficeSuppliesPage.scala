@@ -19,10 +19,14 @@ package pages.expenses.tailoring.individualCategories
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.OfficeSupplies
-import pages.{OneQuestionPage, PageJourney}
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
+import pages.{OneQuestionPage, PageJourney, QuestionPage}
+import queries.Settable
 
 case object OfficeSuppliesPage extends OneQuestionPage[OfficeSupplies] {
   override def toString: String = "officeSupplies"
+  
+  override val dependentPagesWhenNo: List[Settable[_]] = List(OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).map { _ =>

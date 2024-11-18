@@ -78,7 +78,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       strBinder.bind(key, value).flatMap { stringValue =>
         Journey.withNameOption(stringValue) match {
           case Some(journeyName) => Right(journeyName)
-          case None              => Left(s"$stringValue Invalid journey name")
+          case None => Left(s"$stringValue Invalid journey name")
         }
       }
 
@@ -89,6 +89,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object TradeDetails extends Journey("trade-details") {
     override val pageKeys: List[PageName] = Nil
   }
+
   case object Abroad extends Journey("self-employment-abroad") {
     override val pageKeys: List[PageName] = List(
       SelfEmploymentAbroadPage.pageName
@@ -138,41 +139,53 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(
       ExpensesCategoriesPage.pageName
     )
+
     override def startUrl(taxYear: TaxYear, businessId: BusinessId): String =
       expenses.tailoring.routes.ExpensesCategoriesController.onPageLoad(taxYear, businessId, NormalMode).url
 
     override def startPage: QuestionPage[_] = ExpensesCategoriesPage
   }
+
   case object ExpensesGoodsToSellOrUse extends Journey("expenses-goods-to-sell-or-use") {
     override val pageKeys: List[PageName] = List(GoodsToSellOrUseAmountPage.pageName, DisallowableGoodsToSellOrUseAmountPage.pageName)
   }
+
   case object ExpensesAdvertisingOrMarketing extends Journey("expenses-advertising-marketing") {
     override val pageKeys: List[PageName] = List(AdvertisingOrMarketingAmountPage.pageName)
   }
+
   case object ExpensesOfficeSupplies extends Journey("expenses-office-supplies") {
     override val pageKeys: List[PageName] = List(OfficeSuppliesAmountPage.pageName, OfficeSuppliesDisallowableAmountPage.pageName)
   }
+
   case object ExpensesOtherExpenses extends Journey("expenses-other-expenses") {
     override val pageKeys: List[PageName] = List(OtherExpensesAmountPage.pageName, OtherExpensesDisallowableAmountPage.pageName)
   }
+
   case object ExpensesFinancialCharges extends Journey("expenses-financial-charges") {
     override val pageKeys: List[PageName] = List(FinancialChargesAmountPage.pageName, FinancialChargesDisallowableAmountPage.pageName)
   }
+
   case object ExpensesEntertainment extends Journey("expenses-entertainment") {
     override val pageKeys: List[PageName] = List(EntertainmentAmountPage.pageName)
   }
+
   case object ExpensesStaffCosts extends Journey("expenses-staff-costs") {
     override val pageKeys: List[PageName] = List(StaffCostsAmountPage.pageName, StaffCostsDisallowableAmountPage.pageName)
   }
+
   case object ExpensesConstruction extends Journey("expenses-construction") {
     override val pageKeys: List[PageName] = List(ConstructionIndustryAmountPage.pageName, ConstructionIndustryDisallowableAmountPage.pageName)
   }
+
   case object ExpensesProfessionalFees extends Journey("expenses-professional-fees") {
     override val pageKeys: List[PageName] = List(ProfessionalFeesAmountPage.pageName, ProfessionalFeesDisallowableAmountPage.pageName)
   }
+
   case object ExpensesInterest extends Journey("expenses-interest") {
     override val pageKeys: List[PageName] = List(InterestAmountPage.pageName, InterestDisallowableAmountPage.pageName)
   }
+
   case object ExpensesDepreciation extends Journey("expenses-depreciation") {
     override val pageKeys: List[PageName] = List(DepreciationDisallowableAmountPage.pageName)
   }
@@ -208,6 +221,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   sealed abstract class CapitalAllowanceBaseJourney(override val entryName: String) extends Journey(entryName) {
     override def toString: String = entryName
+
     val answerPages: List[Settable[_]]
     lazy val pageKeys: List[PageName] = answerPages.asInstanceOf[List[Page]].map(_.pageName)
   }
@@ -305,6 +319,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   sealed abstract class NationalInsuranceBaseJourney(override val entryName: String) extends Journey(entryName) {
     override def toString: String = entryName
   }
+
   case object NationalInsuranceContributions extends NationalInsuranceBaseJourney("national-insurance-contributions") {
     override val pageKeys: List[PageName] =
       List(Class2NICsPage, Class4NICsPage, Class4ExemptionReasonPage, Class4DivingExemptPage, Class4NonDivingExemptPage).map(_.pageName)
@@ -406,6 +421,13 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   )
 
   val allExpensesJourneyPages: List[Settable[_]] = expensesTailoringList.appended(ExpensesCategoriesPage)
+
+  //  val officeSuppliesExpensesList: List[Settable[_]] = List(
+  //    OfficeSuppliesAmountPage,
+  //    OfficeSuppliesDisallowableAmountPage
+  //  )
+  //
+  //  val officeSuppliesExpenseJourneyPages: List[Settable[_]] = officeSuppliesExpensesList.appended(OfficeSuppliesPage)
 
   val allCapitalAllowanceJourneys: List[Journey] = List(
     CapitalAllowancesTailoring,

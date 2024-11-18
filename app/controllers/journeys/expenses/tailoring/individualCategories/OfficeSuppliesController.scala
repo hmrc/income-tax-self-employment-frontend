@@ -17,15 +17,16 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.common.Journey
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import models.journeys.expenses.individualCategories.OfficeSupplies.enumerable
 import navigation.ExpensesTailoringNavigator
+import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,17 +38,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
-                                          selfEmploymentService: SelfEmploymentService,
-                                          navigator: ExpensesTailoringNavigator,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          hopChecker: HopCheckerAction,
-                                          formProvider: EnumerableFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: OfficeSuppliesView)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
+                                         selfEmploymentService: SelfEmploymentService,
+                                         navigator: ExpensesTailoringNavigator,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         hopChecker: HopCheckerAction,
+                                         formProvider: EnumerableFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: OfficeSuppliesView)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
     with I18nSupport {
   private val page = OfficeSuppliesPage
   private val form = (userType: UserType) => formProvider[OfficeSupplies](page, userType)
@@ -59,18 +60,29 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
       Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
       form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+            Future.successful(
+              BadRequest(
+                view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId))
+              )
+            ),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <- if (mode == CheckMode) {
+                selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
+                clearDependentPages(OfficeSuppliesPage, value, request.userAnswers, businessId)
+              } else {
+                Future.successful(request.userAnswers)
+              }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, OfficeSuppliesPage)
+            } yield Redirect(navigator.nextPage(OfficeSuppliesPage, mode, savedAnswers, taxYear, businessId))
         )
-  }
+    }
+
 
 }
