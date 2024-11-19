@@ -73,7 +73,8 @@ class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
             ),
           value =>
             for {
-              updatedAnswers <- if (mode == CheckMode) {
+              updatedAnswers <- if (mode == CheckMode && request.userAnswers.get(OfficeSuppliesPage, businessId).contains(OfficeSupplies.No)) {
+                println("====================================//////////////" + request.userAnswers.get(OfficeSuppliesPage, businessId))
                 selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
                 clearDependentPages(OfficeSuppliesPage, value, request.userAnswers, businessId)
               } else {
