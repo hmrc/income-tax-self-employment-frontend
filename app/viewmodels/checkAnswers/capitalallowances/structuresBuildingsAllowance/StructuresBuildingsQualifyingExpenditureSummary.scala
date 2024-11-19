@@ -18,18 +18,18 @@ package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
 object StructuresBuildingsQualifyingExpenditureSummary {
 
-  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Int)(implicit messages: Messages): SummaryListRow =
+  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
     buildRowBigDecimal(
       answer,
       routes.StructuresBuildingQualifyingExpenditureController.onPageLoad(taxYear, businessId, index, CheckMode),
-      messages(s"structuresBuildingsQualifyingExpenditure.cya.$userType"),
-      "structuresBuildingsQualifyingExpenditure.change.hidden"
+      messages(s"qualifyingExpenditure.common.title"),
+      "qualifyingExpenditure.common.change.hidden"
     )
 }

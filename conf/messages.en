@@ -1726,12 +1726,10 @@ structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building
 structuresBuildingsQualifyingUseDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction.
 structuresBuildingsQualifyingUseDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction.
 
-structuresBuildingsQualifyingExpenditure.title = What was the total qualifying expenditure on this building?
+qualifyingExpenditure.common.title = What was the total qualifying expenditure on this building?
+qualifyingExpenditure.common.change.hidden = Change the total qualifying expenditure on this building
 structuresBuildingsQualifyingExpenditure.error.required.individual = Enter the total qualifying expenditure on this building
 structuresBuildingsQualifyingExpenditure.error.required.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
-structuresBuildingsQualifyingExpenditure.cya.individual = Enter the total qualifying expenditure on this building
-structuresBuildingsQualifyingExpenditure.cya.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
-structuresBuildingsQualifyingExpenditure.change.hidden = Change the total qualifying expenditure on this building
 
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
@@ -1956,7 +1954,7 @@ qualifyingUseStartDate.error.tooLate = The date when the building first came int
 qualifyingUseStartDate.change.hidden = Change when the building was first brought into qualifying use
 
 qualifyingExpenditure.error.required.individual = Enter the total amount of qualifying expenditure on the new building or renovation
-qualifyingExpenditure.cya.individual = Enter the total amount of qualifying expenditure on the new building or renovation
+qualifyingExpenditure.error.required.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
 
 specialTaxSiteLocation.title = Where is the special tax site located?
 specialTaxSiteLocation.error.building.individual = Enter a building number or name for the special tax site

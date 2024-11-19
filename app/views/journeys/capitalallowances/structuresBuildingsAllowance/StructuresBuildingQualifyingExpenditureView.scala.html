@@ -31,7 +31,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("structuresBuildingsQualifyingExpenditure.title"))) {
+@layout(pageTitle = title(form, messages("qualifyingExpenditure.common.title"))) {
 
     @errorSummarySection(form)
 
@@ -40,7 +40,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"structuresBuildingsQualifyingExpenditure.title"))
+                label = LabelViewModel(messages(s"qualifyingExpenditure.common.title"))
                 .asPageHeading(LabelSize.Large)
             )
             .asNumeric()

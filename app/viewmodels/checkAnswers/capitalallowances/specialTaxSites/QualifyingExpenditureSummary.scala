@@ -18,18 +18,18 @@ package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
 import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
 object QualifyingExpenditureSummary {
 
-  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Int)(implicit messages: Messages): SummaryListRow =
+  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
     buildRowBigDecimal(
       answer,
       routes.QualifyingExpenditureController.onPageLoad(taxYear, businessId, index, CheckMode),
-      messages(s"qualifyingExpenditure.cya.$userType"),
-      "qualifyingExpenditure.change.hidden"
+      messages("qualifyingExpenditure.common.title"),
+      "qualifyingExpenditure.common.change.hidden"
     )
 }

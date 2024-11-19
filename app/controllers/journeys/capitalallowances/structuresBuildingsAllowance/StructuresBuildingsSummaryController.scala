@@ -57,7 +57,7 @@ class StructuresBuildingsSummaryController @Inject() (override val messagesApi: 
               List(
                 structure.qualifyingUse.map(StructuresBuildingsUseDateSummary.row(_, taxYear, businessId, index)),
                 structure.newStructureBuildingQualifyingExpenditureAmount.map(
-                  StructuresBuildingsQualifyingExpenditureSummary.row(_, taxYear, businessId, request.userType, index)),
+                  StructuresBuildingsQualifyingExpenditureSummary.row(_, taxYear, businessId, index)),
                 structure.newStructureBuildingLocation.map(StructureBuildingLocationSummary.row(_, taxYear, businessId, index)),
                 structure.newStructureBuildingClaimingAmount.map(
                   StructuresBuildingsNewClaimAmountSummary.row(_, taxYear, businessId, request.userType, index))

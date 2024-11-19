@@ -144,7 +144,8 @@ class MessagesSpec extends SpecBase {
     "profitOrLoss.capitalAllowances",
     "class4NICs.l4.individual",
     "unusedLossAmount.title.individual",
-    "unusedLossAmount.error.required.individual"
+    "unusedLossAmount.error.required.individual",
+    "qualifyingExpenditure.error.required.agent"
   )
 
   private val exclusionKeySubstrings: Set[String] = Set(
