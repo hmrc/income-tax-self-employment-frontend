@@ -48,8 +48,7 @@ import play.api.mvc.{Call, Request}
 import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import views.html.journeys.capitalallowances.specialTaxSites.QualifyingExpenditureView
 
-class QualifyingExpenditureControllerSpec
-    extends BigDecimalGetAndPostQuestionBaseSpec("QualifyingExpenditureController", QualifyingExpenditurePage) {
+class QualifyingExpenditureControllerSpec extends BigDecimalGetAndPostQuestionBaseSpec("QualifyingExpenditureController", QualifyingExpenditurePage) {
 
   override def onPageLoadRoute: String = routes.QualifyingExpenditureController.onPageLoad(taxYear, businessId, 0, NormalMode).url
 
@@ -59,15 +58,15 @@ class QualifyingExpenditureControllerSpec
 
   override def createForm(userType: UserType): Form[BigDecimal] = form(page, userType)
 
-
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
       "specialTaxSites" -> true,
-      "newSpecialTaxSites" -> List(Json.obj(
-        "contractForBuildingConstruction" -> Some(false),
-        "constructionStartDate"           -> Some("2022-03-02"),
-        "qualifyingUseStartDate"          -> Some("2022-03-02")
-      ))
+      "newSpecialTaxSites" -> List(
+        Json.obj(
+          "contractForBuildingConstruction" -> Some(false),
+          "constructionStartDate"           -> Some("2022-03-02"),
+          "qualifyingUseStartDate"          -> Some("2022-03-02")
+        ))
     ))
 
   override def pageAnswers: UserAnswers = buildUserAnswers(
@@ -82,9 +81,9 @@ class QualifyingExpenditureControllerSpec
     ))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-                                                                   request: Request[_],
-                                                                   messages: Messages,
-                                                                   application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[QualifyingExpenditureView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, 0).toString()
   }
