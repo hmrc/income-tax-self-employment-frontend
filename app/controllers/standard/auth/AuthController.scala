@@ -18,6 +18,7 @@ package controllers.standard.auth
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
+import models.common.TaxYear
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -43,11 +44,11 @@ class AuthController @Inject() (
       }
   }
 
-  def signOutNoSurvey(): Action[AnyContent] = identify.async { implicit request =>
+  def signOutNoSurvey(taxYear: TaxYear): Action[AnyContent] = identify.async { implicit request =>
     sessionRepository
       .clear(request.userId)
       .map { _ =>
-        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url)))
+        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad(taxYear).url)))
       }
   }
 }

@@ -13,8 +13,8 @@ GET         /refresh-session                                                    
 GET         /there-is-a-problem                                                     controllers.standard.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
 GET         /account/sign-out-survey                                                controllers.standard.auth.AuthController.signOut
-GET         /account/sign-out                                                       controllers.standard.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                                                     controllers.standard.auth.SignedOutController.onPageLoad
+GET         /account/sign-out                                                       controllers.standard.auth.AuthController.signOutNoSurvey(taxYear: TaxYear)
+GET         /account/signed-out                                                     controllers.standard.auth.SignedOutController.onPageLoad(taxYear: TaxYear)
 
 GET         /error/you-need-client-authorisation                                    controllers.authorisationErrors.AgentAuthErrorController.onPageLoad
 GET         /error/you-need-to-sign-up                                              controllers.authorisationErrors.IndividualAuthErrorController.onPageLoad
