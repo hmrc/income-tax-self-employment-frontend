@@ -22,7 +22,7 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
 object StructuresBuildingsNewClaimAmountPage extends StructuresBuildingsBasePage[BigDecimal] {
-  override def toString: String = "newStructureBuildingClaimingAmount"
+  override def toString: String = "structuresBuildingsNewClaimAmount"
 
   def nextPage(businessId: BusinessId, taxYear: TaxYear): Result = Redirect(
     routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId))
