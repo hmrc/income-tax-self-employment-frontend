@@ -71,10 +71,9 @@ class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
                 view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId))
               )
             ),
-          value =>
+          value => {
             for {
-              updatedAnswers <- if (mode == CheckMode && request.userAnswers.get(OfficeSuppliesPage, businessId).contains(OfficeSupplies.No)) {
-                println("====================================//////////////" + request.userAnswers.get(OfficeSuppliesPage, businessId))
+              updatedAnswers <- if (mode == CheckMode && value == OfficeSupplies.No) {
                 selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
                 clearDependentPages(OfficeSuppliesPage, value, request.userAnswers, businessId)
               } else {
@@ -82,6 +81,7 @@ class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
               }
               savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, OfficeSuppliesPage)
             } yield Redirect(navigator.nextPage(OfficeSuppliesPage, mode, savedAnswers, taxYear, businessId))
+          }
         )
     }
 
