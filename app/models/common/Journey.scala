@@ -422,13 +422,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
 
   val allExpensesJourneyPages: List[Settable[_]] = expensesTailoringList.appended(ExpensesCategoriesPage)
 
-  //  val officeSuppliesExpensesList: List[Settable[_]] = List(
-  //    OfficeSuppliesAmountPage,
-  //    OfficeSuppliesDisallowableAmountPage
-  //  )
-  //
-  //  val officeSuppliesExpenseJourneyPages: List[Settable[_]] = officeSuppliesExpensesList.appended(OfficeSuppliesPage)
-
   val allCapitalAllowanceJourneys: List[Journey] = List(
     CapitalAllowancesTailoring,
     CapitalAllowancesZeroEmissionCars,
