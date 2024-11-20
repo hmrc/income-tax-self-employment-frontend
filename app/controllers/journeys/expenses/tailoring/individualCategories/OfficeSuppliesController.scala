@@ -20,13 +20,11 @@ import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
-import models.{CheckMode, Mode}
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import models.journeys.expenses.individualCategories.OfficeSupplies.enumerable
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
-import pages.expenses.officeSupplies.{OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage}
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -84,6 +82,4 @@ class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
           }
         )
     }
-
-
 }

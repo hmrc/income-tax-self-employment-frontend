@@ -43,25 +43,26 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 case class SelfEmploymentServiceStub(
-    getBusinessesResult: Either[ServiceError, Seq[BusinessData]] = Right(Seq(aBusinessData)),
-    getBusinessResult: Either[ServiceError, BusinessData] = Right(aBusinessData),
-    accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Accrual),
-    saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
-    submitAnswersResult: Either[ServiceError, Unit] = Right(()),
-    getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
-    getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
-    setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
-    getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL"))),
-    getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
-    submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
-    getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
-    getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
-    getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
-    getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
-    getNetBusinessProfitOrLossValuesResult: Either[ServiceError, NetBusinessProfitOrLossValues] = Right(aNetBusinessProfitValues),
-    clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()),
-    clearExpensesAndCapitalAllowancesResult: Either[ServiceError, Unit] = Right(()))
-    extends SelfEmploymentService {
+                                      getBusinessesResult: Either[ServiceError, Seq[BusinessData]] = Right(Seq(aBusinessData)),
+                                      getBusinessResult: Either[ServiceError, BusinessData] = Right(aBusinessData),
+                                      accountingType: Either[ServiceError, AccountingType] = Right(AccountingType.Accrual),
+                                      saveAnswerResult: UserAnswers = UserAnswers("userId", JsObject.empty),
+                                      submitAnswersResult: Either[ServiceError, Unit] = Right(()),
+                                      getTaskList: Either[ServiceError, TaskListWithRequest] = Right(TaskListWithRequest(TaskList.empty, fakeOptionalRequest)),
+                                      getJourneyStatusResult: Either[ServiceError, JourneyStatus] = Right(JourneyStatus.InProgress),
+                                      setJourneyStatusResult: Either[ServiceError, Unit] = Right(()),
+                                      getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL"))),
+                                      getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
+                                      submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
+                                      getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
+                                      getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
+                                      getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
+                                      getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
+                                      getNetBusinessProfitOrLossValuesResult: Either[ServiceError, NetBusinessProfitOrLossValues] = Right(aNetBusinessProfitValues),
+                                      clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()),
+                                      clearExpensesAndCapitalAllowancesResult: Either[ServiceError, Unit] = Right(()),
+                                      clearOfficeSuppliesExpensesResult: Either[ServiceError, Unit] = Right(()))
+  extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
     EitherT.fromEither[Future](getBusinessesResult)
@@ -107,42 +108,49 @@ case class SelfEmploymentServiceStub(
                                           taxYear: TaxYear,
                                           mode: Mode): Future[Result] =
     Future(submitAnswerAndRedirectResult)
+
   def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
-      request: DataRequest[_],
-      defaultFormBinding: FormBinding): Future[Result] =
+                                                                                                       request: DataRequest[_],
+                                                                                                       defaultFormBinding: FormBinding): Future[Result] =
     Future(submitAnswerAndRedirectResult)
+
   def defaultHandleForm[A](
-      form: Form[A],
-      page: OneQuestionPage[A],
-      businessId: BusinessId,
-      taxYear: TaxYear,
-      mode: Mode,
-      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
+                            form: Form[A],
+                            page: OneQuestionPage[A],
+                            businessId: BusinessId,
+                            taxYear: TaxYear,
+                            mode: Mode,
+                            handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
     Future(submitAnswerAndRedirectResult)
 
   def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate] =
     EitherT.fromEither[Future](getUserDateOfBirthResult)
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
+                                                                                           hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
     EitherT.fromEither[Future](getAllBusinessesTaxableProfitAndLossResult)
 
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
+                                                                                                              hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     EitherT.fromEither[Future](getBusinessIncomeSourcesSummaryResult)
 
   def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     EitherT.fromEither[Future](getTotalIncomeResult)
 
   def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
+                                                                                                               hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
     EitherT.fromEither[Future](getNetBusinessProfitOrLossValuesResult)
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearSimplifiedExpensesDataResult)
 
   def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
+                                                                                                                request: DataRequest[_],
+                                                                                                                hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearExpensesAndCapitalAllowancesResult)
+
+  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+                                                                                                              request: DataRequest[_],
+                                                                                                              hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](clearOfficeSuppliesExpensesResult)
 }

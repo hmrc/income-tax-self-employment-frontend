@@ -282,9 +282,7 @@ class SelfEmploymentServiceImpl @Inject()(
                                                                                                               request: DataRequest[_],
                                                                                                               hc: HeaderCarrier): ApiResultT[Unit] = {
     connector.clearOfficeSuppliesExpenses(taxYear, nino, businessId, mtditid)
-
   }
-
 }
 
 object SelfEmploymentService {
