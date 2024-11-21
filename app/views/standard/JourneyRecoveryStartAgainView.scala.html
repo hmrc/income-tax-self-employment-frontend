@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+@import models.common.TaxYear
+
 @this(
     layout: templates.Layout,
     govukButton: GovukButton
 )
 
-@(errorMessage: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(errorMessage: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
 
@@ -30,7 +33,7 @@
     <p class="govuk-body">
         @govukButton(
             ButtonViewModel(messages("site.startAgain"))
-                .asLink(controllers.standard.routes.IndexController.onPageLoad.url)
+                .asLink(appConfig.incomeTaxSubmissionStartUrl(TaxYear.dateNow.getYear))
         )
     </p>
 }

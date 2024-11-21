@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package controllers.standard.auth
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
-import models.common.TaxYear
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,11 +43,11 @@ class AuthController @Inject() (
       }
   }
 
-  def signOutNoSurvey(taxYear: TaxYear): Action[AnyContent] = identify.async { implicit request =>
+  def signOutNoSurvey: Action[AnyContent] = identify.async { implicit request =>
     sessionRepository
       .clear(request.userId)
       .map { _ =>
-        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad(taxYear).url)))
+        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url)))
       }
   }
 }

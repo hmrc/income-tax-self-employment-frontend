@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 package controllers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.standard.routes
+import play.api.Application
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
@@ -25,7 +27,7 @@ import views.html.standard.{JourneyRecoveryContinueView, JourneyRecoveryStartAga
 
 class JourneyRecoveryControllerSpec extends SpecBase {
 
-  val errorDescription = "journeyRecovery.noErrorDescription"
+  val errorDescription                              = "journeyRecovery.noErrorDescription"
 
   "JourneyRecovery Controller" - {
 
@@ -53,7 +55,8 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
       "must return OK and the start again view" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application                  = applicationBuilder(userAnswers = None).build()
+        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
 
         running(application) {
           val continueUrl = RedirectUrl("https://foo.com")
@@ -64,7 +67,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          contentAsString(result) mustEqual startAgainView()(request, messages(application), appConfig).toString
         }
       }
     }
@@ -73,7 +76,8 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
       "must return OK and the start again view" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val application                  = applicationBuilder(userAnswers = None).build()
+        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
 
         running(application) {
           val request = FakeRequest(GET, routes.JourneyRecoveryController.onPageLoad().url)
@@ -83,7 +87,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          contentAsString(result) mustEqual startAgainView()(request, messages(application), appConfig).toString
         }
       }
     }

@@ -17,7 +17,6 @@
 package controllers.standard.auth
 
 import config.FrontendAppConfig
-import models.common.TaxYear
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -32,7 +31,7 @@ class SignedOutController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = Action { implicit request =>
-    Ok(view(taxYear))
+  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+    Ok(view())
   }
 }

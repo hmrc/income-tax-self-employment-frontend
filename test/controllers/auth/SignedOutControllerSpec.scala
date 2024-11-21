@@ -33,14 +33,14 @@ class SignedOutControllerSpec extends SpecBase {
       val appConfig   = application.injector.instanceOf[FrontendAppConfig]
 
       running(application) {
-        val request = FakeRequest(GET, routes.SignedOutController.onPageLoad(taxYear).url)
+        val request = FakeRequest(GET, routes.SignedOutController.onPageLoad.url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SignedOutView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(taxYear)(request, messages(application), appConfig).toString
+        contentAsString(result) mustEqual view()(request, messages(application), appConfig).toString
       }
     }
   }
