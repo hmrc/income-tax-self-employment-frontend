@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.standard
 
 import base.SpecBase
 import config.FrontendAppConfig
-import controllers.standard.routes
-import play.api.Application
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
