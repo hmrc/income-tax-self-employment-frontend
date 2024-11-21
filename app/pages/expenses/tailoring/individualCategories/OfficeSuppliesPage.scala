@@ -25,7 +25,7 @@ import queries.Settable
 
 case object OfficeSuppliesPage extends OneQuestionPage[OfficeSupplies] {
   override def toString: String = "officeSupplies"
-  
+
   override val dependentPagesWhenNo: List[Settable[_]] = List(OfficeSuppliesAmountPage, OfficeSuppliesDisallowableAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =

@@ -83,47 +83,47 @@ trait SelfEmploymentService {
                                           mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result]
 
   def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
-                                                                                                       request: DataRequest[_],
-                                                                                                       defaultFormBinding: FormBinding): Future[Result]
+      request: DataRequest[_],
+      defaultFormBinding: FormBinding): Future[Result]
 
   def defaultHandleForm[A](
-                            form: Form[A],
-                            page: OneQuestionPage[A],
-                            businessId: BusinessId,
-                            taxYear: TaxYear,
-                            mode: Mode,
-                            handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
+      form: Form[A],
+      page: OneQuestionPage[A],
+      businessId: BusinessId,
+      taxYear: TaxYear,
+      mode: Mode,
+      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
 
   def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate]
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
-                                                                                           hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
+      hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
 
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                              hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
+      hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary]
 
   def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                               hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues]
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues]
 
   def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal]
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 
   def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                                request: DataRequest[_],
-                                                                                                                hc: HeaderCarrier): ApiResultT[Unit]
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit]
 
   def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                              request: DataRequest[_],
-                                                                                                              hc: HeaderCarrier): ApiResultT[Unit]
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit]
 }
 
-class SelfEmploymentServiceImpl @Inject()(
-                                           connector: SelfEmploymentConnector,
-                                           sessionRepository: SessionRepositoryBase,
-                                           auditService: AuditService
-                                         )(implicit ec: ExecutionContext)
-  extends SelfEmploymentService
+class SelfEmploymentServiceImpl @Inject() (
+    connector: SelfEmploymentConnector,
+    sessionRepository: SessionRepositoryBase,
+    auditService: AuditService
+)(implicit ec: ExecutionContext)
+    extends SelfEmploymentService
     with Logging {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -148,7 +148,7 @@ class SelfEmploymentServiceImpl @Inject()(
                                              page: QuestionPage[SubsetOfAnswers]): Future[UserAnswers] =
     for {
       updatedAnswers <- Future.fromTry(userAnswers.set[SubsetOfAnswers](page, value, Some(businessId)))
-      _ <- sessionRepository.set(updatedAnswers)
+      _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
 
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext,
@@ -163,10 +163,10 @@ class SelfEmploymentServiceImpl @Inject()(
   }
 
   private def sendAuditEvents(context: JourneyContext, answersJson: JsObject, resultT: ApiResultT[Unit])(implicit
-                                                                                                         hc: HeaderCarrier): ApiResultT[Unit] = {
+      hc: HeaderCarrier): ApiResultT[Unit] = {
     resultT.value.onComplete {
       case Success(Right(_)) => auditService.unsafeSendExplicitCYAAuditEvent(context, answersJson, wasSuccessful = true)
-      case _ => auditService.unsafeSendExplicitCYAAuditEvent(context, answersJson, wasSuccessful = false)
+      case _                 => auditService.unsafeSendExplicitCYAAuditEvent(context, answersJson, wasSuccessful = false)
     }
 
     resultT
@@ -190,7 +190,7 @@ class SelfEmploymentServiceImpl @Inject()(
                                                        userAnswers: UserAnswers,
                                                        newAnswer: A)(implicit reads: Reads[A], writes: Writes[A]): Future[UserAnswers] =
     for {
-      editedUserAnswers <- clearDependentPages(pageUpdated, newAnswer, userAnswers, businessId)
+      editedUserAnswers  <- clearDependentPages(pageUpdated, newAnswer, userAnswers, businessId)
       updatedUserAnswers <- persistAnswer(businessId, editedUserAnswers, newAnswer, pageUpdated)
     } yield updatedUserAnswers
 
@@ -217,8 +217,8 @@ class SelfEmploymentServiceImpl @Inject()(
       }
 
   def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
-                                                                                                       request: DataRequest[_],
-                                                                                                       defaultFormBinding: FormBinding): Future[Result] =
+      request: DataRequest[_],
+      defaultFormBinding: FormBinding): Future[Result] =
     form
       .bindFromRequest()
       .fold(
@@ -227,12 +227,12 @@ class SelfEmploymentServiceImpl @Inject()(
       )
 
   def defaultHandleForm[A](
-                            form: Form[A],
-                            page: OneQuestionPage[A],
-                            businessId: BusinessId,
-                            taxYear: TaxYear,
-                            mode: Mode,
-                            handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] = {
+      form: Form[A],
+      page: OneQuestionPage[A],
+      businessId: BusinessId,
+      taxYear: TaxYear,
+      mode: Mode,
+      handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] = {
     def defaultHandleSuccess(answer: A)(implicit writes: Writes[A]): Future[Result] =
       persistAnswerAndRedirect(page, businessId, request, answer, taxYear, mode)
 
@@ -243,21 +243,21 @@ class SelfEmploymentServiceImpl @Inject()(
     connector.getUserDateOfBirth(nino, mtditid)
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
-                                                                                           hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
+      hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
     connector.getAllBusinessIncomeSourcesSummaries(taxYear, nino, mtditid).map(_.map(TaxableProfitAndLoss.fromBusinessIncomeSourcesSummary))
 
   def getBusinessIncomeSourcesSummary(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                              hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
+      hc: HeaderCarrier): ApiResultT[BusinessIncomeSourcesSummary] =
     connector.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid)
 
   def getNetBusinessProfitOrLossValues(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                               hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
+      hc: HeaderCarrier): ApiResultT[NetBusinessProfitOrLossValues] =
     connector.getNetBusinessProfitOrLossValues(taxYear, nino, businessId, mtditid)
 
   def getTotalIncome(ctx: JourneyContextWithNino)(implicit hc: HeaderCarrier): ApiResultT[BigDecimal] =
     connector.getSubmittedAnswers[IncomeJourneyAnswers](ctx).subflatMap {
       case Some(incomeAnswers) => Right(incomeAnswers.totalIncome)
-      case None => Left(IncomeAnswersNotSubmittedError)
+      case None                => Left(IncomeAnswersNotSubmittedError)
     }
 
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
@@ -267,29 +267,28 @@ class SelfEmploymentServiceImpl @Inject()(
     } yield ()
 
   def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                                request: DataRequest[_],
-                                                                                                                hc: HeaderCarrier): ApiResultT[Unit] = {
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] = {
     val pagesToClear = allExpensesJourneyPages ++ allCapitalAllowanceJourneyPages
     val resultT = for {
       updateUserAnswers <- Future.fromTry(clearDataFromUserAnswers(request.userAnswers, pagesToClear, Some(businessId)))
-      _ <- sessionRepository.set(updateUserAnswers)
-      result <- connector.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value
+      _                 <- sessionRepository.set(updateUserAnswers)
+      result            <- connector.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value
     } yield result
     EitherT(resultT)
   }
 
   def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-                                                                                                              request: DataRequest[_],
-                                                                                                              hc: HeaderCarrier): ApiResultT[Unit] = {
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
     connector.clearOfficeSuppliesExpenses(taxYear, nino, businessId, mtditid)
-  }
 }
 
 object SelfEmploymentService {
 
   def clearDataFromUserAnswers(userAnswers: UserAnswers, pages: List[Settable[_]], businessId: Option[BusinessId]): Try[UserAnswers] = {
     @tailrec
-    def removePageData(userAnswers: UserAnswers, pages: List[Settable[_]]): Try[UserAnswers] = {
+    def removePageData(userAnswers: UserAnswers, pages: List[Settable[_]]): Try[UserAnswers] =
       pages match {
         case Nil =>
           Try(userAnswers)
@@ -301,7 +300,6 @@ object SelfEmploymentService {
               Failure(exception)
           }
       }
-    }
 
     removePageData(userAnswers, pages)
   }

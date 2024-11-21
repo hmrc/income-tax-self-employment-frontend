@@ -36,17 +36,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
-                                         selfEmploymentService: SelfEmploymentService,
-                                         navigator: ExpensesTailoringNavigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         hopChecker: HopCheckerAction,
-                                         formProvider: EnumerableFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: OfficeSuppliesView)(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
+                                          selfEmploymentService: SelfEmploymentService,
+                                          navigator: ExpensesTailoringNavigator,
+                                          identify: IdentifierAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          hopChecker: HopCheckerAction,
+                                          formProvider: EnumerableFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          view: OfficeSuppliesView)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
   private val page = OfficeSuppliesPage
   private val form = (userType: UserType) => formProvider[OfficeSupplies](page, userType)
@@ -69,17 +69,17 @@ class OfficeSuppliesController @Inject()(override val messagesApi: MessagesApi,
                 view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId))
               )
             ),
-          value => {
+          value =>
             for {
-              updatedAnswers <- if (mode == CheckMode && !request.userAnswers.get(OfficeSuppliesPage, businessId).contains(value)) {
-                selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
-                clearDependentPages(OfficeSuppliesPage, value, request.userAnswers, businessId)
-              } else {
-                Future.successful(request.userAnswers)
-              }
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(OfficeSuppliesPage, businessId).contains(value)) {
+                  selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
+                  clearDependentPages(OfficeSuppliesPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
               savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, OfficeSuppliesPage)
             } yield Redirect(navigator.nextPage(OfficeSuppliesPage, mode, savedAnswers, taxYear, businessId))
-          }
         )
     }
 }

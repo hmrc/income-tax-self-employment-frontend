@@ -78,7 +78,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       strBinder.bind(key, value).flatMap { stringValue =>
         Journey.withNameOption(stringValue) match {
           case Some(journeyName) => Right(journeyName)
-          case None => Left(s"$stringValue Invalid journey name")
+          case None              => Left(s"$stringValue Invalid journey name")
         }
       }
 
