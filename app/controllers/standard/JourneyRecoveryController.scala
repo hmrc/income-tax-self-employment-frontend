@@ -33,7 +33,8 @@ class JourneyRecoveryController @Inject() (
     identify: IdentifierAction,
     continueView: JourneyRecoveryContinueView,
     startAgainView: JourneyRecoveryStartAgainView
-)(implicit val appConfig: FrontendAppConfig) extends FrontendBaseController
+)(implicit val appConfig: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 

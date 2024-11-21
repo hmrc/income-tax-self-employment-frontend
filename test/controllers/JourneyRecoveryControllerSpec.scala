@@ -27,7 +27,7 @@ import views.html.standard.{JourneyRecoveryContinueView, JourneyRecoveryStartAga
 
 class JourneyRecoveryControllerSpec extends SpecBase {
 
-  val errorDescription                              = "journeyRecovery.noErrorDescription"
+  val errorDescription = "journeyRecovery.noErrorDescription"
 
   "JourneyRecovery Controller" - {
 
