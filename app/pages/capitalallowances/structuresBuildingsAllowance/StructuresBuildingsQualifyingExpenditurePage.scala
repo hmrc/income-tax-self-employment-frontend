@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,20 @@ import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructu
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
-import java.time.LocalDate
-
-object StructuresBuildingsQualifyingUseDatePage extends StructuresBuildingsBasePage[LocalDate] {
-  override def toString: String = "structuresBuildingsQualifyingUseDate"
+object StructuresBuildingsQualifyingExpenditurePage extends StructuresBuildingsBasePage[BigDecimal] {
+  override def toString: String = "structuresBuildingsQualifyingExpenditure"
 
   def hasAllFurtherAnswers(structure: NewStructureBuilding): Boolean =
-    structure.qualifyingUse.isDefined & StructuresBuildingsQualifyingExpenditurePage.hasAllFurtherAnswers(structure)
+    structure.newStructureBuildingQualifyingExpenditureAmount.isDefined & StructuresBuildingsLocationPage.hasAllFurtherAnswers(structure)
 
   override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
     getStructureFromIndex(userAnswers, businessId, index) match {
-      case None => redirectToRecoveryPage(s"Structure of index $index not found when redirecting from StructuresBuildingsQualifyingUseDatePage")
+      case None => redirectToRecoveryPage(s"Structure of index $index not found when redirecting from StructuresBuildingsQualifyingExpenditurePage")
       case Some(structure) =>
         Redirect(
           if (hasAllFurtherAnswers(structure))
             routes.StructuresBuildingsSummaryController.onPageLoad(taxYear, businessId, index)
-          else routes.StructuresBuildingQualifyingExpenditureController.onPageLoad(taxYear, businessId, index, NormalMode)
+          else routes.StructuresBuildingsLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
         )
     }
 }

@@ -1726,6 +1726,13 @@ structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building
 structuresBuildingsQualifyingUseDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction.
 structuresBuildingsQualifyingUseDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction.
 
+structuresBuildingsQualifyingExpenditure.title = What was the total qualifying expenditure on this building?
+structuresBuildingsQualifyingExpenditure.error.required.individual = Enter the total qualifying expenditure on this building
+structuresBuildingsQualifyingExpenditure.error.required.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
+structuresBuildingsQualifyingExpenditure.cya.individual = Enter the total qualifying expenditure on this building
+structuresBuildingsQualifyingExpenditure.cya.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
+structuresBuildingsQualifyingExpenditure.change.hidden = Change the total qualifying expenditure on this building
+
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
 structuresBuildingsLocation.error.postcode.agent = Enter a postcode for the structure or building

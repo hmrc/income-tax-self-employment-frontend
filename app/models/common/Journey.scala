@@ -275,6 +275,7 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
       StructuresBuildingsNewStructuresPage,
       StructuresBuildingsPreviousClaimUsePage,
       StructuresBuildingsPreviousClaimedAmountPage,
+      StructuresBuildingsQualifyingExpenditurePage,
       StructuresBuildingsQualifyingUseDatePage,
       StructuresBuildingsRemovePage
     )
