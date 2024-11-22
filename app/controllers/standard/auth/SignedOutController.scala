@@ -16,6 +16,7 @@
 
 package controllers.standard.auth
 
+import config.FrontendAppConfig
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -26,7 +27,8 @@ import javax.inject.Inject
 class SignedOutController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: SignedOutView
-) extends FrontendBaseController
+)(implicit val appConfig: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
