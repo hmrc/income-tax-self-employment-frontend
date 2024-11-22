@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
+@import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
 @import viewmodels.LabelSize
@@ -35,7 +35,7 @@
 
     @errorSummarySection(form)
 
-    @formHelper(action = routes.StructuresBuildingQualifyingExpenditureController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QualifyingExpenditureController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(

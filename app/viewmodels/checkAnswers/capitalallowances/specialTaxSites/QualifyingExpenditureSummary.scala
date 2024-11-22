@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
+package viewmodels.checkAnswers.capitalallowances.specialTaxSites
 
-import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
+import controllers.journeys.capitalallowances.specialTaxSites.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBigDecimal
 
-object StructuresBuildingsQualifyingExpenditureSummary {
+object QualifyingExpenditureSummary {
 
   def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
     buildRowBigDecimal(
       answer,
-      routes.StructuresBuildingQualifyingExpenditureController.onPageLoad(taxYear, businessId, index, CheckMode),
-      messages(s"qualifyingExpenditure.common.title"),
+      routes.QualifyingExpenditureController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages("qualifyingExpenditure.common.title"),
       "qualifyingExpenditure.common.change.hidden"
     )
 }

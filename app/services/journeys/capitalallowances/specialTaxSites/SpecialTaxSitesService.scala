@@ -80,6 +80,7 @@ class SpecialTaxSitesService @Inject() (sessionRepository: SessionRepositoryBase
         case (ContractStartDatePage, answer: LocalDate)                   => site.copy(contractStartDate = answer.some)
         case (ConstructionStartDatePage, answer: LocalDate)               => site.copy(constructionStartDate = answer.some)
         case (QualifyingUseStartDatePage, answer: LocalDate)              => site.copy(qualifyingUseStartDate = answer.some)
+        case (QualifyingExpenditurePage, answer: BigDecimal)              => site.copy(qualifyingExpenditure = answer.some)
         case (SpecialTaxSiteLocationPage, answer: SpecialTaxSiteLocation) => site.copy(specialTaxSiteLocation = answer.some)
         case (NewSiteClaimingAmountPage, answer: BigDecimal)              => site.copy(newSiteClaimingAmount = answer.some)
         case _                                                            => newSite

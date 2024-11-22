@@ -39,7 +39,7 @@ class QualifyingUseStartDateControllerSpec
   override def validDate: LocalDate    = LocalDate.of(2020, 2, 2)
   override def onPageLoadRoute: String = routes.QualifyingUseStartDateController.onPageLoad(taxYear, businessId, 0, NormalMode).url
   override def onSubmitRoute: String   = routes.QualifyingUseStartDateController.onSubmit(taxYear, businessId, 0, NormalMode).url
-  override def onwardRoute: Call       = routes.SpecialTaxSiteLocationController.onPageLoad(taxYear, businessId, 0, NormalMode)
+  override def onwardRoute: Call       = routes.QualifyingExpenditureController.onPageLoad(taxYear, businessId, 0, NormalMode)
 
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
