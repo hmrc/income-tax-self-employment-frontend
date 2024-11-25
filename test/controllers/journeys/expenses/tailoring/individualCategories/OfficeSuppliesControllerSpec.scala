@@ -46,10 +46,10 @@ import views.html.journeys.expenses.tailoring.individualCategories.OfficeSupplie
 import scala.concurrent.Future
 
 class OfficeSuppliesControllerSpec
-  extends RadioButtonGetAndPostQuestionBaseSpec[OfficeSupplies](
-    "OfficeSuppliesController",
-    OfficeSuppliesPage
-  ) {
+    extends RadioButtonGetAndPostQuestionBaseSpec[OfficeSupplies](
+      "OfficeSuppliesController",
+      OfficeSuppliesPage
+    ) {
 
   override def onPageLoadCall: Call = routes.OfficeSuppliesController.onPageLoad(taxYear, businessId, NormalMode)
 
@@ -64,16 +64,16 @@ class OfficeSuppliesControllerSpec
   override def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
       ExpensesCategoriesPage.toString -> IndividualCategories.toString,
-      TradeAccountingType.toString -> Accrual.toString
+      TradeAccountingType.toString    -> Accrual.toString
     )
   )
 
   when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
-                                                                   request: Request[_],
-                                                                   messages: Messages,
-                                                                   application: Application): String = {
+      request: Request[_],
+      messages: Messages,
+      application: Application): String = {
     val view = application.injector.instanceOf[OfficeSuppliesView]
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId, Accrual).toString()
   }
@@ -100,7 +100,7 @@ class OfficeSuppliesControllerSpec
             *[Writes[Any]]
           ) returns SeeOther(onwardRoute.url).asFuture
 
-          val userAnswers = buildUserAnswers(OfficeSuppliesPage, newAnswer)
+          val userAnswers                               = buildUserAnswers(OfficeSuppliesPage, newAnswer)
           implicit val request: DataRequest[AnyContent] = fakeDataRequest(userAnswers)
 
           mockService
