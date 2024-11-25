@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.standard
 
 import base.SpecBase
-import controllers.standard.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.standard.IndexView
+import views.html.standard.UnauthorisedView
 
-class IndexControllerSpec extends SpecBase {
+class UnauthorisedControllerSpec extends SpecBase {
 
-  "Index Controller" - {
+  "Unauthorised Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[IndexView]
+        val view = application.injector.instanceOf[UnauthorisedView]
 
         status(result) mustEqual OK
-
         contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }

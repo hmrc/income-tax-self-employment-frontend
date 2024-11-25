@@ -26,12 +26,14 @@ case class NewSpecialTaxSite(contractForBuildingConstruction: Option[Boolean] = 
                              contractStartDate: Option[LocalDate] = None,
                              constructionStartDate: Option[LocalDate] = None,
                              qualifyingUseStartDate: Option[LocalDate] = None,
+                             qualifyingExpenditure: Option[BigDecimal] = None,
                              specialTaxSiteLocation: Option[SpecialTaxSiteLocation] = None,
                              newSiteClaimingAmount: Option[BigDecimal] = None) {
   def isComplete: Boolean =
     contractForBuildingConstruction.isDefined &&
       (contractStartDate.isDefined || constructionStartDate.isDefined) &&
       qualifyingUseStartDate.isDefined &&
+      qualifyingExpenditure.isDefined &&
       specialTaxSiteLocation.isDefined &&
       newSiteClaimingAmount.isDefined
 
@@ -40,6 +42,7 @@ case class NewSpecialTaxSite(contractForBuildingConstruction: Option[Boolean] = 
     contractStartDate,
     constructionStartDate,
     qualifyingUseStartDate,
+    qualifyingExpenditure,
     specialTaxSiteLocation,
     newSiteClaimingAmount
   ).forall(_.isEmpty)

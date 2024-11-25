@@ -17,6 +17,7 @@ site.saveAndContinue = Save and continue
 site.taxYearCaption = 6 April {0} to 5 April {1}
 site.example = Example
 site.hint.amount = For example, £193.54
+site.hint.large.amount = For example, £2850.70
 site.canInclude.individual = You can include:
 site.canInclude.agent = Your client can include:
 site.canIncludeFees.individual = You can include fees for:
@@ -138,8 +139,6 @@ common.checkYourDetails.title.agent = Check your client’s details
 common.checkYourAnswers.title.individual = Check your answers
 common.checkYourAnswers.title.agent = Check your client’s answers
 common.opensInNewTab = (opens in a new tab)
-
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 taskList.reviewLink = Review self-employments
 taskList.nationalInsuranceContributions = National Insurance Contributions
@@ -1726,6 +1725,11 @@ structuresBuildingsQualifyingUseDate.error.inFuture = The date when the building
 structuresBuildingsQualifyingUseDate.error.required.individual = Enter the date when you entered into the contract for the building’s construction.
 structuresBuildingsQualifyingUseDate.error.required.agent = Enter the date when your client entered into the contract for the building’s construction.
 
+qualifyingExpenditure.common.title = What was the total qualifying expenditure on this building?
+qualifyingExpenditure.common.change.hidden = Change the total qualifying expenditure on this building
+structuresBuildingsQualifyingExpenditure.error.required.individual = Enter the total qualifying expenditure on this building
+structuresBuildingsQualifyingExpenditure.error.required.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
+
 structuresBuildingsLocation.title = Where is the new structure or building located?
 structuresBuildingsLocation.error.postcode.individual = Enter a postcode for the structure or building
 structuresBuildingsLocation.error.postcode.agent = Enter a postcode for the structure or building
@@ -1947,6 +1951,9 @@ qualifyingUseStartDate.hint.agent = If later, enter the date that your client in
 qualifyingUseStartDate.error.required = Enter the date when the building first came into qualifying use
 qualifyingUseStartDate.error.tooLate = The date when the building first came into qualifying use must be in the past
 qualifyingUseStartDate.change.hidden = Change when the building was first brought into qualifying use
+
+qualifyingExpenditure.error.required.individual = Enter the total amount of qualifying expenditure on the new building or renovation
+qualifyingExpenditure.error.required.agent = Enter the total amount of qualifying expenditure on the new building your client wants to claim
 
 specialTaxSiteLocation.title = Where is the special tax site located?
 specialTaxSiteLocation.error.building.individual = Enter a building number or name for the special tax site

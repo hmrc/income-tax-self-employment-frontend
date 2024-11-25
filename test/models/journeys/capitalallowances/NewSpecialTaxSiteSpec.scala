@@ -30,6 +30,7 @@ class NewSpecialTaxSiteSpec extends SpecBase {
     LocalDate.now().some,
     LocalDate.now().some,
     LocalDate.now().some,
+    BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )

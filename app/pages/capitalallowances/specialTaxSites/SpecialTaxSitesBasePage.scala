@@ -41,6 +41,7 @@ trait SpecialTaxSitesBasePage[A] extends OneQuestionPage[A] {
       case ContractStartDatePage               => existingSite.flatMap(_.contractStartDate)
       case ConstructionStartDatePage           => existingSite.flatMap(_.constructionStartDate)
       case QualifyingUseStartDatePage          => existingSite.flatMap(_.qualifyingUseStartDate)
+      case QualifyingExpenditurePage           => existingSite.flatMap(_.qualifyingExpenditure)
       case SpecialTaxSiteLocationPage          => existingSite.flatMap(_.specialTaxSiteLocation)
       case NewSiteClaimingAmountPage           => existingSite.flatMap(_.newSiteClaimingAmount)
       case _                                   => None

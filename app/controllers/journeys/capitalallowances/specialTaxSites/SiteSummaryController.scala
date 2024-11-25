@@ -54,6 +54,7 @@ class SiteSummaryController @Inject() (override val messagesApi: MessagesApi,
                 site.contractStartDate.map(ContractStartDateSummary.row(_, taxYear, businessId, index)),
                 site.constructionStartDate.map(ConstructionStartDateSummary.row(_, taxYear, businessId, index)),
                 site.qualifyingUseStartDate.map(QualifyingUseStartDateSummary.row(_, taxYear, businessId, index)),
+                site.qualifyingExpenditure.map(QualifyingExpenditureSummary.row(_, taxYear, businessId, index)),
                 site.specialTaxSiteLocation.map(SpecialTaxSiteLocationSummary.row(_, taxYear, businessId, index)),
                 site.newSiteClaimingAmount.map(NewSiteClaimingAmountSummary.row(_, taxYear, businessId, request.userType, index))
               ))

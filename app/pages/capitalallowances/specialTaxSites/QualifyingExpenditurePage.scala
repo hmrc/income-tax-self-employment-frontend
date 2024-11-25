@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,21 +24,19 @@ import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 
-import java.time.LocalDate
-
-object QualifyingUseStartDatePage extends SpecialTaxSitesBasePage[LocalDate] {
-  override def toString: String = "qualifyingUseStartDate"
+object QualifyingExpenditurePage extends SpecialTaxSitesBasePage[BigDecimal] {
+  override def toString: String = "qualifyingExpenditure"
 
   def hasAllFurtherAnswers(site: NewSpecialTaxSite): Boolean =
-    site.qualifyingUseStartDate.isDefined && QualifyingExpenditurePage.hasAllFurtherAnswers(site)
+    site.qualifyingExpenditure.isDefined && SpecialTaxSiteLocationPage.hasAllFurtherAnswers(site)
 
   override def nextPageWithIndex(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear, index: Int): Result =
     getSiteFromIndex(userAnswers, businessId, index) match {
-      case None => redirectToRecoveryPage(s"Site of index $index not found when redirecting from QualifyingUseStartDatePage")
+      case None => redirectToRecoveryPage(s"Site of index $index not found when redirecting from QualifyingExpenditurePage")
       case Some(site) =>
         Redirect(
           if (hasAllFurtherAnswers(site)) routes.SiteSummaryController.onPageLoad(taxYear, businessId, index)
-          else routes.QualifyingExpenditureController.onPageLoad(taxYear, businessId, index, NormalMode)
+          else routes.SpecialTaxSiteLocationController.onPageLoad(taxYear, businessId, index, NormalMode)
         )
     }
 }

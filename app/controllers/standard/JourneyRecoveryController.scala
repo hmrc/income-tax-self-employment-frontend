@@ -16,6 +16,7 @@
 
 package controllers.standard
 
+import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -32,7 +33,8 @@ class JourneyRecoveryController @Inject() (
     identify: IdentifierAction,
     continueView: JourneyRecoveryContinueView,
     startAgainView: JourneyRecoveryStartAgainView
-) extends FrontendBaseController
+)(implicit val appConfig: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 

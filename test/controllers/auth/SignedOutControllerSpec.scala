@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package controllers.auth
 
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.standard.auth.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -29,6 +30,7 @@ class SignedOutControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = None).build()
+      val appConfig   = application.injector.instanceOf[FrontendAppConfig]
 
       running(application) {
         val request = FakeRequest(GET, routes.SignedOutController.onPageLoad.url)
@@ -38,7 +40,7 @@ class SignedOutControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[SignedOutView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) mustEqual view()(request, messages(application), appConfig).toString
       }
     }
   }

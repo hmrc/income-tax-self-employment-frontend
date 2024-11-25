@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package pages.capitalallowances.structuresBuildingsAllowance
+package viewmodels.checkAnswers.capitalallowances.structuresBuildingsAllowance
 
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
+import models.CheckMode
 import models.common.{BusinessId, TaxYear}
-import play.api.mvc.Result
-import play.api.mvc.Results.Redirect
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.buildRowBigDecimal
 
-object StructuresBuildingsNewClaimAmountPage extends StructuresBuildingsBasePage[BigDecimal] {
-  override def toString: String = "structuresBuildingsNewClaimAmount"
+object StructuresBuildingsQualifyingExpenditureSummary {
 
-  def nextPage(businessId: BusinessId, taxYear: TaxYear): Result = Redirect(
-    routes.StructuresBuildingsNewStructuresController.onPageLoad(taxYear, businessId))
+  def row(answer: BigDecimal, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit messages: Messages): SummaryListRow =
+    buildRowBigDecimal(
+      answer,
+      routes.StructuresBuildingQualifyingExpenditureController.onPageLoad(taxYear, businessId, index, CheckMode),
+      messages(s"qualifyingExpenditure.common.title"),
+      "qualifyingExpenditure.common.change.hidden"
+    )
 }

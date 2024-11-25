@@ -74,6 +74,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
             val result = route(application, getRequest).value
 
             status(result) shouldBe OK
+
             contentAsString(result) shouldBe expectedView(form().fill(amount), this)(getRequest, messages(application), application)
           }
         }
