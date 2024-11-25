@@ -6,7 +6,7 @@ object AppDependencies {
   private val hmrcMongoVersion  = "1.8.0"
   private val enumeratumVersion = "1.7.3"
 
-  val jacksonAndPlayExclusions = Seq(
+  val jacksonAndPlayExclusions: Seq[InclusionRule] = Seq(
     ExclusionRule(organization = "com.fasterxml.jackson.core"),
     ExclusionRule(organization = "com.fasterxml.jackson.datatype"),
     ExclusionRule(organization = "com.fasterxml.jackson.module"),
