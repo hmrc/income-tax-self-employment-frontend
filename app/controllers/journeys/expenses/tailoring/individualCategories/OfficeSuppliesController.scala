@@ -17,14 +17,13 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.OfficeSupplies
 import models.journeys.expenses.individualCategories.OfficeSupplies.enumerable
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,18 +58,28 @@ class OfficeSuppliesController @Inject() (override val messagesApi: MessagesApi,
       Ok(view(filledForm, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
       form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+            Future.successful(
+              BadRequest(
+                view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId))
+              )
+            ),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, OfficeSuppliesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(OfficeSuppliesPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(OfficeSuppliesPage, businessId).contains(value)) {
+                  selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
+                  clearDependentPages(OfficeSuppliesPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, OfficeSuppliesPage)
+            } yield Redirect(navigator.nextPage(OfficeSuppliesPage, mode, savedAnswers, taxYear, businessId))
         )
-  }
-
+    }
 }

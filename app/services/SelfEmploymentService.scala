@@ -48,33 +48,44 @@ import scala.util.{Failure, Success, Try}
 
 trait SelfEmploymentService {
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]]
+
   def getBusiness(nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[BusinessData]
+
   def getJourneyStatus(ctx: JourneyAnswersContext)(implicit hc: HeaderCarrier): ApiResultT[JourneyStatus]
+
   def setJourneyStatus(ctx: JourneyAnswersContext, status: JourneyStatus)(implicit hc: HeaderCarrier): ApiResultT[Unit]
+
   def persistAnswer[A: Writes](businessId: BusinessId, userAnswers: UserAnswers, value: A, page: QuestionPage[A]): Future[UserAnswers]
+
   def persistAnswerAndRedirect[A: Writes](pageUpdated: OneQuestionPage[A],
                                           businessId: BusinessId,
                                           request: DataRequest[_],
                                           value: A,
                                           taxYear: TaxYear,
                                           mode: Mode): Future[Result]
+
   def submitAnswers[SubsetOfAnswers: Format](context: JourneyContext,
                                              userAnswers: UserAnswers,
                                              declareJourneyAnswers: Option[SubsetOfAnswers] = None)(implicit hc: HeaderCarrier): ApiResultT[Unit]
+
   def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers]
+
   def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
                                                        businessId: BusinessId,
                                                        userAnswers: UserAnswers,
                                                        newAnswer: A)(implicit reads: Reads[A], writes: Writes[A]): Future[UserAnswers]
+
   def submitGatewayQuestionAndRedirect[A](pageUpdated: OneQuestionPage[A],
                                           businessId: BusinessId,
                                           userAnswers: UserAnswers,
                                           newAnswer: A,
                                           taxYear: TaxYear,
                                           mode: Mode)(implicit reads: Reads[A], writes: Writes[A]): Future[Result]
+
   def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
       request: DataRequest[_],
       defaultFormBinding: FormBinding): Future[Result]
+
   def defaultHandleForm[A](
       form: Form[A],
       page: OneQuestionPage[A],
@@ -82,7 +93,9 @@ trait SelfEmploymentService {
       taxYear: TaxYear,
       mode: Mode,
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
+
   def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate]
+
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
 
@@ -97,6 +110,10 @@ trait SelfEmploymentService {
   def clearSimplifiedExpensesData(ctx: JourneyContextWithNino)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 
   def clearExpensesAndCapitalAllowances(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit]
+
+  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit]
 }
@@ -261,6 +278,10 @@ class SelfEmploymentServiceImpl @Inject() (
     EitherT(resultT)
   }
 
+  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    connector.clearOfficeSuppliesExpenses(taxYear, nino, businessId, mtditid)
 }
 
 object SelfEmploymentService {

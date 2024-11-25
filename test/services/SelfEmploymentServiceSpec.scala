@@ -240,10 +240,13 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       val page                = ZeroEmissionGoodsVehiclePage
       val form: Form[Boolean] = new BooleanFormProvider()(page, Individual)
       val request             = FakeRequest(POST, routes.ZeroEmissionGoodsVehicleController.onSubmit(taxYear, businessId, NormalMode).url)
+
       def handleError(formWithErrors: Form[_]): Result = BadRequest(formWithErrors.toString)
+
       def handleSuccess(answer: Boolean): Future[Result] = answer match {
         case _ => Future(Redirect(page.cyaPage(taxYear, businessId)))
       }
+
       "following the handleSuccess method if it binds successfully" in new ServiceWithStubs {
         val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", fakeUser, existingZegvAnswers)
         val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
@@ -298,7 +301,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
     "fail with Income Not Found error when no income" in new ServiceWithStubs {
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](None)
-      val result = service.getTotalIncome(ctx).value.futureValue
+      val result: Either[ServiceError, BigDecimal] = service.getTotalIncome(ctx).value.futureValue
       result shouldBe ServiceError.IncomeAnswersNotSubmittedError.asLeft
     }
 
@@ -310,52 +313,74 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getSubmittedAnswers[IncomeJourneyAnswers](any[JourneyContext])(*, *, *) returns EitherT.rightT[Future, ServiceError](
         Some(answers))
 
-      val result = service.getTotalIncome(ctx).value.futureValue
+      val result: Either[ServiceError, BigDecimal] = service.getTotalIncome(ctx).value.futureValue
 
       result shouldBe Right(15.0)
     }
   }
 
   "clearSimplifiedExpensesData" - {
-    val ctx              = JourneyContextWithNino(taxYear, nino, businessId, mtditid, Income)
-    implicit val request = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
+    val ctx                                       = JourneyContextWithNino(taxYear, nino, businessId, mtditid, Income)
+    implicit val request: DataRequest[AnyContent] = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
 
     "delete Simplified or No Expenses data from the front and back-end repos and API" in new ServiceWithStubs {
       mockConnector.clearExpensesSimplifiedOrNoExpensesAnswers(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](())
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
 
-      val result = service.clearSimplifiedExpensesData(ctx).value.futureValue
+      val result: Either[ServiceError, Unit] = service.clearSimplifiedExpensesData(ctx).value.futureValue
       assert(result === ().asRight)
     }
   }
 
   "clearExpensesAndCapitalAllowances" - {
-    implicit val request = fakeDataRequest(emptyUserAnswers)
+    implicit val request: DataRequest[AnyContent] = fakeDataRequest(emptyUserAnswers)
 
     "should delete Expenses and Capital Allowances data from the front and back-end repos and API" in new ServiceWithStubs {
       mockConnector.clearExpensesAndCapitalAllowances(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](())
 
-      val result = service.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
+      val result: Either[ServiceError, Unit] = service.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
       assert(result === ().asRight)
     }
 
     "should delete Simplified or No Expenses data from the front and back-end repos and API" in new ServiceWithStubs {
-      val downstreamError = NotFoundError("NOT_FOUND")
+      val downstreamError: NotFoundError = NotFoundError("NOT_FOUND")
       mockConnector.clearExpensesAndCapitalAllowances(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
         .leftT[Future, Unit](downstreamError)
 
-      val result = service.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
+      val result: Either[ServiceError, Unit] = service.clearExpensesAndCapitalAllowances(taxYear, nino, businessId, mtditid).value.futureValue
+      assert(result === downstreamError.asLeft)
+    }
+  }
+
+  "clearOfficeSuppliesExpensesData" - {
+    implicit val request: DataRequest[AnyContent] = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
+
+    "delete office supplies expenses data from backend and API" in new ServiceWithStubs {
+      mockConnector.clearOfficeSuppliesExpenses(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](())
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+
+      val result: Either[ServiceError, Unit] = service.clearOfficeSuppliesExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+      assert(result === ().asRight)
+    }
+
+    "should delete from the front and back-end repos and API" in new ServiceWithStubs {
+      val downstreamError: NotFoundError = NotFoundError("NOT_FOUND")
+      mockConnector.clearOfficeSuppliesExpenses(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .leftT[Future, Unit](downstreamError)
+
+      val result: Either[ServiceError, Unit] = service.clearOfficeSuppliesExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
       assert(result === downstreamError.asLeft)
     }
   }
 }
 
 trait ServiceWithStubs {
-  val mockConnector: SelfEmploymentConnector   = mock[SelfEmploymentConnector]
-  val repository                               = StubSessionRepository()
-  val mockSubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
+  val mockConnector: SelfEmploymentConnector                                         = mock[SelfEmploymentConnector]
+  val repository: StubSessionRepository                                              = StubSessionRepository()
+  val mockSubmittedDataRetrievalActionProvider: SubmittedDataRetrievalActionProvider = mock[SubmittedDataRetrievalActionProvider]
 
   val service: SelfEmploymentService = new SelfEmploymentServiceImpl(mockConnector, repository, AuditServiceStub())
 }

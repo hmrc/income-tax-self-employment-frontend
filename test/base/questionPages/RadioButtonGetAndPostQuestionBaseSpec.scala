@@ -40,8 +40,11 @@ import scala.concurrent.Future
 abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](controllerName: String, page: OneQuestionPage[A]) extends ControllerSpec {
 
   def onPageLoadCall: Call
+
   def onSubmitCall: Call
+
   def onwardRoute: Call
+
   def validAnswer: A
 
   val form = new EnumerableFormProvider
@@ -52,10 +55,12 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
 
   def baseAnswers: UserAnswers = emptyUserAnswersAccrual
 
-  implicit def writes: Writes[A]     = Writes(value => JsString(value.toString))
+  implicit def writes: Writes[A] = Writes(value => JsString(value.toString))
+
   def filledUserAnswers: UserAnswers = baseAnswers.set(page, validAnswer, businessId.some)(writes).success.value
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoadCall.url)
+
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, onSubmitCall.url).withFormUrlEncodedBody(("value", validAnswer.toString))
 

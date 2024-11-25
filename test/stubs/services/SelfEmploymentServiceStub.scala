@@ -60,7 +60,8 @@ case class SelfEmploymentServiceStub(
     getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
     getNetBusinessProfitOrLossValuesResult: Either[ServiceError, NetBusinessProfitOrLossValues] = Right(aNetBusinessProfitValues),
     clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()),
-    clearExpensesAndCapitalAllowancesResult: Either[ServiceError, Unit] = Right(()))
+    clearExpensesAndCapitalAllowancesResult: Either[ServiceError, Unit] = Right(()),
+    clearOfficeSuppliesExpensesResult: Either[ServiceError, Unit] = Right(()))
     extends SelfEmploymentService {
 
   def getBusinesses(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Seq[BusinessData]] =
@@ -107,10 +108,12 @@ case class SelfEmploymentServiceStub(
                                           taxYear: TaxYear,
                                           mode: Mode): Future[Result] =
     Future(submitAnswerAndRedirectResult)
+
   def handleForm[A](form: Form[A], handleError: Form[_] => Result, handleSuccess: A => Future[Result])(implicit
       request: DataRequest[_],
       defaultFormBinding: FormBinding): Future[Result] =
     Future(submitAnswerAndRedirectResult)
+
   def defaultHandleForm[A](
       form: Form[A],
       page: OneQuestionPage[A],
@@ -145,4 +148,9 @@ case class SelfEmploymentServiceStub(
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearExpensesAndCapitalAllowancesResult)
+
+  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](clearOfficeSuppliesExpensesResult)
 }
