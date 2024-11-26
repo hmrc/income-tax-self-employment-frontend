@@ -2,8 +2,8 @@ import sbt._
 
 object AppDependencies {
 
-  private val bootstrapVersion  = "8.4.0"
-  private val hmrcMongoVersion  = "1.8.0"
+  private val bootstrapVersion  = "9.5.0"
+  private val hmrcMongoVersion  = "2.3.0"
   private val enumeratumVersion = "1.7.3"
 
   val jacksonAndPlayExclusions: Seq[InclusionRule] = Seq(
