@@ -16,7 +16,7 @@
 
 package pages.capitalallowances.structuresBuildingsAllowance
 
-import base.SpecBase.{buildUserAnswers, businessId, emptyUserAnswers, taxYear}
+import base.SpecBase.{buildUserAnswers, businessId, taxYear}
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 import models.NormalMode
 import models.database.UserAnswers
