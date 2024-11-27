@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import models.journeys.expenses.individualCategories.OfficeSupplies.YesDisallowa
 import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
 import org.mockito.IdiomaticMockito.StubbingOps
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories.OfficeSuppliesPage
 import pages.{OneQuestionPage, TradeAccountingType}

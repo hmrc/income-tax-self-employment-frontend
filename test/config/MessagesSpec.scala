@@ -36,6 +36,7 @@ class MessagesSpec extends SpecBase {
     "global.error.badRequest400.message",
     "global.error.pageNotFound404.message",
     "global.error.fallbackClientError4xx.heading",
+    "global.error.fallbackClientError4xx.message",
     "global.error.fallbackClientError4xx.title",
     "language.day.plural",
     "language.day.singular"

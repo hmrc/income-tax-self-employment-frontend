@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package controllers.journeys.income
 import base.ControllerSpec
 import cats.implicits.catsSyntaxEitherId
 import controllers.{journeys, standard}
-import models.NormalMode
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
