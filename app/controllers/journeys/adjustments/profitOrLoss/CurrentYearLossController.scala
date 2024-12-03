@@ -17,6 +17,7 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions._
+import controllers.handleApiResult
 import controllers.journeys.fillForm
 import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
 import forms.standard.BooleanFormProvider
@@ -32,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.adjustments.profitOrLoss.{CarryLossForwardView, WhatDoYouWantToDoWithLossView}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi,
@@ -44,51 +45,57 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
                                            formProvider: WhatDoYouWantToDoWithLossFormProvider,
                                            booleanFormProvider: BooleanFormProvider,
                                            whatDoYouWantToDoWithLossView: WhatDoYouWantToDoWithLossView,
-                                           carryLossForwardView: CarryLossForwardView)
+                                           carryLossForwardView: CarryLossForwardView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val whatDoYouWantToDoWithLossPage = WhatDoYouWantToDoWithLossPage
   private val carryLossForwardPage          = CarryLossForwardPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      // TODO retrieve whether the user has other incomes from API 2085 and pension income in SASS-9566
-      val hasOtherIncomes = true
-      if (hasOtherIncomes) {
-        val filledForm = fillForm(whatDoYouWantToDoWithLossPage, businessId, formProvider(whatDoYouWantToDoWithLossPage, request.userType))
-        Ok(whatDoYouWantToDoWithLossView(filledForm, taxYear, businessId, request.userType, mode))
-      } else {
-        val filledForm = fillForm(carryLossForwardPage, businessId, booleanFormProvider(carryLossForwardPage, request.userType))
-        Ok(carryLossForwardView(filledForm, taxYear, businessId, request.userType, mode))
-      }
+      // TODO retrieve pension income in SASS-9566
+      val result = for {
+        hasOtherIncome <- service.hasOtherIncomeSources(taxYear, request.nino, request.mtditid)
+      } yield
+        if (hasOtherIncome) {
+          val filledForm = fillForm(whatDoYouWantToDoWithLossPage, businessId, formProvider(whatDoYouWantToDoWithLossPage, request.userType))
+          Ok(whatDoYouWantToDoWithLossView(filledForm, taxYear, businessId, request.userType, mode))
+        } else {
+          val filledForm = fillForm(carryLossForwardPage, businessId, booleanFormProvider(carryLossForwardPage, request.userType))
+          Ok(carryLossForwardView(filledForm, taxYear, businessId, request.userType, mode))
+        }
+      handleApiResult(result)
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
       val toCyaIfAllPagesAnswered = if (PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, request.userAnswers)) CheckMode else mode
 
-      // TODO retrieve whether the user has other incomes from API 2085 and pension income in SASS-9566
-      val hasOtherIncomes = true
-      if (hasOtherIncomes) {
-        def handleError(formWithErrors: Form[_]): Result = BadRequest(
-          whatDoYouWantToDoWithLossView(formWithErrors, taxYear, businessId, request.userType, mode)
-        )
-        def handleSuccess(answer: Set[WhatDoYouWantToDoWithLoss]): Future[Result] =
-          service.persistAnswerAndRedirect(whatDoYouWantToDoWithLossPage, businessId, request, answer, taxYear, toCyaIfAllPagesAnswered)
+      // TODO retrieve pension income in SASS-9566
+      val result = service.hasOtherIncomeSources(taxYear, request.nino, request.mtditid) map {
+        case true =>
+          def handleErrorTrue(formWithErrors: Form[_]): Result = BadRequest(
+            whatDoYouWantToDoWithLossView(formWithErrors, taxYear, businessId, request.userType, mode)
+          )
+          def handleSuccess(answer: Set[WhatDoYouWantToDoWithLoss]): Future[Result] =
+            service.persistAnswerAndRedirect(whatDoYouWantToDoWithLossPage, businessId, request, answer, taxYear, toCyaIfAllPagesAnswered)
 
-        service.handleForm(formProvider(whatDoYouWantToDoWithLossPage, request.userType), handleError, handleSuccess)
-      } else {
-        def handleError(formWithErrors: Form[_]): Result =
-          BadRequest(carryLossForwardView(formWithErrors, taxYear, businessId, request.userType, mode))
+          service.handleForm(formProvider(whatDoYouWantToDoWithLossPage, request.userType), handleErrorTrue, handleSuccess)
+        case false =>
+          def handleErrorFalse(formWithErrors: Form[_]): Result =
+            BadRequest(carryLossForwardView(formWithErrors, taxYear, businessId, request.userType, mode))
 
-        service.defaultHandleForm(
-          booleanFormProvider(carryLossForwardPage, request.userType),
-          carryLossForwardPage,
-          businessId,
-          taxYear,
-          toCyaIfAllPagesAnswered,
-          handleError)
+          service.defaultHandleForm(
+            booleanFormProvider(carryLossForwardPage, request.userType),
+            carryLossForwardPage,
+            businessId,
+            taxYear,
+            toCyaIfAllPagesAnswered,
+            handleErrorFalse)
       }
+
+      handleApiResult(result).flatten
+
   }
 }

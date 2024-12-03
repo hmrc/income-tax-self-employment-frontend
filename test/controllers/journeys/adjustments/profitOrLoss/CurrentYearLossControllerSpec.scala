@@ -14,58 +14,62 @@
  * limitations under the License.
  */
 
-package base.questionPages
+package controllers.journeys.adjustments.profitOrLoss
 
 import base.ControllerSpec
 import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
+import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
+import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
+import models.journeys.adjustments.WhatDoYouWantToDoWithLoss.DeductFromOtherTypes
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import pages.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossPage
 import play.api.Application
 import play.api.data.Form
+import play.api.http.Status.OK
 import play.api.i18n.Messages
-import play.api.libs.json.Writes
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.Settable
 import stubs.services.SelfEmploymentServiceStub
+import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossView
 
-abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, page: Settable[A]) extends ControllerSpec {
+class CurrentYearLossControllerSpec extends ControllerSpec {
 
-  def answer: A
+  def answer: Set[WhatDoYouWantToDoWithLoss] = Set(DeductFromOtherTypes)
 
-  /** Implementers should avoid eager overrides of below.
-    */
-  def onPageLoadRoute: String
-  def onSubmitRoute: String
+  def onPageLoadRoute: String = routes.CurrentYearLossController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  def onwardRoute: Call
+  def onSubmitRoute: String = routes.CurrentYearLossController.onSubmit(taxYear, businessId, NormalMode).url
 
-  /** Implementers can provide prerequisite answers the controller requires.
-    */
+  def onwardRoute: Call        = routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
   def baseAnswers: UserAnswers = emptyUserAnswersAccrual
 
-  def pageAnswers: UserAnswers = baseAnswers.set(page, answer, businessId.some).success.value
+  def pageAnswers: UserAnswers = baseAnswers.set(WhatDoYouWantToDoWithLossPage, answer, businessId.some).success.value
 
-  def createForm(userType: UserType): Form[A]
+  def createForm(userType: UserType): Form[Set[WhatDoYouWantToDoWithLoss]] =
+    new WhatDoYouWantToDoWithLossFormProvider()(WhatDoYouWantToDoWithLossPage, userType)
 
   def expectedView(expectedForm: Form[_], scenario: TestStubbedScenario)(implicit
       request: Request[_],
       messages: Messages,
-      application: Application): String
+      application: Application): String = {
+    val view = application.injector.instanceOf[WhatDoYouWantToDoWithLossView]
+    view(expectedForm, taxYear, businessId, scenario.userType, scenario.mode).toString()
+  }
+  // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes
 
-  private def getRequest  = FakeRequest(GET, onPageLoadRoute)
-  private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString))
-
-  def stubServiceSuccessfulSubmission: SelfEmploymentServiceStub =
-    SelfEmploymentServiceStub(submitAnswerAndRedirectResult = Redirect(onwardRoute), hasOtherIncomeSources = Right(true))
+  private def getRequest                                         = FakeRequest(GET, onPageLoadRoute)
+  private def postRequest                                        = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString))
+  def stubServiceSuccessfulSubmission: SelfEmploymentServiceStub = SelfEmploymentServiceStub(submitAnswerAndRedirectResult = Redirect(onwardRoute))
 
   forAll(userTypeCases) { user =>
-    s"$controller for $user" - {
-      val form: Form[A] = createForm(user)
+    s"CurrentYearLossController for $user" - {
+      val form: Form[Set[WhatDoYouWantToDoWithLoss]] = createForm(user)
 
       "on page load" - {
         "answers exist for the page" - {
@@ -125,4 +129,5 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
       }
     }
   }
+
 }

@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchersSugar
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks with ArgumentMatchersSugar with ControllerTestScenarioSpec {
 
-  val userTypeCases = Table(
+  val userTypeCases: TableFor1[UserType] = Table(
     "userType",
     UserType.Individual,
     UserType.Agent
@@ -48,7 +48,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 
 trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout with ArgumentMatchersSugar {
 
-  val mockService = mock[SelfEmploymentService]
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   val bindings: List[Binding[_]] = Nil
 

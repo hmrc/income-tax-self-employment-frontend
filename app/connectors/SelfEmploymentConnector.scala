@@ -147,4 +147,11 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     val response = post(http, url, mtditid, "")
     EitherT(response)
   }
+
+  def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Boolean] = {
+    val url      = buildUrl(s"$taxYear/check-for-other-income-source/$nino")
+    val response = get[Boolean](http, url, mtditid)
+    EitherT(response)
+  }
+
 }

@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-/*
 package controllers.journeys.adjustments.profitOrLoss
 
 import base.questionPages.BooleanGetAndPostQuestionBaseSpec
+import cats.data.EitherT
 import models.NormalMode
+import models.common.{Mtditid, Nino, TaxYear}
+import org.mockito.IdiomaticMockito.StubbingOps
 import pages.adjustments.profitOrLoss.CarryLossForwardPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.journeys.adjustments.profitOrLoss.CarryLossForwardView
 
 class CurrentYearLossControllerCarryLossForwardSpec extends BooleanGetAndPostQuestionBaseSpec("CurrentYearLossController", CarryLossForwardPage) {
@@ -42,7 +45,7 @@ class CurrentYearLossControllerCarryLossForwardSpec extends BooleanGetAndPostQue
     view(expectedForm, taxYear, businessId, scenario.userType, scenario.mode).toString()
   }
 
-  // TODO in SASS-9566 test that the view CarryLossForward gets displayed when user has NO other incomes
-}
+  mockService
+    .hasOtherIncomeSources(*[TaxYear], *[Nino], *[Mtditid])(*[HeaderCarrier]) returns EitherT.rightT(false)
 
- */
+}
