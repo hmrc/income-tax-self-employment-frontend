@@ -26,36 +26,37 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  val host: String    = configuration.get[String]("host")
-  val appName: String = configuration.get[String]("appName")
+  lazy val host: String    = configuration.get[String]("host")
+  lazy val appName: String = configuration.get[String]("appName")
 
-  private val contactHost                  = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "income-tax-self-employment-frontend"
+  private lazy val contactHost                  = configuration.get[String]("contact-frontend.host")
+  private lazy val contactFormServiceIdentifier = "income-tax-self-employment-frontend"
 
   def feedbackUrl(implicit request: RequestHeader): String =
     url"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${host + request.uri}".toString
 
-  val loginUrl: String         = configuration.get[String]("urls.login")
-  val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  def loginUrl: String         = configuration.get[String]("urls.login")
+  def loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
+  lazy val signOutUrl: String  = configuration.get[String]("urls.signOut")
 
-  private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/income-tax-self-employment-frontend"
+  private lazy val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
+  lazy val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/income-tax-self-employment-frontend"
 
-  val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
+  // Feature switching
+  lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("features.welsh-translation")
+  def emaSupportingAgentsEnabled: Boolean      = configuration.get[Boolean]("features.ema-supporting-agents-enabled")
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
     "cy" -> Lang("cy")
   )
 
-  val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
+  lazy val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
 
-  val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
-  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
+  lazy val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
+  lazy val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
-  val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  lazy val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
   def incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission.url") +
     configuration.get[String]("microservice.services.income-tax-submission-frontend.context")

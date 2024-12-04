@@ -60,7 +60,7 @@ trait WiremockSpec
 
   protected val appConfig: FrontendAppConfig =
     new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
-      override val selfEmploymentBEBaseUrl: String = s"http://localhost:$wireMockPort"
+      override lazy val selfEmploymentBEBaseUrl: String = s"http://localhost:$wireMockPort"
     }
 
   override def beforeAll(): Unit = {
