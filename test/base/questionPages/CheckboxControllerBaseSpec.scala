@@ -61,7 +61,7 @@ abstract case class CheckboxControllerBaseSpec[A: Writes](controller: String, pa
   private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", answer.toString))
 
   def stubServiceSuccessfulSubmission: SelfEmploymentServiceStub =
-    SelfEmploymentServiceStub(submitAnswerAndRedirectResult = Redirect(onwardRoute), hasOtherIncomeSources = Right(true))
+    SelfEmploymentServiceStub(submitAnswerAndRedirectResult = Redirect(onwardRoute))
 
   forAll(userTypeCases) { user =>
     s"$controller for $user" - {
