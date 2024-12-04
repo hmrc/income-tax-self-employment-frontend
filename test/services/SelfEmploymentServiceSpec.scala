@@ -57,6 +57,7 @@ import services.SelfEmploymentService.clearDataFromUserAnswers
 import stubs.repositories.StubSessionRepository
 import stubs.services.AuditServiceStub
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -64,9 +65,9 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   implicit val messages: Messages = messagesStubbed
 
-  val nino              = Nino("nino")
-  val businessIdAccrual = BusinessId("businessIdAccrual")
-  val businessIdCash    = BusinessId("businessIdCash")
+  val nino: Nino                    = Nino("nino")
+  val businessIdAccrual: BusinessId = BusinessId("businessIdAccrual")
+  val businessIdCash: BusinessId    = BusinessId("businessIdCash")
 
   "getJourneyStatus" - {
     "should return status" in new ServiceWithStubs {
@@ -375,6 +376,28 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       assert(result === downstreamError.asLeft)
     }
   }
+
+  "hasOtherIncomeSources" - {
+
+    "should return flag based on other income sources availability" in new ServiceWithStubs {
+      mockConnector.hasOtherIncomeSources(any[TaxYear], any[Nino], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](true)
+
+      val result: Either[ServiceError, Boolean] = service.hasOtherIncomeSources(taxYear, nino, mtditid).value.futureValue
+
+      result shouldBe true.asRight
+    }
+
+    "should fail with an error when down stream service fails" in new ServiceWithStubs {
+      val downstreamError: NotFoundError = NotFoundError("NOT_FOUND")
+      mockConnector.hasOtherIncomeSources(any[TaxYear], any[Nino], any[Mtditid])(*, *) returns EitherT
+        .leftT[Future, Boolean](downstreamError)
+
+      val result: Either[ServiceError, Boolean] = service.hasOtherIncomeSources(taxYear, nino, mtditid).value.futureValue
+      assert(result === downstreamError.asLeft)
+    }
+  }
+
 }
 
 trait ServiceWithStubs {

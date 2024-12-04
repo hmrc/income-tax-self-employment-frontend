@@ -51,6 +51,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val clearSimplifiedExpensesUrl           = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
   private val clearExpensesAndCapitalAllowancesUrl = s"/income-tax-self-employment/$taxYear/clear-expenses-and-capital-allowances/$nino/$businessId"
   private val clearOfficeSuppliesExpensesUrl       = s"/income-tax-self-employment/$taxYear/clear-office-supplies-expenses-answers/$nino/$businessId"
+  private val checkForOtherIncomeSourcesUrl        = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -235,6 +236,33 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.clearOfficeSuppliesExpenses(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe ().asRight
+    }
+  }
+
+  "hasOtherIncomeSources" must {
+    "return true when there is an other income" in {
+      val responseBody = "true"
+      stubGetWithResponseBody(checkForOtherIncomeSourcesUrl, OK, responseBody, headersSentToBE)
+
+      val result = connector.hasOtherIncomeSources(taxYear, nino, mtditid).value.futureValue
+
+      result shouldBe Right(true)
+    }
+
+    "return false on there is an other income" in {
+      val responseBody = "false"
+      stubGetWithResponseBody(checkForOtherIncomeSourcesUrl, OK, responseBody, headersSentToBE)
+
+      val result = connector.hasOtherIncomeSources(taxYear, nino, mtditid).value.futureValue
+
+      result shouldBe Right(false)
+    }
+
+    "fail when the downstream service returns an error" in {
+      stubGetWithResponseBody(checkForOtherIncomeSourcesUrl, BAD_REQUEST, "responseBody", headersSentToBE)
+
+      val result = connector.hasOtherIncomeSources(taxYear, nino, mtditid).value.futureValue
+      result shouldBe parsingError("GET", "http://localhost:11111/income-tax-self-employment/2024/check-for-other-income-source/someNino").asLeft
     }
   }
 }

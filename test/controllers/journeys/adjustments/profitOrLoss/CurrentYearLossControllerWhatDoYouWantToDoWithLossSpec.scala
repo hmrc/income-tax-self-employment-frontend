@@ -26,7 +26,9 @@ import pages.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Request}
+import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossView
 
 class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec
@@ -50,5 +52,9 @@ class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec
     val view = application.injector.instanceOf[WhatDoYouWantToDoWithLossView]
     view(expectedForm, taxYear, businessId, scenario.userType, scenario.mode).toString()
   }
-  // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes
+
+  override def stubServiceSuccessfulSubmission: SelfEmploymentServiceStub =
+    SelfEmploymentServiceStub(submitAnswerAndRedirectResult = Redirect(onwardRoute), hasOtherIncomeSources = Right(true))
+
+  // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes & pension
 }
