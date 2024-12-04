@@ -87,9 +87,9 @@ object AdjustedTaxableProfitOrLossSummary {
         additionsOrDeductionsRow(returnAdditionsRow = !isProfit),
         netProfitOrLossForTaxPurposesRow,
         buildBigDecimalKeyValueRow("journeys.adjustments", adjustments),
-        buildBigDecimalKeyValueRow(
+        buildKeyValueRow(
           s"profitOrLossCalculation.adjustedSummary.adjustedTaxableProfitOrLoss.$adjustedTaxableAmountIsProfitOrLoss",
-          adjustedTaxableProfitOrLoss,
+          formatSumMoneyNoNegative(List(adjustedTaxableProfitOrLoss)),
           optKeyArgs = Seq(startYear, endYear),
           contentInBold = true
         )

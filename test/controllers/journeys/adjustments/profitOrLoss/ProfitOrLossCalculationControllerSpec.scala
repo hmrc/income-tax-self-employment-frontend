@@ -118,9 +118,8 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
             getAllBusinessesTaxableProfitAndLossResult = Right(allTaxableProfitsAndLosses),
             getNetBusinessProfitOrLossValuesResult = Right(netProfitOrLossValues)
           )
-          val adjustedTaxablePoL            = incomeSourceSummary.getTaxableProfitOrLossAmount
-          val netPoLForTaxPurposes          = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
-          val adjustedTaxableIsProfitOrLoss = if (incomeSourceSummary.taxableLoss > 0) Loss else Profit
+          val adjustedTaxablePoL   = incomeSourceSummary.getTaxableProfitOrLossAmount
+          val netPoLForTaxPurposes = incomeSourceSummary.getNetBusinessProfitOrLossForTaxPurposes
           val taxableProfitWhenProfitAndLossDeclared =
             if (incomeSourceSummary.taxableProfit > 0 && incomeSourceSummary.taxableLoss > 0)
               Some(incomeSourceSummary.taxableProfit)
@@ -129,8 +128,11 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
           val application            = buildAppFromUserType(Individual, Some(emptyUserAnswers), Some(stubService))
           implicit val msg: Messages = SpecBase.messages(application)
 
-          val result               = route(application, onPageLoadRequest).value
-          val adjustedProfitOrLoss = allTaxableProfitsAndLosses.headOption.get.taxableProfitOrLoss(profitOrLoss)
+          val result = route(application, onPageLoadRequest).value
+          val adjustedProfitOrLoss: BigDecimal = {
+            val taxableProfitAndLoss = allTaxableProfitsAndLosses.headOption.get
+            if (profitOrLoss == Profit) taxableProfitAndLoss.taxableProfit else -taxableProfitAndLoss.taxableLoss
+          }
           val tables =
             AdjustedTaxableProfitOrLossSummary.buildSummaryLists(adjustedProfitOrLoss, netProfitOrLossValues, taxYear, profitOrLoss, Individual)
 
@@ -140,7 +142,6 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
               Individual,
               profitOrLoss,
               adjustedTaxablePoL,
-              adjustedTaxableIsProfitOrLoss,
               netPoLForTaxPurposes,
               taxYear,
               tables,
