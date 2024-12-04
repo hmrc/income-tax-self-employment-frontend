@@ -16,12 +16,14 @@
 
 package controllers.journeys.adjustments.profitOrLoss
 
+import cats.data.EitherT
 import controllers.actions._
 import controllers.handleApiResult
 import controllers.journeys.fillForm
 import forms.adjustments.profitOrLoss.WhatDoYouWantToDoWithLossFormProvider
 import forms.standard.BooleanFormProvider
 import models.common.{BusinessId, TaxYear}
+import models.errors.ServiceError
 import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
 import models.{CheckMode, Mode}
 import pages.adjustments.profitOrLoss.{CarryLossForwardPage, PreviousUnusedLossesPage, WhatDoYouWantToDoWithLossPage}
@@ -55,16 +57,14 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       // TODO retrieve pension income in SASS-9566
-      val result = for {
-        hasOtherIncome <- service.hasOtherIncomeSources(taxYear, request.nino, request.mtditid)
-      } yield
-        if (hasOtherIncome) {
+      val result = service.hasOtherIncomeSources(taxYear, request.nino, request.mtditid) map {
+        case true =>
           val filledForm = fillForm(whatDoYouWantToDoWithLossPage, businessId, formProvider(whatDoYouWantToDoWithLossPage, request.userType))
           Ok(whatDoYouWantToDoWithLossView(filledForm, taxYear, businessId, request.userType, mode))
-        } else {
+        case false =>
           val filledForm = fillForm(carryLossForwardPage, businessId, booleanFormProvider(carryLossForwardPage, request.userType))
           Ok(carryLossForwardView(filledForm, taxYear, businessId, request.userType, mode))
-        }
+      }
       handleApiResult(result)
   }
 
@@ -73,7 +73,7 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
       val toCyaIfAllPagesAnswered = if (PreviousUnusedLossesPage.hasAllFurtherAnswers(businessId, request.userAnswers)) CheckMode else mode
 
       // TODO retrieve pension income in SASS-9566
-      val result = service.hasOtherIncomeSources(taxYear, request.nino, request.mtditid) map {
+      val result: EitherT[Future, ServiceError, Result] = service.hasOtherIncomeSources(taxYear, request.nino, request.mtditid) flatMap {
         case true =>
           def handleErrorTrue(formWithErrors: Form[_]): Result = BadRequest(
             whatDoYouWantToDoWithLossView(formWithErrors, taxYear, businessId, request.userType, mode)
@@ -81,21 +81,22 @@ class CurrentYearLossController @Inject() (override val messagesApi: MessagesApi
           def handleSuccess(answer: Set[WhatDoYouWantToDoWithLoss]): Future[Result] =
             service.persistAnswerAndRedirect(whatDoYouWantToDoWithLossPage, businessId, request, answer, taxYear, toCyaIfAllPagesAnswered)
 
-          service.handleForm(formProvider(whatDoYouWantToDoWithLossPage, request.userType), handleErrorTrue, handleSuccess)
+          EitherT.right(service.handleForm(formProvider(whatDoYouWantToDoWithLossPage, request.userType), handleErrorTrue, handleSuccess))
         case false =>
           def handleErrorFalse(formWithErrors: Form[_]): Result =
             BadRequest(carryLossForwardView(formWithErrors, taxYear, businessId, request.userType, mode))
 
-          service.defaultHandleForm(
-            booleanFormProvider(carryLossForwardPage, request.userType),
-            carryLossForwardPage,
-            businessId,
-            taxYear,
-            toCyaIfAllPagesAnswered,
-            handleErrorFalse)
+          EitherT.right(
+            service.defaultHandleForm(
+              booleanFormProvider(carryLossForwardPage, request.userType),
+              carryLossForwardPage,
+              businessId,
+              taxYear,
+              toCyaIfAllPagesAnswered,
+              handleErrorFalse))
       }
 
-      handleApiResult(result).flatten
+      handleApiResult(result)
 
   }
 }

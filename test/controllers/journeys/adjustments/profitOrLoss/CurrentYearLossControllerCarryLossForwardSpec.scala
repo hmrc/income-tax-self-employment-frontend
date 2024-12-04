@@ -48,4 +48,6 @@ class CurrentYearLossControllerCarryLossForwardSpec extends BooleanGetAndPostQue
   mockService
     .hasOtherIncomeSources(*[TaxYear], *[Nino], *[Mtditid])(*[HeaderCarrier]) returns EitherT.rightT(false)
 
+  // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes & pension
+
 }

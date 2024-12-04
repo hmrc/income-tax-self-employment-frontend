@@ -50,4 +50,5 @@ class CurrentYearLossControllerWhatDoYouWantToDoWithLossSpec
     val view = application.injector.instanceOf[WhatDoYouWantToDoWithLossView]
     view(expectedForm, taxYear, businessId, scenario.userType, scenario.mode).toString()
   }
+  // TODO in SASS-9566 test that the view WhatDoYouWantToWithLoss gets displayed when user has other incomes & pension
 }
