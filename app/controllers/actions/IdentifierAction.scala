@@ -17,17 +17,19 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import common._
 import config.FrontendAppConfig
-import controllers.actions.AuthenticatedIdentifierAction.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues, User}
+import controllers.actions.AuthenticatedIdentifierAction.User
 import models.common.UserType
 import models.requests.IdentifierRequest
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, confidenceLevel}
-import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -47,7 +49,7 @@ class AuthenticatedIdentifierAction @Inject() (
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val retrievals = Retrievals.internalId and Retrievals.affinityGroup
+    val retrievals: Retrieval[Option[String] ~ Option[AffinityGroup]] = Retrievals.internalId and Retrievals.affinityGroup
 
     authorised().retrieve(retrievals) {
       case Some(internalId) ~ Some(AffinityGroup.Agent) =>
@@ -93,43 +95,63 @@ class AuthenticatedIdentifierAction @Inject() (
         Future(Redirect(config.incomeTaxSubmissionIvRedirect))
     }
 
+  private[actions] def agentAuthPredicate(mtdId: String): Predicate =
+    Enrolment(EnrolmentKeys.Individual)
+      .withIdentifier(EnrolmentIdentifiers.individualId, mtdId)
+      .withDelegatedAuthRule(DelegatedAuthRules.agentDelegatedAuthRule)
+
+  private[actions] def secondaryAgentPredicate(mtdId: String): Predicate =
+    Enrolment(EnrolmentKeys.SupportingAgent)
+      .withIdentifier(EnrolmentIdentifiers.individualId, mtdId)
+      .withDelegatedAuthRule(DelegatedAuthRules.supportingAgentDelegatedAuthRule)
+
   private[actions] def agentAuthentication[A](block: IdentifierRequest[A] => Future[Result], internalId: String)(implicit
       request: Request[A],
-      hc: HeaderCarrier): Future[Result] = {
-
-    lazy val agentDelegatedAuthRuleKey = "mtd-it-auth"
-
-    lazy val agentAuthPredicate: String => Enrolment = identifierId =>
-      Enrolment(EnrolmentKeys.Individual)
-        .withIdentifier(EnrolmentIdentifiers.individualId, identifierId)
-        .withDelegatedAuthRule(agentDelegatedAuthRuleKey)
-
-    val optionalNino    = request.session.get(SessionValues.CLIENT_NINO)
-    val optionalMtdItId = request.session.get(SessionValues.CLIENT_MTDITID)
-
-    (optionalMtdItId, optionalNino) match {
-
+      hc: HeaderCarrier): Future[Result] =
+    (request.session.get(SessionValues.CLIENT_MTDITID), request.session.get(SessionValues.CLIENT_NINO)) match {
       case (Some(mtdItId), Some(nino)) =>
         authorised(agentAuthPredicate(mtdItId))
-          .retrieve(allEnrolments) { enrolments =>
-            enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
-              case Some(arn) =>
-                block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString)))
-              case None =>
-                logger.info("[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-                Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
-            }
-          } recover { case _: AuthorisationException =>
-          logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
-          Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad)
-        }
+          .retrieve(allEnrolments) {
+            populateAgent(block, internalId, mtdItId, nino, _, isSupportingAgent = false)
+          }
+          .recoverWith(agentRecovery(block, internalId, mtdItId, nino))
       case (mtditid, nino) =>
         logger.info(
           s"[AuthorisedAction][agentAuthentication] - Agent does not have session key values. " +
             s"Redirecting to view & change. MTDITID missing:${mtditid.isEmpty}, NINO missing:${nino.isEmpty}")
         Future.successful(Redirect(config.viewAndChangeEnterUtrUrl))
     }
+
+  private def agentRecovery[A](block: IdentifierRequest[A] => Future[Result], internalId: String, mtdItId: String, nino: String)(implicit
+      request: Request[A],
+      hc: HeaderCarrier): PartialFunction[Throwable, Future[Result]] = {
+    case _: AuthorisationException if config.emaSupportingAgentsEnabled =>
+      authorised(secondaryAgentPredicate(mtdItId))
+        .retrieve(allEnrolments) {
+          populateAgent(block, internalId, mtdItId, nino, _, isSupportingAgent = true)
+        }
+        .recover { case _ =>
+          logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have secondary delegated authority for Client.")
+          Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad)
+        }
+    case _: AuthorisationException =>
+      logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
+      Future.successful(Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad))
   }
+
+  private def populateAgent[A](block: IdentifierRequest[A] => Future[Result],
+                               internalId: String,
+                               mtdItId: String,
+                               nino: String,
+                               enrolments: Enrolments,
+                               isSupportingAgent: Boolean)(implicit request: Request[A]) =
+    enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
+      case Some(arn) =>
+        block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
+      case None =>
+        logger.info("[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+        Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
+    }
 
   private[actions] def enrolmentGetIdentifierValue(checkedKey: String, checkedIdentifier: String, enrolments: Enrolments): Option[String] =
     enrolments.enrolments.collectFirst { case Enrolment(`checkedKey`, enrolmentIdentifiers, _, _) =>
@@ -142,28 +164,8 @@ class AuthenticatedIdentifierAction @Inject() (
 
 object AuthenticatedIdentifierAction {
 
-  case class User(mtditid: String, arn: Option[String], nino: String, affinityGroup: String) {
+  case class User(mtditid: String, arn: Option[String], nino: String, affinityGroup: String, isSupportingAgent: Boolean = false) {
     val userType: UserType = if (arn.nonEmpty) UserType.Agent else UserType.Individual
-  }
-
-  object EnrolmentKeys {
-    val Individual = "HMRC-MTD-IT"
-    val Agent      = "HMRC-AS-AGENT"
-    val nino       = "HMRC-NI"
-  }
-
-  object EnrolmentIdentifiers {
-    val individualId   = "MTDITID"
-    val agentReference = "AgentReferenceNumber"
-    val nino           = "NINO"
-  }
-
-  object SessionValues {
-    val CLIENT_MTDITID = "ClientMTDID"
-    val CLIENT_NINO    = "ClientNino"
-
-    val TAX_YEAR        = "TAX_YEAR"
-    val VALID_TAX_YEARS = "validTaxYears"
   }
 
 }
