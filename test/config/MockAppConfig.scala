@@ -36,6 +36,9 @@ trait MockAppConfig extends MockFactory {
 
     def viewAndChangeEnterUtrUrl(url: String): CallHandler0[String] =
       (() => mockAppConfig.viewAndChangeEnterUtrUrl).expects().returns(url).anyNumberOfTimes()
+
+    def incomeTaxSubmissionIvRedirect(url: String): CallHandler0[String] =
+      (() => mockAppConfig.incomeTaxSubmissionIvRedirect).expects().returns(url).anyNumberOfTimes()
   }
 
 }

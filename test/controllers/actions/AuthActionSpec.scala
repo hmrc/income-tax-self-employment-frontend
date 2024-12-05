@@ -37,6 +37,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
     MockAppConfig.loginUrl("/sign-in")
     MockAppConfig.loginContinueUrl("/continue-url")
     MockAppConfig.viewAndChangeEnterUtrUrl("/enter-utr")
+    MockAppConfig.incomeTaxSubmissionIvRedirect("/iv-uplift")
 
     lazy val application = applicationBuilder(userAnswers = None).build()
     lazy val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
@@ -52,31 +53,122 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
   "Auth Action" - {
 
-    "when user is an Individual and authorised with a satisfactory confidence level" - {
+    "when the user is an Individual" - {
 
-      "must return OK" in new Fixture {
+      "authorised with a satisfactory confidence level" - {
 
-        val enrolments = Enrolments(
-          Set(
-            Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated"),
-            Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
-          ))
+        "has a NINO and MTDITID enrolment" - {
 
-        MockAuthConnector
-          .authorise(EmptyPredicate)(
-            Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
-          )
-          .once()
+          "must return OK" in new Fixture {
 
-        MockAuthConnector
-          .authorise(EmptyPredicate)(
-            Future.successful(new ~(enrolments, ConfidenceLevel.L250))
-          )
-          .once()
+            val enrolments = Enrolments(
+              Set(
+                Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated"),
+                Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
+              ))
 
-        val result = controller.onPageLoad()(FakeRequest())
+            MockAuthConnector
+              .authorise(EmptyPredicate)(
+                Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
+              )
+              .once()
 
-        status(result) mustBe OK
+            MockAuthConnector
+              .authorise(EmptyPredicate)(
+                Future.successful(new ~(enrolments, ConfidenceLevel.L250))
+              )
+              .once()
+
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustBe OK
+          }
+        }
+
+        "has a missing NINO" - {
+
+          "must return SEE_OTHER and redirect to login" in new Fixture {
+
+            val enrolments = Enrolments(
+              Set(
+                Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated")
+              ))
+
+            MockAuthConnector
+              .authorise(EmptyPredicate)(
+                Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
+              )
+              .once()
+
+            MockAuthConnector
+              .authorise(EmptyPredicate)(
+                Future.successful(new ~(enrolments, ConfidenceLevel.L250))
+              )
+              .once()
+
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(mockAppConfig.loginUrl)
+          }
+        }
+
+        "has a missing MTDITID" - {
+
+          "must return SEE_OTHER and redirect to individual auth error page" in new Fixture {
+
+            val enrolments = Enrolments(
+              Set(
+                Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
+              ))
+
+            MockAuthConnector
+              .authorise(EmptyPredicate)(
+                Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
+              )
+              .once()
+
+            MockAuthConnector
+              .authorise(EmptyPredicate)(
+                Future.successful(new ~(enrolments, ConfidenceLevel.L250))
+              )
+              .once()
+
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.IndividualAuthErrorController.onPageLoad.url)
+          }
+        }
+      }
+
+      "unauthorised with an insufficient confidence level" - {
+
+        "must return SEE_OTHER and redirect to IV Uplift journey" in new Fixture {
+
+          val enrolments = Enrolments(
+            Set(
+              Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated"),
+              Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
+            ))
+
+          MockAuthConnector
+            .authorise(EmptyPredicate)(
+              Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
+            )
+            .once()
+
+          MockAuthConnector
+            .authorise(EmptyPredicate)(
+              Future.successful(new ~(enrolments, ConfidenceLevel.L200))
+            )
+            .once()
+
+          val result = controller.onPageLoad()(FakeRequest())
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(mockAppConfig.incomeTaxSubmissionIvRedirect)
+        }
       }
     }
 
@@ -283,19 +375,6 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
       "must redirect the user to the unauthorised page" in new Fixture {
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(InsufficientEnrolments()))
-
-        val result = controller.onPageLoad()(FakeRequest())
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-      }
-    }
-
-    "the user doesn't have sufficient confidence level" - {
-
-      "must redirect the user to the unauthorised page" in new Fixture {
-
-        MockAuthConnector.authorise(EmptyPredicate)(Future.failed(InsufficientConfidenceLevel()))
 
         val result = controller.onPageLoad()(FakeRequest())
 
