@@ -42,5 +42,7 @@ class Module extends AbstractModule {
     bind(classOf[SubmittedDataRetrievalActionProvider]).to(classOf[SubmittedDataRetrievalActionProviderImpl]).asEagerSingleton()
 
     bind(classOf[AuditService]).to(classOf[AuditServiceImpl]).asEagerSingleton()
+
+    bind(classOf[FrontendAppConfig]).to(classOf[FrontendAppConfigImpl]).asEagerSingleton()
   }
 }

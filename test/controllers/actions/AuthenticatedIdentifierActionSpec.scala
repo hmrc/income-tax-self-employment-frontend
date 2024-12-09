@@ -19,7 +19,8 @@ package controllers.actions
 import base.SpecBase
 import base.SpecBase.taxYear
 import config.FrontendAppConfig
-import controllers.actions.AuthenticatedIdentifierAction.{EnrolmentIdentifiers, EnrolmentKeys, SessionValues, User}
+import common._
+import controllers.actions.AuthenticatedIdentifierAction.User
 import models.common.TaxYear
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers
