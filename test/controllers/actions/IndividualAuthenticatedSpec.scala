@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import config.FrontendAppConfig
-import controllers.actions.AuthenticatedIdentifierAction.{EnrolmentIdentifiers, EnrolmentKeys}
+import common._
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any

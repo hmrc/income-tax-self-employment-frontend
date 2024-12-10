@@ -57,6 +57,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val sampleUserId: UserId           = UserId("id")
   val someNino: Nino                 = Nino("someNino")
   val mtditid                        = Mtditid("someId")
+  val arn                            = "arnId"
   val businessId: BusinessId         = BusinessId("SJPR05893938418")
   val tradingName: TradingName       = TradingName("Circus Performer")
   val typeOfBusiness: TypeOfBusiness = TypeOfBusiness("Self Employed")

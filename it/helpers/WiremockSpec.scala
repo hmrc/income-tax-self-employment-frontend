@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, FrontendAppConfigImpl}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -59,7 +59,7 @@ trait WiremockSpec
   protected lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
 
   protected val appConfig: FrontendAppConfig =
-    new FrontendAppConfig(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
+    new FrontendAppConfigImpl(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {
       override val selfEmploymentBEBaseUrl: String = s"http://localhost:$wireMockPort"
     }
 
