@@ -68,8 +68,8 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
   override val exitSurveyUrl: String     = s"$exitSurveyBaseUrl/feedback/income-tax-self-employment-frontend"
 
   // Feature switching
-  override val languageTranslationEnabled: Boolean = configuration.get[Boolean]("features.welsh-translation")
-  override val emaSupportingAgentsEnabled: Boolean = configuration.get[Boolean]("features.ema-supporting-agents-enabled")
+  override val languageTranslationEnabled: Boolean = configuration.get[Boolean]("feature-switch.welsh-translation")
+  override val emaSupportingAgentsEnabled: Boolean = configuration.get[Boolean]("feature-switch.ema-supporting-agents-enabled")
 
   override val languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
