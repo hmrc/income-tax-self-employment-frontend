@@ -21,6 +21,9 @@ import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys, SessionV
 import config.MockAppConfig
 import connectors.MockAuthConnector
 import controllers.standard.routes
+import mocks.MockErrorHandler
+import mocks.MockErrorHandler.{mockErrorHandler, mockInternalServerError}
+import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,7 +45,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
     lazy val application = applicationBuilder(userAnswers = None).build()
     lazy val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
-    lazy val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, mockAppConfig, bodyParsers)
+    lazy val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, mockErrorHandler, mockAppConfig, bodyParsers)
 
     class Harness(authAction: IdentifierAction) {
       def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
@@ -206,6 +209,45 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
             val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
             status(result) mustBe OK
+          }
+        }
+
+        "an unexpected error occurs during primary auth call" - {
+          "must return INTERNAL_SERVER_ERROR" in new Fixture {
+            MockAuthConnector
+              .authorise(EmptyPredicate)(Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent))))
+
+            MockAuthConnector
+              .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments("Error")))
+
+            mockInternalServerError(InternalServerError("An unexpected error occurred"))
+
+            val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+
+            status(result) mustBe INTERNAL_SERVER_ERROR
+            contentAsString(result) mustBe "An unexpected error occurred"
+          }
+        }
+
+        "an unexpected error occurs during secondary auth call" - {
+          "must return INTERNAL_SERVER_ERROR" in new Fixture {
+            MockAuthConnector
+              .authorise(EmptyPredicate)(Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent))))
+
+            MockAuthConnector
+              .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments("An error")))
+
+            MockAuthConnector
+              .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.failed(new IndexOutOfBoundsException("An error")))
+
+            mockInternalServerError(InternalServerError("An unexpected error occurred"))
+
+            MockAppConfig.emaSupportingAgentsEnabled(true)
+
+            val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+
+            status(result) mustBe INTERNAL_SERVER_ERROR
+            contentAsString(result) mustBe "An unexpected error occurred"
           }
         }
 

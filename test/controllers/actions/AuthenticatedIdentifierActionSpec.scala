@@ -18,20 +18,21 @@ package controllers.actions
 
 import base.SpecBase
 import base.SpecBase.taxYear
-import config.FrontendAppConfig
 import common._
+import config.FrontendAppConfig
 import controllers.actions.AuthenticatedIdentifierAction.User
+import mocks.MockErrorHandler.{mockErrorHandler, mockInternalServerError}
 import models.common.TaxYear
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.SEE_OTHER
-import play.api.mvc.Results.Ok
+import play.api.http.Status._
+import play.api.mvc.Results.{InternalServerError, Ok}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, BodyParsers, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -51,7 +52,7 @@ class AuthenticatedIdentifierActionSpec extends SpecBase with MockitoSugar {
   val mockAuthConnector: AuthConnector         = mock[AuthConnector]
 
   val authenticatedIdentifierAction: AuthenticatedIdentifierAction =
-    new AuthenticatedIdentifierAction(mockAuthConnector, mockFrontendAppConfig, mockBodyParsersDefault)
+    new AuthenticatedIdentifierAction(mockAuthConnector, mockErrorHandler, mockFrontendAppConfig, mockBodyParsersDefault)
 
   ".invokeBlock" - {
 
@@ -93,6 +94,19 @@ class AuthenticatedIdentifierActionSpec extends SpecBase with MockitoSugar {
 
         status(result) mustBe SEE_OTHER
       }
+    }
+
+    "return InternalServerError page when an unexpected error occurs during auth call" in {
+      object SomeError extends IndexOutOfBoundsException("Some reason")
+
+      lazy val result = {
+        mockAuthReturnException(mockAuthConnector, SomeError)
+        mockInternalServerError(InternalServerError("An unexpected error occurred"))
+        authenticatedIdentifierAction.invokeBlock(fakeRequest, block)
+      }
+
+      status(result) mustBe INTERNAL_SERVER_ERROR
+      contentAsString(result) mustBe "An unexpected error occurred"
     }
   }
 }
