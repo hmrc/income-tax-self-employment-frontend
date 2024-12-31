@@ -21,7 +21,6 @@ import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys, SessionV
 import config.MockAppConfig
 import connectors.MockAuthConnector
 import controllers.standard.routes
-import mocks.MockErrorHandler
 import mocks.MockErrorHandler.{mockErrorHandler, mockInternalServerError}
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
