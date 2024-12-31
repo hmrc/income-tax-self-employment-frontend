@@ -22,6 +22,7 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies(),
     RoutesKeys.routesImport ++= Seq("models._", "models.common._", "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"),
     TwirlKeys.templateImports ++= Seq(
+      "config.FrontendAppConfig",
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
       "uk.gov.hmrc.govukfrontend.views.html.components._",

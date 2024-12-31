@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import common._
 import config.FrontendAppConfig
 import controllers.actions.AuthenticatedIdentifierAction.User
+import handlers.ErrorHandler
 import models.common.UserType
 import models.requests.IdentifierRequest
 import play.api.Logger
@@ -39,6 +40,7 @@ trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with
 
 class AuthenticatedIdentifierAction @Inject() (
     override val authConnector: AuthConnector,
+    errorHandler: ErrorHandler,
     config: FrontendAppConfig,
     val parser: BodyParsers.Default
 )(implicit val executionContext: ExecutionContext)
@@ -65,6 +67,9 @@ class AuthenticatedIdentifierAction @Inject() (
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
         Redirect(controllers.standard.routes.UnauthorisedController.onPageLoad)
+      case e =>
+        logger.error(s"[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
+        errorHandler.internalServerError()(request)
     }
   }
 
@@ -105,15 +110,15 @@ class AuthenticatedIdentifierAction @Inject() (
       .withIdentifier(EnrolmentIdentifiers.individualId, mtdId)
       .withDelegatedAuthRule(DelegatedAuthRules.supportingAgentDelegatedAuthRule)
 
+  private val agentAuthLogString: String = "[AuthorisedAction][agentAuthentication]"
+
   private[actions] def agentAuthentication[A](block: IdentifierRequest[A] => Future[Result], internalId: String)(implicit
       request: Request[A],
       hc: HeaderCarrier): Future[Result] =
     (request.session.get(SessionValues.CLIENT_MTDITID), request.session.get(SessionValues.CLIENT_NINO)) match {
       case (Some(mtdItId), Some(nino)) =>
         authorised(agentAuthPredicate(mtdItId))
-          .retrieve(allEnrolments) {
-            populateAgent(block, internalId, mtdItId, nino, _, isSupportingAgent = false)
-          }
+          .retrieve(allEnrolments)(populateAgent(block, internalId, mtdItId, nino, _, isSupportingAgent = false))
           .recoverWith(agentRecovery(block, internalId, mtdItId, nino))
       case (mtditid, nino) =>
         logger.info(
@@ -130,13 +135,20 @@ class AuthenticatedIdentifierAction @Inject() (
         .retrieve(allEnrolments) {
           populateAgent(block, internalId, mtdItId, nino, _, isSupportingAgent = true)
         }
-        .recover { case _ =>
-          logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have secondary delegated authority for Client.")
-          Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad)
+        .recover {
+          case _: AuthorisationException =>
+            logger.info(s"$agentAuthLogString - Agent does not have secondary delegated authority for Client.")
+            Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad)
+          case e =>
+            logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
+            errorHandler.internalServerError()
         }
     case _: AuthorisationException =>
-      logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
+      logger.info(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
       Future.successful(Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad))
+    case e =>
+      logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
+      Future.successful(errorHandler.internalServerError())
   }
 
   private def populateAgent[A](block: IdentifierRequest[A] => Future[Result],
@@ -149,7 +161,7 @@ class AuthenticatedIdentifierAction @Inject() (
       case Some(arn) =>
         block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
       case None =>
-        logger.info("[AuthorisedAction][agentAuthentication] Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+        logger.info(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
         Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
     }
 

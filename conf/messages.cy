@@ -1962,3 +1962,12 @@ class4NonDivingExempt.error.required.agent = Dewiswch holl fusnesau hunangyfloga
 class4NonDivingExemptSingleBusiness.error.required.individual = Dewiswch ie os ydych wedi derbyn elw yn rhinwedd eich swydd fel ymddiriedolwr, ysgutor neu weinyddwr ar gyfer {0}
 class4NonDivingExemptSingleBusiness.error.required.agent = Dewiswch ie os yw’ch cleient wedi derbyn elw yn rhinwedd ei swydd fel ymddiriedolwr, ysgutor neu weinyddwr {0}
 class4NonDivingExempt.change.hidden = Newid pa fusnesau hunangyflogaeth yr ydych yn ymddiriedolwr, yn ysgutor neu’n weinyddwr iddynt
+
+internal-server-error-template.paragraph.1 = Rhowch gynnig arall arni yn nes ymlaen.
+error-template.paragraph.1.1 = Gallwch hefyd wneud y canlynol:
+error-template.paragraph.1.2 = mynd i’r
+error-template.paragraph.1.3 = hafan Treth Incwm
+error-template.paragraph.1.4 = am ragor o wybodaeth
+common.error.self-assessment.paragraph.1.2 = Hunanasesiad: ymholiadau cyffredinol
+common.error.self-assessment.paragraph.1.3 = i siarad â rhywun am eich treth incwm
+common.use = defnyddio

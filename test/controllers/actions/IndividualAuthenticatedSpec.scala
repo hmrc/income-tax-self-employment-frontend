@@ -17,8 +17,9 @@
 package controllers.actions
 
 import base.SpecBase
-import config.FrontendAppConfig
 import common._
+import config.FrontendAppConfig
+import mocks.MockErrorHandler.mockErrorHandler
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -48,7 +49,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
   val mockAuthConnector: AuthConnector         = mock[AuthConnector]
 
   val authenticatedIdentifierAction: AuthenticatedIdentifierAction =
-    new AuthenticatedIdentifierAction(mockAuthConnector, mockFrontendAppConfig, mockBodyParsersDefault)
+    new AuthenticatedIdentifierAction(mockAuthConnector, mockErrorHandler, mockFrontendAppConfig, mockBodyParsersDefault)
 
   "individualAuthentication" - {
 
