@@ -55,7 +55,7 @@ class ZegvHowMuchDoYouWantToClaimControllerSpec extends AnyWordSpecLike with Pla
         val result = route(application, request).value
         assert(status(result) === OK)
         assert(getTitle(
-          result) === "How much of the vehicle’s cost do you want to claim under this 100% allowance? - income-tax-self-employment-frontend - GOV.UK")
+          result) === "How much of the vehicle’s cost do you want to claim under this 100% allowance? - Update and submit an Income Tax Return - GOV.UK")
       }
     }
   }

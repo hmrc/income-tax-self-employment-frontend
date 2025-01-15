@@ -47,7 +47,7 @@ trait StandardControllerSpec extends AnyWordSpecLike with PlayRunners with Contr
         running(application) {
           val result = route(application, request).value
           assert(status(result) === OK)
-          assert(getTitle(result) === s"$expectedTitle - income-tax-self-employment-frontend - GOV.UK")
+          assert(getTitle(result) === s"$expectedTitle - Update and submit an Income Tax Return - GOV.UK")
         }
       }
     }
