@@ -100,7 +100,9 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     "notify pager duty on failure for JourneyAnswersContext" in new PagerDutyAware {
       stubPost(url = downstreamUrl(ExpensesTailoring), BAD_REQUEST)
       val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
-      result shouldBe parsingError("POST", "http://localhost:11111/income-tax-self-employment/2024/someBusinessId/expenses-categories/answers").asLeft
+      result shouldBe parsingError(
+        "POST",
+        s"http://localhost:11111/income-tax-self-employment/$taxYear/someBusinessId/expenses-categories/answers").asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
 
@@ -109,7 +111,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
       result shouldBe parsingError(
         "POST",
-        "http://localhost:11111/income-tax-self-employment/2024/someBusinessId/expenses-goods-to-sell-or-use/someNino/answers").asLeft
+        s"http://localhost:11111/income-tax-self-employment/$taxYear/someBusinessId/expenses-goods-to-sell-or-use/someNino/answers").asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
   }
@@ -156,7 +158,9 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     "fail when the downstream service returns an error" in new PagerDutyAware {
       stubGetWithResponseBody(downstreamUrl(ExpensesTailoring), BAD_REQUEST, "{}", headersSentToBE)
       val result = connector.getSubmittedAnswers[JsObject](journeyCtx(ExpensesTailoring)).value.futureValue
-      result shouldBe parsingError("GET", "http://localhost:11111/income-tax-self-employment/2024/someBusinessId/expenses-categories/answers").asLeft
+      result shouldBe parsingError(
+        "GET",
+        s"http://localhost:11111/income-tax-self-employment/$taxYear/someBusinessId/expenses-categories/answers").asLeft
       loggedErrors.exists(_.contains(FOURXX_RESPONSE_FROM_CONNECTOR.toString)) shouldBe true
     }
   }
@@ -262,7 +266,9 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       stubGetWithResponseBody(checkForOtherIncomeSourcesUrl, BAD_REQUEST, "responseBody", headersSentToBE)
 
       val result = connector.hasOtherIncomeSources(taxYear, nino, mtditid).value.futureValue
-      result shouldBe parsingError("GET", "http://localhost:11111/income-tax-self-employment/2024/check-for-other-income-source/someNino").asLeft
+      result shouldBe parsingError(
+        "GET",
+        s"http://localhost:11111/income-tax-self-employment/${taxYear}/check-for-other-income-source/someNino").asLeft
     }
   }
 }

@@ -60,7 +60,7 @@ class PeopleLivingAtBusinessPremisesControllerSpec
     bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
-  private val maxMonths = 11
+  private val maxMonths = 12
 
   override def createForm(userType: UserType): Form[PeopleLivingAtBusinessPremisesFormModel] =
     PeopleLivingAtBusinessPremisesFormProvider(userType, maxMonths)
