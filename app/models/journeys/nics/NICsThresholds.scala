@@ -61,13 +61,13 @@ object NICsThresholds {
 
     def ageIsUnder16(userDoB: LocalDate, taxYear: TaxYear, ageAtStartOfTaxYear: Boolean): Boolean = {
       val comparisonDayMonth = if (ageAtStartOfTaxYear) currentTaxYearStartDate else dateNow
-      val comparisonDate     = LocalDate.of(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
+      val comparisonDate     = LocalDate.of(comparisonDayMonth.getYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
       val age                = Period.between(userDoB, comparisonDate).getYears
       age < 16
     }
     def ageIsUnderStatePensionAge(userDoB: LocalDate, taxYear: TaxYear, ageAtStartOfTaxYear: Boolean): Boolean = {
       val comparisonDayMonth = if (ageAtStartOfTaxYear) currentTaxYearStartDate else dateNow
-      val comparisonDate     = LocalDate.of(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
+      val comparisonDate     = LocalDate.of(comparisonDayMonth.getYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
       val age                = Period.between(userDoB, comparisonDate).getYears
       val statePensionAge    = StatePensionAgeThresholds.getThresholdForTaxYear(taxYear)
       age < statePensionAge
