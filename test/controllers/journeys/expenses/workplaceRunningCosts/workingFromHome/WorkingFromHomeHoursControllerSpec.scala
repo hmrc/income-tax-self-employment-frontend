@@ -58,7 +58,7 @@ class WorkingFromHomeHoursControllerSpec
     bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
   )
 
-  private val maxMonths = 11
+  private val maxMonths = 12
 
   override def createForm(userType: UserType): Form[WorkingFromHomeHoursFormModel] = WorkingFromHomeHoursFormProvider(userType, maxMonths)
   override def validFormModel: WorkingFromHomeHoursFormModel                       = WorkingFromHomeHoursFormModel(amount, amount, amount)
