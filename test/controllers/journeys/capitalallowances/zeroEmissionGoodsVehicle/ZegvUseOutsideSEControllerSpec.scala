@@ -46,7 +46,8 @@ class ZegvUseOutsideSEControllerSpec extends AnyWordSpecLike with PlayRunners wi
       running(application) {
         val result = route(application, request).value
         assert(status(result) === OK)
-        assert(getTitle(result) === "How much did you use the vehicle outside your self-employment? - income-tax-self-employment-frontend - GOV.UK")
+        assert(
+          getTitle(result) === "How much did you use the vehicle outside your self-employment? - Update and submit an Income Tax Return - GOV.UK")
       }
     }
   }
