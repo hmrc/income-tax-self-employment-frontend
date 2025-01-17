@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ class StructuresBuildingsNewClaimAmountFormProvider @Inject() extends Mappings w
 
   def apply(userType: UserType): Form[BigDecimal] =
     Form(
-      "value" -> currency(s"structuresBuildingsNewClaimAmount.error.required.$userType", "error.nonNumeric")
+      "value" -> currency(s"structuresBuildingsNewClaimAmount.error.required.$userType", s"error.nonNumeric.$userType")
         .verifying(greaterThan(minimumValue, "error.lessThanZero"))
         .verifying(lessThan(maximumValue, OverMaxError))
     )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,78 @@
 
 package forms.capitalallowances.structuresBuildingsAllowance
 
-import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.Form
+import org.scalatestplus.play.PlaySpec
+import play.api.data.{Form, FormError}
 
-class StructuresBuildingsNewClaimAmountFormProviderSpec extends CurrencyFormProviderBaseSpec("StructuresBuildingsNewClaimAmountFormProvider") {
+class StructuresBuildingsNewClaimAmountFormProviderSpec extends PlaySpec {
 
-  override def getFormProvider(userType: UserType): Form[BigDecimal] = new StructuresBuildingsNewClaimAmountFormProvider()(userType)
+  val formProvider: StructuresBuildingsNewClaimAmountFormProvider = new StructuresBuildingsNewClaimAmountFormProvider()
+  val formIndividual: Form[BigDecimal]                            = formProvider(UserType.Individual)
+  val formAgent: Form[BigDecimal]                                 = formProvider(UserType.Agent)
 
-  override lazy val requiredError: String                  = "structuresBuildingsNewClaimAmount.error.required"
-  override lazy val nonNumericError: String                = "error.nonNumeric"
-  override lazy val lessThanZeroError: String              = "error.lessThanZero"
-  override lazy val overMaxError: String                   = "error.overMax"
-  override def nonNumericErrorNoUserType: Option[String]   = Some(nonNumericError)
-  override def lessThanZeroErrorNoUserType: Option[String] = Some(lessThanZeroError)
-  override def overMaxErrorNoUserType: Option[String]      = Some(overMaxError)
+  "StructuresBuildingsNewClaimAmountFormProvider" must {
 
+    "bind valid data for Individual" in {
+      val result = formIndividual.bind(Map("value" -> "1000.00"))
+      result.errors mustBe empty
+
+      result.get mustBe BigDecimal(1000.00)
+    }
+
+    "bind valid data for Agent" in {
+      val result = formAgent.bind(Map("value" -> "5000.00"))
+      result.errors mustBe empty
+
+      result.get mustBe BigDecimal(5000.00)
+    }
+
+    "fail to bind when value is missing for Individual" in {
+      val result = formIndividual.bind(Map.empty[String, String])
+
+      result.errors must contain(FormError("value", "structuresBuildingsNewClaimAmount.error.required.individual"))
+    }
+
+    "fail to bind when value is missing for Agent" in {
+      val result = formAgent.bind(Map.empty[String, String])
+
+      result.errors must contain(FormError("value", "structuresBuildingsNewClaimAmount.error.required.agent"))
+    }
+
+    "fail to bind when value is non-numeric for Individual" in {
+      val result = formIndividual.bind(Map("value" -> "abc"))
+
+      result.errors must contain(FormError("value", "error.nonNumeric.individual"))
+    }
+
+    "fail to bind when value is non-numeric for Agent" in {
+      val result = formAgent.bind(Map("value" -> "abc"))
+
+      result.errors must contain(FormError("value", "error.nonNumeric.agent"))
+    }
+
+    "fail to bind when value is less than minimum for Individual" in {
+      val result = formIndividual.bind(Map("value" -> "-1"))
+
+      result.errors must contain(FormError("value", "error.lessThanZero", Seq(BigDecimal(0))))
+    }
+
+    "fail to bind when value is less than minimum for Agent" in {
+      val result = formAgent.bind(Map("value" -> "-1"))
+
+      result.errors must contain(FormError("value", "error.lessThanZero", Seq(BigDecimal(0))))
+    }
+
+    "fail to bind when value exceeds maximum for Individual" in {
+      val result = formIndividual.bind(Map("value" -> "100000000000.01"))
+
+      result.errors must contain(FormError("value", "error.overMax", Seq(BigDecimal(100000000000.00))))
+    }
+
+    "fail to bind when value exceeds maximum for Agent" in {
+      val result = formAgent.bind(Map("value" -> "100000000000.01"))
+
+      result.errors must contain(FormError("value", "error.overMax", Seq(BigDecimal(100000000000.00))))
+    }
+  }
 }

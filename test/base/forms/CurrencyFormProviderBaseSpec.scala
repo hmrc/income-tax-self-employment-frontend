@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ abstract case class CurrencyFormProviderBaseSpec(formProviderName: String) exten
 
   userTypes.foreach { userType =>
     s"$formProviderName for $userType, form should" - {
+
       val form: Form[BigDecimal] = getFormProvider(userType)
 
       behave like fieldThatBindsValidData(
