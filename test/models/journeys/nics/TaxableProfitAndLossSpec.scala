@@ -52,9 +52,6 @@ class TaxableProfitAndLossSpec extends AnyFreeSpec with ScalaCheckPropertyChecks
   "returnClassTwoOrFourEligible" - {
     "must return the correct class object depending on if the user is Class 2 or 4 eligible or neither" in {
       forAll(testScenarios) { case (taxableProfitsAndLosses, dateOfBirth, expectedResult) =>
-        println("==========taxableProfitsAndLosses=====" + taxableProfitsAndLosses)
-        println("==========dateOfBirth=====" + dateOfBirth)
-        println("==========expectedResult=====" + expectedResult)
 
         val result = TaxableProfitAndLoss.returnClassTwoOrFourEligible(taxableProfitsAndLosses, dateOfBirth, taxYear)
 

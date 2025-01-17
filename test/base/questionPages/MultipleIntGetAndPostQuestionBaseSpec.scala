@@ -103,8 +103,6 @@ abstract case class MultipleIntGetAndPostQuestionBaseSpec[A](controller: String,
               val result = route(application, postRequest).value
 
               status(result) shouldBe SEE_OTHER
-              println("-----------------" + redirectLocation(result).value)
-              println("-------onwardRoute.url----------" + onwardRoute.url)
               redirectLocation(result).value shouldBe onwardRoute.url
             }
           }
