@@ -67,7 +67,7 @@ class LanguageSwitchControllerISpec extends IntegrationBaseSpec with OptionValue
     "no referer in header" must {
       "redirect to login continue url" in {
         when(mockAppConfig.languageMap).thenReturn(Map("en" -> Lang("en"), "cy" -> Lang("cy")))
-        when(mockAppConfig.incomeTaxSubmissionStartUrl(any())).thenReturn(s"http://localhost:9304/update-and-submit-income-tax-return/$taxYear/start")
+        when(mockAppConfig.incomeTaxSubmissionStartUrl(any())).thenReturn(s"http://localhost:9302/update-and-submit-income-tax-return/$taxYear/start")
 
         val request = FakeRequest(GET, switchLanguageRoute(welsh))
         val result  = route(fakeApplication(), request).value

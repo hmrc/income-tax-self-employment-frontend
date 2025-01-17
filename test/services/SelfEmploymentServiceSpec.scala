@@ -57,7 +57,6 @@ import services.SelfEmploymentService.clearDataFromUserAnswers
 import stubs.repositories.StubSessionRepository
 import stubs.services.AuditServiceStub
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

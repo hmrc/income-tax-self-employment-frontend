@@ -1,5 +1,5 @@
 ###### Common keys, and non-journey keys ######
-service.name = income-tax-self-employment-frontend
+service.name = Update and submit an Income Tax Return
 
 site.back = Back
 site.remove = Remove

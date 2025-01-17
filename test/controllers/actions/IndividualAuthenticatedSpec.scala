@@ -118,7 +118,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
         }
 
         "redirects to the iv url" in {
-          redirectLocation(result) mustBe Some("http://localhost:9304/update-and-submit-income-tax-return/iv-uplift")
+          redirectLocation(result) mustBe Some("http://localhost:9302/update-and-submit-income-tax-return/iv-uplift")
         }
       }
     }

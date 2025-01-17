@@ -83,7 +83,7 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
 
   override val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
-  override val incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission.url") +
+  override val incomeTaxSubmissionBaseUrl: String = configuration.get[String]("microservice.services.income-tax-submission-frontend.url") +
     configuration.get[String]("microservice.services.income-tax-submission-frontend.context")
 
   override val incomeTaxSubmissionIvRedirect: String = incomeTaxSubmissionBaseUrl +
