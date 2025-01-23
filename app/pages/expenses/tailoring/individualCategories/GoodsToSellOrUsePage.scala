@@ -19,10 +19,15 @@ package pages.expenses.tailoring.individualCategories
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
+import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 import pages.{OneQuestionPage, PageJourney}
+import queries.Settable
 
 case object GoodsToSellOrUsePage extends OneQuestionPage[GoodsToSellOrUse] {
   override def toString: String = "goodsToSellOrUse"
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(TaxiMinicabOrRoadHaulagePage, GoodsToSellOrUseAmountPage, DisallowableGoodsToSellOrUseAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).map { _ =>

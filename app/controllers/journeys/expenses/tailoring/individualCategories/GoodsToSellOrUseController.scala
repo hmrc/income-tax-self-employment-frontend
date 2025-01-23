@@ -17,18 +17,17 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.enumerable
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.GoodsToSellOrUsePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -63,17 +62,22 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleSuccess(value: GoodsToSellOrUse): Future[Result] =
-        selfEmploymentService
-          .persistAnswer(businessId, request.userAnswers, value, GoodsToSellOrUsePage)
-          .map(updated => Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, updated, taxYear, businessId)))
-
       form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          value => handleSuccess(value)
+          value =>
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(GoodsToSellOrUsePage, businessId).contains(value)) {
+                  selfEmploymentService.clearGoodsToSellOrUseExpensesData(taxYear, businessId)
+                  clearDependentPages(GoodsToSellOrUsePage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, GoodsToSellOrUsePage)
+            } yield Redirect(navigator.nextPage(GoodsToSellOrUsePage, mode, savedAnswers, taxYear, businessId))
         )
   }
 
