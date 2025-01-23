@@ -34,7 +34,7 @@ import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -45,9 +45,9 @@ import scala.concurrent.Future
 
 class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val repairsAndMaintenanceRoute = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val repairsAndMaintenanceRoute: String = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new EnumerableFormProvider()
 
@@ -55,14 +55,14 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
   case class UserScenario(userType: UserType, form: Form[RepairsAndMaintenance], accountingType: AccountingType, baseUserAnswers: UserAnswers)
 
-  def baseAnswers =
+  def baseAnswers: JsObject =
     Json.obj(
       ExpensesCategoriesPage.toString -> IndividualCategories.toString,
       OfficeSuppliesPage.toString     -> YesDisallowable.toString,
       GoodsToSellOrUsePage.toString   -> GoodsToSellOrUse.YesDisallowable.toString
     )
 
-  val userScenarios = Seq(
+  val userScenarios: Seq[UserScenario] = Seq(
     UserScenario(
       userType = Individual,
       formProvider(RepairsAndMaintenancePage, Individual),
