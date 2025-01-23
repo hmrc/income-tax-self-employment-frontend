@@ -22,8 +22,12 @@ import helpers.{PagerDutyAware, WiremockSpec}
 import models.common.Journey.{ExpensesGoodsToSellOrUse, ExpensesTailoring, Income}
 import models.common.{Journey, JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
 import models.domain.BusinessIncomeSourcesSummary
+import models.errors.HttpErrorBody.SingleErrorBody
+import models.errors.{HttpError, ServiceError}
+import models.errors.ServiceError.ConnectorResponseError
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.{JourneyNameAndStatus, TaskList}
+import org.scalatest.EitherValues
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
@@ -31,7 +35,7 @@ import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 import java.time.LocalDate
 
-class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
+class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec with EitherValues {
 
   private def journeyNinoCtx(journey: Journey) = JourneyContextWithNino(taxYear, nino, businessId, mtditid, journey)
 
@@ -51,6 +55,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val clearSimplifiedExpensesUrl           = s"/income-tax-self-employment/$taxYear/clear-simplified-expenses-answers/$nino/$businessId"
   private val clearExpensesAndCapitalAllowancesUrl = s"/income-tax-self-employment/$taxYear/clear-expenses-and-capital-allowances/$nino/$businessId"
   private val clearOfficeSuppliesExpensesUrl       = s"/income-tax-self-employment/$taxYear/clear-office-supplies-expenses-answers/$nino/$businessId"
+  private val clearGoodsToSellOrUseExpensesUrl     = s"/income-tax-self-employment/$taxYear/clear-goods-to-sell-or-use-answers/$nino/$businessId"
   private val checkForOtherIncomeSourcesUrl        = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
@@ -240,6 +245,30 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       val result = connector.clearOfficeSuppliesExpenses(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe ().asRight
+    }
+  }
+
+  "clearGoodsToSellOrUseExpenses" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearGoodsToSellOrUseExpensesUrl, OK)
+
+      val result = connector.clearGoodsToSellOrUseExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
+    }
+
+    "return a failure when downstream fails" in {
+      stubPostWithoutResponseAndRequestBody(clearGoodsToSellOrUseExpensesUrl, BAD_REQUEST)
+
+      val result: Either[ServiceError, Unit] = connector.clearGoodsToSellOrUseExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result.left.value shouldBe
+        ConnectorResponseError(
+          "POST",
+          s"http://localhost:11111$clearGoodsToSellOrUseExpensesUrl",
+          HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
+        )
+
     }
   }
 
