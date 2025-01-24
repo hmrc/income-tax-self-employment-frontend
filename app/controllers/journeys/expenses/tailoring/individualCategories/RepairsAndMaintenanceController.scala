@@ -71,7 +71,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(RepairsAndMaintenancePage, businessId).contains(value)) {
-                  selfEmploymentService.clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
+                  selfEmploymentService.clearRepairsAndMaintenanceExpensesData(taxYear, businessId)
                   clearDependentPages(RepairsAndMaintenancePage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)
