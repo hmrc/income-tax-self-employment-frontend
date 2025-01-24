@@ -121,6 +121,10 @@ trait SelfEmploymentService {
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit]
 
+  def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit]
+
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean]
 }
 
@@ -293,6 +297,11 @@ class SelfEmploymentServiceImpl @Inject() (
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     connector.clearGoodsToSellOrUseExpensesData(taxYear, request.nino, businessId, request.mtditid)
+
+  def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    connector.clearRepairsAndMaintenanceExpensesData(taxYear, request.nino, businessId, request.mtditid)
 
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean] =
     connector.hasOtherIncomeSources(taxYear, nino, mtditid)

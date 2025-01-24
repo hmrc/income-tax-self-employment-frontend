@@ -56,7 +56,9 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val clearExpensesAndCapitalAllowancesUrl = s"/income-tax-self-employment/$taxYear/clear-expenses-and-capital-allowances/$nino/$businessId"
   private val clearOfficeSuppliesExpensesUrl       = s"/income-tax-self-employment/$taxYear/clear-office-supplies-expenses-answers/$nino/$businessId"
   private val clearGoodsToSellOrUseExpensesUrl     = s"/income-tax-self-employment/$taxYear/clear-goods-to-sell-or-use-answers/$nino/$businessId"
-  private val checkForOtherIncomeSourcesUrl        = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
+  private val clearRepairsAndMaintenanceExpensesDataUrl =
+    s"/income-tax-self-employment/$taxYear/clear-repairs-and-maintenance-expenses-answers/$nino/$businessId"
+  private val checkForOtherIncomeSourcesUrl = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -269,6 +271,29 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
           HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
         )
 
+    }
+  }
+
+  "clearRepairsAndMaintenanceExpensesData" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearRepairsAndMaintenanceExpensesDataUrl, OK)
+
+      val result = connector.clearRepairsAndMaintenanceExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
+    }
+
+    "fail when downstream returns an error" in {
+      stubPostWithoutResponseAndRequestBody(clearRepairsAndMaintenanceExpensesDataUrl, BAD_REQUEST)
+
+      val result = connector.clearRepairsAndMaintenanceExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result.left.value shouldBe
+        ConnectorResponseError(
+          "POST",
+          s"http://localhost:11111$clearRepairsAndMaintenanceExpensesDataUrl",
+          HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
+        )
     }
   }
 
