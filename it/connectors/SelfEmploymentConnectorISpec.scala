@@ -58,6 +58,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val clearGoodsToSellOrUseExpensesUrl     = s"/income-tax-self-employment/$taxYear/clear-goods-to-sell-or-use-answers/$nino/$businessId"
   private val clearRepairsAndMaintenanceExpensesDataUrl =
     s"/income-tax-self-employment/$taxYear/clear-repairs-and-maintenance-expenses-answers/$nino/$businessId"
+  private val clearWorkplaceRunningCostsExpensesDataUrl =
+    s"/income-tax-self-employment/$taxYear/clear-workplace-running-cost-expenses-answers/$nino/$businessId"
   private val checkForOtherIncomeSourcesUrl = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
 
   val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
@@ -292,6 +294,29 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
         ConnectorResponseError(
           "POST",
           s"http://localhost:11111$clearRepairsAndMaintenanceExpensesDataUrl",
+          HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
+        )
+    }
+  }
+
+  "clearWorkplaceRunningCostsExpensesData" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearWorkplaceRunningCostsExpensesDataUrl, OK)
+
+      val result = connector.clearWorkplaceRunningCostsExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
+    }
+
+    "fail when downstream returns an error" in {
+      stubPostWithoutResponseAndRequestBody(clearWorkplaceRunningCostsExpensesDataUrl, BAD_REQUEST)
+
+      val result = connector.clearWorkplaceRunningCostsExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result.left.value shouldBe
+        ConnectorResponseError(
+          "POST",
+          s"http://localhost:11111$clearWorkplaceRunningCostsExpensesDataUrl",
           HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
         )
     }

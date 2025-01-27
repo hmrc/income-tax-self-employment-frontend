@@ -17,13 +17,12 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.EnumerableFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises.enumerable
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,9 +64,16 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, WorkFromBusinessPremisesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(WorkFromBusinessPremisesPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(WorkFromBusinessPremisesPage, businessId).contains(value)) {
+                  selfEmploymentService.clearWorkplaceRunningCostsExpensesData(taxYear, businessId)
+                  clearDependentPages(WorkFromBusinessPremisesPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, WorkFromBusinessPremisesPage)
+            } yield Redirect(navigator.nextPage(WorkFromBusinessPremisesPage, mode, savedAnswers, taxYear, businessId))
         )
   }
 

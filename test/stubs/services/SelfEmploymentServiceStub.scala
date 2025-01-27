@@ -64,6 +64,7 @@ case class SelfEmploymentServiceStub(
     clearOfficeSuppliesExpensesResult: Either[ServiceError, Unit] = Right(()),
     clearGoodsToSellOrUseExpensesResult: Either[ServiceError, Unit] = Right(()),
     clearRepairsAndMaintenanceExpensesResult: Either[ServiceError, Unit] = Right(()),
+    clearWorkplaceRunningCostsExpensesResult: Either[ServiceError, Unit] = Right(()),
     hasOtherIncomeSources: Either[ServiceError, Boolean] = Right(true))
     extends SelfEmploymentService {
 
@@ -169,4 +170,9 @@ case class SelfEmploymentServiceStub(
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearRepairsAndMaintenanceExpensesResult)
+
+  override def clearWorkplaceRunningCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](clearWorkplaceRunningCostsExpensesResult)
 }
