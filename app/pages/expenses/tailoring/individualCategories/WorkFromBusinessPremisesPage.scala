@@ -19,10 +19,22 @@ package pages.expenses.tailoring.individualCategories
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
+import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.{OneQuestionPage, PageJourney}
+import queries.Settable
 
 case object WorkFromBusinessPremisesPage extends OneQuestionPage[WorkFromBusinessPremises] {
   override def toString: String = "workFromBusinessPremises"
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(
+    LivingAtBusinessPremisesOnePerson,
+    LivingAtBusinessPremisesTwoPeople,
+    LivingAtBusinessPremisesThreePlusPeople,
+    WfbpFlatRateOrActualCostsPage,
+    WfbpClaimingAmountPage,
+    BusinessPremisesAmountPage,
+    BusinessPremisesDisallowableAmountPage
+  )
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).map { _ =>
