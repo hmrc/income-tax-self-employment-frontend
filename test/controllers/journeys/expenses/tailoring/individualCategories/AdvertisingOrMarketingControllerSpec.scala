@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,9 +46,9 @@ import scala.concurrent.Future
 
 class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val advertisingOrMarketingRoute =
+  lazy val advertisingOrMarketingRoute: String =
     controllers.journeys.expenses.tailoring.individualCategories.routes.AdvertisingOrMarketingController
       .onPageLoad(taxYear, businessId, NormalMode)
       .url
@@ -59,7 +59,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
   case class UserScenario(userType: UserType, form: Form[AdvertisingOrMarketing])
 
-  val userScenarios = Seq(
+  val userScenarios: Seq[UserScenario] = Seq(
     UserScenario(userType = Individual, formProvider(AdvertisingOrMarketingPage, Individual)),
     UserScenario(userType = Agent, formProvider(AdvertisingOrMarketingPage, Agent))
   )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,6 +122,10 @@ trait SelfEmploymentService {
       hc: HeaderCarrier): ApiResultT[Unit]
 
   def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit]
+
+  def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit]
 
@@ -305,6 +309,11 @@ class SelfEmploymentServiceImpl @Inject() (
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     connector.clearRepairsAndMaintenanceExpensesData(taxYear, request.nino, businessId, request.mtditid)
+
+  def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    connector.clearAdvertisingOrMarketingExpensesData(taxYear, request.nino, businessId, request.mtditid)
 
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean] =
     connector.hasOtherIncomeSources(taxYear, nino, mtditid)
