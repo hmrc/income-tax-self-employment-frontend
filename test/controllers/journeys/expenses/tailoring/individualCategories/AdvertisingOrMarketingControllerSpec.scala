@@ -17,8 +17,9 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import forms.standard.EnumerableFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.common.AccountingType.Accrual
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -28,7 +29,8 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallo
 import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.TradeAccountingType
 import pages.expenses.tailoring.ExpensesCategoriesPage
@@ -40,11 +42,12 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.journeys.expenses.tailoring.individualCategories.AdvertisingOrMarketingView
 
 import scala.concurrent.Future
 
-class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
+class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -56,6 +59,11 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   val formProvider = new EnumerableFormProvider()
+
+  override def beforeEach(): Unit = {
+    reset(mockService)
+    super.beforeEach()
+  }
 
   case class UserScenario(userType: UserType, form: Form[AdvertisingOrMarketing])
 
@@ -170,6 +178,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
           redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
+
       "must redirect to the ProfessionalServiceExpensesPage when valid data is submitted and accounting type is 'CASH'" in {
 
         val application =
@@ -191,6 +200,37 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "must redirect to the next page when valid data is submitted in CheckMode" in {
+
+        val ua = emptyUserAnswersAccrual.set(AdvertisingOrMarketingPage, AdvertisingOrMarketing.YesDisallowable).success.value
+        val application =
+          applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
+
+        running(application) {
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+          when(mockService.clearAdvertisingOrMarketingExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))) thenReturn EitherT.rightT(())
+
+          val advertisingOrMarketingRoute: String = routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode).url
+
+          val request =
+            FakeRequest(POST, advertisingOrMarketingRoute)
+              .withFormUrlEncodedBody(("value", AdvertisingOrMarketing.YesAllowable.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          verify(mockService, times(1)).clearAdvertisingOrMarketingExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))
+          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
         }
       }
 
