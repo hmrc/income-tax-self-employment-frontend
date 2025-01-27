@@ -18,7 +18,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
 import forms.standard.BooleanFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
@@ -40,7 +40,6 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.journeys.expenses.tailoring.individualCategories.DisallowableStaffCostsView
@@ -157,15 +156,12 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar wi
 
       "must redirect to the next page when valid data is submitted" in {
 
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
         val application =
           applicationBuilder(userAnswers = Some(baseAnswers))
             .overrides(
-              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SessionRepository].toInstance(mockSessionRepository)
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute))
             )
             .build()
 
@@ -183,18 +179,21 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar wi
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
 
-        val mockSessionRepository = mock[SessionRepository]
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val ua = baseAnswers.set(DisallowableStaffCostsPage, false).success.value
         val application =
           applicationBuilder(userAnswers = Some(ua))
             .overrides(
               bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
-              bind[SessionRepository].toInstance(mockSessionRepository),
               bind[SelfEmploymentService].toInstance(mockService)
             )
             .build()
+
+        lazy val disallowableStaffCostsRoute: String =
+          controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableStaffCostsController
+            .onPageLoad(taxYear, businessId, CheckMode)
+            .url
 
         running(application) {
           val request =
