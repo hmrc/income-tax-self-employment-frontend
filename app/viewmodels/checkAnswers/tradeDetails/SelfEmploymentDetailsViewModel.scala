@@ -56,8 +56,7 @@ object SelfEmploymentDetailsViewModel {
       value = Value(
         content = rowContent,
         classes = "govuk-!-width-one-third"
-      ),
-      actions = Seq(ActionItemViewModel(messages("site.change"), "#"))
+      )
     )
   }
 

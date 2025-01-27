@@ -37,13 +37,9 @@
         @govukButton(Button(
             attributes = Map("id" -> "continue"),
             preventDoubleClick = Some(true),
-            content = Text(messages("site.saveAndContinue")),
+            content = Text(messages("site.continue")),
             classes = "govuk-button"
         ).asLink(nextRoute))
-
-        <a href="#" class ="govuk-link">
-            @messages("checkYourSelfEmploymentDetails.removeSelfEmployment")
-        </a>
     </div>
 
 }
