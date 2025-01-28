@@ -23,6 +23,7 @@ import pages.OneQuestionPage
 import play.api.mvc.Call
 
 case object AdvertisingOrMarketingDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
+
   override def toString: String = "advertisingOrMarketingDisallowableAmount"
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
