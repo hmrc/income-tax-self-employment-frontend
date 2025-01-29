@@ -18,10 +18,14 @@ package pages.expenses.tailoring.individualCategories
 
 import models.common.BusinessId
 import models.database.UserAnswers
+import pages.expenses.professionalFees.{ProfessionalFeesAmountPage, ProfessionalFeesDisallowableAmountPage}
 import pages.{OneQuestionPage, PageJourney}
+import queries.Settable
 
 case object DisallowableProfessionalFeesPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableProfessionalFees"
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(ProfessionalFeesDisallowableAmountPage, ProfessionalFeesAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).map { _ =>
