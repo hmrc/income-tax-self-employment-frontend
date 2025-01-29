@@ -135,7 +135,6 @@ trait SelfEmploymentService {
 
   def clearStaffCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 
-
   def clearConstructionExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean]
