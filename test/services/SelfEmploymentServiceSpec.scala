@@ -470,6 +470,28 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     }
   }
 
+  "clearStaffCostsExpensesData" - {
+    implicit val request: DataRequest[AnyContent] = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
+
+    "delete repairs and maintenance expenses data from backend and API" in new ServiceWithStubs {
+      mockConnector.clearStaffCostsExpensesData(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](())
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+
+      val result: Either[ServiceError, Unit] = service.clearStaffCostsExpensesData(taxYear, businessId).value.futureValue
+      assert(result === ().asRight)
+    }
+
+    "fail when delete from the front and back-end repos and API returns an error" in new ServiceWithStubs {
+      val downstreamError: NotFoundError = NotFoundError("NOT_FOUND")
+      mockConnector.clearStaffCostsExpensesData(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .leftT[Future, Unit](downstreamError)
+
+      val result: Either[ServiceError, Unit] = service.clearStaffCostsExpensesData(taxYear, businessId).value.futureValue
+      assert(result === downstreamError.asLeft)
+    }
+  }
+
   "clearConstructionExpensesData" - {
     implicit val request: DataRequest[AnyContent] = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
 
