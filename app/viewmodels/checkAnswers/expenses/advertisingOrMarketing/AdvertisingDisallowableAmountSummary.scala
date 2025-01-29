@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
-import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.{No, YesAllowable, YesDisallowable}
-import pages.expenses.advertisingOrMarketing.{AdvertisingOrMarketingAmountPage, AdvertisingOrMarketingDisallowableAmountPage}
+import models.journeys.expenses.individualCategories.AdvertisingOrMarketing.YesDisallowable
+import pages.expenses.advertisingOrMarketing._
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -51,8 +51,8 @@ object AdvertisingDisallowableAmountSummary extends MoneyUtils {
 
   private def areAnyAdvertisingDisallowable(advertisingAnswer: AdvertisingOrMarketing): Boolean =
     advertisingAnswer match {
-      case YesDisallowable   => true
-      case YesAllowable | No => false
+      case YesDisallowable => true
+      case _               => false
     }
 
 }

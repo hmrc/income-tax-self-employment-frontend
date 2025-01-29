@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.EnumerableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.common.Journey
 import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
@@ -48,6 +48,7 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
                                                   view: AdvertisingOrMarketingView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+
   private val page = AdvertisingOrMarketingPage
   private val form = (userType: UserType) => formProvider[AdvertisingOrMarketing](page, userType)
 
@@ -65,9 +66,16 @@ class AdvertisingOrMarketingController @Inject() (override val messagesApi: Mess
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, AdvertisingOrMarketingPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(AdvertisingOrMarketingPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(AdvertisingOrMarketingPage, businessId).contains(value)) {
+                  selfEmploymentService.clearAdvertisingOrMarketingExpensesData(taxYear, businessId)
+                  clearDependentPages(AdvertisingOrMarketingPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, AdvertisingOrMarketingPage)
+            } yield Redirect(navigator.nextPage(AdvertisingOrMarketingPage, mode, savedAnswers, taxYear, businessId))
         )
   }
 
