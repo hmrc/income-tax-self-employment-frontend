@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,14 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val clearGoodsToSellOrUseExpensesUrl     = s"/income-tax-self-employment/$taxYear/clear-goods-to-sell-or-use-answers/$nino/$businessId"
   private val clearRepairsAndMaintenanceExpensesDataUrl =
     s"/income-tax-self-employment/$taxYear/clear-repairs-and-maintenance-expenses-answers/$nino/$businessId"
+  private val clearAdvertisingOrMarketingExpensesDataUrl =
+    s"/income-tax-self-employment/$taxYear/clear-advertising-or-marketing-expenses-answers/$nino/$businessId"
   private val clearWorkplaceRunningCostsExpensesDataUrl =
     s"/income-tax-self-employment/$taxYear/clear-workplace-running-cost-expenses-answers/$nino/$businessId"
   private val clearStaffCostsExpensesUrl    = s"/income-tax-self-employment/$taxYear/clear-staff-costs-expenses-answers/$nino/$businessId"
   private val checkForOtherIncomeSourcesUrl = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
 
-  val aBusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
+  val aBusinessIncomeSourcesSummary: BusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
     100,
     100,
@@ -109,7 +111,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
     "notify pager duty on failure for JourneyAnswersContext" in new PagerDutyAware {
       stubPost(url = downstreamUrl(ExpensesTailoring), BAD_REQUEST)
-      val result = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
+      val result: Either[ServiceError, Unit] = connector.submitAnswers[JsObject](journeyCtx(ExpensesTailoring), JsObject.empty).value.futureValue
       result shouldBe parsingError(
         "POST",
         s"http://localhost:11111/income-tax-self-employment/$taxYear/someBusinessId/expenses-categories/answers").asLeft
@@ -118,7 +120,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
     "notify pager duty on failure for JourneyAnswersWithNino" in new PagerDutyAware {
       stubPost(url = downstreamNinoUrl(ExpensesGoodsToSellOrUse), BAD_REQUEST)
-      val result = connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
+      val result: Either[ServiceError, Unit] =
+        connector.submitAnswers[JsObject](journeyNinoCtx(ExpensesGoodsToSellOrUse), JsObject.empty).value.futureValue
       result shouldBe parsingError(
         "POST",
         s"http://localhost:11111/income-tax-self-employment/$taxYear/someBusinessId/expenses-goods-to-sell-or-use/someNino/answers").asLeft
@@ -167,7 +170,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
     "fail when the downstream service returns an error" in new PagerDutyAware {
       stubGetWithResponseBody(downstreamUrl(ExpensesTailoring), BAD_REQUEST, "{}", headersSentToBE)
-      val result = connector.getSubmittedAnswers[JsObject](journeyCtx(ExpensesTailoring)).value.futureValue
+      val result: Either[ServiceError, Option[JsObject]] = connector.getSubmittedAnswers[JsObject](journeyCtx(ExpensesTailoring)).value.futureValue
       result shouldBe parsingError(
         "GET",
         s"http://localhost:11111/income-tax-self-employment/$taxYear/someBusinessId/expenses-categories/answers").asLeft
@@ -318,6 +321,29 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
         ConnectorResponseError(
           "POST",
           s"http://localhost:11111$clearWorkplaceRunningCostsExpensesDataUrl",
+          HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
+        )
+    }
+  }
+
+  "clearAdvertisingOrMarketingData" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearAdvertisingOrMarketingExpensesDataUrl, OK)
+
+      val result = connector.clearAdvertisingOrMarketingExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
+    }
+
+    "fail when downstream returns an error" in {
+      stubPostWithoutResponseAndRequestBody(clearAdvertisingOrMarketingExpensesDataUrl, BAD_REQUEST)
+
+      val result = connector.clearAdvertisingOrMarketingExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result.left.value shouldBe
+        ConnectorResponseError(
+          "POST",
+          s"http://localhost:11111$clearAdvertisingOrMarketingExpensesDataUrl",
           HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
         )
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class AdvertisingAmountController @Inject() (override val messagesApi: MessagesA
     with I18nSupport {
 
   private val page = AdvertisingOrMarketingAmountPage
-  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some("advertisingAmount"))
+  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some(page.toString))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -55,7 +55,8 @@ class AdvertisingAmountController @Inject() (override val messagesApi: MessagesA
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
-      def handleFormError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
+      def handleFormError(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
 
       service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleFormError)
   }
