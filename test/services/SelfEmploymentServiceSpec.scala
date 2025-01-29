@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ import services.SelfEmploymentService.clearDataFromUserAnswers
 import stubs.repositories.StubSessionRepository
 import stubs.services.AuditServiceStub
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -70,11 +71,12 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   "getJourneyStatus" - {
     "should return status" in new ServiceWithStubs {
-      val status = JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.Completed)
+      val status: JourneyNameAndStatus = JourneyNameAndStatus(ExpensesGoodsToSellOrUse, JourneyStatus.Completed)
       mockConnector.getJourneyState(any[BusinessId], any[Journey], any[TaxYear], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](status)
 
-      val result = service.getJourneyStatus(JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesGoodsToSellOrUse)).value.futureValue
+      val result: Either[ServiceError, JourneyStatus] =
+        service.getJourneyStatus(JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesGoodsToSellOrUse)).value.futureValue
 
       result shouldBe status.journeyStatus.asRight
     }
@@ -83,7 +85,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   "setJourneyStatus" - {
     "should save status" in new ServiceWithStubs {
       mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
-      val result = service
+      val result: Either[ServiceError, Unit] = service
         .setJourneyStatus(JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesGoodsToSellOrUse), JourneyStatus.Completed)
         .value
         .futureValue
@@ -106,7 +108,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     "submit answers to the connector" in new ServiceWithStubs {
       mockConnector.submitAnswers(any, any)(*, *, *) returns EitherT(Future.successful(().asRight[ServiceError]))
 
-      val result = service.submitAnswers[JsObject](ctx, userAnswers).value.futureValue
+      val result: Either[ServiceError, Unit] = service.submitAnswers[JsObject](ctx, userAnswers).value.futureValue
       result shouldBe ().asRight
     }
   }
@@ -184,12 +186,12 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   private val expectedClearedAnswers = emptyUserAnswers.set(ZeroEmissionGoodsVehiclePage, false, Some(businessId)).success.value.data
   "submitGatewayQuestionAndClearDependentAnswers" - {
     "return UserAnswers with cleared dependent pages when selected No" in new ServiceWithStubs {
-      val updatedAnswers =
+      val updatedAnswers: UserAnswers =
         service
           .submitGatewayQuestionAndClearDependentAnswers(ZeroEmissionGoodsVehiclePage, businessId, existingZegvAnswers, newAnswer = false)
           .futureValue
 
-      val dbAnswers = repository.state(userAnswersId).data
+      val dbAnswers: JsObject = repository.state(userAnswersId).data
       assert(dbAnswers === expectedClearedAnswers)
 
       assert(updatedAnswers.data === expectedClearedAnswers)
@@ -198,7 +200,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   "submitGatewayQuestionAndRedirect" - {
     "return a Redirect to the next page and cleared dependent pages when answer is 'No'" in new ServiceWithStubs {
-      val result = service.submitGatewayQuestionAndRedirect(
+      val result: Future[Result] = service.submitGatewayQuestionAndRedirect(
         ZeroEmissionGoodsVehiclePage,
         businessId,
         existingZegvAnswers,
@@ -206,7 +208,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
         taxYear,
         NormalMode)
 
-      val dbAnswers = repository.state(userAnswersId).data
+      val dbAnswers: JsObject = repository.state(userAnswersId).data
       assert(dbAnswers === expectedClearedAnswers)
 
       status(result) shouldBe SEE_OTHER
@@ -216,7 +218,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   "persistAnswerAndRedirect" - {
     "save answer to session repository and return a Redirect to the next page" in new ServiceWithStubs {
-      val result =
+      val result: Future[Result] =
         service
           .persistAnswerAndRedirect(
             ZeroEmissionGoodsVehiclePage,
@@ -226,8 +228,8 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
             taxYear,
             NormalMode)
 
-      val expectedAnswers = existingZegvAnswers.set(ZeroEmissionGoodsVehiclePage, false, businessId.some).success.value
-      val dbAnswers       = repository.state(userAnswersId)
+      val expectedAnswers: UserAnswers = existingZegvAnswers.set(ZeroEmissionGoodsVehiclePage, false, businessId.some).success.value
+      val dbAnswers: UserAnswers       = repository.state(userAnswersId)
       assert(dbAnswers === expectedAnswers)
 
       status(result) shouldBe SEE_OTHER
@@ -248,15 +250,17 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       }
 
       "following the handleSuccess method if it binds successfully" in new ServiceWithStubs {
-        val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", fakeUser, existingZegvAnswers)
-        val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
+        val dataRequest: DataRequest[AnyContent] =
+          DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", fakeUser, existingZegvAnswers)
+        val result: Future[Result] = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe ZeroEmissionGoodsVehiclePage.cyaPage(taxYear, businessId).url.some
       }
       "following the handleError method if it binds unsuccessfully" in new ServiceWithStubs {
-        val dataRequest = DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", "invalid value")), "userId", fakeUser, existingZegvAnswers)
-        val result      = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
+        val dataRequest: DataRequest[AnyContent] =
+          DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", "invalid value")), "userId", fakeUser, existingZegvAnswers)
+        val result: Future[Result] = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
 
         status(result) shouldBe BAD_REQUEST
       }
@@ -268,7 +272,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getUserDateOfBirth(any[Nino], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](aUserDateOfBirth)
 
-      val result = service.getUserDateOfBirth(nino, mtditid).value.futureValue
+      val result: Either[ServiceError, LocalDate] = service.getUserDateOfBirth(nino, mtditid).value.futureValue
 
       result shouldBe aUserDateOfBirth.asRight
     }
@@ -279,7 +283,8 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getAllBusinessIncomeSourcesSummaries(any[TaxYear], any[Nino], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](List.empty[BusinessIncomeSourcesSummary])
 
-      val result = service.getAllBusinessesTaxableProfitAndLoss(taxYear, nino, mtditid).value.futureValue
+      val result: Either[ServiceError, List[TaxableProfitAndLoss]] =
+        service.getAllBusinessesTaxableProfitAndLoss(taxYear, nino, mtditid).value.futureValue
 
       result shouldBe List.empty[TaxableProfitAndLoss].asRight
     }
@@ -290,7 +295,8 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getBusinessIncomeSourcesSummary(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](aBusinessIncomeSourcesSummary)
 
-      val result = service.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid).value.futureValue
+      val result: Either[ServiceError, BusinessIncomeSourcesSummary] =
+        service.getBusinessIncomeSourcesSummary(taxYear, nino, businessId, mtditid).value.futureValue
 
       result shouldBe aBusinessIncomeSourcesSummary.asRight
     }
@@ -438,6 +444,28 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
         .leftT[Future, Unit](downstreamError)
 
       val result: Either[ServiceError, Unit] = service.clearWorkplaceRunningCostsExpensesData(taxYear, businessId).value.futureValue
+      assert(result === downstreamError.asLeft)
+    }
+  }
+
+  "clearAdvertisingOrMarketingExpensesData" - {
+    implicit val request: DataRequest[AnyContent] = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
+
+    "delete advertising or marketing expenses data from backend and API" in new ServiceWithStubs {
+      mockConnector.clearAdvertisingOrMarketingExpensesData(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](())
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+
+      val result: Either[ServiceError, Unit] = service.clearAdvertisingOrMarketingExpensesData(taxYear, businessId).value.futureValue
+      assert(result === ().asRight)
+    }
+
+    "fail when delete from the front and back-end repos and API returns an error" in new ServiceWithStubs {
+      val downstreamError: NotFoundError = NotFoundError("NOT_FOUND")
+      mockConnector.clearAdvertisingOrMarketingExpensesData(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .leftT[Future, Unit](downstreamError)
+
+      val result: Either[ServiceError, Unit] = service.clearAdvertisingOrMarketingExpensesData(taxYear, businessId).value.futureValue
       assert(result === downstreamError.asLeft)
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,14 @@ import models.journeys.expenses.individualCategories.AdvertisingOrMarketing
 import pages.OneQuestionPage
 import pages.expenses.tailoring.individualCategories.AdvertisingOrMarketingPage
 import play.api.mvc.Call
+import queries.Settable
 
 case object AdvertisingOrMarketingAmountPage extends OneQuestionPage[BigDecimal] {
+
   override def toString: String = "advertisingOrMarketingAmount"
+
+  override val dependentPagesWhenNo: List[Settable[_]] =
+    List(AdvertisingOrMarketingPage, AdvertisingOrMarketingDisallowableAmountPage)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call =
     if (hasDisallowable(businessId, userAnswers)) routes.AdvertisingDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
