@@ -62,9 +62,9 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
     s"/income-tax-self-employment/$taxYear/clear-advertising-or-marketing-expenses-answers/$nino/$businessId"
   private val clearWorkplaceRunningCostsExpensesDataUrl =
     s"/income-tax-self-employment/$taxYear/clear-workplace-running-cost-expenses-answers/$nino/$businessId"
-  private val clearStaffCostsExpensesUrl    = s"/income-tax-self-employment/$taxYear/clear-staff-costs-expenses-answers/$nino/$businessId"
-  private val checkForOtherIncomeSourcesUrl = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
-  private val clearConstructionExpensesUrl  = s"/income-tax-self-employment/$taxYear/clear-construction-expenses-answers/$nino/$businessId"
+  private val clearStaffCostsExpensesUrl       = s"/income-tax-self-employment/$taxYear/clear-staff-costs-expenses-answers/$nino/$businessId"
+  private val checkForOtherIncomeSourcesUrl    = s"/income-tax-self-employment/$taxYear/check-for-other-income-source/$nino"
+  private val clearConstructionExpensesUrl     = s"/income-tax-self-employment/$taxYear/clear-construction-expenses-answers/$nino/$businessId"
   private val clearProfessionalFeesExpensesUrl = s"/income-tax-self-employment/$taxYear/clear-professional-fees-expenses-answers/$nino/$businessId"
 
   val aBusinessIncomeSourcesSummary: BusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
