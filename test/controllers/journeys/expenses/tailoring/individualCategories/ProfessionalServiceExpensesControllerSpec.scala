@@ -17,23 +17,26 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, Staff}
 import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.matchers.MacroBasedMatchers
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.expenses.tailoring.individualCategories._
+import pages.expenses.tailoring.individualCategories.{ProfessionalServiceExpensesPage, _}
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,11 +45,11 @@ import views.html.journeys.expenses.tailoring.individualCategories.ProfessionalS
 
 import scala.concurrent.Future
 
-class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers {
+class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers with BeforeAndAfterEach {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val professionalServiceExpensesRoute =
+  lazy val professionalServiceExpensesRoute: String =
     controllers.journeys.expenses.tailoring.individualCategories.routes.ProfessionalServiceExpensesController
       .onPageLoad(taxYear, businessId, NormalMode)
       .url
@@ -55,12 +58,17 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
+  override def beforeEach(): Unit = {
+    reset(mockService)
+    super.beforeEach()
+  }
+
   case class UserScenario(userType: UserType,
                           form: Form[Set[ProfessionalServiceExpenses]],
                           accountingType: AccountingType,
                           baseUserAnswers: UserAnswers)
 
-  val userScenarios = Seq(
+  val userScenarios: Seq[UserScenario] = Seq(
     UserScenario(
       userType = Individual,
       formProvider(Individual),
@@ -73,7 +81,7 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
       baseUserAnswers = emptyUserAnswersCash.upsertFragment(businessId, baseAnswers))
   )
 
-  def baseAnswers =
+  def baseAnswers: JsObject =
     Json.obj(
       ExpensesCategoriesPage.toString       -> IndividualCategories.toString,
       OfficeSuppliesPage.toString           -> YesDisallowable.toString,
@@ -190,6 +198,45 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "must redirect to the next page when valid data is submitted in CheckMode" in {
+
+        val ua =
+          emptyUserAnswersAccrual.set[Set[ProfessionalServiceExpenses]](ProfessionalServiceExpensesPage, Set(Staff, Construction)).success.value
+        val application =
+          applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
+
+        lazy val professionalServiceExpensesRoute: String =
+          controllers.journeys.expenses.tailoring.individualCategories.routes.ProfessionalServiceExpensesController
+            .onPageLoad(taxYear, businessId, CheckMode)
+            .url
+
+        running(application) {
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+          when(mockService.clearStaffCostsExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearProfessionalFeesExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearConstructionExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+
+          val request =
+            FakeRequest(POST, professionalServiceExpensesRoute)
+              .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.No.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+          verify(mockService, times(1)).clearStaffCostsExpensesData(anyTaxYear, anyBusinessId)(any, any)
+          verify(mockService, times(1)).clearConstructionExpensesData(anyTaxYear, anyBusinessId)(any, any)
+          verify(mockService, times(1)).clearProfessionalFeesExpensesData(anyTaxYear, anyBusinessId)(any, any)
         }
       }
 

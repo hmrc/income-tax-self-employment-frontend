@@ -16,16 +16,19 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
+import cats.data.EitherT
 import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.common.Journey
+import models.domain.ApiResultT
+import models.errors.ServiceError
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
-import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, ProfessionalFees, Staff}
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff, values}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{
   DisallowableProfessionalFeesPage,
@@ -83,7 +86,16 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
-          value => handleSuccess(value)
+          value => {
+            if (mode == CheckMode && value.contains(No)) {
+              selfEmploymentService.clearStaffCostsExpensesData(taxYear, businessId) flatMap { _ =>
+                selfEmploymentService.clearProfessionalFeesExpensesData(taxYear, businessId) flatMap { _ =>
+                  selfEmploymentService.clearConstructionExpensesData(taxYear, businessId)
+                }
+              }
+            }
+            handleSuccess(value)
+          }
         )
   }
 
