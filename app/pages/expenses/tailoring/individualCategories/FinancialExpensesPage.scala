@@ -22,10 +22,15 @@ import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import models.journeys.expenses.individualCategories.FinancialExpenses._
 import pages.PageJourney.mkQuestion
+import pages.expenses.financialCharges.FinancialChargesAmountPage
+import pages.expenses.irrecoverableDebts.IrrecoverableDebtsDisallowableAmountPage
 import pages.{OneQuestionPage, PageJourney}
+import queries.Settable
 
 case object FinancialExpensesPage extends OneQuestionPage[Set[FinancialExpenses]] {
   override def toString: String = "financialExpenses"
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(IrrecoverableDebtsDisallowableAmountPage, FinancialChargesAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).flatMap { seq =>

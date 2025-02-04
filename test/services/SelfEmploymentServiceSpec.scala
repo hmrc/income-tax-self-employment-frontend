@@ -536,6 +536,28 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
     }
   }
 
+  "clearIrrecoverableDebtsExpensesData" - {
+    implicit val request: DataRequest[AnyContent] = fakeDataRequest(buildUserAnswers[BigDecimal](TotalExpensesPage, 3000))
+
+    "delete irrecoverable debts expenses data from backend and API" in new ServiceWithStubs {
+      mockConnector.clearIrrecoverableDebtsExpensesData(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .rightT[Future, ServiceError](())
+      mockConnector.saveJourneyState(any[JourneyAnswersContext], any[JourneyStatus])(*, *) returns EitherT.rightT[Future, ServiceError](())
+
+      val result: Either[ServiceError, Unit] = service.clearIrrecoverableDebtsExpensesData(taxYear, businessId).value.futureValue
+      assert(result === ().asRight)
+    }
+
+    "fail when delete from the front and back-end repos and API returns an error" in new ServiceWithStubs {
+      val downstreamError: NotFoundError = NotFoundError("NOT_FOUND")
+      mockConnector.clearIrrecoverableDebtsExpensesData(any[TaxYear], any[Nino], any[BusinessId], any[Mtditid])(*, *) returns EitherT
+        .leftT[Future, Unit](downstreamError)
+
+      val result: Either[ServiceError, Unit] = service.clearIrrecoverableDebtsExpensesData(taxYear, businessId).value.futureValue
+      assert(result === downstreamError.asLeft)
+    }
+  }
+
   "hasOtherIncomeSources" - {
 
     "should return flag based on other income sources availability" in new ServiceWithStubs {

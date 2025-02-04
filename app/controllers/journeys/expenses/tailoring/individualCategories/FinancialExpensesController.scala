@@ -20,12 +20,12 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.common.Journey
 import models.journeys.expenses.individualCategories.FinancialExpenses
-import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, OtherFinancialCharges}
+import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{
   DisallowableInterestPage,
@@ -82,10 +82,14 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Left(Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId))))),
-          value => Right(handleSuccess(value))
+            Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
+          value => {
+            if (mode == CheckMode && value.contains(NoFinancialExpenses)) {
+              selfEmploymentService.clearFinancialExpensesData(taxYear, businessId)
+            }
+            handleSuccess(value)
+          }
         )
-        .merge
   }
 
   private def clearDependentPageAnswers(userAnswers: UserAnswers,

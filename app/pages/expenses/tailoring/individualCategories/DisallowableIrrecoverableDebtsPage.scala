@@ -18,10 +18,14 @@ package pages.expenses.tailoring.individualCategories
 
 import models.common.BusinessId
 import models.database.UserAnswers
+import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.{OneQuestionPage, PageJourney}
+import queries.Settable
 
 case object DisallowableIrrecoverableDebtsPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableIrrecoverableDebts"
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(IrrecoverableDebtsDisallowableAmountPage, IrrecoverableDebtsAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).map { _ =>
