@@ -31,7 +31,7 @@ case object FinancialExpensesPage extends OneQuestionPage[Set[FinancialExpenses]
   override def toString: String = "financialExpenses"
 
   override val dependentPagesWhenNo: List[Settable[_]] =
-    List(IrrecoverableDebtsDisallowableAmountPage, IrrecoverableDebtsAmountPage, FinancialChargesAmountPage, DisallowableIrrecoverableDebtsPage)
+    List(IrrecoverableDebtsDisallowableAmountPage, IrrecoverableDebtsAmountPage, DisallowableIrrecoverableDebtsPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(this, businessId).flatMap { seq =>
