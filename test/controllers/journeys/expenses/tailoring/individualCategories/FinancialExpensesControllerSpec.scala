@@ -212,7 +212,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
             .url
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearFinancialExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearIrrecoverableDebtsExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
           val request =
             FakeRequest(POST, financialExpensesRoute)
               .withFormUrlEncodedBody(("value[0]", FinancialExpenses.NoFinancialExpenses.toString))
@@ -220,7 +220,7 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearFinancialExpensesData(anyTaxYear, anyBusinessId)(any, any)
+          verify(mockService, times(1)).clearIrrecoverableDebtsExpensesData(anyTaxYear, anyBusinessId)(any, any)
         }
       }
 

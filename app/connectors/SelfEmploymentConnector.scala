@@ -204,14 +204,6 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def clearFinancialExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-financial-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
   def clearConstructionExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[Unit] = {
