@@ -19,9 +19,10 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import controllers.standard
 import forms.standard.BooleanFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
+import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.FinancialExpenses.IrrecoverableDebts
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
@@ -29,7 +30,8 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
@@ -41,28 +43,36 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.journeys.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsView
 
 import scala.concurrent.Future
 
-class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with MockitoSugar {
+class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   implicit val messages: Messages = messagesStubbed
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val disallowableIrrecoverableDebtsRoute = routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val disallowableIrrecoverableDebtsRoute: String =
+    routes.DisallowableIrrecoverableDebtsController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new BooleanFormProvider
+  val formProvider                       = new BooleanFormProvider()
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
-  val userScenarios = Seq(
+  override def beforeEach(): Unit = {
+    reset(mockService)
+    super.beforeEach()
+  }
+  val userScenarios: Seq[UserScenario] = Seq(
     UserScenario(userType = Individual, formProvider(DisallowableIrrecoverableDebtsPage, Individual)),
     UserScenario(userType = Agent, formProvider(DisallowableIrrecoverableDebtsPage, Agent))
   )
 
-  def baseAnswers = buildUserAnswers(
+  def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
       ExpensesCategoriesPage.toString          -> IndividualCategories.toString,
       OfficeSuppliesPage.toString              -> YesDisallowable.toString,
@@ -171,6 +181,32 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "must redirect to the next page when valid data is submitted in CheckMode" in {
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        val ua = baseAnswers.set(DisallowableIrrecoverableDebtsPage, false).success.value
+        val application =
+          applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
+        lazy val disallowableRoute: String =
+          controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableIrrecoverableDebtsController
+            .onPageLoad(taxYear, businessId, CheckMode)
+            .url
+        running(application) {
+          val request =
+            FakeRequest(POST, disallowableRoute)
+              .withFormUrlEncodedBody(("value", true.toString))
+          val result = route(application, request).value
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          verify(mockService, times(1)).clearIrrecoverableDebtsExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))
+          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
         }
       }
 

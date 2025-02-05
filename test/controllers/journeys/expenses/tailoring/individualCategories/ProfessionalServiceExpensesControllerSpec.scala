@@ -19,7 +19,6 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
-import models.{CheckMode, NormalMode}
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
@@ -27,13 +26,14 @@ import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, Staff}
 import models.journeys.expenses.individualCategories._
+import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
-import pages.expenses.tailoring.individualCategories.{ProfessionalServiceExpensesPage, _}
+import pages.expenses.tailoring.individualCategories._
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
