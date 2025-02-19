@@ -17,26 +17,33 @@
 package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
+import data.TimeData
 import models.common.{BusinessId, Mtditid, Nino, TaxYear}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.ws.{WSClient, WSRequest}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
+import utils.TimeMachine
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with ScalaFutures {
 
+  val mockTimeMachine: TimeMachine = mock[TimeMachine]
+
+  when(mockTimeMachine.now).thenReturn(TimeData.testDate)
+
   protected val businessId: BusinessId = BusinessId("someBusinessId")
   protected val nino: Nino             = Nino("someNino")
   protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
-  protected val taxYear: TaxYear       = TaxYear(LocalDate.now().getYear)
+  protected val taxYear: TaxYear       = TaxYear(mockTimeMachine.now.getYear)
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(
     timeout = Span(sys.env.get("INTEGRATION_TEST_PATIENCE_TIMEOUT_SEC").fold(2)(x => Integer.parseInt(x)), Seconds),

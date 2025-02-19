@@ -52,7 +52,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout with ArgumentMatchersSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
-  val mockTimeMachine: TimeMachine = mock[TimeMachine]
+  val mockTimeMachine: TimeMachine       = mock[TimeMachine]
 
   val bindings: List[Binding[_]] = Nil
 

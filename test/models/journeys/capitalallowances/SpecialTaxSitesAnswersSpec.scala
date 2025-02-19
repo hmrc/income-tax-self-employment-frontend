@@ -20,25 +20,30 @@ import base.SpecBase
 import cats.implicits.catsSyntaxOptionId
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
 import models.journeys.capitalallowances.specialTaxSites.{NewSpecialTaxSite, SpecialTaxSiteLocation}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
+import utils.TimeMachine
 
 import java.time.LocalDate
 
 class SpecialTaxSitesAnswersSpec extends SpecBase {
 
+  val mockTimeMachine: TimeMachine = mock[TimeMachine]
+
   val completedSite: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )
   val validIncompleteSite1: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
     None,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
@@ -46,16 +51,16 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
   val validIncompleteSite2: NewSpecialTaxSite = NewSpecialTaxSite(
     false.some,
     None,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
   )
   val incompleteSite1: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     None,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
@@ -63,18 +68,18 @@ class SpecialTaxSitesAnswersSpec extends SpecBase {
   )
   val incompleteSite2: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     None,
     BigDecimal(10000).some
   )
   val incompleteSite3: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     None

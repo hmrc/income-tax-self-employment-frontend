@@ -18,6 +18,7 @@ package services.journeys.capitalallowances.specialTaxSites
 
 import base.SpecBase
 import cats.implicits.catsSyntaxOptionId
+import data.TimeData
 import models.database.UserAnswers
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite.newSite
 import models.journeys.capitalallowances.specialTaxSites.{NewSpecialTaxSite, SpecialTaxSiteLocation}
@@ -31,6 +32,7 @@ import pages.capitalallowances.specialTaxSites.{
   SpecialTaxSitesPage
 }
 import repositories.SessionRepository
+import utils.TimeMachine
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -39,14 +41,17 @@ class SpecialTaxSitesServiceSpec extends SpecBase {
 
   val mockRepository: SessionRepository = mock[SessionRepository]
   val underTest                         = new SpecialTaxSitesService(mockRepository)
+  val mockTimeMachine: TimeMachine      = mock[TimeMachine]
+
+  when(mockTimeMachine.now).thenReturn(TimeData.testDate)
 
   val existingSitesList: List[NewSpecialTaxSite] = List(newSite)
   val answersWithEmptySite: UserAnswers          = buildUserAnswers(NewSpecialTaxSitesList, existingSitesList)
   val completedSite: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
