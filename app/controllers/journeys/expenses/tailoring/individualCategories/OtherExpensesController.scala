@@ -17,9 +17,9 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.EnumerableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.common.Journey
 import models.journeys.expenses.individualCategories.OtherExpenses
@@ -65,9 +65,16 @@ class OtherExpensesController @Inject() (override val messagesApi: MessagesApi,
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, OtherExpensesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(OtherExpensesPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(OtherExpensesPage, businessId).contains(value)) {
+                  selfEmploymentService.clearOtherExpensesData(taxYear, businessId)
+                  clearDependentPages(OtherExpensesPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, OtherExpensesPage)
+            } yield Redirect(navigator.nextPage(OtherExpensesPage, mode, savedAnswers, taxYear, businessId))
         )
   }
 

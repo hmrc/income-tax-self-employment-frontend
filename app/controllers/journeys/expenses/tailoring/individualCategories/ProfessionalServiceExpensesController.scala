@@ -16,19 +16,15 @@
 
 package controllers.journeys.expenses.tailoring.individualCategories
 
-import cats.data.EitherT
 import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
-import models.{CheckMode, Mode}
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, Journey, TaxYear}
 import models.database.UserAnswers
-import models.common.Journey
-import models.domain.ApiResultT
-import models.errors.ServiceError
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
-import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff, values}
+import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.{
   DisallowableProfessionalFeesPage,

@@ -22,7 +22,6 @@ import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses
 import models.journeys.expenses.individualCategories.FinancialExpenses._
 import pages.PageJourney.mkQuestion
-import pages.expenses.financialCharges.FinancialChargesAmountPage
 import pages.expenses.irrecoverableDebts.{IrrecoverableDebtsAmountPage, IrrecoverableDebtsDisallowableAmountPage}
 import pages.{OneQuestionPage, PageJourney}
 import queries.Settable

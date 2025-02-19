@@ -360,7 +360,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         "must return SEE_OTHER (303) and redirect to Agent Error page" in new Fixture {
 
-          val enrolments = Enrolments(
+          val enrolments: Enrolments = Enrolments(
             Set(
               Enrolment(
                 key = EnrolmentKeys.SupportingAgent,

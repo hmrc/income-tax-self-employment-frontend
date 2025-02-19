@@ -17,18 +17,21 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.standard
 import forms.standard.EnumerableFormProvider
-import models.NormalMode
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
+import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Staff
 import models.journeys.expenses.individualCategories._
+import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
@@ -39,26 +42,34 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.OtherExpensesView
 
 import scala.concurrent.Future
 
-class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
+class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val otherExpensesRoute = routes.OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val otherExpensesRoute: String = routes.OtherExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
   val formProvider = new EnumerableFormProvider()
 
   case class UserScenario(userType: UserType, form: Form[OtherExpenses])
 
-  val userScenarios = Seq(
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+
+  override def beforeEach(): Unit = {
+    reset(mockService)
+    super.beforeEach()
+  }
+
+  val userScenarios: Seq[UserScenario] = Seq(
     UserScenario(userType = Individual, formProvider(OtherExpensesPage, Individual)),
     UserScenario(userType = Agent, formProvider(OtherExpensesPage, Agent))
   )
 
-  def baseAnswers = buildUserAnswers(
+  def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
       ExpensesCategoriesPage.toString          -> IndividualCategories.toString,
       OfficeSuppliesPage.toString              -> YesDisallowable.toString,
@@ -234,6 +245,42 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar {
           redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
+
+      "must redirect to the next page when valid data is submitted in CheckMode" in {
+
+        val ua = emptyUserAnswersAccrual.set(OtherExpensesPage, OtherExpenses.YesAllowable).success.value
+
+        val application =
+          applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
+
+        lazy val professionalServiceExpensesRoute: String =
+          controllers.journeys.expenses.tailoring.individualCategories.routes.OtherExpensesController
+            .onPageLoad(taxYear, businessId, CheckMode)
+            .url
+
+        running(application) {
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+          when(mockService.clearOtherExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+
+          val request =
+            FakeRequest(POST, professionalServiceExpensesRoute)
+              .withFormUrlEncodedBody(("value", OtherExpenses.No.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+          verify(mockService, times(1)).clearOtherExpensesData(anyTaxYear, anyBusinessId)(any, any)
+        }
+      }
+
     }
   }
 
