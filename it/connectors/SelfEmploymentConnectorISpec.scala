@@ -68,6 +68,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
   private val clearProfessionalFeesExpensesUrl = s"/income-tax-self-employment/$taxYear/clear-professional-fees-expenses-answers/$nino/$businessId"
   private val clearIrrecoverableDebtsExpensesUrl =
     s"/income-tax-self-employment/$taxYear/clear-irrecoverable-debts-expenses-answers/$nino/$businessId"
+  private val clearOtherExpensesUrl =
+    s"/income-tax-self-employment/$taxYear/clear-other-expenses-answers/$nino/$businessId"
 
   val aBusinessIncomeSourcesSummary: BusinessIncomeSourcesSummary = BusinessIncomeSourcesSummary(
     businessId.value,
@@ -440,6 +442,29 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
         ConnectorResponseError(
           "POST",
           s"http://localhost:11111$clearIrrecoverableDebtsExpensesUrl",
+          HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
+        )
+    }
+  }
+
+  "clearOtherExpensesData" must {
+    "return a successful result from downstream" in {
+      stubPostWithoutResponseAndRequestBody(clearOtherExpensesUrl, OK)
+
+      val result = connector.clearOtherExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result shouldBe ().asRight
+    }
+
+    "fail when downstream returns an error" in {
+      stubPostWithoutResponseAndRequestBody(clearOtherExpensesUrl, BAD_REQUEST)
+
+      val result = connector.clearOtherExpensesData(taxYear, nino, businessId, mtditid).value.futureValue
+
+      result.left.value shouldBe
+        ConnectorResponseError(
+          "POST",
+          s"http://localhost:11111$clearOtherExpensesUrl",
           HttpError(400, SingleErrorBody("PARSING_ERROR", "Error parsing response from CONNECTOR"), None, None)
         )
     }
