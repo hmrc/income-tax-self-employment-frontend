@@ -355,7 +355,7 @@ class SelfEmploymentServiceImpl @Inject() (
     connector.clearIrrecoverableDebtsExpensesData(taxYear, request.nino, businessId, request.mtditid)
 
   def clearOtherExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearIrrecoverableDebtsExpensesData(taxYear, request.nino, businessId, request.mtditid)
+    connector.clearOtherExpensesData(taxYear, request.nino, businessId, request.mtditid)
 
 }
 
