@@ -39,7 +39,7 @@
         netAmount: String,
         profitOrLossSummary: SummaryList)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"claimCapitalAllowances.title.$accountingType"))) {
+@layout(pageTitle = title(form, messages(s"claimCapitalAllowances.title.$accountingType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form)
 

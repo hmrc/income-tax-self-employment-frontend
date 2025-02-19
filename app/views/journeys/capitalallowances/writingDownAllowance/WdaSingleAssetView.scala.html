@@ -31,7 +31,7 @@
     <p>@messages(s"wdaSingleAsset.p2.$userType")<p>
 }
 
-@layout(pageTitle = title(form, messages("wdaSingleAsset.heading"))) {
+@layout(pageTitle = title(form, messages("wdaSingleAsset.heading")), taxYear = Some(taxYear)) {
     @errorSummary(form)
     @heading("wdaSingleAsset.heading")
 

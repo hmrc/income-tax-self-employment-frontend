@@ -35,7 +35,7 @@
     @controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
 }
 
-@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
+@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment")), taxYear = Some(taxYear)) {
 
     @caption(taxYear)
     @heading("prepopTastList.taxReturn")

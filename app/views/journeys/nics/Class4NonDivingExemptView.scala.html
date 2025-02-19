@@ -30,7 +30,7 @@
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode, businesses: List[Business])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"class4NonDivingExempt.subHeading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"class4NonDivingExempt.subHeading.$userType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form)
 

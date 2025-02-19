@@ -37,7 +37,7 @@
     </label>
 }
 
-@layout(pageTitle = title(form, messages("previousUnusedLosses.title", tradingName))) {
+@layout(pageTitle = title(form, messages("previousUnusedLosses.title", tradingName)), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form)
 

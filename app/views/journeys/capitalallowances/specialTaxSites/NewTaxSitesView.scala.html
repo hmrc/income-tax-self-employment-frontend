@@ -55,7 +55,7 @@
     }
 }
 
-@layout(pageTitle = title(form, messages("newTaxSites.title"))) {
+@layout(pageTitle = title(form, messages("newTaxSites.title")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form)
 

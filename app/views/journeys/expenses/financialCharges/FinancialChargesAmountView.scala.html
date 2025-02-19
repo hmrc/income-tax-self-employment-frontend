@@ -32,7 +32,7 @@
   taxYear: TaxYear,
   businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"financialChargesAmount.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"financialChargesAmount.title.$userType")), taxYear = Some(taxYear)) {
 
     @formHelper(action = routes.FinancialChargesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

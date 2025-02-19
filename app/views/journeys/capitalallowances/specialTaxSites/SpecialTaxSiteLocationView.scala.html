@@ -34,7 +34,7 @@
     form.copy(errors = form.errors.filterNot(_.equals(FormError("buildingNumber", s"specialTaxSiteLocation.error.building.$userType"))))
 }
 
-@layout(pageTitle = title(form, messages("specialTaxSiteLocation.title"))) {
+@layout(pageTitle = title(form, messages("specialTaxSiteLocation.title")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(filteredErrorSummary)
 

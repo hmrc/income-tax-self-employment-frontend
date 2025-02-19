@@ -31,7 +31,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"expenses.cyaSummary.$userType"))) {
+@layout(pageTitle = title(form, messages(s"expenses.cyaSummary.$userType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 

@@ -32,7 +32,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"newSiteClaimingAmount.subHeading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"newSiteClaimingAmount.subHeading.$userType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form)
 

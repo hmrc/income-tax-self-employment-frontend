@@ -32,7 +32,7 @@
         onSubmitCall: Call
 )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
+@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType")), taxYear = Some(taxYear)) {
 
     @formHelper(action = onSubmitCall) {
 
