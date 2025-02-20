@@ -24,6 +24,7 @@ import models.common.Journey.{
   ExpensesConstruction,
   ExpensesFinancialCharges,
   ExpensesGoodsToSellOrUse,
+  ExpensesInterest,
   ExpensesIrrecoverableDebts,
   ExpensesOfficeSupplies,
   ExpensesOtherExpenses,
@@ -265,7 +266,8 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
       ExpensesConstruction,
       ExpensesProfessionalFees,
       ExpensesRepairsAndMaintenance,
-      ExpensesFinancialCharges
+      ExpensesFinancialCharges,
+      ExpensesInterest
     ).foreach { journey =>
       s"return a successful result from downstream for the journey $journey" in {
         stubPostWithoutResponseAndRequestBody(clearExpensesUrl(journey), OK)
