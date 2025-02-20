@@ -17,11 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.BooleanFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.common.Journey
+import models.common.Journey.ExpensesInterest
+import models.common.{BusinessId, Journey, TaxYear}
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableInterestPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,9 +62,16 @@ class DisallowableInterestController @Inject() (override val messagesApi: Messag
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, DisallowableInterestPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(DisallowableInterestPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(DisallowableInterestPage, businessId).contains(value)) {
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesInterest)
+                  clearDependentPages(DisallowableInterestPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, DisallowableInterestPage)
+            } yield Redirect(navigator.nextPage(DisallowableInterestPage, mode, savedAnswers, taxYear, businessId))
         )
   }
 
