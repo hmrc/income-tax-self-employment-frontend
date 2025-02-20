@@ -20,10 +20,14 @@ import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses._
 import pages.PageJourney.mkQuestion
+import pages.expenses.financialCharges.{FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage}
 import pages.{OneQuestionPage, PageJourney}
+import queries.Settable
 
 case object DisallowableOtherFinancialChargesPage extends OneQuestionPage[Boolean] {
   override def toString: String = "disallowableOtherFinancialCharges"
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(FinancialChargesAmountPage, FinancialChargesDisallowableAmountPage)
 
   override def next(userAnswers: UserAnswers, businessId: BusinessId): Option[PageJourney] =
     userAnswers.get(FinancialExpensesPage, businessId).map { seq =>
