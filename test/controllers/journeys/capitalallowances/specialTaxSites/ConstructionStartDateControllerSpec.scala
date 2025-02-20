@@ -17,6 +17,7 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import base.questionPages.LocalDateGetAndPostQuestionBaseSpec
+import data.TimeData
 import models.NormalMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
@@ -46,8 +47,9 @@ class ConstructionStartDateControllerSpec extends LocalDateGetAndPostQuestionBas
 
   override def pageAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
-      "specialTaxSites"    -> true,
-      "newSpecialTaxSites" -> List(Json.obj("contractForBuildingConstruction" -> Some(false), "constructionStartDate" -> Some(validDate.toString)))
+      "specialTaxSites" -> true,
+      "newSpecialTaxSites" -> List(
+        Json.obj("contractForBuildingConstruction" -> Some(false), "constructionStartDate" -> Some(TimeData.testDate.toString)))
     ))
 
   override def createForm(userType: UserType): Form[LocalDate] =

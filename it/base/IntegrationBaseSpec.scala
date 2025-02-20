@@ -17,7 +17,7 @@
 package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
-import data.TimeData
+import integrationData.TimeData
 import models.common.{BusinessId, Mtditid, Nino, TaxYear}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
