@@ -17,8 +17,10 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.standard
 import forms.standard.BooleanFormProvider
+import models.common.Journey.ExpensesIrrecoverableDebts
 import models.{CheckMode, NormalMode}
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -29,7 +31,7 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallo
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Staff
 import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -186,6 +188,8 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
         when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT.rightT(())
+
         val ua = baseAnswers.set(DisallowableIrrecoverableDebtsPage, false).success.value
         val application =
           applicationBuilder(userAnswers = Some(ua))
@@ -205,7 +209,8 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
           val result = route(application, request).value
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
-          verify(mockService, times(1)).clearIrrecoverableDebtsExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))
+
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, HeaderCarrier(any))
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
         }
       }

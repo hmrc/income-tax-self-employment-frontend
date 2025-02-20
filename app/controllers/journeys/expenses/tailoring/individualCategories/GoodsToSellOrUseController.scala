@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
+import models.common.Journey.ExpensesGoodsToSellOrUse
 import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.enumerable
@@ -71,7 +72,7 @@ class GoodsToSellOrUseController @Inject() (override val messagesApi: MessagesAp
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(GoodsToSellOrUsePage, businessId).contains(value)) {
-                  selfEmploymentService.clearGoodsToSellOrUseExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesGoodsToSellOrUse)
                   clearDependentPages(GoodsToSellOrUsePage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)

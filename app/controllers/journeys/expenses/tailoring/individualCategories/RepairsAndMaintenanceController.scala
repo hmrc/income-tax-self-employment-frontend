@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import controllers.returnAccountingType
 import forms.standard.EnumerableFormProvider
+import models.common.Journey.ExpensesRepairsAndMaintenance
 import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.RepairsAndMaintenance
 import models.journeys.expenses.individualCategories.RepairsAndMaintenance.enumerable
@@ -71,7 +72,7 @@ class RepairsAndMaintenanceController @Inject() (override val messagesApi: Messa
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(RepairsAndMaintenancePage, businessId).contains(value)) {
-                  selfEmploymentService.clearRepairsAndMaintenanceExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesRepairsAndMaintenance)
                   clearDependentPages(RepairsAndMaintenancePage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)

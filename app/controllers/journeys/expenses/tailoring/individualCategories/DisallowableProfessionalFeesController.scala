@@ -22,6 +22,7 @@ import forms.standard.BooleanFormProvider
 import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.common.Journey
+import models.common.Journey.ExpensesProfessionalFees
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableProfessionalFeesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,7 +66,7 @@ class DisallowableProfessionalFeesController @Inject() (override val messagesApi
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(DisallowableProfessionalFeesPage, businessId).contains(value)) {
-                  selfEmploymentService.clearProfessionalFeesExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesProfessionalFees)
                   clearDependentPages(DisallowableProfessionalFeesPage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)

@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.EnumerableFormProvider
+import models.common.Journey.ExpensesWorkplaceRunningCosts
 import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises.enumerable
@@ -67,7 +68,7 @@ class WorkFromBusinessPremisesController @Inject() (override val messagesApi: Me
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(WorkFromBusinessPremisesPage, businessId).contains(value)) {
-                  selfEmploymentService.clearWorkplaceRunningCostsExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesWorkplaceRunningCosts)
                   clearDependentPages(WorkFromBusinessPremisesPage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)

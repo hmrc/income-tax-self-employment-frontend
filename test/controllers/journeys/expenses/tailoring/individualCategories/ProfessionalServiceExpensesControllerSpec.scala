@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
+import models.common.Journey.{ExpensesConstruction, ExpensesProfessionalFees, ExpensesStaffCosts}
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
@@ -28,6 +29,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories._
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
+import org.mockito.ArgumentMatchers.{eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatest.BeforeAndAfterEach
@@ -220,9 +222,9 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearStaffCostsExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearProfessionalFeesExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearConstructionExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)) thenReturn EitherT.rightT(())
 
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)
@@ -234,9 +236,9 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
           redirectLocation(result).value mustEqual onwardRoute.url
 
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearStaffCostsExpensesData(anyTaxYear, anyBusinessId)(any, any)
-          verify(mockService, times(1)).clearConstructionExpensesData(anyTaxYear, anyBusinessId)(any, any)
-          verify(mockService, times(1)).clearProfessionalFeesExpensesData(anyTaxYear, anyBusinessId)(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)
         }
       }
 

@@ -17,11 +17,11 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.BooleanFormProvider
-import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.common.Journey
+import models.common.Journey.ExpensesFinancialCharges
+import models.common.{BusinessId, Journey, TaxYear}
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableOtherFinancialChargesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,9 +62,16 @@ class DisallowableOtherFinancialChargesController @Inject() (override val messag
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
-            selfEmploymentService
-              .persistAnswer(businessId, request.userAnswers, value, DisallowableOtherFinancialChargesPage)
-              .map(updatedAnswers => Redirect(navigator.nextPage(DisallowableOtherFinancialChargesPage, mode, updatedAnswers, taxYear, businessId)))
+            for {
+              updatedAnswers <-
+                if (mode == CheckMode && !request.userAnswers.get(DisallowableOtherFinancialChargesPage, businessId).contains(value)) {
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesFinancialCharges)
+                  clearDependentPages(DisallowableOtherFinancialChargesPage, value, request.userAnswers, businessId)
+                } else {
+                  Future.successful(request.userAnswers)
+                }
+              savedAnswers <- selfEmploymentService.persistAnswer(businessId, updatedAnswers, value, DisallowableOtherFinancialChargesPage)
+            } yield Redirect(navigator.nextPage(DisallowableOtherFinancialChargesPage, mode, savedAnswers, taxYear, businessId))
         )
   }
 

@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.ProfessionalServiceExpensesFormProvider
+import models.common.Journey.{ExpensesConstruction, ExpensesProfessionalFees, ExpensesStaffCosts}
 import models.common.{BusinessId, Journey, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
@@ -84,9 +85,9 @@ class ProfessionalServiceExpensesController @Inject() (override val messagesApi:
             Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
           value => {
             if (mode == CheckMode && value.contains(No)) {
-              selfEmploymentService.clearStaffCostsExpensesData(taxYear, businessId) flatMap { _ =>
-                selfEmploymentService.clearProfessionalFeesExpensesData(taxYear, businessId) flatMap { _ =>
-                  selfEmploymentService.clearConstructionExpensesData(taxYear, businessId)
+              selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesStaffCosts) flatMap { _ =>
+                selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesProfessionalFees) flatMap { _ =>
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesConstruction)
                 }
               }
             }

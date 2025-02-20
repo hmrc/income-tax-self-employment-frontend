@@ -22,6 +22,7 @@ import forms.standard.EnumerableFormProvider
 import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.common.Journey
+import models.common.Journey.ExpensesOtherExpenses
 import models.journeys.expenses.individualCategories.OtherExpenses
 import models.journeys.expenses.individualCategories.OtherExpenses.enumerable
 import navigation.ExpensesTailoringNavigator
@@ -68,7 +69,7 @@ class OtherExpensesController @Inject() (override val messagesApi: MessagesApi,
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(OtherExpensesPage, businessId).contains(value)) {
-                  selfEmploymentService.clearOtherExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesOtherExpenses)
                   clearDependentPages(OtherExpensesPage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)

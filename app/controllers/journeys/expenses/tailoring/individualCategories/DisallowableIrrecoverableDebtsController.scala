@@ -22,6 +22,7 @@ import forms.standard.BooleanFormProvider
 import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.common.Journey
+import models.common.Journey.ExpensesIrrecoverableDebts
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,7 +66,7 @@ class DisallowableIrrecoverableDebtsController @Inject() (override val messagesA
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(DisallowableIrrecoverableDebtsPage, businessId).contains(value)) {
-                  selfEmploymentService.clearIrrecoverableDebtsExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesIrrecoverableDebts)
                   clearDependentPages(DisallowableIrrecoverableDebtsPage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)
