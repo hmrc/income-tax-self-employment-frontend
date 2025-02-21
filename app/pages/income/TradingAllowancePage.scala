@@ -30,6 +30,7 @@ case object TradingAllowancePage extends IncomeBasePage[TradingAllowance] {
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = {
     val hasExistingExpensesOrCapitalAllowances = userAnswers.hasExistingExpensesOrCapitalAllowances(businessId)
+
     userAnswers.get(this, businessId) match {
       case Some(TradingAllowance.UseTradingAllowance) if hasExistingExpensesOrCapitalAllowances =>
         routes.TradingAllowanceWarningController.onPageLoad(taxYear, businessId)
