@@ -28,7 +28,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Logging, TimeMachine}
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
