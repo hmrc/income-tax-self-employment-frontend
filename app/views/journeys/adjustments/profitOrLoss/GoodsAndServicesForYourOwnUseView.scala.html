@@ -36,7 +36,7 @@
     </div>
 }
 
-@layout(pageTitle = title(form, messages(s"goodsAndServicesForYourOwnUse.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"goodsAndServicesForYourOwnUse.title.$userType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form)
 

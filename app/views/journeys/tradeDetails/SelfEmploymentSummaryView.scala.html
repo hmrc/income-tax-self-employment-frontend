@@ -15,6 +15,7 @@
  *@
 
 @import views.html.components.Heading
+@import models.common.TaxYear
 
 @this(
         layout: templates.Layout,
@@ -23,9 +24,9 @@
         heading: Heading
 )
 
-@(tradingNames: SummaryList, nextRoute: String)(implicit request: Request[_], messages: Messages)
+@(tradingNames: SummaryList, nextRoute: String, taxYear: TaxYear)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
+@layout(pageTitle = titleNoForm(messages("journeys.selfEmployment")), taxYear = Some(taxYear)) {
 
     @heading("journeys.selfEmployment")
 

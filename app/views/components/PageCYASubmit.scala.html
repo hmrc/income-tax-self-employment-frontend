@@ -17,12 +17,14 @@
 @import models.common._
 @import views.html.components._
 
-@this(layout: templates.Layout,
+@this(
+        layout: templates.Layout,
         formHelper: FormWithCSRF,
         submitButton: SubmitButton,
         heading: Heading,
         caption: CaptionWithTaxYear,
-        govukSummaryList: GovukSummaryList)
+        govukSummaryList: GovukSummaryList
+)
 
 @(pageName: PageName,
         taxYear: TaxYear,
@@ -31,7 +33,7 @@
         submitCall: Call
 )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
+@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType")), taxYear = Some(taxYear)) {
 
     @caption(taxYear)
     @heading(s"$pageName.title.$userType")

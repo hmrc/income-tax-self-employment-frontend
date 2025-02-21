@@ -19,13 +19,14 @@ package forms.capitalallowances.structuresBuildingsAllowance
 import forms.mappings.Mappings
 import models.common.UserType
 import play.api.data.Form
+import utils.TimeMachine
 
 import java.time.LocalDate
 import javax.inject.Inject
 
-class StructuresBuildingsQualifyingUseDateFormProvider @Inject() extends Mappings {
+class StructuresBuildingsQualifyingUseDateFormProvider @Inject() (timeMachine: TimeMachine) extends Mappings {
 
-  private val latestDate    = LocalDate.now()
+  private val latestDate    = timeMachine.now
   private val requiredError = "structuresBuildingsQualifyingUseDate.error"
   private val dateInFuture  = "structuresBuildingsQualifyingUseDate.error.inFuture"
 
