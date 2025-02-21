@@ -36,7 +36,7 @@ import java.time.LocalDate
 
 abstract case class LocalDateGetAndPostQuestionBaseSpec(controller: String, page: OneQuestionPage[LocalDate]) extends ControllerSpec {
 
-  def validDate: LocalDate = LocalDate.now()
+  def validDate: LocalDate = mockTimeMachine.now
   val form                 = new LocalDateFormProvider
 
   /** Implementers should avoid eager overrides of below.
