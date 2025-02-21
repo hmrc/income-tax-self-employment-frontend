@@ -58,7 +58,7 @@
     }
 }
 
-@layout(pageTitle = title(form, messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"zegvHowMuchDoYouWantToClaim.subHeading.$userType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form, onlyShowFirstError = true)
 

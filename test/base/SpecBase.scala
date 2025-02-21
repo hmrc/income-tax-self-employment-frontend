@@ -31,6 +31,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.TradeAccountingType
 import play.api.Application
 import play.api.http.Status.BAD_REQUEST
@@ -46,8 +47,9 @@ import stubs.controllers.actions.{StubDataRetrievalAction, StubSubmittedDataRetr
 import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.TimeMachine
 
-import java.time.ZonedDateTime
+import java.time.{LocalDate, ZonedDateTime}
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {

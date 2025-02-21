@@ -18,18 +18,26 @@ package models.journeys.capitalallowances
 
 import base.SpecBase
 import cats.implicits.catsSyntaxOptionId
+import data.TimeData
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite.newSite
 import models.journeys.capitalallowances.specialTaxSites.{NewSpecialTaxSite, SpecialTaxSiteLocation}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
+import utils.TimeMachine
 
 import java.time.LocalDate
 
 class NewSpecialTaxSiteSpec extends SpecBase {
 
+  val mockTimeMachine: TimeMachine = mock[TimeMachine]
+
+  when(mockTimeMachine.now).thenReturn(TimeData.testDate)
+
   val completedSite: NewSpecialTaxSite = NewSpecialTaxSite(
     true.some,
-    LocalDate.now().some,
-    LocalDate.now().some,
-    LocalDate.now().some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
+    mockTimeMachine.now.some,
     BigDecimal(20000).some,
     SpecialTaxSiteLocation(Some("name"), Some("number"), "AA11AA").some,
     BigDecimal(10000).some
@@ -52,7 +60,7 @@ class NewSpecialTaxSiteSpec extends SpecBase {
       newSite.isEmpty
     }
     "return false if any fields are nonEmpty" in {
-      val notValidCompleted = List(newSite.copy(contractStartDate = LocalDate.now().some), completedSite)
+      val notValidCompleted = List(newSite.copy(contractStartDate = mockTimeMachine.now.some), completedSite)
       notValidCompleted.forall(!_.isEmpty)
     }
   }

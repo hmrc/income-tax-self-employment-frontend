@@ -59,7 +59,7 @@ class StructuresBuildingsQualifyingUseDateControllerSpec
       page,
       userType,
       userSpecificRequiredError = true,
-      latestDateAndError = Some((LocalDate.now(), "structuresBuildingsQualifyingUseDate.error.inFuture")))
+      latestDateAndError = Some((mockTimeMachine.now, "structuresBuildingsQualifyingUseDate.error.inFuture")))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

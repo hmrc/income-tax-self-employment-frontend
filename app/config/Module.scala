@@ -44,5 +44,7 @@ class Module extends AbstractModule {
     bind(classOf[AuditService]).to(classOf[AuditServiceImpl]).asEagerSingleton()
 
     bind(classOf[FrontendAppConfig]).to(classOf[FrontendAppConfigImpl]).asEagerSingleton()
+
+    bind(classOf[TimeMachine]).to(classOf[DefaultTimeMachine]).asEagerSingleton()
   }
 }

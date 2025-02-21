@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Logging
+import utils.{Logging, TimeMachine}
 import views.html.journeys.capitalallowances.specialTaxSites.QualifyingUseStartDateView
 
 import java.time.LocalDate
@@ -40,13 +40,14 @@ class QualifyingUseStartDateController @Inject() (override val messagesApi: Mess
                                                   requireData: DataRequiredAction,
                                                   service: SpecialTaxSitesService,
                                                   formProvider: LocalDateFormProvider,
-                                                  view: QualifyingUseStartDateView)
+                                                  view: QualifyingUseStartDateView,
+                                                  timeMachine: TimeMachine)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val page               = QualifyingUseStartDatePage
-  private val latestDateAndError = Some((LocalDate.now, "qualifyingUseStartDate.error.tooLate"))
+  private val latestDateAndError = Some((timeMachine.now, "qualifyingUseStartDate.error.tooLate"))
   private val form               = (userType: UserType) => formProvider(page, userType, latestDateAndError = latestDateAndError)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =

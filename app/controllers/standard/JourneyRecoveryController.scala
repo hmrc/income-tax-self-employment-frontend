@@ -16,7 +16,7 @@
 
 package controllers.standard
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, TimeMachine}
 import controllers.actions.IdentifierAction
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -32,11 +32,14 @@ class JourneyRecoveryController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     continueView: JourneyRecoveryContinueView,
-    startAgainView: JourneyRecoveryStartAgainView
+    startAgainView: JourneyRecoveryStartAgainView,
+    timeMachine: TimeMachine
 )(implicit val appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+
+  implicit val tm: TimeMachine = timeMachine
 
   def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify { implicit request =>
     val errorDescription: Option[String] = request2flash.get("errorMessage")

@@ -16,14 +16,13 @@
 
 package models.journeys.nics
 
-import config.TaxYearConfig
+import config.{TaxYearConfig, TimeMachine}
 import models.common.TaxYear
-import models.common.TaxYear.{currentTaxYearStartDate, dateNow}
 
 import java.text.NumberFormat
 import java.time.{LocalDate, Period}
 
-object NICsThresholds {
+object NICsThresholds extends TimeMachine {
 
   final case class Class4Limits(lowerProfitsLimit: Int, upperProfitsLimit: Int, rateBetweenLimits: Double, rateAboveUpperLimit: Double)
 
@@ -61,13 +60,13 @@ object NICsThresholds {
 
     def ageIsUnder16(userDoB: LocalDate, taxYear: TaxYear, ageAtStartOfTaxYear: Boolean): Boolean = {
       val comparisonDayMonth = if (ageAtStartOfTaxYear) currentTaxYearStartDate else dateNow
-      val comparisonDate     = LocalDate.of(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
+      val comparisonDate     = dateOf(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
       val age                = Period.between(userDoB, comparisonDate).getYears
       age < 16
     }
     def ageIsUnderStatePensionAge(userDoB: LocalDate, taxYear: TaxYear, ageAtStartOfTaxYear: Boolean): Boolean = {
       val comparisonDayMonth = if (ageAtStartOfTaxYear) currentTaxYearStartDate else dateNow
-      val comparisonDate     = LocalDate.of(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
+      val comparisonDate     = dateOf(taxYear.endYear, comparisonDayMonth.getMonthValue, comparisonDayMonth.getDayOfMonth)
       val age                = Period.between(userDoB, comparisonDate).getYears
       val statePensionAge    = StatePensionAgeThresholds.getThresholdForTaxYear(taxYear)
       age < statePensionAge

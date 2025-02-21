@@ -15,14 +15,14 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.common.TaxYear
+@import config.TimeMachine
 
 @this(
     layout: templates.Layout,
     govukButton: GovukButton
 )
 
-@(errorMessage: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(errorMessage: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig, timeMachine: TimeMachine)
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
 
@@ -33,7 +33,7 @@
     <p class="govuk-body">
         @govukButton(
             ButtonViewModel(messages("site.startAgain"))
-                .asLink(appConfig.incomeTaxSubmissionStartUrl(TaxYear.dateNow.getYear))
+                .asLink(appConfig.incomeTaxSubmissionStartUrl(timeMachine.dateNow.getYear))
         )
     </p>
 }

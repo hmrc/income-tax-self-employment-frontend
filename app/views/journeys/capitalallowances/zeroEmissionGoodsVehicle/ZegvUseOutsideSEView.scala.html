@@ -51,7 +51,7 @@
         }
     }
 
-@layout(pageTitle = title(form, messages(s"zegvUseOutsideSE.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"zegvUseOutsideSE.title.$userType")), taxYear = Some(taxYear)) {
 
     @errorSummarySection(form, onlyShowFirstError = true)
 
