@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import config.TimeMachine
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -32,7 +33,8 @@ private[mappings] class LocalDateFormatter(
     latestDateAndError: Option[(LocalDate, String)],
     args: Seq[String] = Seq.empty
 ) extends Formatter[LocalDate]
-    with Formatters {
+    with Formatters
+    with TimeMachine {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
@@ -72,7 +74,7 @@ private[mappings] class LocalDateFormatter(
   }
 
   private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
-    Try(LocalDate.of(year, month, day)) match {
+    Try(dateOf(year, month, day)) match {
       case Success(date) =>
         Right(date)
       case Failure(_) =>

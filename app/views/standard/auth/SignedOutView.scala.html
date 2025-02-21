@@ -22,13 +22,14 @@
     govukButton: GovukButton
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig, timeMachine: TimeMachine)
 
 @layout(
     pageTitle    = titleNoForm(messages("signedOut.title")),
     showBackLink = false,
     timeout      = false,
-    showSignOut  = false
+    showSignOut  = false,
+    timeMachine
 ) {
 
     <h1 class="govuk-heading-xl">@messages("signedOut.title")</h1>
@@ -38,7 +39,7 @@
     <p class="govuk-body">
         @govukButton(
             ButtonViewModel(messages("site.signIn"))
-                .asLink(appConfig.incomeTaxSubmissionStartUrl(TaxYear.dateNow.getYear))
+                .asLink(appConfig.incomeTaxSubmissionStartUrl(timeMachine.dateNow.getYear))
         )
     </p>
 }

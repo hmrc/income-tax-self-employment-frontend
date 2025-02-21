@@ -16,6 +16,7 @@
 
 package controllers.journeys.capitalallowances.specialTaxSites
 
+import config.TimeMachine
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.standard.LocalDateFormProvider
 import models.Mode
@@ -28,9 +29,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import views.html.journeys.capitalallowances.specialTaxSites.ConstructionStartDateView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
+import data.TimeData
 
 @Singleton
 class ConstructionStartDateController @Inject() (override val messagesApi: MessagesApi,
@@ -43,10 +44,11 @@ class ConstructionStartDateController @Inject() (override val messagesApi: Messa
                                                  view: ConstructionStartDateView)
     extends FrontendBaseController
     with I18nSupport
-    with Logging {
+    with Logging
+    with TimeData {
 
   private val page                 = ConstructionStartDatePage
-  private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "constructionStartDate.error.tooEarly"))
+  private val earliestDateAndError = Some((constructionStartDate, "constructionStartDate.error.tooEarly"))
   private val form                 = (userType: UserType) => formProvider(page, userType, earliestDateAndError = earliestDateAndError)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =

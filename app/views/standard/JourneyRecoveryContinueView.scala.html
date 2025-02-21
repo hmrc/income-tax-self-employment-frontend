@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@import config.TimeMachine
+
 @this(
     layout: templates.Layout,
     govukButton: GovukButton
 )
 
-@(errorMessage: Option[String] = None, continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(errorMessage: Option[String] = None, continueUrl: String)(implicit request: Request[_], messages: Messages, timeMachine: TimeMachine)
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
 

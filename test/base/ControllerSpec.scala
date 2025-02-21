@@ -17,7 +17,6 @@
 package base
 
 import builders.UserBuilder
-import data.TimeData
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
