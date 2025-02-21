@@ -140,82 +140,10 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def clearOfficeSuppliesExpenses(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+  def clearExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid, journey: Journey)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-office-supplies-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearGoodsToSellOrUseExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-goods-to-sell-or-use-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-repairs-and-maintenance-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearWorkplaceRunningCostsExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-workplace-running-cost-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-advertising-or-marketing-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearStaffCostsExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-staff-costs-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearProfessionalFeesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-professional-fees-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearIrrecoverableDebtsExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-irrecoverable-debts-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearConstructionExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-construction-expenses-answers/$nino/$businessId")
-    val response = post(http, url, mtditid, "")
-    EitherT(response)
-  }
-
-  def clearOtherExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext): ApiResultT[Unit] = {
-    val url      = buildUrl(s"$taxYear/clear-other-expenses-answers/$nino/$businessId")
+    val url      = buildUrl(s"$taxYear/clear-${journey.entryName}-answers/$nino/$businessId")
     val response = post(http, url, mtditid, "")
     EitherT(response)
   }

@@ -22,6 +22,7 @@ import forms.standard.BooleanFormProvider
 import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.common.Journey
+import models.common.Journey.ExpensesConstruction
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableSubcontractorCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,7 +66,7 @@ class DisallowableSubcontractorCostsController @Inject() (override val messagesA
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(DisallowableSubcontractorCostsPage, businessId).contains(value)) {
-                  selfEmploymentService.clearConstructionExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesConstruction)
                   clearDependentPages(DisallowableSubcontractorCostsPage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)

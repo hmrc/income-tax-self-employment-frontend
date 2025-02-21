@@ -20,6 +20,7 @@ import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
 import forms.standard.EnumerableFormProvider
+import models.common.Journey.ExpensesRepairsAndMaintenance
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
@@ -28,6 +29,7 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallo
 import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, RepairsAndMaintenance}
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
+import org.mockito.ArgumentMatchers.{eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatest.BeforeAndAfterEach
@@ -203,7 +205,9 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearRepairsAndMaintenanceExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))) thenReturn EitherT.rightT(())
+          when(
+            mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))) thenReturn EitherT
+            .rightT(())
 
           val repairsAndMaintenanceRoute: String = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, CheckMode).url
 
@@ -216,7 +220,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).clearRepairsAndMaintenanceExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
         }
       }

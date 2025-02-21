@@ -61,16 +61,11 @@ case class SelfEmploymentServiceStub(
     getNetBusinessProfitOrLossValuesResult: Either[ServiceError, NetBusinessProfitOrLossValues] = Right(aNetBusinessProfitValues),
     clearSimplifiedExpensesDataResult: Either[ServiceError, Unit] = Right(()),
     clearExpensesAndCapitalAllowancesResult: Either[ServiceError, Unit] = Right(()),
-    clearOfficeSuppliesExpensesResult: Either[ServiceError, Unit] = Right(()),
     clearGoodsToSellOrUseExpensesResult: Either[ServiceError, Unit] = Right(()),
     clearRepairsAndMaintenanceExpensesResult: Either[ServiceError, Unit] = Right(()),
-    clearWorkplaceRunningCostsExpensesResult: Either[ServiceError, Unit] = Right(()),
     clearAdvertisingOrMarketingExpensesResult: Either[ServiceError, Unit] = Right(()),
-    clearStaffCostsExpensesResult: Either[ServiceError, Unit] = Right(()),
-    clearConstructionExpensesResult: Either[ServiceError, Unit] = Right(()),
-    clearProfessionalFeesExpensesResult: Either[ServiceError, Unit] = Right(()),
     clearIrrecoverableDebtsExpensesResult: Either[ServiceError, Unit] = Right(()),
-    clearOtherExpensesResult: Either[ServiceError, Unit] = Right(()),
+    clearExpensesResult: Either[ServiceError, Unit] = Right(()),
     hasOtherIncomeSources: Either[ServiceError, Boolean] = Right(true))
     extends SelfEmploymentService {
 
@@ -159,11 +154,6 @@ case class SelfEmploymentServiceStub(
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearExpensesAndCapitalAllowancesResult)
 
-  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearOfficeSuppliesExpensesResult)
-
   def clearGoodsToSellOrUseExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
@@ -177,35 +167,18 @@ case class SelfEmploymentServiceStub(
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearRepairsAndMaintenanceExpensesResult)
 
-  override def clearWorkplaceRunningCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearWorkplaceRunningCostsExpensesResult)
-
   def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearAdvertisingOrMarketingExpensesResult)
-
-  def clearStaffCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearStaffCostsExpensesResult)
-
-  override def clearConstructionExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearConstructionExpensesResult)
-
-  def clearProfessionalFeesExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearProfessionalFeesExpensesResult)
 
   def clearIrrecoverableDebtsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearIrrecoverableDebtsExpensesResult)
 
-  def clearOtherExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearOtherExpensesResult)
-
+  def clearExpensesData(taxYear: TaxYear, businessId: BusinessId, journey: Journey)(implicit
+      request: DataRequest[_],
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    EitherT.fromEither[Future](clearExpensesResult)
 }

@@ -19,16 +19,17 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.standard.EnumerableFormProvider
-import models.{CheckMode, NormalMode}
 import models.common.AccountingType.Accrual
+import models.common.Journey.ExpensesAdvertisingOrMarketing
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories._
+import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -216,7 +217,9 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar wi
 
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearAdvertisingOrMarketingExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))) thenReturn EitherT.rightT(())
+          when(
+            mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesAdvertisingOrMarketing))(any, HeaderCarrier(any))) thenReturn EitherT
+            .rightT(())
 
           val advertisingOrMarketingRoute: String = routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode).url
 
@@ -229,7 +232,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar wi
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).clearAdvertisingOrMarketingExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesAdvertisingOrMarketing))(any, HeaderCarrier(any))
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
         }
       }
