@@ -17,12 +17,14 @@
 package base
 
 import builders.UserBuilder
+import data.TimeData
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchersSugar
+import org.mockito.Mockito.when
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -33,6 +35,7 @@ import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers.contentAsString
 import services.SelfEmploymentService
 import stubs.services.SelfEmploymentServiceStub
+import utils.TimeMachine
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -49,13 +52,16 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
 trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout with ArgumentMatchersSugar {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
+  val mockTimeMachine: TimeMachine       = mock[TimeMachine]
 
   val bindings: List[Binding[_]] = Nil
+
+  when(mockTimeMachine.now).thenReturn(TimeData.testDate)
 
   case class TestScenario(userType: UserType = Individual,
                           answers: Option[UserAnswers],
                           mode: Mode = NormalMode,
-                          taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
+                          taxYear: TaxYear = TaxYear(TimeData.testDate.getYear),
                           businessId: BusinessId = SpecBase.businessId,
                           tradingName: TradingName = TradingName.empty,
                           accountingType: Option[AccountingType] = Some(AccountingType.Accrual),
@@ -68,8 +74,9 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
       JourneyContextWithNino(taxYear, Nino(UserBuilder.aNoddyUser.nino), businessId, Mtditid(UserBuilder.aNoddyUser.mtditid), journey)
 
     private def createApp(userType: UserType, answers: Option[UserAnswers], mockService: SelfEmploymentService): Application = {
+
       val overrideBindings: List[Binding[_]] =
-        bind[SelfEmploymentService].toInstance(mockService) :: bindings
+        bind[SelfEmploymentService].toInstance(mockService) +: bindings :+ bind[TimeMachine].toInstance(mockTimeMachine)
 
       SpecBase
         .applicationBuilder(answers, userType)
@@ -82,7 +89,7 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
   case class TestStubbedScenario(userType: UserType = Individual,
                                  answers: Option[UserAnswers],
                                  mode: Mode = NormalMode,
-                                 taxYear: TaxYear = TaxYear(LocalDate.now().getYear),
+                                 taxYear: TaxYear = TaxYear(TimeData.testDate.getYear),
                                  businessId: BusinessId = SpecBase.businessId,
                                  tradingName: TradingName = TradingName.empty,
                                  accountingType: Option[AccountingType] = Some(AccountingType.Accrual),
@@ -96,7 +103,7 @@ trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout w
 
     private def createApp(userType: UserType, answers: Option[UserAnswers], stubbedService: SelfEmploymentService): Application = {
       val overrideBindings: List[Binding[_]] =
-        bind[SelfEmploymentService].toInstance(stubbedService) :: bindings
+        bind[SelfEmploymentService].toInstance(stubbedService) +: bindings :+ bind[TimeMachine].toInstance(mockTimeMachine)
 
       SpecBase
         .applicationBuilder(answers, userType)

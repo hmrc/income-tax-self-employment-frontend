@@ -25,10 +25,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Logging
+import utils.{Logging, TimeMachine}
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsQualifyingUseDateView
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
@@ -40,13 +39,14 @@ class StructuresBuildingsQualifyingUseDateController @Inject() (override val mes
                                                                 service: StructuresBuildingsService,
                                                                 formProvider: LocalDateFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
-                                                                view: StructuresBuildingsQualifyingUseDateView)
+                                                                view: StructuresBuildingsQualifyingUseDateView,
+                                                                timeMachine: TimeMachine)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val page               = StructuresBuildingsQualifyingUseDatePage
-  private val latestDateAndError = Some((LocalDate.now, "structuresBuildingsQualifyingUseDate.error.inFuture"))
+  private val latestDateAndError = Some((timeMachine.now, "structuresBuildingsQualifyingUseDate.error.inFuture"))
   private val form = (userType: UserType) => formProvider(page, userType, userSpecificRequiredError = true, latestDateAndError = latestDateAndError)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =

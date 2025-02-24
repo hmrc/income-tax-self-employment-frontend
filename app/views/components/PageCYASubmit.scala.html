@@ -17,12 +17,14 @@
 @import models.common._
 @import views.html.components._
 
-@this(layout: templates.Layout,
+@this(
+        layout: templates.Layout,
         formHelper: FormWithCSRF,
         submitButton: SubmitButton,
         heading: Heading,
         caption: CaptionWithTaxYear,
-        govukSummaryList: GovukSummaryList)
+        govukSummaryList: GovukSummaryList
+)
 
 @(pageName: PageName,
         taxYear: TaxYear,
