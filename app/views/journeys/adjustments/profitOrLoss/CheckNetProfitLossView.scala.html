@@ -21,7 +21,6 @@
 @import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary
 @import viewmodels.journeys.adjustments.NetBusinessProfitOrLossSummary.{additionsCaption, deductionsCaption}
 @import views.html.components._
-@import models.common.TaxYear
 
 @this(
         layout: templates.Layout,
@@ -36,8 +35,7 @@
         journeyIsProfitOrLoss: ProfitOrLoss,
         netBusinessProfitOrLossForTaxPurposes: BigDecimal,
         summaryLists: NetBusinessProfitOrLossSummary,
-        continueRedirect: Call,
-        taxYear: TaxYear
+        continueRedirect: Call
 )(implicit request: Request[_], messages: Messages)
 
 @netBusinessProfitOrLoss = @{if (netBusinessProfitOrLossForTaxPurposes < 0) Loss else Profit}

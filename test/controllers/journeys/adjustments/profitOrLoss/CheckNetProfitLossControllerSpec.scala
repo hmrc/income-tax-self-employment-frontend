@@ -60,7 +60,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, Loss, netAmount, summaryLists, onwardLossRoute, taxYear)(onPageLoadRequest, msg).toString()
+            view(userType, Loss, netAmount, summaryLists, onwardLossRoute)(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK
@@ -81,7 +81,7 @@ class CheckNetProfitLossControllerSpec extends ControllerSpec {
 
           val expectedView: String = {
             val view = application.injector.instanceOf[CheckNetProfitLossView]
-            view(userType, Profit, netAmount, summaryLists, onwardProfitRoute, taxYear)(onPageLoadRequest, msg).toString()
+            view(userType, Profit, netAmount, summaryLists, onwardProfitRoute)(onPageLoadRequest, msg).toString()
           }
 
           status(result) mustBe OK

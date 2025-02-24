@@ -16,7 +16,6 @@
 
 @import models.common.UserType
 @import views.html.components.Heading
-@import models.common.TaxYear
 
 @this(
         layout: templates.Layout,
@@ -24,7 +23,7 @@
         heading: Heading
 )
 
-@(userType: UserType, nextRoute: String, taxYear: TaxYear)(implicit request: Request[_], messages: Messages)
+@(userType: UserType, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("wfhExpensesInfo.title"))) {
 

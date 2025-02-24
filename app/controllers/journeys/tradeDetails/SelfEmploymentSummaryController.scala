@@ -49,7 +49,7 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
     val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
       val viewModel = generateRowList(taxYear, businesses.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
       val nextRoute = SelfEmploymentSummaryPage.nextPage(taxYear, BusinessId.tradeDetailsId).url
-      Ok(view(viewModel, nextRoute, taxYear))
+      Ok(view(viewModel, nextRoute))
     }
     handleResultT(result)
   }

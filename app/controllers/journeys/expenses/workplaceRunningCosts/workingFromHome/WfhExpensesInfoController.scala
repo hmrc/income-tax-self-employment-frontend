@@ -42,6 +42,6 @@ class WfhExpensesInfoController @Inject() (override val messagesApi: MessagesApi
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val redirectRoute: Call = navigator.nextPage(WfhExpensesInfoPage, mode, request.userAnswers, taxYear, businessId)
-      Ok(view(request.userType, redirectRoute.url, taxYear))
+      Ok(view(request.userType, redirectRoute.url))
   }
 }

@@ -35,7 +35,7 @@ class WfhExpensesInfoControllerSpec extends ControllerSpec {
 
   private def expectedView(scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String = {
     val view = application.injector.instanceOf[WfhExpensesInfoView]
-    view(scenario.userType, redirectCall.url, taxYear).toString()
+    view(scenario.userType, redirectCall.url).toString()
   }
 
   Seq(Individual, Agent) foreach { userType =>
