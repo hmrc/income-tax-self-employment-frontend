@@ -33,7 +33,7 @@
         submitCall: Call
 )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType")), taxYear = Some(taxYear)) {
+@layout(pageTitle = titleNoForm(messages(s"$pageName.title.$userType"))) {
 
     @caption(taxYear)
     @heading(s"$pageName.title.$userType")
