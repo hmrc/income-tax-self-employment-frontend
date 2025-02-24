@@ -30,7 +30,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, goodsAmount: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", goodsAmount)), taxYear = Some(taxYear)) {
+@layout(pageTitle = title(form, messages(s"disallowableGoodsToSellOrUseAmount.title.$userType", goodsAmount))) {
 
     @errorSummarySection(form)
 

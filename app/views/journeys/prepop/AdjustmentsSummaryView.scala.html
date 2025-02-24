@@ -29,7 +29,7 @@
 
 @(userType: UserType, taxYear: TaxYear, businessId: BusinessId, adjustmentsTable: Table)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("newTaxSites.title")), taxYear = Some(taxYear)) {
+@layout(pageTitle = titleNoForm(messages("newTaxSites.title"))) {
 
     @caption(taxYear)
     @heading("adjustments.businessAdjustments")

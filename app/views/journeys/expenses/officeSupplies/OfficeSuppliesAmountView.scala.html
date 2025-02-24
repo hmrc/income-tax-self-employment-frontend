@@ -28,7 +28,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, accountingType: AccountingType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$userType")), taxYear = Some(taxYear)) {
+@layout(pageTitle = title(form, messages(s"officeSuppliesAmount.title.$userType"))) {
 
     @formHelper(action = routes.OfficeSuppliesAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

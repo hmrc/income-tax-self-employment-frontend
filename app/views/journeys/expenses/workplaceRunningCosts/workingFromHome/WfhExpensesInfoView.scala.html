@@ -26,7 +26,7 @@
 
 @(userType: UserType, nextRoute: String, taxYear: TaxYear)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("wfhExpensesInfo.title")), taxYear = Some(taxYear)) {
+@layout(pageTitle = titleNoForm(messages("wfhExpensesInfo.title"))) {
 
     @heading("wfhExpensesInfo.title")
 

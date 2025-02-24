@@ -43,7 +43,7 @@
 @netBusinessProfitOrLoss = @{if (netBusinessProfitOrLossForTaxPurposes < 0) Loss else Profit}
 @formattedNetAmount = @{formatSumMoneyNoNegative(List(netBusinessProfitOrLossForTaxPurposes))}
 
-@layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", formattedNetAmount)), taxYear = Some(taxYear)) {
+@layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", formattedNetAmount))) {
 
     @formHelper(action = continueRedirect) {
 

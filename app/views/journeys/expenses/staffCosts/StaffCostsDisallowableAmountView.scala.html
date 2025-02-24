@@ -31,7 +31,7 @@
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, staffCostsAmount: TextAmount
     )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"staffCostsDisallowableAmount.title.$userType", staffCostsAmount.value)), taxYear = Some(taxYear)) {
+@layout(pageTitle = title(form, messages(s"staffCostsDisallowableAmount.title.$userType", staffCostsAmount.value))) {
 
     @errorSummary(form)
 

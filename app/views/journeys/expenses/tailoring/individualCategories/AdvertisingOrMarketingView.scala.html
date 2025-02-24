@@ -29,7 +29,7 @@
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("advertisingOrMarketing.title")), taxYear = Some(taxYear)) {
+@layout(pageTitle = title(form, messages("advertisingOrMarketing.title"))) {
 
     @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 

@@ -23,3 +23,8 @@ class TimeMachine {
   def now: LocalDate = LocalDate.now
 
 }
+
+object TimeMachine {
+  private val instance   = new TimeMachine()
+  def apply(): LocalDate = instance.now
+}

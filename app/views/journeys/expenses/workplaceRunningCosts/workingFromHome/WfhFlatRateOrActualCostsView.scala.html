@@ -40,7 +40,7 @@
     </div>
 }
 
-@layout(pageTitle = title(form, messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate)), taxYear = Some(taxYear)) {
+@layout(pageTitle = title(form, messages(s"wfhFlatRateOrActualCosts.title.$userType", flatRateViewModel.flatRate))) {
 
     @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 

@@ -29,7 +29,7 @@
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode, businessName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} $businessName."), taxYear = Some(taxYear)) {
+@layout(pageTitle = title(form, s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} $businessName.")) {
 
     @heading(s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} $businessName.")
 

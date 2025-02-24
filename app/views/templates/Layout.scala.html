@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardAlphaBanner
 @import views.html.helper.CSPNonce
 @import models.common.TaxYear
+@import utils.TimeMachine
 
 @this(
     appConfig: FrontendAppConfig,
@@ -87,7 +88,7 @@
     pageTitle   = Some(pageTitle),
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl  = Some(appConfig.incomeTaxSubmissionStartUrl(taxYear.getOrElse(TaxYear(TaxYear.dateNow.getYear)).endYear)),
+        serviceUrl  = Some(appConfig.incomeTaxSubmissionStartUrl(TimeMachine.apply().getYear)),
         signOutUrl  = if(showSignOut) Some(controllers.standard.auth.routes.AuthController.signOut.url) else None,
         phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
     )),

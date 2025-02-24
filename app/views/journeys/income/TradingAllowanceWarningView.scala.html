@@ -27,7 +27,7 @@
 
 @(userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = messages(s"tradingAllowanceWarning.title.$userType"), taxYear = Some(taxYear)) {
+@layout(pageTitle = messages(s"tradingAllowanceWarning.title.$userType")) {
 
     @heading(s"tradingAllowanceWarning.title.$userType")
 

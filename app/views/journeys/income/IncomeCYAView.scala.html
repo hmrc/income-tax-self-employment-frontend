@@ -27,7 +27,7 @@
 
 @(taxYear: TaxYear, businessId: BusinessId, summaryList: SummaryList, userType: UserType)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"checkYourIncome.title.$userType")), taxYear = Some(taxYear)) {
+@layout(pageTitle = titleNoForm(messages(s"checkYourIncome.title.$userType"))) {
 
     @formHelper(action = routes.IncomeCYAController.onSubmit(taxYear, businessId)) {
 
