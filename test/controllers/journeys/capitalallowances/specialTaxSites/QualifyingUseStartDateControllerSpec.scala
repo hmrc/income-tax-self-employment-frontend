@@ -60,7 +60,7 @@ class QualifyingUseStartDateControllerSpec
     ))
 
   override def createForm(userType: UserType): Form[LocalDate] =
-    form(page, userType, latestDateAndError = Some((LocalDate.now, "qualifyingUseStartDate.error.tooLate")))
+    form(page, userType, latestDateAndError = Some((mockTimeMachine.now, "qualifyingUseStartDate.error.tooLate")))
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],

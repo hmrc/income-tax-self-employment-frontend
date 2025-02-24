@@ -29,7 +29,7 @@
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"selfEmploymentAbroad.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"selfEmploymentAbroad.title.$userType")), taxYear = Some(taxYear)) {
 
     @formHelper(action = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 

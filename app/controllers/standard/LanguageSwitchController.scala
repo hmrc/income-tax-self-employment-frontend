@@ -17,8 +17,7 @@
 package controllers.standard
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
-import models.common.TaxYear
+import config.{FrontendAppConfig, TimeMachine}
 import play.api.i18n.Lang
 import play.api.mvc._
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
@@ -27,9 +26,10 @@ class LanguageSwitchController @Inject() (
     appConfig: FrontendAppConfig,
     languageUtils: LanguageUtils,
     cc: ControllerComponents
-) extends LanguageController(languageUtils, cc) {
+) extends LanguageController(languageUtils, cc)
+    with TimeMachine {
 
-  override def fallbackURL: String = appConfig.incomeTaxSubmissionStartUrl(TaxYear.dateNow.getYear)
+  override def fallbackURL: String = appConfig.incomeTaxSubmissionStartUrl(dateNow.getYear)
 
   override def languageMap: Map[String, Lang] = appConfig.languageMap
 }

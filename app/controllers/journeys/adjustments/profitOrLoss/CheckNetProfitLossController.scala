@@ -60,7 +60,7 @@ class CheckNetProfitLossController @Inject() (override val messagesApi: Messages
         redirectLocation =
           if (profitOrLoss == Profit) routes.PreviousUnusedLossesController.onPageLoad(taxYear, businessId, NormalMode)
           else routes.ClaimLossReliefController.onPageLoad(taxYear, businessId, NormalMode)
-      } yield Ok(view(request.userType, profitOrLoss, netBusinessProfitOrLossForTaxPurposes, summaryLists, redirectLocation))
+      } yield Ok(view(request.userType, profitOrLoss, netBusinessProfitOrLossForTaxPurposes, summaryLists, redirectLocation, taxYear))
 
       handleResultT(result)
   }

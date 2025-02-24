@@ -52,7 +52,7 @@
     <p class="govuk-body govuk-!-margin-bottom-9">{messages(s"profitOrLoss.netForTaxPurposes.$netForTaxPurposesIsProfitOrLoss")} <strong>{formattedAmount}</strong></p>
 }
 
-@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$adjustedTaxableIsProfitOrLoss", adjustedTaxableProfitOrLossAmount))) {
+@layout(pageTitle = titleNoForm(messages(s"profitOrLossCalculation.title.$adjustedTaxableIsProfitOrLoss", adjustedTaxableProfitOrLossAmount)), taxYear = Some(taxYear)) {
 
     @formHelper(action = continueRedirect) {
 

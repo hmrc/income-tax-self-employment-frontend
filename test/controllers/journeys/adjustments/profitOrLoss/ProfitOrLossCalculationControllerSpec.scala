@@ -60,8 +60,8 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
     (Loss, aBusinessIncomeSourcesSummaryWithNetLoss, aNetBusinessLossValues)
   )
 
-  private val tooYoungDoB = LocalDate.now().minusYears(15)
-  private val tooOldDoB   = LocalDate.now().minusYears(StatePensionAgeThresholds.getThresholdForTaxYear(taxYear) + 1)
+  private val tooYoungDoB = mockTimeMachine.now.minusYears(15)
+  private val tooOldDoB   = mockTimeMachine.now.minusYears(StatePensionAgeThresholds.getThresholdForTaxYear(taxYear) + 1)
 
   private val class2TaxableProfit = 500
   private val class4TaxableProfit = 12571
