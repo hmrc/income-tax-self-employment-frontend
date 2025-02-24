@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.data.EitherT
 import models.common.AccountingType.Accrual
+import models.common.Journey.ExpensesOfficeSupplies
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.errors.ServiceError
@@ -85,7 +86,7 @@ class OfficeSuppliesControllerSpec
         userType,
         Some(filledUserAnswers)
       ) {
-        val newAnswer = OfficeSupplies.No
+        val newAnswer: OfficeSupplies = OfficeSupplies.No
 
         def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
           FakeRequest(POST, onSubmitCheckModeCall.url).withFormUrlEncodedBody(("value", newAnswer.toString))
@@ -104,7 +105,7 @@ class OfficeSuppliesControllerSpec
           implicit val request: DataRequest[AnyContent] = fakeDataRequest(userAnswers)
 
           mockService
-            .clearOfficeSuppliesExpensesData(taxYear, request.nino, businessId, request.mtditid)
+            .clearExpensesData(taxYear, businessId, ExpensesOfficeSupplies)
             .returns(EitherT.rightT[Future, ServiceError](()))
 
           val result = route(application, postRequest).value

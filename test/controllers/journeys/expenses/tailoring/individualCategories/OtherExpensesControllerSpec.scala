@@ -20,6 +20,7 @@ import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
 import forms.standard.EnumerableFormProvider
+import models.common.Journey.ExpensesOtherExpenses
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
@@ -29,7 +30,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories._
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -265,7 +266,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearOtherExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)) thenReturn EitherT.rightT(())
 
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)
@@ -277,7 +278,7 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
           redirectLocation(result).value mustEqual onwardRoute.url
 
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearOtherExpensesData(anyTaxYear, anyBusinessId)(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)
         }
       }
 

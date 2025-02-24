@@ -17,18 +17,21 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.standard
 import forms.standard.BooleanFormProvider
-import models.NormalMode
+import models.common.Journey.ExpensesFinancialCharges
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
+import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.Staff
 import models.journeys.expenses.individualCategories._
+import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
@@ -40,6 +43,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.expenses.tailoring.individualCategories.DisallowableOtherFinancialChargesView
 
 import scala.concurrent.Future
@@ -50,18 +54,20 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val disallowableOtherFinancialChargesRoute = routes.DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val disallowableOtherFinancialChargesRoute: String =
+    routes.DisallowableOtherFinancialChargesController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new BooleanFormProvider()
+  val formProvider                       = new BooleanFormProvider()
+  val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
   case class UserScenario(userType: UserType, form: Form[Boolean])
 
-  val userScenarios = Seq(
+  val userScenarios: Seq[UserScenario] = Seq(
     UserScenario(userType = Individual, formProvider(DisallowableOtherFinancialChargesPage, Individual)),
     UserScenario(userType = Agent, formProvider(DisallowableOtherFinancialChargesPage, Agent))
   )
 
-  def baseAnswers = buildUserAnswers(
+  def baseAnswers: UserAnswers = buildUserAnswers(
     Json.obj(
       ExpensesCategoriesPage.toString          -> IndividualCategories.toString,
       OfficeSuppliesPage.toString              -> YesDisallowable.toString,
@@ -169,6 +175,41 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+
+      "must redirect to the next page when valid data is submitted in CheckMode" in {
+
+        val ua = emptyUserAnswersAccrual.set(DisallowableOtherFinancialChargesPage, false).success.value
+
+        val application =
+          applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+              bind[SelfEmploymentService].toInstance(mockService)
+            )
+            .build()
+
+        lazy val professionalServiceExpensesRoute: String =
+          controllers.journeys.expenses.tailoring.individualCategories.routes.DisallowableOtherFinancialChargesController
+            .onPageLoad(taxYear, businessId, CheckMode)
+            .url
+
+        running(application) {
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
+
+          val request =
+            FakeRequest(POST, professionalServiceExpensesRoute)
+              .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)
         }
       }
 

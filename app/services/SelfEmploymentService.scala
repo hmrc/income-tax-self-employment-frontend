@@ -113,39 +113,9 @@ trait SelfEmploymentService {
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit]
 
-  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
+  def clearExpensesData(taxYear: TaxYear, businessId: BusinessId, journey: Journey)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearGoodsToSellOrUseExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearWorkplaceRunningCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearStaffCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearConstructionExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearProfessionalFeesExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearIrrecoverableDebtsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit]
-
-  def clearOtherExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit]
 
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean]
 }
@@ -310,52 +280,13 @@ class SelfEmploymentServiceImpl @Inject() (
     EitherT(resultT)
   }
 
-  def clearOfficeSuppliesExpensesData(taxYear: TaxYear, nino: Nino, businessId: BusinessId, mtditid: Mtditid)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearOfficeSuppliesExpenses(taxYear, nino, businessId, mtditid)
-
-  def clearGoodsToSellOrUseExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearGoodsToSellOrUseExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearRepairsAndMaintenanceExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearAdvertisingOrMarketingExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearStaffCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearStaffCostsExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean] =
     connector.hasOtherIncomeSources(taxYear, nino, mtditid)
 
-  def clearWorkplaceRunningCostsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
+  def clearExpensesData(taxYear: TaxYear, businessId: BusinessId, journey: Journey)(implicit
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearWorkplaceRunningCostsExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearConstructionExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearConstructionExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearProfessionalFeesExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearProfessionalFeesExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearIrrecoverableDebtsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearIrrecoverableDebtsExpensesData(taxYear, request.nino, businessId, request.mtditid)
-
-  def clearOtherExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[_], hc: HeaderCarrier): ApiResultT[Unit] =
-    connector.clearOtherExpensesData(taxYear, request.nino, businessId, request.mtditid)
+    connector.clearExpensesData(taxYear, request.nino, businessId, request.mtditid, journey)
 
 }
 

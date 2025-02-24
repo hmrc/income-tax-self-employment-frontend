@@ -20,6 +20,7 @@ import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
+import models.common.Journey.{ExpensesFinancialCharges, ExpensesInterest, ExpensesIrrecoverableDebts}
 import models.common.UserType.{Agent, Individual}
 import models.common._
 import models.database.UserAnswers
@@ -30,6 +31,7 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories._
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
+import org.mockito.ArgumentMatchers.{eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.matchers.MacroBasedMatchers
 import org.scalatest.BeforeAndAfterEach
@@ -212,15 +214,21 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
             .url
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearIrrecoverableDebtsExpensesData(anyTaxYear, anyBusinessId)(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
+
           val request =
             FakeRequest(POST, financialExpensesRoute)
               .withFormUrlEncodedBody(("value[0]", FinancialExpenses.NoFinancialExpenses.toString))
           val result = route(application, request).value
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
+
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearIrrecoverableDebtsExpensesData(anyTaxYear, anyBusinessId)(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)
         }
       }
 

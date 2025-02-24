@@ -17,7 +17,9 @@
 package controllers.journeys.expenses.tailoring.individualCategories
 
 import base.SpecBase
+import cats.data.EitherT
 import forms.standard.BooleanFormProvider
+import models.common.Journey.ExpensesProfessionalFees
 import models.{CheckMode, NormalMode}
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -27,7 +29,7 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallo
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.ProfessionalFees
 import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -185,6 +187,8 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
       "must redirect to the next page when valid data is submitted in CheckMode" in {
 
         when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, HeaderCarrier(any))) thenReturn EitherT
+          .rightT(())
 
         val ua = baseAnswers.set(DisallowableStaffCostsPage, false).success.value
         val application =
@@ -209,7 +213,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual onwardRoute.url
-          verify(mockService, times(1)).clearProfessionalFeesExpensesData(anyTaxYear, anyBusinessId)(any, HeaderCarrier(any))
+          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, HeaderCarrier(any))
           verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
         }
       }

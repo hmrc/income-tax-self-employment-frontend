@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.questionPages.RadioButtonGetAndPostQuestionBaseSpec
 import cats.data.EitherT
 import models.common.AccountingType.Accrual
+import models.common.Journey.ExpensesGoodsToSellOrUse
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.errors.ServiceError
@@ -101,7 +102,7 @@ class GoodsToSellOrUseControllerSpec
           implicit val request: DataRequest[AnyContent] = fakeDataRequest(userAnswers)
 
           mockService
-            .clearGoodsToSellOrUseExpensesData(taxYear, businessId)
+            .clearExpensesData(taxYear, businessId, ExpensesGoodsToSellOrUse)
             .returns(EitherT.rightT[Future, ServiceError](()))
 
           val result = route(application, postRequest).value

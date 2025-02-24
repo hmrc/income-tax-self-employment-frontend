@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import controllers.returnAccountingType
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
+import models.common.Journey.{ExpensesFinancialCharges, ExpensesInterest, ExpensesIrrecoverableDebts}
 import models.common.{BusinessId, Journey, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.FinancialExpenses
@@ -84,7 +85,11 @@ class FinancialExpensesController @Inject() (override val messagesApi: MessagesA
             Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, returnAccountingType(businessId)))),
           value => {
             if (mode == CheckMode && value.contains(NoFinancialExpenses)) {
-              selfEmploymentService.clearIrrecoverableDebtsExpensesData(taxYear, businessId)
+              selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesIrrecoverableDebts) flatMap { _ =>
+                selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesInterest) flatMap { _ =>
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesFinancialCharges)
+                }
+              }
             }
             handleSuccess(value)
           }

@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.BooleanFormProvider
+import models.common.Journey.ExpensesStaffCosts
 import models.common.{BusinessId, Journey, TaxYear}
 import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
@@ -64,7 +65,7 @@ class DisallowableStaffCostsController @Inject() (override val messagesApi: Mess
             for {
               updatedAnswers <-
                 if (mode == CheckMode && !request.userAnswers.get(DisallowableStaffCostsPage, businessId).contains(value)) {
-                  selfEmploymentService.clearStaffCostsExpensesData(taxYear, businessId)
+                  selfEmploymentService.clearExpensesData(taxYear, businessId, ExpensesStaffCosts)
                   clearDependentPages(DisallowableStaffCostsPage, value, request.userAnswers, businessId)
                 } else {
                   Future.successful(request.userAnswers)
