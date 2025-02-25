@@ -33,16 +33,18 @@ object TaxableProfitAndLoss {
   def fromBusinessIncomeSourcesSummary(biss: BusinessIncomeSourcesSummary): TaxableProfitAndLoss =
     TaxableProfitAndLoss(BusinessId(biss.incomeSourceId), biss.taxableProfit, biss.taxableLoss)
 
-  def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss], userDoB: LocalDate, taxYear: TaxYear): NicClassExemption = {
+  def returnClassTwoOrFourEligible(taxableProfitsAndLosses: List[TaxableProfitAndLoss],
+                                   userDoB: Option[LocalDate],
+                                   taxYear: TaxYear): NicClassExemption = {
 
     def class2Eligible: Boolean = {
-      val ageIsValid                     = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = false)
+      val ageIsValid                     = userDoB.exists(ageIsBetween16AndStatePension(_, taxYear, ageAtStartOfTaxYear = false)) //TODO rethink after e2e
       val profitsOrLossAreClass2Eligible = areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
       ageIsValid && profitsOrLossAreClass2Eligible
     }
 
     def class4Eligible: Boolean = {
-      val ageIsValid           = ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
+      val ageIsValid           = userDoB.exists(ageIsBetween16AndStatePension(_, taxYear, ageAtStartOfTaxYear = true)) //TODO rethink after e2e
       val profitsOverThreshold = areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
       ageIsValid && profitsOverThreshold
     }

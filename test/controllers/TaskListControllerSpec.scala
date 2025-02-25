@@ -53,7 +53,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     NationalInsuranceContributionsViewModel.buildSummaryList(
       None,
       List(anEmptyTadesJourneyStatusesModel),
-      dateNow.minusYears(16),
+      Some(dateNow.minusYears(16)),
       List.empty,
       taxYear)(messages)
 

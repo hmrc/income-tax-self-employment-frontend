@@ -44,7 +44,7 @@ object NationalInsuranceContributionsViewModel {
 
   def buildSummaryList(nationalInsuranceStatuses: Option[JourneyNameAndStatus],
                        tradeStatuses: List[TradesJourneyStatuses],
-                       userDoB: LocalDate,
+                       userDoB: Option[LocalDate],
                        taxableProfitsAndLosses: List[TaxableProfitAndLoss],
                        taxYear: TaxYear)(implicit messages: Messages): SummaryList = {
     val linkIsClickable     = areAdjustmentsAnswered(tradeStatuses)

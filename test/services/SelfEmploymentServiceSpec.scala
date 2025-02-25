@@ -273,10 +273,10 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       mockConnector.getUserDateOfBirth(any[Nino], any[Mtditid])(*, *) returns EitherT
         .rightT[Future, ServiceError](Some(aUserDateOfBirth))
 
-      val result: Either[ServiceError, LocalDate] =
+      val result: Either[ServiceError, Option[LocalDate]] =
         service.getUserDateOfBirth(nino, mtditid, Some(TimeData.testDate), isAgent = false).value.futureValue
 
-      result shouldBe aUserDateOfBirth.asRight
+      result shouldBe Some(aUserDateOfBirth).asRight
     }
   }
 
