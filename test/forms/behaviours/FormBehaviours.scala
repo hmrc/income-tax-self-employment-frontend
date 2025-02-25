@@ -201,5 +201,11 @@ trait FormBehaviours extends FormSpec {
       val expectedError = error("dateOfBirth", "error.invalid_date")
       checkForError(form, data, expectedError)
     }
+
+    s"fail to bind when the $field is larger than 4 digits" in {
+      val data          = validData + (s"$field.year" -> "20255") + (s"$field.month" -> "2")
+      val expectedError = error(s"$field.year", "error.date.valid")
+      checkForError(form, data, expectedError)
+    }
   }
 }
