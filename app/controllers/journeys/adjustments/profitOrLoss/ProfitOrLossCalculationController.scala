@@ -79,20 +79,20 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
 
   private def showNicsExemptionMessage(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
       request: DataRequest[_]): ApiResultT[Option[String]] =
-    service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>
+    service.getUserDateOfBirth(request.nino, request.mtditid, request.user.dateOfBirth, request.userType == UserType.Agent).map { userDoB =>
       val userIsClass2Eligible = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
       val userIsClass4Eligible = TaxableProfitAndLoss.areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
-      val class2AgeIsTooYoung  = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)
-      val class2AgeIsTooOld    = !ageIsUnderStatePensionAge(userDoB, taxYear, ageAtStartOfTaxYear = false)
-      val class4AgeIsInvalid   = !ageIsBetween16AndStatePension(userDoB, taxYear, ageAtStartOfTaxYear = true)
+      val class2AgeIsTooYoung  = userDoB.map(ageIsUnder16(_, taxYear, ageAtStartOfTaxYear = false))
+      val class2AgeIsTooOld    = userDoB.map(!ageIsUnderStatePensionAge(_, taxYear, ageAtStartOfTaxYear = false))
+      val class4AgeIsInvalid   = userDoB.map(!ageIsBetween16AndStatePension(_, taxYear, ageAtStartOfTaxYear = true))
 
       (userIsClass2Eligible, userIsClass4Eligible, class2AgeIsTooYoung, class2AgeIsTooOld) match {
-        case (_, true, _, _) if class4AgeIsInvalid => // User can be Class 2 and 4 eligible -> 4 takes priority
+        case (_, true, _, _) if class4AgeIsInvalid.contains(true) => // User can be Class 2 and 4 eligible -> 4 takes priority
           Some("class4Ineligible.tooOldOrYoung")
-        case (true, false, true, _) => Some("class2Ineligible.tooYoung")
-        case (true, false, _, true) => Some("class2Ineligible.tooOld")
-        case (false, false, _, _)   => Some("betweenClass2AndClass4")
-        case _                      => None
+        case (true, false, Some(true), Some(_)) => Some("class2Ineligible.tooYoung")
+        case (true, false, Some(_), Some(true)) => Some("class2Ineligible.tooOld")
+        case (false, false, _, _)               => Some("betweenClass2AndClass4")
+        case _                                  => None
       }
     }
 }

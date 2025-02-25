@@ -127,19 +127,6 @@ object AuthenticatedIdentifierActionSpec {
     Set(individualIdEnrolment("1234567890"), agentEnrolment("0987654321"))
   )
 
-  def mockAuthInvoke(mockAuthConnector: AuthConnector): Unit = {
-    val retrieval = rtr(Some(userId), Some(AffinityGroup.Agent))
-
-    when(
-      mockAuthConnector
-        .authorise(ArgumentMatchers.eq(EmptyPredicate), ArgumentMatchers.eq(Retrievals.internalId and Retrievals.affinityGroup))(
-          any[HeaderCarrier],
-          any[ExecutionContext]))
-      .thenReturn(Future.successful(retrieval))
-
-    ()
-  }
-
   def mockAuthAsAgent(mockAuthConnector: AuthConnector): Unit = {
     when(
       mockAuthConnector
