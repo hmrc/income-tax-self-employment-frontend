@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Logging
+import utils.{Logging, TimeMachine}
 import views.html.journeys.capitalallowances.specialTaxSites.ContractStartDateView
 
 import java.time.LocalDate
@@ -47,8 +47,14 @@ class ContractStartDateController @Inject() (override val messagesApi: MessagesA
 
   private val page                 = ContractStartDatePage
   private val earliestDateAndError = Some((LocalDate.of(2018, 10, 29), "contractStartDate.error.tooEarly"))
+  private val latestDateAndError   = Some((TimeMachine.todayInclusive(), "error.date.futureDateInvalid"))
   private val form = (userType: UserType) =>
-    formProvider(page, userType, userSpecificRequiredError = true, earliestDateAndError = earliestDateAndError)
+    formProvider(
+      page,
+      userType,
+      userSpecificRequiredError = true,
+      earliestDateAndError = earliestDateAndError,
+      latestDateAndError = latestDateAndError)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Int, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) { implicit request =>

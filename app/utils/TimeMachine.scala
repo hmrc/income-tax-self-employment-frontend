@@ -25,6 +25,7 @@ class TimeMachine {
 }
 
 object TimeMachine {
-  private val instance   = new TimeMachine()
-  def apply(): LocalDate = instance.now
+  private val instance            = new TimeMachine()
+  def apply(): LocalDate          = instance.now
+  def todayInclusive(): LocalDate = apply().plusDays(1)
 }
