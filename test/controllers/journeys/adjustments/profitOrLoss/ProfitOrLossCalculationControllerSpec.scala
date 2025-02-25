@@ -44,8 +44,6 @@ import utils.Assertions.assertEqualWithDiff
 import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
-import java.time.LocalDate
-
 class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDrivenPropertyChecks {
 
   def onPageLoadRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoad)

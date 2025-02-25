@@ -94,9 +94,9 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
     EitherT(response)
   }
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[LocalDate] = {
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Option[LocalDate]] = {
     val url      = buildUrl(s"user-date-of-birth/$nino")
-    val response = get[LocalDate](http, url, mtditid)
+    val response = getOpt[LocalDate](http, url, mtditid)
     EitherT(response)
   }
 

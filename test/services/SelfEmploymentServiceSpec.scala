@@ -60,6 +60,7 @@ import stubs.services.AuditServiceStub
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import data.TimeData
 
 class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec {
 
@@ -270,9 +271,10 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   "getUserDateOfBirth" - {
     "should return a user's date of birth" in new ServiceWithStubs {
       mockConnector.getUserDateOfBirth(any[Nino], any[Mtditid])(*, *) returns EitherT
-        .rightT[Future, ServiceError](aUserDateOfBirth)
+        .rightT[Future, ServiceError](Some(aUserDateOfBirth))
 
-      val result: Either[ServiceError, LocalDate] = service.getUserDateOfBirth(nino, mtditid).value.futureValue
+      val result: Either[ServiceError, LocalDate] =
+        service.getUserDateOfBirth(nino, mtditid, Some(TimeData.testDate), isAgent = false).value.futureValue
 
       result shouldBe aUserDateOfBirth.asRight
     }

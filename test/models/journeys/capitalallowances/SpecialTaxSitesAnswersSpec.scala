@@ -20,11 +20,8 @@ import base.SpecBase
 import cats.implicits.catsSyntaxOptionId
 import models.journeys.capitalallowances.specialTaxSites.SpecialTaxSitesAnswers.removeIncompleteSites
 import models.journeys.capitalallowances.specialTaxSites.{NewSpecialTaxSite, SpecialTaxSiteLocation}
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import utils.TimeMachine
-
-import java.time.LocalDate
 
 class SpecialTaxSitesAnswersSpec extends SpecBase {
 

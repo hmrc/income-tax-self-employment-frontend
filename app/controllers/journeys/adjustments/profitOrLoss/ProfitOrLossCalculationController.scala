@@ -79,7 +79,7 @@ class ProfitOrLossCalculationController @Inject() (override val messagesApi: Mes
 
   private def showNicsExemptionMessage(taxYear: TaxYear, taxableProfitsAndLosses: List[TaxableProfitAndLoss])(implicit
       request: DataRequest[_]): ApiResultT[Option[String]] =
-    service.getUserDateOfBirth(request.nino, request.mtditid).map { userDoB =>
+    service.getUserDateOfBirth(request.nino, request.mtditid, request.user.dateOfBirth, request.userType == UserType.Agent).map { userDoB =>
       val userIsClass2Eligible = TaxableProfitAndLoss.areProfitsOrLossClass2Eligible(taxableProfitsAndLosses, taxYear)
       val userIsClass4Eligible = TaxableProfitAndLoss.areProfitsOverClass4Threshold(taxableProfitsAndLosses, taxYear)
       val class2AgeIsTooYoung  = ageIsUnder16(userDoB, taxYear, ageAtStartOfTaxYear = false)

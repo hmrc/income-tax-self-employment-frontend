@@ -128,7 +128,8 @@ case class SelfEmploymentServiceStub(
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
     Future(submitAnswerAndRedirectResult)
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate] =
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
+      hc: HeaderCarrier): ApiResultT[LocalDate] =
     EitherT.fromEither[Future](getUserDateOfBirthResult)
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit

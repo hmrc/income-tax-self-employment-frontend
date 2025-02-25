@@ -94,7 +94,8 @@ trait SelfEmploymentService {
       mode: Mode,
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate]
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
+      hc: HeaderCarrier): ApiResultT[LocalDate]
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
@@ -241,8 +242,15 @@ class SelfEmploymentServiceImpl @Inject() (
     handleForm(form, handleError, defaultHandleSuccess)
   }
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate] =
-    connector.getUserDateOfBirth(nino, mtditid)
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
+      hc: HeaderCarrier): ApiResultT[LocalDate] =
+    for {
+      apiDob <- connector.getUserDateOfBirth(nino, mtditid)
+    } yield apiDob match {
+      case Some(dob)     => dob
+      case _ if !isAgent => authDob.getOrElse(throw new RuntimeException("Date of birth not found"))
+      case _             => throw new RuntimeException("Date of birth not found")
+    }
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]] =
