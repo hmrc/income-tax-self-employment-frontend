@@ -69,6 +69,33 @@ trait DateBehaviours extends FieldBehaviours {
     }
   }
 
+  def invalidDateField(form: Form[_], key: String): Unit =
+    "not bind an invalid years" in {
+      val validDate = LocalDate.now
+      val data1 = Map(
+        s"$key.day"   -> "32",
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> validDate.getYear.toString
+      )
+      val data2 = Map(
+        s"$key.day"   -> validDate.getDayOfMonth.toString,
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> "11111111"
+      )
+      val data3 = Map(
+        s"$key.day"   -> validDate.getDayOfMonth.toString,
+        s"$key.month" -> validDate.getMonthValue.toString,
+        s"$key.year"  -> "1"
+      )
+      val invalidDayResult   = form.bind(data1)
+      val invalidYearResult  = form.bind(data2)
+      val invalidYearResult1 = form.bind(data3)
+
+      invalidDayResult.errors mustBe List(FormError(key, ValidDateError))
+      invalidYearResult.errors mustBe List(FormError(key, ValidDateError))
+      invalidYearResult1.errors mustBe List(FormError(key, ValidDateError))
+    }
+
   def dateFieldWithMax(form: Form[_], key: String, max: LocalDate, formError: FormError): Unit =
     s"fail to bind a date greater than ${max.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
 

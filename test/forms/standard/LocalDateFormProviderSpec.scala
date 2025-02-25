@@ -40,6 +40,8 @@ class LocalDateFormProviderSpec extends SimpleFieldBehaviours {
 
     dateField(form, fieldKey, validDates)
 
+    invalidDateField(form, fieldKey)
+
     mandatoryDateField(form, fieldKey, requiredError)
 
     dateFieldWithMin(form, fieldKey, earliestDate, FormError(fieldKey, earlyDateError))
