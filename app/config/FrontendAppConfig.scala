@@ -36,7 +36,6 @@ trait FrontendAppConfig {
   def exitSurveyBaseUrl: String
   def exitSurveyUrl: String
   def languageTranslationEnabled: Boolean
-  def emaSupportingAgentsEnabled: Boolean
   def languageMap: Map[String, Lang]
   def selfEmploymentBEBaseUrl: String
   def timeout: Int
@@ -69,7 +68,6 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
 
   // Feature switching
   override val languageTranslationEnabled: Boolean = configuration.get[Boolean]("feature-switch.welsh-translation")
-  override val emaSupportingAgentsEnabled: Boolean = configuration.get[Boolean]("feature-switch.ema-supporting-agents-enabled")
 
   override val languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
