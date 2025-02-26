@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 class OptionalContentHttpReads[A: Reads] extends HttpReads[ContentResponse[Option[A]]] {
 
   override def read(method: String, url: String, response: HttpResponse): ContentResponse[Option[A]] =
-    if (isNoContent(response.status) || isNotFound(response.status)) {
+    if (isNoContent(response.status) || isNotFound(response.status) || isUnprocessableEntity(response)) {
       None.asRight
     } else if (isSuccess(response.status)) {
       readOne[A](response).map(Some(_))
