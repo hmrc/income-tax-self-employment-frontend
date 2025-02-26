@@ -61,10 +61,16 @@ private[mappings] class LocalDateFormatter(
       args
     )
 
+    def year(fieldSpecificError: String): Formatter[Int] = yearFormatter(
+      requiredKey = fieldSpecificError,
+      invalidKey = invalidKey,
+      args
+    )
+
     for {
       day            <- int(missingDay).bind(s"$key.day", data)
       month          <- int(missingMonth).bind(s"$key.month", data)
-      year           <- int(missingYear).bind(s"$key.year", data)
+      year           <- year(missingYear).bind(s"$key.year", data)
       localDate      <- toDate(key, day, month, year)
       validDate      <- dateIsNotTooEarly(localDate)
       finalValidDate <- dateIsNotTooLate(validDate)
