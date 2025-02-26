@@ -16,9 +16,9 @@
 
 import models.common.Mtditid
 import models.errors.ServiceError
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,6 +69,10 @@ package object connectors {
   def isNoContent(status: Int): Boolean = status == NO_CONTENT
 
   def isNotFound(status: Int): Boolean = status == NOT_FOUND
+
+  def isUnprocessableEntity(response: HttpResponse): Boolean =
+    response.status == UNPROCESSABLE_ENTITY &&
+      response.body.contains("INCOME_SUBMISSIONS_NOT_EXIST")
 
   private def addExtraHeaders(hc: HeaderCarrier, mtditid: Mtditid) =
     hc.withExtraHeaders(headers = "mtditid" -> mtditid.value)
