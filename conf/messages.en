@@ -130,6 +130,7 @@ error.date.valid = The date must be a real date
 error.date.day = The date must include a day
 error.date.month = The date must include a month
 error.date.year = The date must include a year
+error.date.futureDateInvalid = The date must be today or in the past
 error.postcode.invalid = Enter a full UK postcode, for example BN1 1AR
 
 common.insert = {0}

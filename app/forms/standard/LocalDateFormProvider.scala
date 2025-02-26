@@ -41,7 +41,7 @@ class LocalDateFormProvider @Inject() extends Mappings {
         requiredKey = requiredError,
         earliestDateAndError = earliestDateAndError,
         latestDateAndError = latestDateAndError
-      ).verifying("error.date.valid", date => date.getYear.toString.matches("\\d{4}"))
+      )
     )
   }
 }
