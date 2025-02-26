@@ -34,6 +34,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
@@ -51,14 +52,15 @@ class AuthenticatedIdentifierAction @Inject() (
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val retrievals: Retrieval[Option[String] ~ Option[AffinityGroup]] = Retrievals.internalId and Retrievals.affinityGroup
+    val retrievals: Retrieval[Option[String] ~ Option[AffinityGroup] ~ Option[LocalDate]] =
+      Retrievals.internalId and Retrievals.affinityGroup and Retrievals.dateOfBirth
 
     authorised().retrieve(retrievals) {
-      case Some(internalId) ~ Some(AffinityGroup.Agent) =>
+      case Some(internalId) ~ Some(AffinityGroup.Agent) ~ _ =>
         agentAuthentication(block, internalId)(request, hc)
 
-      case Some(internalId) ~ Some(affinityGroup) =>
-        individualAuthentication(block, internalId, affinityGroup)(request, hc)
+      case Some(internalId) ~ Some(affinityGroup) ~ dob =>
+        individualAuthentication(block, internalId, affinityGroup, dob)(request, hc)
 
       case _ =>
         throw new UnauthorizedException("Unable to retrieve internal Id")
@@ -78,7 +80,8 @@ class AuthenticatedIdentifierAction @Inject() (
 
   private[actions] def individualAuthentication[A](block: IdentifierRequest[A] => Future[Result],
                                                    internalId: String,
-                                                   affinityGroup: AffinityGroup)(implicit request: Request[A], hc: HeaderCarrier): Future[Result] =
+                                                   affinityGroup: AffinityGroup,
+                                                   dobFromAuth: Option[LocalDate])(implicit request: Request[A], hc: HeaderCarrier): Future[Result] =
     authorised().retrieve(allEnrolments and confidenceLevel) {
       case enrolments ~ userConfidence if userConfidence.level >= minimumConfidenceLevel =>
         val optionalMtdItId: Option[String] = enrolmentGetIdentifierValue(EnrolmentKeys.Individual, EnrolmentIdentifiers.individualId, enrolments)
@@ -86,7 +89,7 @@ class AuthenticatedIdentifierAction @Inject() (
 
         (optionalMtdItId, optionalNino) match {
           case (Some(mtdItId), Some(nino)) =>
-            block(IdentifierRequest(request, internalId, User(mtdItId, arn = None, nino, affinityGroup.toString)))
+            block(IdentifierRequest(request, internalId, User(mtdItId, arn = None, nino, affinityGroup.toString, dateOfBirth = dobFromAuth)))
           case (_, None) =>
             logger.info(s"[AuthorisedAction][individualAuthentication] - User has no nino. Redirecting to ${config.loginUrl}")
             Future.successful(Redirect(config.loginUrl))
@@ -176,8 +179,15 @@ class AuthenticatedIdentifierAction @Inject() (
 
 object AuthenticatedIdentifierAction {
 
-  case class User(mtditid: String, arn: Option[String], nino: String, affinityGroup: String, isSupportingAgent: Boolean = false) {
+  case class User(mtditid: String,
+                  arn: Option[String],
+                  nino: String,
+                  affinityGroup: String,
+                  isSupportingAgent: Boolean = false,
+                  dateOfBirth: Option[LocalDate] = None) {
+
     val userType: UserType = if (arn.nonEmpty) UserType.Agent else UserType.Individual
+
   }
 
 }

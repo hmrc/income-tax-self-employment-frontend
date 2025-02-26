@@ -44,8 +44,6 @@ import utils.Assertions.assertEqualWithDiff
 import viewmodels.journeys.adjustments.AdjustedTaxableProfitOrLossSummary
 import views.html.journeys.adjustments.profitOrLoss.ProfitOrLossCalculationView
 
-import java.time.LocalDate
-
 class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDrivenPropertyChecks {
 
   def onPageLoadRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, onPageLoad)
@@ -163,7 +161,7 @@ class ProfitOrLossCalculationControllerSpec extends ControllerSpec with TableDri
               getBusinessIncomeSourcesSummaryResult = Right(aBusinessIncomeSourcesSummaryWithNetProfit),
               getAllBusinessesTaxableProfitAndLossResult = Right(taxableProfitsAndLosses),
               getNetBusinessProfitOrLossValuesResult = Right(aNetBusinessProfitValues),
-              getUserDateOfBirthResult = Right(dateOfBirth)
+              getUserDateOfBirthResult = Right(Some(dateOfBirth))
             )
 
             val application = buildAppFromUserType(UserType.Individual, Some(emptyUserAnswers), Some(stubService))

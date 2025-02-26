@@ -127,7 +127,7 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
         val result = NationalInsuranceContributionsViewModel.buildSummaryList(
           nationalInsuranceStatus,
           businessStatuses,
-          dateNow.minusYears(20),
+          Some(dateNow.minusYears(20)),
           smallProfitTaxableProfitAndLoss,
           taxYear)(messages)
 
@@ -143,8 +143,12 @@ class NationalInsuranceContributionsViewModelSpec extends SpecBase with TableDri
     }
     "must return an empty summary list when user is ineligible for Class 2 or Class 4" in {
       val result =
-        NationalInsuranceContributionsViewModel.buildSummaryList(None, List.empty, dateNow.minusYears(15), smallProfitTaxableProfitAndLoss, taxYear)(
-          messages)
+        NationalInsuranceContributionsViewModel.buildSummaryList(
+          None,
+          List.empty,
+          Some(dateNow.minusYears(15)),
+          smallProfitTaxableProfitAndLoss,
+          taxYear)(messages)
       val emptySummaryList = SummaryList(List.empty[SummaryListRow], None, "govuk-!-margin-bottom-7")
 
       assert(result === emptySummaryList)

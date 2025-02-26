@@ -54,7 +54,7 @@ case class SelfEmploymentServiceStub(
     getUserAnswersWithAccrual: UserAnswers = emptyUserAnswers.copy(data = Json.obj(businessId.value -> Json.obj("accountingType" -> "ACCRUAL"))),
     getUserAnswersWithClearedData: UserAnswers = emptyUserAnswers,
     submitAnswerAndRedirectResult: Result = Redirect(onwardRoute),
-    getUserDateOfBirthResult: Either[ServiceError, LocalDate] = Right(aUserDateOfBirth),
+    getUserDateOfBirthResult: Either[ServiceError, Option[LocalDate]] = Right(Some(aUserDateOfBirth)),
     getAllBusinessesTaxableProfitAndLossResult: Either[ServiceError, List[TaxableProfitAndLoss]] = Right(List.empty[TaxableProfitAndLoss]),
     getBusinessIncomeSourcesSummaryResult: Either[ServiceError, BusinessIncomeSourcesSummary] = Right(aBusinessIncomeSourcesSummary),
     getTotalIncomeResult: Either[ServiceError, BigDecimal] = Right(BigDecimal(0)),
@@ -128,7 +128,8 @@ case class SelfEmploymentServiceStub(
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
     Future(submitAnswerAndRedirectResult)
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[LocalDate] =
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
+      hc: HeaderCarrier): ApiResultT[Option[LocalDate]] =
     EitherT.fromEither[Future](getUserDateOfBirthResult)
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit

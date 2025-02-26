@@ -34,7 +34,6 @@ import pages.capitalallowances.specialTaxSites.{
 import repositories.SessionRepository
 import utils.TimeMachine
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class SpecialTaxSitesServiceSpec extends SpecBase {

@@ -19,6 +19,7 @@ package controllers.actions
 import base.SpecBase
 import common._
 import config.FrontendAppConfig
+import data.TimeData
 import mocks.MockErrorHandler.mockErrorHandler
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers
@@ -36,6 +37,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
@@ -133,7 +135,9 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
             any[ExecutionContext])) thenReturn Future.successful(enrolments and cl)
 
       val identifierRequest = IdentifierRequest[AnyContent](fakeRequest, userId, user)
-      authenticatedIdentifierAction.individualAuthentication(block, userId, AffinityGroup.Individual)(identifierRequest, emptyHeaderCarrier)
+      authenticatedIdentifierAction.individualAuthentication(block, userId, AffinityGroup.Individual, Some(TimeData.testDate))(
+        identifierRequest,
+        emptyHeaderCarrier)
     }
   }
 }

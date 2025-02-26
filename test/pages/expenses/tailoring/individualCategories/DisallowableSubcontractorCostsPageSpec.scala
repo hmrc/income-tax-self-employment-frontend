@@ -19,7 +19,6 @@ package pages.expenses.tailoring.individualCategories
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import pages.expenses.construction.{ConstructionIndustryAmountPage, ConstructionIndustryDisallowableAmountPage}
-import pages.expenses.goodsToSellOrUse.{DisallowableGoodsToSellOrUseAmountPage, GoodsToSellOrUseAmountPage, TaxiMinicabOrRoadHaulagePage}
 
 class DisallowableSubcontractorCostsPageSpec extends PlaySpec with MockitoSugar {
 

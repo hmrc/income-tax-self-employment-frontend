@@ -194,7 +194,7 @@ class SelfEmploymentConnectorISpec extends WiremockSpec with IntegrationBaseSpec
 
       val result = connector.getUserDateOfBirth(nino, mtditid).value.futureValue
 
-      result shouldBe userDateOfBirth.asRight
+      result shouldBe Some(userDateOfBirth).asRight
     }
   }
 
