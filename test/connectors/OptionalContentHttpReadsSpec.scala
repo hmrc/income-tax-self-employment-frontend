@@ -23,7 +23,7 @@ import play.api.libs.json.{JsNumber, JsString, Json}
 import uk.gov.hmrc.http.HttpResponse
 
 class OptionalContentHttpReadsSpec extends AnyWordSpecLike with Matchers {
-  val underTest = new OptionalContentHttpReads[String]
+  val underTest = new OptionalContentHttpReads[String]()
 
   "read" should {
     "return None when no content" in {
@@ -34,6 +34,12 @@ class OptionalContentHttpReadsSpec extends AnyWordSpecLike with Matchers {
     "return Some when there is successful response with a content" in {
       val res = underTest.read("method", "url", HttpResponse(200, Json.stringify(JsString("some content"))))
       res shouldBe "some content".some.asRight
+    }
+
+    "return None when there response status is 422" in {
+      val res =
+        new OptionalContentHttpReads[String](true).read("method", "url", HttpResponse(422, Json.stringify(JsString("INCOME_SUBMISSIONS_NOT_EXIST"))))
+      res shouldBe Right(None)
     }
 
     "fail to parse incorrect value" in {
