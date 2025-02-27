@@ -55,11 +55,11 @@ package object connectors {
       ec = ec
     )
 
-  def getOpt[A: Reads](http: HttpClient, url: String, mtditid: Mtditid)(implicit
+  def getOpt[A: Reads](http: HttpClient, url: String, mtditid: Mtditid, allowUnprocessableEntity: Boolean = false)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] =
     http.GET(url)(
-      rds = new OptionalContentHttpReads[A],
+      rds = new OptionalContentHttpReads[A](allowUnprocessableEntity),
       hc = addExtraHeaders(hc, mtditid),
       ec = ec
     )
@@ -70,8 +70,8 @@ package object connectors {
 
   def isNotFound(status: Int): Boolean = status == NOT_FOUND
 
-  def isUnprocessableEntity(response: HttpResponse): Boolean =
-    response.status == UNPROCESSABLE_ENTITY &&
+  def isUnprocessableEntity(allowUnprocessableEntity: Boolean, response: HttpResponse): Boolean =
+    allowUnprocessableEntity && response.status == UNPROCESSABLE_ENTITY &&
       response.body.contains("INCOME_SUBMISSIONS_NOT_EXIST")
 
   private def addExtraHeaders(hc: HeaderCarrier, mtditid: Mtditid) =

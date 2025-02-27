@@ -104,7 +104,7 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
       hc: HeaderCarrier,
       ec: ExecutionContext): ApiResultT[List[BusinessIncomeSourcesSummary]] = {
     val url      = buildUrl(s"$taxYear/business-income-sources-summaries/$nino")
-    val response = getOpt[List[BusinessIncomeSourcesSummary]](http, url, mtditid).map(_.map(_.getOrElse(Nil)))
+    val response = getOpt[List[BusinessIncomeSourcesSummary]](http, url, mtditid, allowUnprocessableEntity = true).map(_.map(_.getOrElse(Nil)))
     EitherT(response)
   }
 
