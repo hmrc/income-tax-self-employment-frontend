@@ -22,7 +22,7 @@ import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleResultT
 import models.common.JourneyStatus._
-import models.common.{JourneyStatus, TaxYear, TradingName, UserType}
+import models.common.{JourneyStatus, TaxYear, TradingName}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.{TaskList, TaskListWithRequest}
@@ -89,13 +89,11 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                           completedTrades: List[TradesJourneyStatuses],
                                           taxYear: TaxYear,
                                           messages: Messages)(implicit hc: HeaderCarrier): ApiResultT[SummaryList] = {
-    val nino        = taskListWithRequest.request.nino
-    val mtditid     = taskListWithRequest.request.mtditid
-    val dateOfBirth = taskListWithRequest.request.user.dateOfBirth
-    val isAgent     = taskListWithRequest.request.userType == UserType.Agent
+    val nino    = taskListWithRequest.request.nino
+    val mtditid = taskListWithRequest.request.mtditid
 
     for {
-      userDateOfBirth            <- service.getUserDateOfBirth(nino, mtditid, dateOfBirth, isAgent)
+      userDateOfBirth            <- service.getUserDateOfBirth(nino, mtditid)
       allBusinessesProfitAndLoss <- service.getAllBusinessesTaxableProfitAndLoss(taxYear, nino, mtditid)
       nationalInsuranceStatuses = taskListWithRequest.taskList.nationalInsuranceContributions
     } yield NationalInsuranceContributionsViewModel.buildSummaryList(
