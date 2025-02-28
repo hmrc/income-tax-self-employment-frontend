@@ -43,7 +43,6 @@
 
 @layout(pageTitle = titleNoForm(messages(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", formattedNetAmount))) {
 
-    @formHelper(action = continueRedirect) {
 
         @heading(s"checkNetProfitLoss.title.$netBusinessProfitOrLoss", Some(formattedNetAmount))
 
@@ -66,6 +65,5 @@
 
         <p class="govuk-body">@messages(s"checkNetProfitLoss.p1.$netBusinessProfitOrLoss.$userType")</p>
 
-        @submitButton()
-    }
+        <a href="@continueRedirect" class="govuk-button">Continue</a>
 }
