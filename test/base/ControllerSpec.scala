@@ -37,7 +37,6 @@ import services.SelfEmploymentService
 import stubs.services.SelfEmploymentServiceStub
 import utils.TimeMachine
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks with ArgumentMatchersSugar with ControllerTestScenarioSpec {

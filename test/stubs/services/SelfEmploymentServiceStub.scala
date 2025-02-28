@@ -128,8 +128,7 @@ case class SelfEmploymentServiceStub(
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result] =
     Future(submitAnswerAndRedirectResult)
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
-      hc: HeaderCarrier): ApiResultT[Option[LocalDate]] =
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Option[LocalDate]] =
     EitherT.fromEither[Future](getUserDateOfBirthResult)
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
@@ -155,28 +154,8 @@ case class SelfEmploymentServiceStub(
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearExpensesAndCapitalAllowancesResult)
 
-  def clearGoodsToSellOrUseExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearGoodsToSellOrUseExpensesResult)
-
   override def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean] =
     EitherT.fromEither[Future](hasOtherIncomeSources)
-
-  def clearRepairsAndMaintenanceExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearRepairsAndMaintenanceExpensesResult)
-
-  def clearAdvertisingOrMarketingExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearAdvertisingOrMarketingExpensesResult)
-
-  def clearIrrecoverableDebtsExpensesData(taxYear: TaxYear, businessId: BusinessId)(implicit
-      request: DataRequest[_],
-      hc: HeaderCarrier): ApiResultT[Unit] =
-    EitherT.fromEither[Future](clearIrrecoverableDebtsExpensesResult)
 
   def clearExpensesData(taxYear: TaxYear, businessId: BusinessId, journey: Journey)(implicit
       request: DataRequest[_],

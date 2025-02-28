@@ -135,9 +135,7 @@ class IndividualAuthenticatedSpec extends SpecBase with MockitoSugar {
             any[ExecutionContext])) thenReturn Future.successful(enrolments and cl)
 
       val identifierRequest = IdentifierRequest[AnyContent](fakeRequest, userId, user)
-      authenticatedIdentifierAction.individualAuthentication(block, userId, AffinityGroup.Individual, Some(TimeData.testDate))(
-        identifierRequest,
-        emptyHeaderCarrier)
+      authenticatedIdentifierAction.individualAuthentication(block, userId, AffinityGroup.Individual)(identifierRequest, emptyHeaderCarrier)
     }
   }
 }

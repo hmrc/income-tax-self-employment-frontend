@@ -21,11 +21,10 @@ import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys, SessionV
 import config.MockAppConfig
 import connectors.MockAuthConnector
 import controllers.standard.routes
-import data.TimeData
 import mocks.MockErrorHandler.{mockErrorHandler, mockInternalServerError}
 import play.api.Application
 import play.api.mvc.Results.InternalServerError
-import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
+import play.api.mvc.{Action, AnyContent, BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
@@ -43,8 +42,8 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
     MockAppConfig.viewAndChangeEnterUtrUrl("/enter-utr")
     MockAppConfig.incomeTaxSubmissionIvRedirect("/iv-uplift")
 
-    lazy val application: Application = applicationBuilder(userAnswers = None).build()
-    lazy val bodyParsers              = application.injector.instanceOf[BodyParsers.Default]
+    lazy val application: Application         = applicationBuilder(userAnswers = None).build()
+    lazy val bodyParsers: BodyParsers.Default = application.injector.instanceOf[BodyParsers.Default]
 
     lazy val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, mockErrorHandler, mockAppConfig, bodyParsers)
 
@@ -65,7 +64,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           "must return OK" in new Fixture {
 
-            val enrolments = Enrolments(
+            val enrolments: Enrolments = Enrolments(
               Set(
                 Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated"),
                 Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
@@ -73,7 +72,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
             MockAuthConnector
               .authorise(EmptyPredicate)(
-                Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Individual)), Some(TimeData.testDate)))
+                Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
               )
               .once()
 
@@ -83,7 +82,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
               )
               .once()
 
-            val result = controller.onPageLoad()(FakeRequest())
+            val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
             status(result) mustBe OK
           }
@@ -93,14 +92,14 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           "must return SEE_OTHER and redirect to login" in new Fixture {
 
-            val enrolments = Enrolments(
+            val enrolments: Enrolments = Enrolments(
               Set(
                 Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated")
               ))
 
             MockAuthConnector
               .authorise(EmptyPredicate)(
-                Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Individual)), Some(TimeData.testDate)))
+                Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
               )
               .once()
 
@@ -110,7 +109,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
               )
               .once()
 
-            val result = controller.onPageLoad()(FakeRequest())
+            val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(mockAppConfig.loginUrl)
@@ -121,14 +120,14 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           "must return SEE_OTHER and redirect to individual auth error page" in new Fixture {
 
-            val enrolments = Enrolments(
+            val enrolments: Enrolments = Enrolments(
               Set(
                 Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
               ))
 
             MockAuthConnector
               .authorise(EmptyPredicate)(
-                Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Individual)), Some(TimeData.testDate)))
+                Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
               )
               .once()
 
@@ -138,7 +137,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
               )
               .once()
 
-            val result = controller.onPageLoad()(FakeRequest())
+            val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.IndividualAuthErrorController.onPageLoad.url)
@@ -150,7 +149,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         "must return SEE_OTHER and redirect to IV Uplift journey" in new Fixture {
 
-          val enrolments = Enrolments(
+          val enrolments: Enrolments = Enrolments(
             Set(
               Enrolment(EnrolmentKeys.Individual, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)), "Activated"),
               Enrolment(EnrolmentKeys.nino, Seq(EnrolmentIdentifier(EnrolmentIdentifiers.nino, someNino.value)), "Activated")
@@ -158,7 +157,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           MockAuthConnector
             .authorise(EmptyPredicate)(
-              Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Individual)), Some(TimeData.testDate)))
+              Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
             )
             .once()
 
@@ -168,7 +167,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
             )
             .once()
 
-          val result = controller.onPageLoad()(FakeRequest())
+          val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(mockAppConfig.incomeTaxSubmissionIvRedirect)
@@ -189,7 +188,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           "must return OK" in new Fixture {
 
-            val enrolments = Enrolments(
+            val enrolments: Enrolments = Enrolments(
               Set(
                 Enrolment(
                   key = EnrolmentKeys.Individual,
@@ -202,12 +201,12 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
               ))
 
             MockAuthConnector
-              .authorise(EmptyPredicate)(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate))))
+              .authorise(EmptyPredicate)(Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent))))
 
             MockAuthConnector
               .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.successful(enrolments))
 
-            val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+            val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
             status(result) mustBe OK
           }
@@ -216,14 +215,14 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
         "an unexpected error occurs during primary auth call" - {
           "must return INTERNAL_SERVER_ERROR" in new Fixture {
             MockAuthConnector
-              .authorise(EmptyPredicate)(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate))))
+              .authorise(EmptyPredicate)(Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent))))
 
             MockAuthConnector
               .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments("Error")))
 
             mockInternalServerError(InternalServerError("An unexpected error occurred"))
 
-            val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+            val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
             status(result) mustBe INTERNAL_SERVER_ERROR
             contentAsString(result) mustBe "An unexpected error occurred"
@@ -231,10 +230,9 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
         }
 
         "an unexpected error occurs during secondary auth call" - {
-          "must return INTERNAL_SERVER_ERROR" ignore new Fixture {
+          "must return INTERNAL_SERVER_ERROR" in new Fixture {
             MockAuthConnector
-              .authorise(EmptyPredicate)(
-                Future.successful(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate)))))
+              .authorise(EmptyPredicate)(Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent))))
 
             MockAuthConnector
               .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments("An error")))
@@ -246,7 +244,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
             MockAppConfig.emaSupportingAgentsEnabled(true)
 
-            val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+            val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
             status(result) mustBe INTERNAL_SERVER_ERROR
             contentAsString(result) mustBe "An unexpected error occurred"
@@ -257,11 +255,11 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           "when EMA Supporting Agent feature is enabled" - {
 
-            "must return OK" ignore new Fixture {
+            "must return OK" in new Fixture {
 
               MockAppConfig.emaSupportingAgentsEnabled(true)
 
-              val enrolments = Enrolments(Set(
+              val enrolments: Enrolments = Enrolments(Set(
                 Enrolment(
                   key = EnrolmentKeys.SupportingAgent,
                   identifiers = Seq(EnrolmentIdentifier(EnrolmentIdentifiers.individualId, mtditid.value)),
@@ -274,7 +272,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
               MockAuthConnector
                 .authorise(EmptyPredicate)(
-                  Future.successful(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate))))
+                  Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
                 )
 
               MockAuthConnector
@@ -283,7 +281,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
               MockAuthConnector
                 .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.successful(enrolments))
 
-              val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+              val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
               status(result) mustBe OK
             }
@@ -291,19 +289,19 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
           "when EMA Supporting Agent feature is disabled" - {
 
-            "must return SEE_OTHER (303) and redirect to Agent Error page" ignore new Fixture {
+            "must return SEE_OTHER (303) and redirect to Agent Error page" in new Fixture {
 
               MockAppConfig.emaSupportingAgentsEnabled(false)
 
               MockAuthConnector
                 .authorise(EmptyPredicate)(
-                  Future.successful(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate))))
+                  Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
                 )
 
               MockAuthConnector
                 .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments()))
 
-              val result = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+              val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad.url)
@@ -318,14 +316,14 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
           SessionValues.CLIENT_NINO -> someNino.value
         )
 
-        "must return SEE_OTHER (303) and redirect to Agent Error page" ignore new Fixture {
+        "must return SEE_OTHER (303) and redirect to Agent Error page" in new Fixture {
 
           MockAuthConnector
             .authorise(EmptyPredicate)(
-              Future.successful(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate))))
+              Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
             )
 
-          val result = controller.onPageLoad()(fakeRequestWithNINO)
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestWithNINO)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(mockAppConfig.viewAndChangeEnterUtrUrl)
@@ -338,11 +336,11 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
           SessionValues.CLIENT_MTDITID -> mtditid.value
         )
 
-        "must return SEE_OTHER (303) and redirect to Agent Error page" ignore new Fixture {
+        "must return SEE_OTHER (303) and redirect to Agent Error page" in new Fixture {
 
           MockAuthConnector
             .authorise(EmptyPredicate)(
-              Future.successful(Future.successful(new ~(new ~(Some("internalId"), Some(AffinityGroup.Agent)), Some(TimeData.testDate))))
+              Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
             )
 
           val result = controller.onPageLoad()(fakeRequestWithMtditid)
@@ -359,7 +357,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(MissingBearerToken()))
 
-        val result = controller.onPageLoad()(FakeRequest())
+        val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value must startWith(mockAppConfig.loginUrl)
@@ -372,7 +370,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(BearerTokenExpired()))
 
-        val result = controller.onPageLoad()(FakeRequest())
+        val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value must startWith(mockAppConfig.loginUrl)
@@ -385,7 +383,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(InsufficientEnrolments()))
 
-        val result = controller.onPageLoad()(FakeRequest())
+        val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
@@ -398,7 +396,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(UnsupportedAuthProvider()))
 
-        val result = controller.onPageLoad()(FakeRequest())
+        val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
@@ -411,7 +409,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(UnsupportedAffinityGroup()))
 
-        val result = controller.onPageLoad()(FakeRequest())
+        val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
@@ -424,7 +422,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         MockAuthConnector.authorise(EmptyPredicate)(Future.failed(UnsupportedCredentialRole()))
 
-        val result = controller.onPageLoad()(FakeRequest())
+        val result: Future[Result] = controller.onPageLoad()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)

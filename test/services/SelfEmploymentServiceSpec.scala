@@ -60,7 +60,6 @@ import stubs.services.AuditServiceStub
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import data.TimeData
 
 class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec {
 
@@ -274,7 +273,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
         .rightT[Future, ServiceError](Some(aUserDateOfBirth))
 
       val result: Either[ServiceError, Option[LocalDate]] =
-        service.getUserDateOfBirth(nino, mtditid, Some(TimeData.testDate), isAgent = false).value.futureValue
+        service.getUserDateOfBirth(nino, mtditid).value.futureValue
 
       result shouldBe Some(aUserDateOfBirth).asRight
     }

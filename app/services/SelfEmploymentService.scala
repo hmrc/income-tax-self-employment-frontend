@@ -94,8 +94,7 @@ trait SelfEmploymentService {
       mode: Mode,
       handleError: Form[_] => Result)(implicit request: DataRequest[_], defaultFormBinding: FormBinding, writes: Writes[A]): Future[Result]
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
-      hc: HeaderCarrier): ApiResultT[Option[LocalDate]]
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Option[LocalDate]]
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
       hc: HeaderCarrier): ApiResultT[List[TaxableProfitAndLoss]]
@@ -242,8 +241,7 @@ class SelfEmploymentServiceImpl @Inject() (
     handleForm(form, handleError, defaultHandleSuccess)
   }
 
-  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid, authDob: Option[LocalDate], isAgent: Boolean)(implicit
-      hc: HeaderCarrier): ApiResultT[Option[LocalDate]] =
+  def getUserDateOfBirth(nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Option[LocalDate]] =
     connector.getUserDateOfBirth(nino, mtditid)
 
   def getAllBusinessesTaxableProfitAndLoss(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit
