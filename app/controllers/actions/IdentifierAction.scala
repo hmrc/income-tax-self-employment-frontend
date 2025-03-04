@@ -130,22 +130,19 @@ class AuthenticatedIdentifierAction @Inject() (
   private def agentRecovery[A](block: IdentifierRequest[A] => Future[Result], internalId: String, mtdItId: String, nino: String)(implicit
       request: Request[A],
       hc: HeaderCarrier): PartialFunction[Throwable, Future[Result]] = {
-    case _: AuthorisationException if config.emaSupportingAgentsEnabled =>
+    case _: AuthorisationException =>
       authorised(secondaryAgentPredicate(mtdItId))
         .retrieve(allEnrolments) {
           populateAgent(block, internalId, mtdItId, nino, _, isSupportingAgent = true)
         }
         .recover {
           case _: AuthorisationException =>
-            logger.info(s"$agentAuthLogString - Agent does not have secondary delegated authority for Client.")
+            logger.warn(s"$agentAuthLogString - Agent does not have secondary delegated authority for Client.")
             Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad)
           case e =>
             logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
             errorHandler.internalServerError()
         }
-    case _: AuthorisationException =>
-      logger.info(s"$agentAuthLogString - Agent does not have delegated authority for Client.")
-      Future.successful(Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad))
     case e =>
       logger.error(s"$agentAuthLogString - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
       Future.successful(errorHandler.internalServerError())
@@ -157,12 +154,18 @@ class AuthenticatedIdentifierAction @Inject() (
                                nino: String,
                                enrolments: Enrolments,
                                isSupportingAgent: Boolean)(implicit request: Request[A]) =
-    enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
-      case Some(arn) =>
-        block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
-      case None =>
-        logger.info(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-        Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
+    isSupportingAgent match {
+      case true =>
+        logger.warn(s"$agentAuthLogString - Secondary agent unauthorised")
+        Future.successful(Redirect(controllers.routes.SupportingAgentAuthErrorController.show))
+      case false =>
+        enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
+          case Some(arn) =>
+            block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
+          case None =>
+            logger.warn(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+            Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
+        }
     }
 
   private[actions] def enrolmentGetIdentifierValue(checkedKey: String, checkedIdentifier: String, enrolments: Enrolments): Option[String] =

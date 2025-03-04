@@ -242,8 +242,6 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
             mockInternalServerError(InternalServerError("An unexpected error occurred"))
 
-            MockAppConfig.emaSupportingAgentsEnabled(true)
-
             val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
             status(result) mustBe INTERNAL_SERVER_ERROR
@@ -253,11 +251,9 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         "Not Authorised as a Primary Agent" - {
 
-          "when EMA Supporting Agent feature is enabled" - {
+          "when a Secondary Agent attempts to login with valid credentials" - {
 
-            "must return OK" in new Fixture {
-
-              MockAppConfig.emaSupportingAgentsEnabled(true)
+            "must return SEE_OTHER" in new Fixture {
 
               val enrolments: Enrolments = Enrolments(Set(
                 Enrolment(
@@ -283,28 +279,8 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
               val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
-              status(result) mustBe OK
-            }
-          }
-
-          "when EMA Supporting Agent feature is disabled" - {
-
-            "must return SEE_OTHER (303) and redirect to Agent Error page" in new Fixture {
-
-              MockAppConfig.emaSupportingAgentsEnabled(false)
-
-              MockAuthConnector
-                .authorise(EmptyPredicate)(
-                  Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
-                )
-
-              MockAuthConnector
-                .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments()))
-
-              val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
-
               status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad.url)
+              redirectLocation(result) mustBe Some(controllers.routes.SupportingAgentAuthErrorController.show.url)
             }
           }
         }
