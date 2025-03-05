@@ -17,6 +17,7 @@
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
+@import views.html.helper.CSPNonce
 
 @this(layout: templates.Layout,
         formHelper: FormWithCSRF,
@@ -107,7 +108,7 @@
             @submitButton()
         }
 
-    <script>
+    <script @{CSPNonce.attr}>
         document.addEventListener("DOMContentLoaded", function () {
             const submitButton = document.getElementsByClassName("govuk-button")[0];
             const fullCost = document.getElementById("fullCost");
