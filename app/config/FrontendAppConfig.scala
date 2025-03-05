@@ -36,7 +36,6 @@ trait FrontendAppConfig {
   def exitSurveyBaseUrl: String
   def exitSurveyUrl: String
   def languageTranslationEnabled: Boolean
-  def emaSupportingAgentsEnabled: Boolean
   def languageMap: Map[String, Lang]
   def selfEmploymentBEBaseUrl: String
   def timeout: Int
@@ -46,6 +45,7 @@ trait FrontendAppConfig {
   def incomeTaxSubmissionIvRedirect: String
   def incomeTaxSubmissionStartUrl(taxYear: Int): String
   def viewAndChangeEnterUtrUrl: String
+  def viewAndChangeViewUrlAgent: String
 }
 
 @Singleton
@@ -69,7 +69,6 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
 
   // Feature switching
   override val languageTranslationEnabled: Boolean = configuration.get[Boolean]("feature-switch.welsh-translation")
-  override val emaSupportingAgentsEnabled: Boolean = configuration.get[Boolean]("feature-switch.ema-supporting-agents-enabled")
 
   override val languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
@@ -91,6 +90,8 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
 
   override def incomeTaxSubmissionStartUrl(taxYear: Int): String = s"$incomeTaxSubmissionBaseUrl/$taxYear/start"
 
-  override val viewAndChangeEnterUtrUrl: String = configuration.get[String]("microservice.services.view-and-change.url") +
-    "/report-quarterly/income-and-expenses/view/agents/client-utr"
+  val vcBaseUrl = configuration.get[String]("microservice.services.view-and-change.url")
+
+  override val viewAndChangeEnterUtrUrl: String  = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
+  override val viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents"
 }
