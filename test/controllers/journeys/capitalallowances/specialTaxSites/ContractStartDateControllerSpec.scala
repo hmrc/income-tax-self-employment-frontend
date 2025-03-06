@@ -17,7 +17,6 @@
 package controllers.journeys.capitalallowances.specialTaxSites
 
 import base.questionPages.LocalDateGetAndPostQuestionBaseSpec
-import data.TimeData
 import data.TimeData.testDate
 import models.NormalMode
 import models.common.{BusinessId, TaxYear, UserType}

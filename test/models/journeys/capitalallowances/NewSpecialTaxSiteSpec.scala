@@ -25,8 +25,6 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import utils.TimeMachine
 
-import java.time.LocalDate
-
 class NewSpecialTaxSiteSpec extends SpecBase {
 
   val mockTimeMachine: TimeMachine = mock[TimeMachine]
