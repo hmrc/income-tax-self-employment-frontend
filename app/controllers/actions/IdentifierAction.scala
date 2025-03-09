@@ -154,18 +154,17 @@ class AuthenticatedIdentifierAction @Inject() (
                                nino: String,
                                enrolments: Enrolments,
                                isSupportingAgent: Boolean)(implicit request: Request[A]) =
-    isSupportingAgent match {
-      case true =>
-        logger.warn(s"$agentAuthLogString - Secondary agent unauthorised")
-        Future.successful(Redirect(controllers.routes.SupportingAgentAuthErrorController.show))
-      case false =>
-        enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
-          case Some(arn) =>
-            block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
-          case None =>
-            logger.warn(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-            Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
-        }
+    if (isSupportingAgent) {
+      logger.warn(s"$agentAuthLogString - Secondary agent unauthorised")
+      Future.successful(Redirect(controllers.routes.SupportingAgentAuthErrorController.show))
+    } else {
+      enrolmentGetIdentifierValue(EnrolmentKeys.Agent, EnrolmentIdentifiers.agentReference, enrolments) match {
+        case Some(arn) =>
+          block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
+        case None =>
+          logger.warn(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+          Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
+      }
     }
 
   private[actions] def enrolmentGetIdentifierValue(checkedKey: String, checkedIdentifier: String, enrolments: Enrolments): Option[String] =
