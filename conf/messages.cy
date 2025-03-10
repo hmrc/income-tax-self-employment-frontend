@@ -99,6 +99,11 @@ timeout.title = Rydych ar fin cael eich allgofnodi
 timeout.message = Am resymau diogelwch, byddwch yn cael eich allgofnodi o ’r gwasanaeth hwn i mewn
 timeout.keepAlive = Arhoswch wedi ’ch mewngofnodi
 timeout.signOut = Arwyddo allan
+
+error.unauthorised.title = Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn
+error.supp.agent.unauthorised.paragraph = Rydych yn asiant ategol ar gyfer y cleient hwn. Dim ond eich cleient neu ei brif asiant, os oes ganddo un, sy’n gallu cael at a chyflwyno ei Ffurflen Dreth.
+error.supp.agent.unauthorised.link = Yn ôl i hafan y cyfrif
+
 error.browser.title.prefix = Gwall:
 error.boolean = Rhowch ateb
 error.invalid = Rhowch werth cywir

@@ -17,6 +17,7 @@
 package base
 
 import builders.UserBuilder
+import config.FrontendAppConfig
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
 import models.common.UserType.Individual
@@ -93,6 +94,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   def buildUserAnswers(data: JsObject): UserAnswers = UserAnswers(userAnswersId, Json.obj(businessId.value -> data))
   def buildUserAnswers[A](settable: Settable[A], answer: A)(implicit writes: Writes[A]): UserAnswers =
     emptyUserAnswersAccrual.set(settable, answer, businessId.some).success.value
+
+  def config(app: Application): FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   def messages(app: Application): Messages =
     app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
