@@ -276,6 +276,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
               MockAuthConnector
                 .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.successful(enrolments))
+
               val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
               status(result) mustBe SEE_OTHER
@@ -287,8 +288,6 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
             "must return SEE_OTHER" in new Fixture {
 
-              val enrolments: Enrolments = Enrolments(Set())
-
               MockAuthConnector
                 .authorise(EmptyPredicate)(
                   Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
@@ -298,15 +297,14 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
                 .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments()))
 
               MockAuthConnector
-                .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.successful(enrolments))
+                .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.failed(InsufficientEnrolments()))
 
               val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.routes.SupportingAgentAuthErrorController.show.url)
+              redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad.url)
             }
           }
-
         }
       }
 

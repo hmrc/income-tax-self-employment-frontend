@@ -163,7 +163,7 @@ class AuthenticatedIdentifierAction @Inject() (
           block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, AffinityGroup.Agent.toString, isSupportingAgent)))
         case None =>
           logger.warn(s"$agentAuthLogString - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-          Future.successful(Redirect(controllers.authorisationErrors.routes.YouNeedAgentServicesController.onPageLoad))
+          Future.successful(Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad))
       }
     }
 
