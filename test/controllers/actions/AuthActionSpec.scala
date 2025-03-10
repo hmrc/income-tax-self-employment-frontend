@@ -251,7 +251,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
         "Not Authorised as a Primary Agent" - {
 
-          "when a Secondary Agent attempts to login with valid credentials" - {
+          "when a Secondary Agent attempts to login with VALID credentials" - {
 
             "must return SEE_OTHER" in new Fixture {
 
@@ -276,6 +276,29 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
 
               MockAuthConnector
                 .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.successful(enrolments))
+              val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.routes.SupportingAgentAuthErrorController.show.url)
+            }
+          }
+
+          "when a Secondary Agent attempts to login with INVALID credentials" - {
+
+            "must return SEE_OTHER" in new Fixture {
+
+              val enrolments: Enrolments = Enrolments(Set())
+
+              MockAuthConnector
+                .authorise(EmptyPredicate)(
+                  Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent)))
+                )
+
+              MockAuthConnector
+                .authorise(authAction.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments()))
+
+              MockAuthConnector
+                .authorise(authAction.secondaryAgentPredicate(mtditid.value))(Future.successful(enrolments))
 
               val result: Future[Result] = controller.onPageLoad()(fakeRequestWithMtditidAndNINO)
 
@@ -283,6 +306,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockAuthConnector 
               redirectLocation(result) mustBe Some(controllers.routes.SupportingAgentAuthErrorController.show.url)
             }
           }
+
         }
       }
 
