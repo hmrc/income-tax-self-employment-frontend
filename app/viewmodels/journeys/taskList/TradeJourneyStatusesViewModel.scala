@@ -89,11 +89,15 @@ object TradeJourneyStatusesViewModel {
   }
 
   private[viewmodels] def buildSummaryRow(href: String, keyString: String, status: JourneyStatus)(implicit messages: Messages) = {
-    val statusString     = messages(s"status.${status.entryName}")
-    val optDeadlinkStyle = if (status == CannotStartYet) s" class='govuk-deadlink'" else ""
+    val statusString = messages(s"status.${status.entryName}")
+    val keyContent: String = if (status == CannotStartYet) {
+      keyString
+    } else {
+      s"<a href=$href> $keyString </a>"
+    }
+
     SummaryListRowViewModel(
-      key = KeyViewModel(
-        HtmlContent(s"<span class='app-task-list__task-name govuk-!-font-weight-regular'> <a href=$href$optDeadlinkStyle> $keyString </a> </span>")),
+      key = KeyViewModel(HtmlContent(s"<span class='app-task-list__task-name govuk-!-font-weight-regular'>$keyContent </span>")),
       value = Value(),
       actions = Seq(
         ActionItemViewModel(
