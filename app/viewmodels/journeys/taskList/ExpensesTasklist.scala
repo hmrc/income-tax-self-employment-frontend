@@ -54,6 +54,9 @@ object ExpensesTasklist {
     val hasGoodsToSellOrUse = conditionPassedForViewableLink(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))
     val expensesGoodsToSellOrUseRow = buildRow(ExpensesGoodsToSellOrUse, isExpensesTailoringIsAnswered && hasGoodsToSellOrUse)
 
+    val hasTravelForWork         = conditionPassedForViewableLink(TravelForWorkPage, TravelForWork.values.filterNot(_ == TravelForWork.No))
+    val expensesTravelForWorkRow = buildRow(ExpensesTravelForWork, isExpensesTailoringIsAnswered && hasTravelForWork)
+
     val hasRepairsAndMaintenance =
       conditionPassedForViewableLink(RepairsAndMaintenancePage, RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))
     val expensesRepairsAndMaintenanceRow =
@@ -116,6 +119,7 @@ object ExpensesTasklist {
       expensesTailoringRow,
       expensesOfficeSuppliesRow,
       expensesGoodsToSellOrUseRow,
+      expensesTravelForWorkRow,
       expensesRepairsAndMaintenanceRow,
       expensesWorkplaceRunningCostsRow,
       expensesAdvertisingOrMarketingRow,
