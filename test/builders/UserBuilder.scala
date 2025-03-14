@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import uk.gov.hmrc.auth.core.AffinityGroup
 import java.time.LocalDate
 
 object UserBuilder {
-  val aNoddyUser      = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
-  val aNoddyAgentUser = User("mtdItId", arn = Some(""), "nino", AffinityGroup.Agent.toString)
+  val aNoddyUser: User      = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
+  val aNoddyAgentUser: User = User("mtdItId", arn = Some(""), "nino", AffinityGroup.Agent.toString)
 
-  val aUserDateOfBirth = LocalDate.of(1997, 7, 30)
+  val aUserDateOfBirth: LocalDate = LocalDate.of(1997, 7, 30)
 }

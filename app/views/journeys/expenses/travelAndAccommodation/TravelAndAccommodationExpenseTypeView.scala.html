@@ -37,15 +37,15 @@
 
     @formHelper(action = routes.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        <h1 class="govuk-heading-l">@messages(s"travelAndAccommodation.title.$userType")</h1>
-        <div class="govuk-hint"> @messages(s"travelAndAccommodation.hint") </div>
+        <h1 class="govuk-heading-l">@messages(s"travelAndAccommodationExpenseType.title.$userType")</h1>
+        <div class="govuk-hint"> @messages(s"site.selectAllThatApply") </div>
 
         @govukCheckboxes(
             CheckboxesViewModel(
-            form   = form,
-            name   = "value",
-            legend = LegendViewModel("").asPageHeading(),
-            items  = TravelAndAccommodationExpenseType.checkboxItems(messages, userType)
+                form   = form,
+                name   = "value",
+                legend = LegendViewModel("").asPageHeading(),
+                items  = TravelAndAccommodationExpenseType.checkboxItems(messages, userType)
             )
         )
 
