@@ -16,7 +16,7 @@
 
 package models.journeys.expenses.travelAndAccommodation
 
-import models.common.{Enumerable, WithName}
+import models.common.{Enumerable, UserType, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{CheckboxItem, Text}
 import viewmodels.govuk.all.HintViewModel
@@ -26,9 +26,11 @@ sealed trait TravelAndAccommodationExpenseType
 
 object TravelAndAccommodationExpenseType extends Enumerable.Implicits {
 
-  private case object MyOwnVehicle    extends WithName("myOwnVehicle") with TravelAndAccommodationExpenseType
+  private case object MyOwnVehicle   extends WithName("myOwnVehicle") with TravelAndAccommodationExpenseType
   private case object LeasedVehicles extends WithName("leasedVehicles") with TravelAndAccommodationExpenseType
-  private case object PublicTransportAndOtherAccommodation extends WithName("publicTransportAndOtherAccommodation") with TravelAndAccommodationExpenseType
+  private case object PublicTransportAndOtherAccommodation
+      extends WithName("publicTransportAndOtherAccommodation")
+      with TravelAndAccommodationExpenseType
 
   val values: Seq[TravelAndAccommodationExpenseType] = Seq(
     MyOwnVehicle,
@@ -36,14 +38,14 @@ object TravelAndAccommodationExpenseType extends Enumerable.Implicits {
     PublicTransportAndOtherAccommodation
   )
 
-  def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
+  def checkboxItems(implicit messages: Messages, userType: UserType): Seq[CheckboxItem] =
     values.zipWithIndex.map { case (value, index) =>
       CheckboxItemViewModel(
         content = Text(messages(s"travelAndAccommodationExpenseType.${value.toString}")),
         fieldId = "value",
         index = index,
         value = value.toString
-      ).withHint(HintViewModel(Text(messages(s"travelAndAccommodationExpenseType.${value.toString}.hint"))))
+      ).withHint(HintViewModel(Text(messages(s"travelAndAccommodationExpenseType.${value.toString}.hint.$userType"))))
     }
 
   implicit val enumerable: Enumerable[TravelAndAccommodationExpenseType] =

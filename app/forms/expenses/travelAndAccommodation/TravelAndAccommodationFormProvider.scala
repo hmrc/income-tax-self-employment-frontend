@@ -24,7 +24,6 @@ import play.api.data.Forms.set
 
 import javax.inject.Inject
 
-
 class TravelAndAccommodationFormProvider @Inject() extends Mappings {
 
   def apply(userType: UserType): Form[Set[TravelAndAccommodationExpenseType]] =

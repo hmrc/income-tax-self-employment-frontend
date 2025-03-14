@@ -17,8 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.common.{BusinessId, TaxYear, UserType}
-import controllers.journeys.fillForm
+import models.common.{BusinessId, TaxYear}
 import forms.expenses.travelAndAccommodation.TravelAndAccommodationFormProvider
 import models.Mode
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
@@ -28,29 +27,31 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeView
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class TravelAndAccommodationExpenseTypeController @Inject() (override val messagesApi: MessagesApi,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         service: SelfEmploymentService,
-                                                         identify: IdentifierAction,
-                                                         getData: DataRetrievalAction,
-                                                         requireData: DataRequiredAction,
-                                                         formProvider: TravelAndAccommodationFormProvider,
-                                                         view: TravelAndAccommodationExpenseTypeView)
-  extends FrontendBaseController
-  with I18nSupport {
+                                                             val controllerComponents: MessagesControllerComponents,
+                                                             service: SelfEmploymentService,
+                                                             identify: IdentifierAction,
+                                                             getData: DataRetrievalAction,
+                                                             requireData: DataRequiredAction,
+                                                             formProvider: TravelAndAccommodationFormProvider,
+                                                             view: TravelAndAccommodationExpenseTypeView)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val page = TravelAndAccommodationExpenseTypePage
-  private val form = (userType: UserType) => formProvider(userType)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val form: Form[Set[TravelAndAccommodationExpenseType]] = formProvider(request.user.userType)
+
       val filledForm = request.userAnswers.get(page) match {
         case None        => form
-        case Some(value) => fillForm(value)
+        case Some(value) => form.fill(value)
       }
 
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
@@ -58,10 +59,12 @@ class TravelAndAccommodationExpenseTypeController @Inject() (override val messag
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
     implicit request =>
+      val form: Form[Set[TravelAndAccommodationExpenseType]] = formProvider(request.user.userType)
+
       def handleFormError(formWithErrors: Form[_]): Result =
         BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
 
-      service.defaultHandleForm(form(request.userType), page, businessId, taxYear, mode, handleFormError)
+      service.defaultHandleForm(form, page, businessId, taxYear, mode, handleFormError)
   }
 
 }
