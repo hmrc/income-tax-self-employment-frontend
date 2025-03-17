@@ -33,7 +33,7 @@
 
 @layout(pageTitle = title(form, messages(s"travelAndAccommodationExpenseType.title.$userType"))) {
 
-    @errorSummarySection(form)
+    @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
     @formHelper(action = routes.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
