@@ -378,3 +378,11 @@ POST        /:taxYear/:businessId/expenses/change-other-expenses/disallowable-am
 
 GET         /:taxYear/:businessId/expenses/other-expenses/check                                                                        controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/other-expenses/check                                                                        controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
+########## Expenses - Simplified Expenses ##########
+
+GET        /:taxYear/:businessId/expenses/simplified-expenses                                                                          controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST       /:taxYear/:businessId/expenses/simplified-expenses                                                                          controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+
+GET        /:taxYear/:businessId/expenses/changeSimplifiedExpenses                                                                     controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST       /:taxYear/:businessId/expenses/changeSimplifiedExpenses                                                                     controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
