@@ -796,9 +796,14 @@ goodsToSellOrUseCYA.title.agent = Check your client’s goods to sell or use exp
 
 ## Travel and Accommodation expense type
 travelAndAccommodationExpenseType.title.individual = Which travel expenses do you need to claim?
-travelAndAccommodation.title.agent = Which travel expenses does your client need to claim?
+travelAndAccommodationExpenseType.title.agent = Which travel expenses does your client need to claim?
 travelAndAccommodationExpenseType.error.required.individual = Select the travel expenses you need to claim
 travelAndAccommodationExpenseType.error.required.agent = Select the travel expenses your client needs to claim
+travelAndAccommodationExpenseType.myOwnVehicle.agent = My client’s own vehicles
+travelAndAccommodationExpenseType.myOwnVehicle.individual = My own vehicles
+travelAndAccommodationExpenseType.leasedVehicles.common = Leased vehicles
+travelAndAccommodationExpenseType.publicTransportAndOtherAccommodation.common = Public transport, hotel room costs and meals on overnight trips
+
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount

@@ -18,7 +18,8 @@ package models.journeys.expenses.travelAndAccommodation
 
 import models.common.{Enumerable, UserType, WithName}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{CheckboxItem, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewmodels.govuk.all.HintViewModel
 import viewmodels.govuk.checkbox._
 
@@ -38,14 +39,28 @@ object TravelAndAccommodationExpenseType extends Enumerable.Implicits {
     PublicTransportAndOtherAccommodation
   )
 
+//  def checkboxItems(implicit messages: Messages, userType: UserType): Seq[CheckboxItem] =
+//    values.zipWithIndex.map { case (value, index) =>
+//      CheckboxItemViewModel(
+//        content = Text(messages(s"travelAndAccommodationExpenseType.${value.toString}.$userType")),
+//        fieldId = "value",
+//        index = index,
+//        value = value.toString
+//      )
+//    }
+
   def checkboxItems(implicit messages: Messages, userType: UserType): Seq[CheckboxItem] =
     values.zipWithIndex.map { case (value, index) =>
+      val messageKey = value.toString match {
+        case "myOwnVehicle" => s"travelAndAccommodationExpenseType.${value.toString}.$userType"
+        case _              => s"travelAndAccommodationExpenseType.${value.toString}.common"
+      }
       CheckboxItemViewModel(
-        content = Text(messages(s"travelAndAccommodationExpenseType.${value.toString}")),
+        content = Text(messages(messageKey)),
         fieldId = "value",
         index = index,
         value = value.toString
-      ).withHint(HintViewModel(Text(messages(s"travelAndAccommodationExpenseType.${value.toString}.hint.$userType"))))
+      )
     }
 
   implicit val enumerable: Enumerable[TravelAndAccommodationExpenseType] =

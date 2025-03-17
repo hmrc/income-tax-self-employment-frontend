@@ -26,12 +26,12 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.api.test._
 import repositories.SessionRepository
 import services.SelfEmploymentService
+import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeView
 
 import scala.concurrent.Future
@@ -58,8 +58,11 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
     UserScenario(userType = UserType.Agent, formProvider(UserType.Agent))
   )
 
-  private def getTravelAndAccommodationRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
+  private def onPageLoadRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
     controllers.journeys.expenses.travelAndAccommodation.routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, mode).url
+
+  private def onSubmitRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
+    controllers.journeys.expenses.travelAndAccommodation.routes.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear, businessId, mode).url
 
   "TravelAndAccommodationExpenseTypeController" - {
     "onPageLoad" - {
@@ -67,13 +70,12 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
         s"when user is an ${userScenario.userType}" - {
 
           "must return OK and the correct view for a GET" in {
-
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .build()
 
             running(application) {
 
-              val request = FakeRequest(GET, getTravelAndAccommodationRoute(taxYear, businessId, mode))
+              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
               val view = application.injector.instanceOf[TravelAndAccommodationExpenseTypeView]
 
@@ -88,11 +90,10 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
           }
 
           "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
             val application = applicationBuilder(userAnswers = None).build()
 
             running(application) {
-              val request = FakeRequest(GET, getTravelAndAccommodationRoute(taxYear, businessId, mode))
+              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
               val result = route(application, request).value
 
@@ -107,25 +108,21 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
     "onSubmit" - {
       userScenarios.foreach { userScenario =>
         s"when user is an ${userScenario.userType}" - {
-
           "must redirect to the next page when valid data is submitted" in {
             val mockSessionRepository = mock[SessionRepository]
 
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-            val application =
-              applicationBuilder(userAnswers = Some(emptyUserAnswers))
-                .overrides(
-                  bind[SelfEmploymentService].toInstance(mockService)
-                )
-                .build()
+            val stubService = SelfEmploymentServiceStub()
+
+            val application = createApp(stubService)
 
             running(application) {
               when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any))
                 .thenReturn(Future.successful(emptyUserAnswers))
 
               val request =
-                FakeRequest(POST, getTravelAndAccommodationRoute(taxYear, businessId, mode))
+                FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
                   .withFormUrlEncodedBody(("value[0]", TravelAndAccommodationExpenseType.values.head.toString))
 
               val result = route(application, request).value
@@ -136,17 +133,14 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
-
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
-              .overrides(bind[SelfEmploymentService].toInstance(mockService))
-              .build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
             running(application) {
               val request =
-                FakeRequest(POST, getTravelAndAccommodationRoute(taxYear, businessId, mode))
-                  .withFormUrlEncodedBody(("value", ""))
+                FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
+                  .withFormUrlEncodedBody(("value[0]", "invalid value"))
 
-              val boundForm = formProvider(userScenario.userType).bind(Map("value" -> ""))
+              val boundForm = formProvider(userScenario.userType).bind(Map("value[0]" -> "invalid value"))
 
               val view = application.injector.instanceOf[TravelAndAccommodationExpenseTypeView]
 
@@ -164,7 +158,7 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
 
             running(application) {
               val request =
-                FakeRequest(POST, getTravelAndAccommodationRoute(taxYear, businessId, mode))
+                FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
                   .withFormUrlEncodedBody(("value", TravelAndAccommodationExpenseType.values.head.toString))
 
               val result = route(application, request).value
