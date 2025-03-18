@@ -20,22 +20,22 @@ import controllers.actions._
 import forms.VehicleTypeFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, VehicleType}
-import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.VehicleTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class VehicleTypeController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
-    navigator: TravelAndAccommodationNavigator,
+    service: SelfEmploymentService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -60,15 +60,9 @@ class VehicleTypeController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleTypePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(VehicleTypePage, mode, updatedAnswers, taxYear = ???, businessId = ???))
-        )
+      def handleFormError(formWithErrors: Form[_]): Result =
+        BadRequest(view(formWithErrors, taxYear, businessId, mode))
+
+      service.defaultHandleForm(form, VehicleTypePage, businessId, taxYear, mode, handleFormError)
   }
 }

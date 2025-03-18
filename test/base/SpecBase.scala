@@ -39,7 +39,7 @@ import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json, Writes}
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import queries.Settable
 import services.SelfEmploymentService
@@ -123,12 +123,12 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
       )
   }
 
-  def createApp(stub: SelfEmploymentServiceStub) =
+  def createApp(stub: SelfEmploymentServiceStub): Application =
     applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(bind[SelfEmploymentService].toInstance(stub))
       .build()
 
-  def createApp(stubActionProvider: StubSubmittedDataRetrievalActionProvider, stubSelfEmploymentService: SelfEmploymentServiceStub) =
+  def createApp(stubActionProvider: StubSubmittedDataRetrievalActionProvider, stubSelfEmploymentService: SelfEmploymentServiceStub): Application =
     applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(bind[SubmittedDataRetrievalActionProvider].toInstance(stubActionProvider))
       .overrides(bind[SelfEmploymentService].toInstance(stubSelfEmploymentService))
@@ -145,12 +145,12 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
 object SpecBase extends SpecBase {
   abstract class TestCase(userAnswers: Option[UserAnswers] = None) {
-    val application            = applicationBuilder(userAnswers = userAnswers).build()
-    implicit val msg: Messages = SpecBase.messages(application)
+    val application: Application = applicationBuilder(userAnswers = userAnswers).build()
+    implicit val msg: Messages   = SpecBase.messages(application)
   }
 
-  val emptyCall: Call = Call("", "", "")
-  val call            = Call("GET", "/url")
-  val fakeRequest     = FakeRequest()
+  val emptyCall: Call                                  = Call("", "", "")
+  val call: Call                                       = Call("GET", "/url")
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
 }
