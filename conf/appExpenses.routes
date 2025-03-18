@@ -383,6 +383,5 @@ POST        /:taxYear/:businessId/expenses/other-expenses/check                 
 
 GET        /:taxYear/:businessId/expenses/simplified-expenses                                                                          controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST       /:taxYear/:businessId/expenses/simplified-expenses                                                                          controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-
 GET        /:taxYear/:businessId/expenses/changeSimplifiedExpenses                                                                     controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST       /:taxYear/:businessId/expenses/changeSimplifiedExpenses                                                                     controllers.journeys.expenses.travelAndAccommodation.SimplifiedExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)

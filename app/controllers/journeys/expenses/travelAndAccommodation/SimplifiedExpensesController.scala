@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpenseView
+import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,40 +34,42 @@ import scala.concurrent.{ExecutionContext, Future}
 class SimplifiedExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
-    navigator: Navigator,
+    // navigator: Navigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: SimplifiedExpenseFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: SimplifiedExpenseView
+    view: SimplifiedExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  val form: Form[Boolean] = formProvider()
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val form: Form[Boolean] = formProvider(request.userType)
+
       val preparedForm = request.userAnswers.get(SimplifiedExpensesPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, taxYear, businessId, mode))
+      Ok(view(preparedForm, request.userType, taxYear, businessId, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+      val form: Form[Boolean] = formProvider(request.userType)
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SimplifiedExpensesPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SimplifiedExpensesPage, mode, updatedAnswers))
+            } yield Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
+          // Redirect(navigator.nextPage(SimplifiedExpensesPage, mode, updatedAnswers))
         )
   }
 }

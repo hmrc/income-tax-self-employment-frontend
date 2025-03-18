@@ -17,6 +17,7 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.behaviours.BooleanFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class SimplifiedExpenseFormProviderSpec extends BooleanFieldBehaviours {
@@ -24,7 +25,7 @@ class SimplifiedExpenseFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "siSimplifiedExpenses.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new SimplifiedExpenseFormProvider()()
+  val form = new SimplifiedExpenseFormProvider()(UserType.Individual)
 
   ".value" - {
 

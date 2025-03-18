@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package forms.expenses.travelAndAccommodation
+package pages.expenses
 
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import pages.expenses.travelAndAccommodation.SimplifiedExpensesPage
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+class SimplifiedExpensesPageSpec extends PlaySpec with MockitoSugar {
 
-class SimplifiedExpenseFormProvider @Inject() extends Mappings {
+  "SimplifiedExpensesPage" should {
 
-  def apply(userType: UserType): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"simplifiedExpenses.error.required.$userType")
-    )
+    "return the correct string" in {
+      SimplifiedExpensesPage.toString mustBe "simplifiedExpenses"
+    }
+
+    "return the correct path" in {
+      val expectedPath = JsPath \ "simplifiedExpenses"
+      SimplifiedExpensesPage.path(None) mustBe expectedPath
+    }
+
+  }
 }
