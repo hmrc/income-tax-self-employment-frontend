@@ -18,29 +18,33 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import forms.VehicleTypeFormProvider
+import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.{NormalMode, VehicleType}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import models.requests.DataRequest
+import models.{Mode, NormalMode, VehicleType}
+import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.MockitoSugar.mock
+import org.mockito.matchers.MacroBasedMatchers
+import pages.OneQuestionPage
 import pages.expenses.travelAndAccommodation.VehicleTypePage
-import play.api.data.Form
+import play.api.data.{Form, FormBinding}
+import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
+import play.api.libs.json.Writes
 import play.api.mvc.Call
+import play.api.mvc.Results.SeeOther
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SelfEmploymentService
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 
-import scala.concurrent.Future
-
-class VehicleTypeControllerSpec extends SpecBase with MockitoSugar {
+class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val vehicleTypeRoute: Any = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val vehicleTypeRoute: String = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val formProvider = new VehicleTypeFormProvider()
+  val formProvider            = new VehicleTypeFormProvider()
   val form: Form[VehicleType] = formProvider()
 
   "VehicleType Controller" - {
@@ -57,7 +61,7 @@ class VehicleTypeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[VehicleTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, taxYear, businessId, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -75,25 +79,32 @@ class VehicleTypeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), taxYear, businessId, NormalMode)(
+          request,
+          messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val mockSelfEmploymentService = mock[SelfEmploymentService]
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SelfEmploymentService].toInstance(mockSelfEmploymentService)
           )
           .build()
 
       running(application) {
+
+        mockSelfEmploymentService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
+        mockSelfEmploymentService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
+          *[DataRequest[_]],
+          *[FormBinding],
+          *[Writes[Any]]
+        ) returns SeeOther(onwardRoute.url).asFuture
+
         val request =
           FakeRequest(POST, vehicleTypeRoute)
             .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
@@ -121,7 +132,7 @@ class VehicleTypeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, taxYear, businessId, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -135,7 +146,7 @@ class VehicleTypeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -152,7 +163,7 @@ class VehicleTypeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
