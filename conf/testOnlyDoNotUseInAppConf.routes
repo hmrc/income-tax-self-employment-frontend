@@ -13,4 +13,5 @@
 ->          /                      prod.Routes
 
 GET         /update-and-submit-income-tax-return/self-employment/test-only/test-clear-all-data        controllers.testonly.TestManagerController.isTestEnabled()
++ nocsrf
 POST        /update-and-submit-income-tax-return/self-employment/test-only/test-clear-all-data        controllers.testonly.TestManagerController.clearAllData()
