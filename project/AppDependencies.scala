@@ -35,7 +35,7 @@ object AppDependencies {
     "org.scalacheck"    %% "scalacheck"              % "1.18.0",
     "org.pegdown"        % "pegdown"                 % "1.6.0",
     "org.mockito"       %% "mockito-scala"           % "1.17.37",
-    "org.scalamock"     %% "scalamock"               % "5.2.0",
+    "org.scalamock"     %% "scalamock"               % "5.2.0"
   ).map(_ % "test, it")
 
   def apply(): Seq[ModuleID] = compile ++ test

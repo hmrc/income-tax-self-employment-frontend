@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package builders
+package pages.expenses.travelAndAccommodation
 
-import controllers.actions.AuthenticatedIdentifierAction.User
-import uk.gov.hmrc.auth.core.AffinityGroup
+import models.common.BusinessId
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import pages.OneQuestionPage
+import play.api.libs.json.JsPath
 
-import java.time.LocalDate
+case object TravelAndAccommodationExpenseTypePage extends OneQuestionPage[Set[TravelAndAccommodationExpenseType]] {
 
-object UserBuilder {
-  val aNoddyUser: User      = User("mtdItId", arn = None, "nino", AffinityGroup.Individual.toString)
-  val aNoddyAgentUser: User = User("mtdItId", arn = Some(""), "nino", AffinityGroup.Agent.toString)
+  override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
 
-  val aUserDateOfBirth: LocalDate = LocalDate.of(1997, 7, 30)
+  override def toString: String = "travelAndAccommodationExpenseType"
+
 }

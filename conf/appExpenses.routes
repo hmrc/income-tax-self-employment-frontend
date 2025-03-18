@@ -108,6 +108,13 @@ POST        /:taxYear/:businessId/expenses/other-expenses                       
 GET         /:taxYear/:businessId/expenses/change-other-expenses                                                                       controllers.journeys.expenses.tailoring.individualCategories.OtherExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-other-expenses                                                                       controllers.journeys.expenses.tailoring.individualCategories.OtherExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+########## Expenses - Travel and Accommodation ##########
+
+GET         /:taxYear/:businessId/expenses/travel-accommodation/vehicles                                                               controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/travel-accommodation/vehicles                                                               controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/change-travel-accommodation/vehicles                                                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/change-travel-accommodation/vehicles                                                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 ########## Expenses - Office Supplies ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies/amount                                                                      controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
