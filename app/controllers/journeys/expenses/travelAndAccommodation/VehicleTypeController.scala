@@ -24,7 +24,6 @@ import pages.expenses.travelAndAccommodation.VehicleTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
@@ -34,7 +33,6 @@ import scala.concurrent.ExecutionContext
 
 class VehicleTypeController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     service: SelfEmploymentService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -47,10 +45,11 @@ class VehicleTypeController @Inject() (
     with I18nSupport {
 
   val form: Form[VehicleType] = formProvider()
+  private val page            = VehicleTypePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(VehicleTypePage) match {
+      val preparedForm = request.userAnswers.get(page) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,6 +62,6 @@ class VehicleTypeController @Inject() (
       def handleFormError(formWithErrors: Form[_]): Result =
         BadRequest(view(formWithErrors, taxYear, businessId, mode))
 
-      service.defaultHandleForm(form, VehicleTypePage, businessId, taxYear, mode, handleFormError)
+      service.defaultHandleForm(form, page, businessId, taxYear, mode, handleFormError)
   }
 }

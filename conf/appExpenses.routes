@@ -110,10 +110,15 @@ POST        /:taxYear/:businessId/expenses/change-other-expenses                
 
 ########## Expenses - Travel and Accommodation ##########
 
-GET         /:taxYear/:businessId/expenses/travel-accommodation/vehicles                                                               controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST        /:taxYear/:businessId/expenses/travel-accommodation/vehicles                                                               controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET         /:taxYear/:businessId/expenses/change-travel-accommodation/vehicles                                                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST        /:taxYear/:businessId/expenses/change-travel-accommodation/vehicles                                                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/expenses/travel/vehicles                                                                             controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/expenses/travel/vehicles                                                                             controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/expenses/travel/change-vehicles                                                                      controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/expenses/travel/change-vehicles                                                                      controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
+GET        /:taxYear/:businessId/expenses/travel/vehicle-type                                                                          controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST       /:taxYear/:businessId/expenses/travel/vehicle-type                                                                          controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET        /:taxYear/:businessId/expenses/travel/change-vehicle-type                                                                   controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST       /:taxYear/:businessId/expenses/travel/change-vehicle-type                                                                   controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 ########## Expenses - Office Supplies ##########
 
@@ -366,8 +371,3 @@ POST        /:taxYear/:businessId/expenses/change-other-expenses/disallowable-am
 
 GET         /:taxYear/:businessId/expenses/other-expenses/check                                                                        controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/other-expenses/check                                                                        controllers.journeys.expenses.otherExpenses.OtherExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
-
-GET        /:taxYear/:businessId/expenses/travel/vehicle-type                                                                          controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/expenses/travel/vehicle-type                                                                          controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/expenses/travel/change-vehicle-type                                                                   controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/expenses/travel/change-vehicle-type                                                                   controllers.journeys.expenses.travelAndAccommodation.VehicleTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
