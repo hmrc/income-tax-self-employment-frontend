@@ -1984,3 +1984,6 @@ error-template.paragraph.1.4 = am ragor o wybodaeth
 common.error.self-assessment.paragraph.1.2 = Hunanasesiad: ymholiadau cyffredinol
 common.error.self-assessment.paragraph.1.3 = i siarad â rhywun am eich treth incwm
 common.use = defnyddio
+
+useSimplifiedExpenses.title = *********Missing Welsh Message *********
+useSimplifiedExpenses.heading = *********Missing Welsh Message *********
