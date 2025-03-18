@@ -113,7 +113,3 @@ POST        /:taxYear/:businessId/income/expenses-warning                       
 
 GET         /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
-GET        /travelForWorkYourVehicle                        controllers.TravelForWorkYourVehicleController.onPageLoad(mode: Mode = NormalMode)
-POST       /travelForWorkYourVehicle                        controllers.TravelForWorkYourVehicleController.onSubmit(mode: Mode = NormalMode)
-GET        /changeTravelForWorkYourVehicle                  controllers.TravelForWorkYourVehicleController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeTravelForWorkYourVehicle                  controllers.TravelForWorkYourVehicleController.onSubmit(mode: Mode = CheckMode)
