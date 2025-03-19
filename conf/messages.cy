@@ -1999,5 +1999,13 @@ common.error.self-assessment.paragraph.1.2 = Hunanasesiad: ymholiadau cyffredino
 common.error.self-assessment.paragraph.1.3 = i siarad â rhywun am eich treth incwm
 common.use = defnyddio
 
+vehicleType.title = *******Welsh Translation Missing ********
+vehicleType.heading = *******Welsh Translation Missing ********
+vehicleType.carOrGoodsVehicle = *******Welsh Translation Missing ********
+vehicleType.motorcycle = *******Welsh Translation Missing ********
+vehicleType.checkYourAnswersLabel = *******Welsh Translation Missing ********
+vehicleType.error.required = *******Welsh Translation Missing ********
+vehicleType.change.hidden = *******Welsh Translation Missing ********
+
 useSimplifiedExpenses.title = *********Missing Welsh Message *********
 useSimplifiedExpenses.info = *********Missing Welsh Message *********

@@ -2322,3 +2322,11 @@ travelForWorkYourVehicle.error.length = Your vehicle’s name must be 100 charac
 
 useSimplifiedExpenses.heading = You have to use simplified expenses for {0}
 useSimplifiedExpenses.info = This is because you’ve already used simplified expenses for this vehicle.
+
+
+vehicleType.heading = What kind of vehicle is {0}?
+vehicleType.carOrGoodsVehicle = Car or goods vehicle
+vehicleType.motorcycle = Motorcycle
+vehicleType.checkYourAnswersLabel = Kind of vehicle is {0}?
+vehicleType.error.required = Select what kind of vehicle {0} is
+vehicleType.change.hidden = VehicleType
