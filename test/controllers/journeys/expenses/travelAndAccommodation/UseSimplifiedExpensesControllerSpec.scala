@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UseSimplifiedExpensesView
+import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesView
 
 class UseSimplifiedExpensesControllerSpec extends SpecBase {
 

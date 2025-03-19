@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UseSimplifiedExpensesView
+import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesView
+
+import javax.inject.Inject
 
 class UseSimplifiedExpensesController @Inject() (
     override val messagesApi: MessagesApi,

@@ -115,6 +115,8 @@ POST        /:taxYear/:businessId/expenses/travel-accommodation/vehicles        
 GET         /:taxYear/:businessId/expenses/change-travel-accommodation/vehicles                                                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/expenses/change-travel-accommodation/vehicles                                                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET         /vehicle-flat-rate                                                                                                         controllers.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesController.onPageLoad()
+
 ########## Expenses - Office Supplies ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies/amount                                                                      controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
