@@ -38,7 +38,8 @@ import scala.concurrent.Future
 
 class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  def onwardRoute: Call = Call("GET", "/foo")
+  def onwardRoute: Call =
+    controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
 
   private val mode = NormalMode
 

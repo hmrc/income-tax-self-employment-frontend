@@ -194,7 +194,10 @@ class MessagesSpec extends SpecBase {
     "goodsAndServicesForYourOwnUse.hint.agent",
     "checkNetProfitLoss.p1.profit.agent",
     "checkNetProfitLoss.p1.loss.agent",
-    "whichYearIsLossReported.p2.loss.agent"
+    "whichYearIsLossReported.p2.loss.agent",
+    "travelForWorkYourVehicle.formLabel.agent",
+    "travelAndAccommodation.p2.info.agent",
+    "travelAndAccommodation.p1.info.agent"
   )
 
   "messages must not contain any illegal characters" in {
