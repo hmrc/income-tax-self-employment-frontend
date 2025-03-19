@@ -807,13 +807,13 @@ travelAndAccommodationExpenseType.publicTransportAndOtherAccommodation.common = 
 ##Travel and Accommodation simplified expenses
 simplifiedExpenses.title.common = Simplified expenses for vehicles
 simplifiedExpenses.p1.individual = Simplified expenses are a way of calculating some of your expenses on a pence-per-mile basis instead of working out your actual costs.
-simplifiedExpenses.p1.agent = Simplified expenses are a way of calculating some of your client's expenses on a pence-per-mile basis instead of working out your actual costs.
-simplifiedExpenses.p2.individual = If you've used {vehicle} in previous tax years, you may have already used them.
-simplifiedExpenses.p2.agent = If your client has used {vehicle} in previous tax years, they may have already used them.
-simplifiedExpenses.subheading.individual = Have you used simplified expenses for {vehicle} before?
-simplifiedExpenses.subheading.agent = Has your client used simplified expenses for {vehicle} before?
-simplifiedExpenses.error.required.individual = Select yes if you’ve used simplified expenses for {vehicle} before
-simplifiedExpenses.error.required.agent = Select yes if your client has used simplified expenses for {vehicle} before
+simplifiedExpenses.p1.agent = Simplified expenses are a way of calculating some of your client’s expenses on a pence-per-mile basis instead of working out your actual costs.
+simplifiedExpenses.p2.individual = If you’ve used {0} in previous tax years, you may have already used them.
+simplifiedExpenses.p2.agent = If your client has used {0} in previous tax years, they may have already used them.
+simplifiedExpenses.subheading.individual = Have you used simplified expenses for {0} before?
+simplifiedExpenses.subheading.agent = Has your client used simplified expenses for {0} before?
+simplifiedExpenses.error.required.individual = Select yes if you’ve used simplified expenses for {0} before
+simplifiedExpenses.error.required.agent = Select yes if your client has used simplified expenses for {0} before
 
 ########## Expenses - Repairs and Maintenance ##########
 

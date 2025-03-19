@@ -22,8 +22,9 @@ import play.api.data.FormError
 
 class SimplifiedExpenseFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "siSimplifiedExpenses.error.required"
-  val invalidKey  = "error.boolean"
+  val userType: UserType = UserType.Individual
+  val requiredKey        = s"simplifiedExpenses.error.required.$userType"
+  val invalidKey         = "error.boolean"
 
   val form = new SimplifiedExpenseFormProvider()(UserType.Individual)
 

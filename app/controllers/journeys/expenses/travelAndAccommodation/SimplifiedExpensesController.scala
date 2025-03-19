@@ -18,12 +18,14 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
+import handlers.ErrorHandler
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.requests.DataRequest
 import pages.expenses.travelAndAccommodation.SimplifiedExpensesPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesView
@@ -48,22 +50,23 @@ class SimplifiedExpensesController @Inject() (
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form: Form[Boolean] = formProvider(request.userType)
-
+      val vehicle             = ""
       val preparedForm = request.userAnswers.get(SimplifiedExpensesPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userType, taxYear, businessId, mode))
+      Ok(view(preparedForm, request.userType, taxYear, businessId, mode, vehicle))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val form: Form[Boolean] = formProvider(request.userType)
+      val vehicle             = ""
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, vehicle))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SimplifiedExpensesPage, value))
@@ -72,4 +75,5 @@ class SimplifiedExpensesController @Inject() (
           // Redirect(navigator.nextPage(SimplifiedExpensesPage, mode, updatedAnswers))
         )
   }
+
 }

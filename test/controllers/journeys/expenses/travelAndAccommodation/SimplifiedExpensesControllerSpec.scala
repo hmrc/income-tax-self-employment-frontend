@@ -48,6 +48,7 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
 
   val formProvider        = new SimplifiedExpenseFormProvider()
   val form: Form[Boolean] = formProvider(UserType.Individual)
+  val vehicle             = ""
 
   lazy val onPageLoadRoute: String = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
   lazy val onSubmitRoute: String   = routes.SimplifiedExpensesController.onSubmit(taxYear, businessId, NormalMode).url
@@ -74,7 +75,7 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
         val view = application.injector.instanceOf[SimplifiedExpensesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, userType, taxYear, businessId, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, userType, taxYear, businessId, NormalMode, vehicle)(request, messages(application)).toString
       }
     }
 
@@ -92,7 +93,9 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), userType, taxYear, businessId, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), userType, taxYear, businessId, NormalMode, vehicle)(
+          request,
+          messages(application)).toString
       }
     }
 
@@ -141,7 +144,7 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, userType, taxYear, businessId, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, userType, taxYear, businessId, NormalMode, vehicle)(request, messages(application)).toString
       }
     }
 
