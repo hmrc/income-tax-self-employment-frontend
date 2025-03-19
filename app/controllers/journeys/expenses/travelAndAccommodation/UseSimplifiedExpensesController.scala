@@ -17,6 +17,8 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import models.Mode
+import models.common.{BusinessId, TaxYear}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -34,7 +36,7 @@ class UseSimplifiedExpensesController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val redirectRoute: String = "TODO" // TODO next page Your work Mileage
     getVehicleNameAndLoadPage(data => Ok(view(request.userType, data, redirectRoute)))
   }

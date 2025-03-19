@@ -39,7 +39,7 @@ class UseSimplifiedExpensesControllerSpec extends SpecBase {
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad().url)
+            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId).url)
 
             val result = route(application, request).value
 
@@ -55,7 +55,7 @@ class UseSimplifiedExpensesControllerSpec extends SpecBase {
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
           running(application) {
-            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad().url)
+            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId).url)
 
             val result = route(application, request).value
 
