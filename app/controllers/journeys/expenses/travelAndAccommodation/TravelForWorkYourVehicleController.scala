@@ -25,7 +25,6 @@ import pages.TravelForWorkYourVehiclePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelForWork.TravelForWorkYourVehicleView
 
@@ -39,9 +38,6 @@ class TravelForWorkYourVehicleController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    hopChecker: HopCheckerAction,
-    formProvider: TravelForWorkYourVehicleFormProvider,
-    selfEmploymentService: SelfEmploymentService,
     val controllerComponents: MessagesControllerComponents,
     view: TravelForWorkYourVehicleView
 )(implicit ec: ExecutionContext)

@@ -17,17 +17,16 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.common.{BusinessId, TaxYear}
 import forms.expenses.travelAndAccommodation.TravelAndAccommodationFormProvider
 import models.Mode
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeView
 
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TravelAndAccommodationExpenseTypeController @Inject() (override val messagesApi: MessagesApi,
                                                              val controllerComponents: MessagesControllerComponents,
-                                                             service: SelfEmploymentService,
                                                              identify: IdentifierAction,
                                                              getData: DataRetrievalAction,
                                                              requireData: DataRequiredAction,
