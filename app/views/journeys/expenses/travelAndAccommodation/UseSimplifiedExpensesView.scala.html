@@ -19,9 +19,14 @@
         govukButton: GovukButton
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(nextRoute: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("useSimplifiedExpenses.heading"))) {
 
     <h1 class="govuk-heading-xl">@messages("useSimplifiedExpenses.heading")</h1>
+    <p class="govuk-body"> @messages("useSimplifiedExpenses.info")</p>
+
+    <p>
+     @govukButton(ButtonViewModel(messages("site.continue")).asLink(nextRoute))
+    </p>
 }

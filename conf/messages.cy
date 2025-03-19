@@ -1986,4 +1986,4 @@ common.error.self-assessment.paragraph.1.3 = i siarad â rhywun am eich treth in
 common.use = defnyddio
 
 useSimplifiedExpenses.title = *********Missing Welsh Message *********
-useSimplifiedExpenses.heading = *********Missing Welsh Message *********
+useSimplifiedExpenses.info = *********Missing Welsh Message *********

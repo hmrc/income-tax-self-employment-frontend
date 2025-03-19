@@ -2304,3 +2304,4 @@ common.error.self-assessment.paragraph.1.2 = Self Assessment: general enquiries
 common.error.self-assessment.paragraph.1.3 = to speak to someone about your income tax
 
 useSimplifiedExpenses.heading = You have to use simplified expenses for {0}
+useSimplifiedExpenses.info = This is because you’ve already used simplified expenses for this vehicle.
