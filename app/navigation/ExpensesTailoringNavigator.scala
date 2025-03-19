@@ -20,9 +20,9 @@ import controllers.journeys.expenses.tailoring
 import controllers.journeys.expenses.tailoring.{individualCategories, simplifiedExpenses}
 import controllers.standard.routes._
 import controllers.{journeys, standard}
+import models.common.Journey.ExpensesTailoring
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import models.common.Journey.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring._
 import models.journeys.expenses.individualCategories.FinancialExpenses.{Interest, IrrecoverableDebts, NoFinancialExpenses, OtherFinancialCharges}
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.{Construction, No, ProfessionalFees, Staff}
@@ -31,7 +31,6 @@ import pages._
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
-import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -72,11 +71,6 @@ class ExpensesTailoringNavigator @Inject() {
 
     case TravelForWorkPage =>
       _ => (taxYear, businessId) => individualCategories.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode)
-
-    case TravelAndAccommodationExpenseTypePage =>
-      _ =>
-        (taxYear, businessId) =>
-          controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingPage =>
       _ => (taxYear, businessId) => individualCategories.routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)

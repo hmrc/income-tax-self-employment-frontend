@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package controllers.journeys.expenses
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.VehicleType
-import models.common.UserType
+import models.requests.DataRequest
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
+import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.Results.Redirect
 
-class VehicleTypeFormProvider @Inject() extends Mappings {
+package object travelAndAccommodation {
 
-  def apply(vehicleName: String): Form[VehicleType] =
-    Form(
-      "value" -> enumerable[VehicleType]("vehicleType.error.required", args = Seq(vehicleName))
-    )
+  def getVehicleNameAndLoadPage(view: String => Result)(implicit request: DataRequest[AnyContent]): Result =
+    request.userAnswers.get(TravelForWorkYourVehiclePage) match {
+      case Some(vehicle) =>
+        view(vehicle)
+      case None =>
+        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+    }
 }

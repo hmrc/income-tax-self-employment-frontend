@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.expenses.travelAndAccommodation
 
 import models.common.BusinessId
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object TravelForWorkYourVehiclePage extends QuestionPage[String] {
   override def toString: String = "travelForWorkYourVehicle"
 
-  override def path(businessId: Option[BusinessId]): JsPath =
-    JsPath \ businessId.fold("")(_.value) \ toString
+  override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
 }

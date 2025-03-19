@@ -22,7 +22,8 @@ import play.api.data.FormError
 
 class VehicleTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new VehicleTypeFormProvider()()
+  val vehicleName = "vehicleName"
+  val form        = new VehicleTypeFormProvider()(vehicleName)
 
   ".value" - {
 
@@ -33,13 +34,13 @@ class VehicleTypeFormProviderSpec extends OptionFieldBehaviours {
       form,
       fieldName,
       validValues = VehicleType.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, "error.invalid", Seq(vehicleName))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(vehicleName))
     )
   }
 }

@@ -17,6 +17,8 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
+import models.common.UserType
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesView
@@ -24,20 +26,43 @@ import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpenses
 class UseSimplifiedExpensesControllerSpec extends SpecBase {
 
   "UseSimplifiedExpenses Controller" - {
+    Seq(UserType.Individual, UserType.Agent).foreach { userType =>
+      s"when user is $userType" - {
 
-    "must return OK and the correct view for a GET" in {
+        "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, "CarName")
+            .success
+            .value
 
-      running(application) {
-        val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad().url)
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-        val result = route(application, request).value
+          running(application) {
+            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad().url)
 
-        val view = application.injector.instanceOf[UseSimplifiedExpensesView]
+            val result = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view("TODO")(request, messages(application)).toString
+            val view = application.injector.instanceOf[UseSimplifiedExpensesView]
+
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual view(userType, "CarName", "TODO")(request, messages(application)).toString
+          }
+        }
+
+        "must redirect to 'there is a problem' page when TravelForWorkYourVehiclePage data is missing" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+          running(application) {
+            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad().url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          }
+        }
       }
     }
   }

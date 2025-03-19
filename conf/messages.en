@@ -2309,6 +2309,7 @@ travelForWorkYourVehicle.heading.agent = Your client’s vehicle
 travelAndAccommodation.your-vehicle.l1 = Work van
 travelAndAccommodation.your-vehicle.l2 = Blue Skoda
 travelAndAccommodation.your-vehicle.l3 = Rental car
+
 travelForWorkYourVehicle.formLabel.individual = How do you want to identify your vehicle?
 travelForWorkYourVehicle.formLabel.agent = How do you want to identify your client’s vehicle?
 travelAndAccommodation.p1.info.individual = If you had more than one vehicle, you can tell us about others later.
@@ -2319,14 +2320,15 @@ travelForWorkYourVehicle.error.required.individual = Enter a name to identify yo
 travelForWorkYourVehicle.error.required.agent = Enter a name to identify your client’s vehicle
 travelForWorkYourVehicle.error.length = Your vehicle’s name must be 100 characters or less
 
-
-useSimplifiedExpenses.heading = You have to use simplified expenses for {0}
-useSimplifiedExpenses.info = This is because you’ve already used simplified expenses for this vehicle.
-
-
 vehicleType.heading = What kind of vehicle is {0}?
 vehicleType.carOrGoodsVehicle = Car or goods vehicle
 vehicleType.motorcycle = Motorcycle
 vehicleType.checkYourAnswersLabel = Kind of vehicle is {0}?
 vehicleType.error.required = Select what kind of vehicle {0} is
 vehicleType.change.hidden = VehicleType
+
+
+useSimplifiedExpenses.heading.individual = You have to use simplified expenses for {0}
+useSimplifiedExpenses.heading.agent = Your client has to use simplified expenses for {0}
+useSimplifiedExpenses.info.individual  = This is because you’ve already used simplified expenses for this vehicle.
+useSimplifiedExpenses.info.agent = This is because your client has already used simplified expenses for this vehicle.

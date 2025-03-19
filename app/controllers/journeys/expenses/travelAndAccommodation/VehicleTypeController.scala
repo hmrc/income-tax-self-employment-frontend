@@ -20,20 +20,22 @@ import controllers.actions._
 import forms.VehicleTypeFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, VehicleType}
+import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.VehicleTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SelfEmploymentService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleTypeController @Inject() (
     override val messagesApi: MessagesApi,
-    service: SelfEmploymentService,
+    sessionRepository: SessionRepository,
+    navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -44,8 +46,8 @@ class VehicleTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val form: Form[VehicleType] = formProvider()
-  private val page            = VehicleTypePage
+  private val form: Form[VehicleType] = formProvider("vehicleName")
+  private val page                    = VehicleTypePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -53,15 +55,20 @@ class VehicleTypeController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, taxYear, businessId, mode))
+      getVehicleNameAndLoadPage(name => Ok(view(preparedForm, name, taxYear, businessId, mode)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      def handleFormError(formWithErrors: Form[_]): Result =
-        BadRequest(view(formWithErrors, taxYear, businessId, mode))
-
-      service.defaultHandleForm(form, page, businessId, taxYear, mode, handleFormError)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(getVehicleNameAndLoadPage(name => BadRequest(view(formWithErrors, name, taxYear, businessId, mode)))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 }

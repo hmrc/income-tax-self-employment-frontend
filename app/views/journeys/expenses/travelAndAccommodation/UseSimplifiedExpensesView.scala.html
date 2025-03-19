@@ -14,17 +14,19 @@
  * limitations under the License.
  *@
 
+@import models.common.UserType
+
 @this(
         layout: templates.Layout,
         govukButton: GovukButton
 )
 
-@(nextRoute: String)(implicit request: Request[_], messages: Messages)
+@(userType: UserType, vehicle: String, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("useSimplifiedExpenses.heading"))) {
+@layout(pageTitle = titleNoForm(messages(s"useSimplifiedExpenses.heading.$userType", vehicle))) {
 
-    <h1 class="govuk-heading-xl">@messages("useSimplifiedExpenses.heading")</h1>
-    <p class="govuk-body"> @messages("useSimplifiedExpenses.info")</p>
+    <h1 class="govuk-heading-xl">@messages(s"useSimplifiedExpenses.heading.$userType", vehicle))</h1>
+    <p class="govuk-body"> @messages(s"useSimplifiedExpenses.info.$userType", vehicle)</p>
 
     <p>
      @govukButton(ButtonViewModel(messages("site.continue")).asLink(nextRoute))

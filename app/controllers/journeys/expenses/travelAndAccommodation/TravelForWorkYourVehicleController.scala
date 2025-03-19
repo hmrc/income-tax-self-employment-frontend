@@ -20,13 +20,13 @@ import controllers.actions._
 import forms.TravelForWorkYourVehicleFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import navigation.ExpensesTailoringNavigator
-import pages.TravelForWorkYourVehiclePage
+import navigation.TravelAndAccommodationNavigator
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelForWork.TravelForWorkYourVehicleView
+import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TravelForWorkYourVehicleController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
-    navigator: ExpensesTailoringNavigator,
+    navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
