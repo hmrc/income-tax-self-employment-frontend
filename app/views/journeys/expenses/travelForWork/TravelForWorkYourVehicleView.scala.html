@@ -30,7 +30,7 @@
 
 @(form: Form[_], mode: Mode , userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"travelForWorkYourVehicle.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"travelForWorkYourVehicle.heading.$userType"))) {
 
 
 
@@ -43,8 +43,8 @@
         }
 
         <div class="govuk-body govuk-!-margin-bottom-6">
-            <p>@messages(s"travelAndAccommodation.p1.info1.$userType")</p>
-            <p>@messages(s"travelAndAccommodation.p1.info2.$userType")</p>
+            <p>@messages(s"travelAndAccommodation.p1.info.$userType")</p>
+            <p>@messages(s"travelAndAccommodation.p2.info.$userType")</p>
             <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
                 <li>@messages(s"travelAndAccommodation.your-vehicle.l1")</li>
                 <li>@messages(s"travelAndAccommodation.your-vehicle.l2")</li>

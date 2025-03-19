@@ -21,15 +21,18 @@ import models.common.{BusinessId, TaxYear}
 import forms.expenses.travelAndAccommodation.TravelAndAccommodationFormProvider
 import models.Mode
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import navigation.ExpensesTailoringNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TravelAndAccommodationExpenseTypeController @Inject() (override val messagesApi: MessagesApi,
@@ -39,7 +42,9 @@ class TravelAndAccommodationExpenseTypeController @Inject() (override val messag
                                                              getData: DataRetrievalAction,
                                                              requireData: DataRequiredAction,
                                                              formProvider: TravelAndAccommodationFormProvider,
-                                                             view: TravelAndAccommodationExpenseTypeView)
+                                                             sessionRepository: SessionRepository,
+                                                             navigator: ExpensesTailoringNavigator,
+                                                             view: TravelAndAccommodationExpenseTypeView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -57,14 +62,20 @@ class TravelAndAccommodationExpenseTypeController @Inject() (override val messag
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) async {
-    implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
       val form: Form[Set[TravelAndAccommodationExpenseType]] = formProvider(request.user.userType)
 
-      def handleFormError(formWithErrors: Form[_]): Result =
-        BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))
-
-      service.defaultHandleForm(form, page, businessId, taxYear, mode, handleFormError)
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
+        )
+    }
 
 }

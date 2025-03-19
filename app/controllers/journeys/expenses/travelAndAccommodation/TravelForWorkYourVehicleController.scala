@@ -53,7 +53,7 @@ class TravelForWorkYourVehicleController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) { implicit request =>
-      val preparedForm = request.userAnswers.get(page) match {
+      val preparedForm = request.userAnswers.get(page, businessId) match {
         case None        => form(request.userType)
         case Some(value) => form(request.userType).fill(value)
       }

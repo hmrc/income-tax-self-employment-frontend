@@ -17,15 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class TravelForWorkYourVehicleFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "travelForWorkYourVehicle.error.required"
+  val requiredKey = s"travelForWorkYourVehicle.error.required.${UserType.Individual}"
   val lengthKey   = "travelForWorkYourVehicle.error.length"
   val maxLength   = 100
 
-  val form = new TravelForWorkYourVehicleFormProvider()()
+  val form = new TravelForWorkYourVehicleFormProvider()(UserType.Individual)
 
   ".value" - {
 

@@ -31,6 +31,7 @@ import pages._
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.tailoring.{ExpensesCategoriesPage, ExpensesTailoringCYAPage}
+import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -71,6 +72,11 @@ class ExpensesTailoringNavigator @Inject() {
 
     case TravelForWorkPage =>
       _ => (taxYear, businessId) => individualCategories.routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case TravelAndAccommodationExpenseTypePage =>
+      _ =>
+        (taxYear, businessId) =>
+          controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
 
     case AdvertisingOrMarketingPage =>
       _ => (taxYear, businessId) => individualCategories.routes.EntertainmentCostsController.onPageLoad(taxYear, businessId, NormalMode)

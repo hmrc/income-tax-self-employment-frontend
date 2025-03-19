@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import base.SpecBase
@@ -7,11 +23,14 @@ import forms.TravelForWorkYourVehicleFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchersSugar.eqTo
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.TravelForWorkYourVehiclePage
+import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -19,11 +38,12 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
 import views.html.journeys.expenses.travelForWork.TravelForWorkYourVehicleView
+import play.api.inject.bind
 
 import scala.concurrent.Future
 
 class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
-  
+
   private val testAnswer = "Work Van"
 
   private def onwardRoute = Call("GET", "/foo")
@@ -59,8 +79,8 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
             running(application) {
               val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, NormalMode))
-              val result = route(application, request).value
-              val view = application.injector.instanceOf[TravelForWorkYourVehicleView]
+              val result  = route(application, request).value
+              val view    = application.injector.instanceOf[TravelForWorkYourVehicleView]
 
               status(result) mustBe OK
               contentAsString(result) mustBe view(
@@ -83,12 +103,14 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
             running(application) {
               val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, CheckMode))
-              val view = application.injector.instanceOf[TravelForWorkYourVehicleView]
-              val result = route(application, request).value
+              val view    = application.injector.instanceOf[TravelForWorkYourVehicleView]
+              val result  = route(application, request).value
+
+              val expectedForm = new TravelForWorkYourVehicleFormProvider()(scenario.userType).fill(testAnswer)
 
               status(result) mustBe OK
               contentAsString(result) mustBe view(
-                scenario.form.fill(testAnswer),
+                expectedForm,
                 CheckMode,
                 scenario.userType,
                 taxYear,
@@ -102,7 +124,7 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
             running(application) {
               val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, NormalMode))
-              val result = route(application, request).value
+              val result  = route(application, request).value
 
               status(result) mustBe SEE_OTHER
               redirectLocation(result).value mustBe JourneyRecoveryController.onPageLoad().url
@@ -115,10 +137,24 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
             val mockSessionRepository = mock[SessionRepository]
             when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
 
+            val mockNavigator       = mock[ExpensesTailoringNavigator]
+            val expectedNextPageUrl = "/foo" // TODO: replace with real route once built
+
+            when(
+              mockNavigator
+                .nextPage(
+                  eqTo(TravelAndAccommodationExpenseTypePage),
+                  eqTo(NormalMode),
+                  any[UserAnswers],
+                  eqTo(taxYear),
+                  eqTo(businessId)
+                ))
+              .thenReturn(Call("GET", expectedNextPageUrl))
+
             val application =
               applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = scenario.userType)
                 .overrides(
-                  bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+                  bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
                 )
                 .build()
@@ -131,7 +167,7 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
               val result = route(application, request).value
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result).value mustBe onwardRoute.url
+              redirectLocation(result).value mustBe expectedNextPageUrl
             }
           }
 
@@ -144,8 +180,8 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = scenario.form.bind(Map("value" -> ""))
-              val view = application.injector.instanceOf[TravelForWorkYourVehicleView]
-              val result = route(application, request).value
+              val view      = application.injector.instanceOf[TravelForWorkYourVehicleView]
+              val result    = route(application, request).value
 
               status(result) mustBe BAD_REQUEST
               contentAsString(result) mustBe view(
