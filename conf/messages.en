@@ -815,6 +815,36 @@ simplifiedExpenses.subheading.agent = Has your client used simplified expenses f
 simplifiedExpenses.error.required.individual = Select yes if you’ve used simplified expenses for {0} before
 simplifiedExpenses.error.required.agent = Select yes if your client has used simplified expenses for {0} before
 
+## Vehicle Expenses
+vehicleExpenses.title.individual = Your vehicle expenses
+vehicleExpenses.title.agent = Your client's vehicle expenses
+vehicleExpenses.can.claim.individual = You can claim a proportion of your costs for things like:
+vehicleExpenses.can.claim.agent = Your client can claim a proportion of your costs for things like:
+vehicleExpenses.can.claim.common.insurance = car and van insurance
+vehicleExpenses.can.claim.common.repairs.and.servicing = repairs and servicing
+vehicleExpenses.can.claim.common.fuel = fuel
+vehicleExpenses.can.claim.common.tolls.and.charges = tolls, congestion charges and parking
+vehicleExpenses.can.claim.common.vehicle.licence = vehicle licence fees
+vehicleExpenses.can.claim.common.motoring.membership = motoring organisation membership
+vehicleExpenses.can.claim.leasedOrRentedVehicles.common.hire.charges = hire charges
+vehicleExpenses.leasedOrRentedVehicles.info.common = In some cases, you cannot claim all of the hire charges or rental payments. For example, if you leased a car on or after 6 April 2022 and the CO2 emissions are over 50g/km, you must disallow 15% of the hire charge or rental cost.
+vehicleExpenses.cannot.claim.individual = You cannot claim:
+vehicleExpenses.cannot.claim.agent = Your client cannot claim:
+vehicleExpenses.cannot.claim.amount.common = any amounts that cover personal use
+vehicleExpenses.cannot.claim.common.fine = fines
+vehicleExpenses.cannot.claim.leasedOrRentedVehicles.common.cost = the cost of buying vehicles
+vehicleExpenses.cannot.claim.common.travel.costs = travel costs between home and work
+vehicleExpenses.subheading.individual = How much are you claiming in vehicle expenses?
+vehicleExpenses.subheading.agent = How much is your client claiming in vehicle expenses?
+vehicleExpenses.error.required.agent = Enter the amount your client is claiming in vehicle expenses
+vehicleExpenses.error.required.individual = Enter the amount you're claiming in vehicle expenses
+vehicleExpenses.error.nonNumeric.agent = The amount your client is claiming in vehicle expenses must be a number
+vehicleExpenses.error.nonNumeric.individual = amount you're claiming in vehicle expenses must be a number
+vehicleExpenses.error.overMax.agent = The amount your client is claiming in vehicle expenses must be less than £100,000,000,000
+vehicleExpenses.error.overMax.individual = The amount you're claiming in vehicle expenses must be less than £100,000,000,000
+vehicleExpenses.error.lessThanZero.agent = The amount your client is claiming in vehicle expenses must be more than £
+vehicleExpenses.error.lessThanZero.agent = The amount you're claiming in vehicle expenses must be more than £0
+
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
