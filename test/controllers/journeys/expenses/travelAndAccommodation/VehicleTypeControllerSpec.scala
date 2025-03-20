@@ -17,29 +17,22 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.VehicleTypeFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
+import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
+import models.common.UserType
 import models.database.UserAnswers
-import models.requests.DataRequest
-import models.{Mode, NormalMode, VehicleType}
+import models.{NormalMode, VehicleType}
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.mockito.matchers.MacroBasedMatchers
-import pages.OneQuestionPage
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
-import play.api.data.{Form, FormBinding}
+import play.api.data.Form
 import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
-import play.api.libs.json.Writes
 import play.api.mvc.Call
-import play.api.mvc.Results.SeeOther
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.SelfEmploymentService
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 
 import scala.concurrent.Future

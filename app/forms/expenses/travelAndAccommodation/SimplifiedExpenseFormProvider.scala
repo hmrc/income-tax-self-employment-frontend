@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 class SimplifiedExpenseFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType, vehicleName: String): Form[Boolean] =
+  def apply(userType: UserType, vehicle: String): Form[Boolean] =
     Form(
-      "value" -> boolean(s"simplifiedExpenses.error.required.$userType", args = Seq(vehicleName))
+      "value" -> boolean(s"simplifiedExpenses.error.required.$userType", args = Seq(vehicle))
     )
 }

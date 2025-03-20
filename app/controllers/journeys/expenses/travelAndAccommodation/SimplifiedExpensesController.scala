@@ -18,14 +18,13 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
-import handlers.ErrorHandler
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.requests.DataRequest
+import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesView
@@ -36,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SimplifiedExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
-    // navigator: Navigator,
+    navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -49,30 +48,34 @@ class SimplifiedExpensesController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form: Form[Boolean] = formProvider(request.userType)
-      val preparedForm = request.userAnswers.get(SimplifiedExpensesPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      getVehicleNameAndLoadPage { name =>
+        val form: Form[Boolean] = formProvider(request.userType, name)
+        val preparedForm = request.userAnswers.get(SimplifiedExpensesPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, request.userType, taxYear, businessId, mode, name))
       }
-
-      Ok(view(preparedForm, request.userType, taxYear, businessId, mode, request.userAnswers.get(TravelForWorkYourVehiclePage).getOrElse("")))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val form: Form[Boolean] = formProvider(request.userType)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, TravelForWorkYourVehiclePage))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SimplifiedExpensesPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
-          // Redirect(navigator.nextPage(SimplifiedExpensesPage, mode, updatedAnswers))
-        )
+      request.userAnswers.get(TravelForWorkYourVehiclePage) match {
+        case Some(vehicle) =>
+          val form: Form[Boolean] = formProvider(request.userType, vehicle)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, vehicle))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(SimplifiedExpensesPage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(SimplifiedExpensesPage, mode, updatedAnswers, taxYear, businessId))
+            )
+        case None =>
+          Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+      }
   }
 
 }

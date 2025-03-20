@@ -22,11 +22,12 @@ import play.api.data.FormError
 
 class SimplifiedExpenseFormProviderSpec extends BooleanFieldBehaviours {
 
-  val userType: UserType = UserType.Individual
-  val requiredKey        = s"simplifiedExpenses.error.required.$userType"
-  val invalidKey         = "error.boolean"
+  val vehicle: String     = "vehicle"
+  val userType: UserType  = UserType.Individual
+  val requiredKey: String = s"simplifiedExpenses.error.required.$userType"
+  val invalidKey: String  = "error.boolean"
 
-  val form = new SimplifiedExpenseFormProvider()(UserType.Individual)
+  val form = new SimplifiedExpenseFormProvider()(UserType.Individual, vehicle)
 
   ".value" - {
 
@@ -35,13 +36,13 @@ class SimplifiedExpenseFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(vehicle))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(vehicle))
     )
   }
 }

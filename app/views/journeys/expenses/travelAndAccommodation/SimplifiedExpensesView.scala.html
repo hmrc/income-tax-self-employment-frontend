@@ -32,7 +32,7 @@
     @formHelper(action = routes.SimplifiedExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value")))
         }
             <h1 class="govuk-heading-l">@messages(s"simplifiedExpenses.title.common")</h1>
 
@@ -40,7 +40,7 @@
             <p class="govuk-body">@messages(s"simplifiedExpenses.p2.$userType", vehicle)</p>
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"simplifiedExpenses.subheading.$userType", vehicle))
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m"),
