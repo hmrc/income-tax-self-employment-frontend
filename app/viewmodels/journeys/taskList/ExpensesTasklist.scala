@@ -183,9 +183,8 @@ object ExpensesTasklist {
         )
       case ExpensesTravelForWork =>
         determineJourneyStartOrCyaUrl(
-          expenses.travelAndAccommodation.routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode).url,
-          // expenses.travelAndAccommodation.routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, NormalMode).url,
-          // TODO Attach CYA travel and accommodation journey here
+          expenses.travelAndAccommodation.routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, NormalMode).url,
+          // TODO Attach travelAndAccommodation CYA journey here
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesRepairsAndMaintenance =>

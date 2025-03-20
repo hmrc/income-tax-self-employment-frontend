@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
 import models.common.UserType

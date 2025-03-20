@@ -22,7 +22,7 @@ import handlers.ErrorHandler
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
-import pages.expenses.travelAndAccommodation.SimplifiedExpensesPage
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -50,23 +50,22 @@ class SimplifiedExpensesController @Inject() (
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form: Form[Boolean] = formProvider(request.userType)
-      val vehicle             = ""
       val preparedForm = request.userAnswers.get(SimplifiedExpensesPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userType, taxYear, businessId, mode, vehicle))
+      Ok(view(preparedForm, request.userType, taxYear, businessId, mode, request.userAnswers.get(TravelForWorkYourVehiclePage).getOrElse("")))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val form: Form[Boolean] = formProvider(request.userType)
-      val vehicle             = ""
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, vehicle))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, TravelForWorkYourVehiclePage))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SimplifiedExpensesPage, value))
