@@ -104,11 +104,15 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
         "must redirect to the next page when valid data is submitted" in {
 
+          val userAnswers = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, "CarName")
+            .success
+            .value
           val mockSessionRepository = mock[SessionRepository]
           when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userType)
+            applicationBuilder(userAnswers = Some(userAnswers), userType = userType)
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
