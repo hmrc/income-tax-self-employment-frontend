@@ -2332,3 +2332,12 @@ useSimplifiedExpenses.heading.individual = You have to use simplified expenses f
 useSimplifiedExpenses.heading.agent = Your client has to use simplified expenses for {0}
 useSimplifiedExpenses.info.individual  = This is because you’ve already used simplified expenses for this vehicle.
 useSimplifiedExpenses.info.agent = This is because your client has already used simplified expenses for this vehicle.
+
+travelForWorkYourMileage.title = TravelForWorkYourMileage
+travelForWorkYourMileage.heading = TravelForWorkYourMileage
+travelForWorkYourMileage.checkYourAnswersLabel = TravelForWorkYourMileage
+travelForWorkYourMileage.error.nonNumeric = Enter your travelForWorkYourMileage using numbers
+travelForWorkYourMileage.error.required = Enter your travelForWorkYourMileage
+travelForWorkYourMileage.error.wholeNumber = Enter your travelForWorkYourMileage using whole numbers
+travelForWorkYourMileage.error.outOfRange = TravelForWorkYourMileage must be between {0} and {1}
+travelForWorkYourMileage.change.hidden = TravelForWorkYourMileage
