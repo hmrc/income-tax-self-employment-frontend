@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.TravelForWorkYourVehicleFormProvider
-import models.{CheckMode, Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
+import models.{CheckMode, Mode, NormalMode}
+import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TravelForWorkYourVehiclePage
-import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SelfEmploymentService
-import views.html.journeys.expenses.travelForWork.TravelForWorkYourVehicleView
-import play.api.inject.bind
+import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
 
 import scala.concurrent.Future
 
@@ -137,24 +135,10 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
             val mockSessionRepository = mock[SessionRepository]
             when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
 
-            val mockNavigator       = mock[ExpensesTailoringNavigator]
-            val expectedNextPageUrl = "/foo" // TODO: replace with real route once built
-
-            when(
-              mockNavigator
-                .nextPage(
-                  eqTo(TravelAndAccommodationExpenseTypePage),
-                  eqTo(NormalMode),
-                  any[UserAnswers],
-                  eqTo(taxYear),
-                  eqTo(businessId)
-                ))
-              .thenReturn(Call("GET", expectedNextPageUrl))
-
             val application =
               applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = scenario.userType)
                 .overrides(
-                  bind[ExpensesTailoringNavigator].toInstance(new FakeExpensesTailoringNavigator(onwardRoute)),
+                  bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                   bind[SessionRepository].toInstance(mockSessionRepository)
                 )
                 .build()
@@ -167,7 +151,7 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
               val result = route(application, request).value
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result).value mustBe expectedNextPageUrl
+              redirectLocation(result).value mustBe onwardRoute.url
             }
           }
 

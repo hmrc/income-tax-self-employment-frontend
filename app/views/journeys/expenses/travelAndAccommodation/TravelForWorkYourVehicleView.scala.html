@@ -32,13 +32,10 @@
 
 @layout(pageTitle = title(form, messages(s"travelForWorkYourVehicle.heading.$userType"))) {
 
-
-
-
     @formHelper(action = controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, mode)) {
-@heading(s"travelForWorkYourVehicle.heading.$userType")
+    @heading(s"travelForWorkYourVehicle.heading.$userType")
 
-@if(form.errors.nonEmpty) {
+    @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 

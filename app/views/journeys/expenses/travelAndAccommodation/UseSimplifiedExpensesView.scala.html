@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@import models.common.UserType
 
-import models.common.BusinessId
-import play.api.libs.json.JsPath
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
 
-case object TravelForWorkYourVehiclePage extends QuestionPage[String] {
-  override def toString: String = "travelForWorkYourVehicle"
+@(userType: UserType, vehicle: String, nextRoute: String)(implicit request: Request[_], messages: Messages)
 
-  override def path(businessId: Option[BusinessId]): JsPath =
-    JsPath \ businessId.fold("")(_.value) \ toString
+@layout(pageTitle = titleNoForm(messages(s"useSimplifiedExpenses.heading.$userType", vehicle))) {
+
+    <h1 class="govuk-heading-xl">@messages(s"useSimplifiedExpenses.heading.$userType", vehicle)</h1>
+    <p class="govuk-body"> @messages(s"useSimplifiedExpenses.info.$userType", vehicle)</p>
+
+     @govukButton(ButtonViewModel(messages("site.continue")).asLink(nextRoute))
+
 }

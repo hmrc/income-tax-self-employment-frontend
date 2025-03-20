@@ -21,36 +21,29 @@ import forms.expenses.travelAndAccommodation.TravelAndAccommodationFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import models.{Mode, NormalMode}
+import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.api.test._
 import repositories.SessionRepository
-import services.SelfEmploymentService
-import stubs.services.SelfEmploymentServiceStub
 import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypeView
 
 import scala.concurrent.Future
 
 class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  def onwardRoute: Call =
-    controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+  def onwardRoute: Call = Call("GET", "/foo")
 
   private val mode = NormalMode
 
   val formProvider                                       = new TravelAndAccommodationFormProvider()
   val form: Form[Set[TravelAndAccommodationExpenseType]] = formProvider(UserType.Individual)
-  val mockService: SelfEmploymentService                 = mock[SelfEmploymentService]
-
-  override def beforeEach(): Unit = {
-    reset(mockService)
-    super.beforeEach()
-  }
 
   case class UserScenario(userType: UserType, form: Form[Set[TravelAndAccommodationExpenseType]])
 
@@ -114,13 +107,15 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
 
             when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-            val stubService = SelfEmploymentServiceStub()
-
-            val application = createApp(stubService)
+            val application =
+              applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userScenario.userType)
+                .overrides(
+                  bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
+                  bind[SessionRepository].toInstance(mockSessionRepository)
+                )
+                .build()
 
             running(application) {
-              when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any))
-                .thenReturn(Future.successful(emptyUserAnswers))
 
               val request =
                 FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))

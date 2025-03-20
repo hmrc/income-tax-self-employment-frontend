@@ -26,11 +26,9 @@ sealed trait TravelAndAccommodationExpenseType
 
 object TravelAndAccommodationExpenseType extends Enumerable.Implicits {
 
-  private case object MyOwnVehicle   extends WithName("myOwnVehicle") with TravelAndAccommodationExpenseType
-  private case object LeasedVehicles extends WithName("leasedVehicles") with TravelAndAccommodationExpenseType
-  private case object PublicTransportAndOtherAccommodation
-      extends WithName("publicTransportAndOtherAccommodation")
-      with TravelAndAccommodationExpenseType
+  case object MyOwnVehicle                         extends WithName("myOwnVehicle") with TravelAndAccommodationExpenseType
+  case object LeasedVehicles                       extends WithName("leasedVehicles") with TravelAndAccommodationExpenseType
+  case object PublicTransportAndOtherAccommodation extends WithName("publicTransportAndOtherAccommodation") with TravelAndAccommodationExpenseType
 
   val values: Seq[TravelAndAccommodationExpenseType] = Seq(
     MyOwnVehicle,

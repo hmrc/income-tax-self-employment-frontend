@@ -21,7 +21,7 @@ import forms.expenses.travelAndAccommodation.TravelAndAccommodationFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
-import navigation.ExpensesTailoringNavigator
+import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,7 +41,7 @@ class TravelAndAccommodationExpenseTypeController @Inject() (override val messag
                                                              requireData: DataRequiredAction,
                                                              formProvider: TravelAndAccommodationFormProvider,
                                                              sessionRepository: SessionRepository,
-                                                             navigator: ExpensesTailoringNavigator,
+                                                             navigator: TravelAndAccommodationNavigator,
                                                              view: TravelAndAccommodationExpenseTypeView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
