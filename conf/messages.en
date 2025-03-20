@@ -2324,7 +2324,7 @@ vehicleType.heading = What kind of vehicle is {0}?
 vehicleType.carOrGoodsVehicle = Car or goods vehicle
 vehicleType.motorcycle = Motorcycle
 vehicleType.checkYourAnswersLabel = Kind of vehicle is {0}?
-vehicleType.error.required = Select what kind of vehicle {0} is
+vehicleType.error.required = Select what kind of vehicle is {0}
 vehicleType.change.hidden = VehicleType
 
 
