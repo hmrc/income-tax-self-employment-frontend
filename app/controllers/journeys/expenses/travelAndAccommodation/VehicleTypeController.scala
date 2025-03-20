@@ -21,7 +21,7 @@ import forms.VehicleTypeFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, VehicleType}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.VehicleTypePage
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,29 +46,38 @@ class VehicleTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form: Form[VehicleType] = formProvider("vehicleName")
-  private val page                    = VehicleTypePage
+  private val page = VehicleTypePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(page) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      getVehicleNameAndLoadPage { name =>
+        val form: Form[VehicleType] = formProvider(name)
+        val preparedForm = request.userAnswers.get(page) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, name, taxYear, businessId, mode))
       }
-      getVehicleNameAndLoadPage(name => Ok(view(preparedForm, name, taxYear, businessId, mode)))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(getVehicleNameAndLoadPage(name => BadRequest(view(formWithErrors, name, taxYear, businessId, mode)))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
-        )
+      request.userAnswers.get(TravelForWorkYourVehiclePage) match {
+        case Some(vehicle) =>
+          val form: Form[VehicleType] = formProvider(vehicle)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, mode))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
+            )
+        case None =>
+          Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+      }
   }
+
 }
