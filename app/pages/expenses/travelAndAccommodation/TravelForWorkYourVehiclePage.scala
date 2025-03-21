@@ -16,12 +16,10 @@
 
 package pages.expenses.travelAndAccommodation
 
-import models.common.BusinessId
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object TravelForWorkYourVehiclePage extends QuestionPage[String] {
+case object TravelForWorkYourVehiclePage extends OneQuestionPage[String] {
+
   override def toString: String = "travelForWorkYourVehicle"
 
-  override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
 }

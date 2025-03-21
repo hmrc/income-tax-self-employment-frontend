@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package pages.expenses.travelAndAccommodation
+package forms
 
-import models.VehicleType
-import pages.OneQuestionPage
+import javax.inject.Inject
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
 
-case object VehicleTypePage extends OneQuestionPage[VehicleType] {
+class VehicleFlatRateChoiceFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "vehicleType"
-
+  def apply(vehicleName: String, userType: UserType): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"vehicleFlatRateChoice.error.required.$userType", args = Seq(vehicleName))
+    )
 }

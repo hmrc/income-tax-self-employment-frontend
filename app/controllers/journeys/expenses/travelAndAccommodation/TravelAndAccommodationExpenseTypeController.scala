@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.TravelAndAccommodationFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -51,12 +52,7 @@ class TravelAndAccommodationExpenseTypeController @Inject() (override val messag
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form: Form[Set[TravelAndAccommodationExpenseType]] = formProvider(request.user.userType)
-
-      val filledForm = request.userAnswers.get(page) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
+      val filledForm                                         = fillForm(page, businessId, form)
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 

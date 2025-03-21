@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -46,21 +47,21 @@ class SimplifiedExpensesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = SimplifiedExpensesPage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getVehicleNameAndLoadPage { name =>
+      getVehicleNameAndLoadPage(businessId) { name =>
         val form: Form[Boolean] = formProvider(request.userType, name)
-        val preparedForm = request.userAnswers.get(SimplifiedExpensesPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+        val preparedForm        = fillForm(page, businessId, form)
+
         Ok(view(preparedForm, request.userType, taxYear, businessId, mode, name))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(TravelForWorkYourVehiclePage) match {
+      request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
         case Some(vehicle) =>
           val form: Form[Boolean] = formProvider(request.userType, vehicle)
           form
@@ -69,9 +70,9 @@ class SimplifiedExpensesController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, vehicle))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(SimplifiedExpensesPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(SimplifiedExpensesPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )
         case None =>
           Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
