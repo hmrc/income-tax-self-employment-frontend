@@ -17,6 +17,8 @@
 @import controllers.journeys.expenses.travelAndAccommodation.routes
 @import viewmodels.InputWidth._
 @import models.common.{BusinessId, TaxYear, UserType}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import views.html.components._
 
 @this(
     layout: templates.Layout,
@@ -33,8 +35,22 @@
     @formHelper(action = routes.VehicleExpensesController.onSubmit(taxYear, businessId, mode)) {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
+
+        <div class="govuk-details__text">
+            <p>${messages(s"site.canInclude.$userType")}</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>${messages(s"expenses.interest.${accountingType.entryName}")}</li>
+                <li>${messages("expenses.feesForBuyingGoods")}</li>
+                <li>${messages("expenses.hirePurchase")}</li>
+            </ul>
+            <p>${messages(s"site.cannotInclude.$userType")}</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>${messages("expenses.repaymentsOfLoans")}</li>
+                <li>${messages("expenses.overdraftOrFinancialArrangements")}</li>
+            </ul>
+        </div>
 
         @govukInput(
             InputViewModel(
@@ -42,10 +58,16 @@
                 label = LabelViewModel(messages("vehicleExpensesController.heading")).asPageHeading()
             )
             .withWidth(Full)
+            .asNumeric()
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )
     }
+}
+
+@{
+// $COVERAGE-OFF$
 }

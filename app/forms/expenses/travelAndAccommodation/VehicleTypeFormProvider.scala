@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
+
+import forms.mappings.Mappings
+import models.VehicleType
+import play.api.data.Form
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class VehicleTypeFormProvider @Inject() extends Mappings {
 
-class VehicleExpensesControllerFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
+  def apply(vehicleName: String): Form[VehicleType] =
     Form(
-      "value" -> text("vehicleExpensesController.error.required")
-        .verifying(maxLength(100, "vehicleExpensesController.error.length"))
+      "value" -> enumerable[VehicleType]("vehicleType.error.required", args = Seq(vehicleName))
     )
 }

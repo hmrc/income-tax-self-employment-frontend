@@ -17,16 +17,17 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import forms.VehicleExpensesControllerFormProvider
+import forms.expenses.travelAndAccommodation.VehicleExpensesControllerFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import navigation.TravelAndAccommodationNavigator
 import pages.VehicleExpensesControllerPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesControllerView
+import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,21 +35,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
-    // navigator: Navigator,
+    navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: VehicleExpensesControllerFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: VehicleExpensesControllerView
+    view: VehicleExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  val form: Form[String] = formProvider()
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val form: Form[BigDecimal] = formProvider(request.user.userType)
+
       val preparedForm = request.userAnswers.get(VehicleExpensesControllerPage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -59,6 +60,7 @@ class VehicleExpensesController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+      val form: Form[BigDecimal] = formProvider(request.user.userType)
       form
         .bindFromRequest()
         .fold(
@@ -67,8 +69,7 @@ class VehicleExpensesController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesControllerPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-              // } yield Redirect(navigator.nextPage(VehicleExpensesControllerPage, mode, updatedAnswers))
-            } yield Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+            } yield Redirect(navigator.nextPage(VehicleExpensesControllerPage, mode, updatedAnswers, taxYear, businessId))
         )
   }
 }

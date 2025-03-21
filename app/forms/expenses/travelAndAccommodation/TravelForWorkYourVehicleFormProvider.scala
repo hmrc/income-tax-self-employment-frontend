@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
 import models.common.UserType
@@ -23,6 +23,7 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class TravelForWorkYourVehicleFormProvider @Inject() extends Mappings {
+
   def apply(userType: UserType): Form[String] =
     Form(
       "value" -> text(s"travelForWorkYourVehicle.error.required.$userType")

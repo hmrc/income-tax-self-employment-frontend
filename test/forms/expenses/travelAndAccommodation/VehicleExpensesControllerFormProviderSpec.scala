@@ -16,8 +16,8 @@
 
 package forms.expenses.travelAndAccommodation
 
-import forms.VehicleExpensesControllerFormProvider
 import forms.behaviours.StringFieldBehaviours
+import models.common.UserType
 import play.api.data.FormError
 
 class VehicleExpensesControllerFormProviderSpec extends StringFieldBehaviours {
@@ -26,7 +26,7 @@ class VehicleExpensesControllerFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "vehicleExpensesController.error.length"
   val maxLength   = 100
 
-  val form = new VehicleExpensesControllerFormProvider()()
+  val form = new VehicleExpensesControllerFormProvider()(UserType.Individual)
 
   ".value" - {
 

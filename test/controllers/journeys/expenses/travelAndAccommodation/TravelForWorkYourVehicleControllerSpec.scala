@@ -19,7 +19,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 import base.SpecBase
 import controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController
 import controllers.standard.routes.JourneyRecoveryController
-import forms.TravelForWorkYourVehicleFormProvider
+import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, Mode, NormalMode}

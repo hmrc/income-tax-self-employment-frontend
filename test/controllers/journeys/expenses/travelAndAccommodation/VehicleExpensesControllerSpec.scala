@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
-import forms.VehicleExpensesControllerFormProvider
+import forms.expenses.travelAndAccommodation.VehicleExpensesControllerFormProvider
 import models.NormalMode
 import models.database.UserAnswers
 import org.mockito.ArgumentMatchers.any
@@ -39,8 +39,8 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider       = new VehicleExpensesControllerFormProvider()
-  val form: Form[String] = formProvider()
+  val formProvider           = new VehicleExpensesControllerFormProvider()
+  val form: Form[BigDecimal] = formProvider(userType)
 
   lazy val vehicleExpensesControllerRoute: String = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
@@ -64,7 +64,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(VehicleExpensesControllerPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(VehicleExpensesControllerPage, BigDecimal(25)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -76,13 +76,11 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, userType, taxYear, businessId)(
-          request,
-          messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
       }
     }
 
-    //TODO
+    // TODO
     "must redirect to the next page when valid data is submitted" ignore {
 
       val mockSessionRepository = mock[SessionRepository]
@@ -92,7 +90,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            //bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            // bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

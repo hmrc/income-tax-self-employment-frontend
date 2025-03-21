@@ -19,7 +19,7 @@ package pages
 import models.common.BusinessId
 import play.api.libs.json.JsPath
 
-case object VehicleExpensesControllerPage extends QuestionPage[String] {
+case object VehicleExpensesControllerPage extends QuestionPage[BigDecimal] {
 
   override def toString: String = "vehicleExpensesController"
 

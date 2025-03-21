@@ -41,6 +41,12 @@ class TravelAndAccommodationNavigator @Inject() {
       _ =>
         (taxYear, businessId) =>
           controllers.journeys.expenses.travelAndAccommodation.routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case TravelForWorkYourVehiclePage =>
+      _ =>
+        (taxYear, businessId) =>
+          controllers.journeys.expenses.travelAndAccommodation.routes.VehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 

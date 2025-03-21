@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import forms.VehicleTypeFormProvider
+import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, VehicleType}
 import navigation.TravelAndAccommodationNavigator
