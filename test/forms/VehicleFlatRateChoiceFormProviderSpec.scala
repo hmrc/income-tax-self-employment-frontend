@@ -18,7 +18,6 @@ package forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class VehicleFlatRateChoiceFormProviderSpec extends BooleanFieldBehaviours {

@@ -63,7 +63,7 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
           val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
 
@@ -86,7 +86,7 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
           val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
             .set(VehicleTypePage, VehicleType.values.head)
@@ -115,9 +115,10 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
         "must redirect to the next page when valid data is submitted" in {
 
           val userAnswers = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
+
           val mockSessionRepository = mock[SessionRepository]
           when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
 
@@ -144,7 +145,7 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
 
         "must return a Bad Request and errors when invalid data is submitted" in {
           val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
 

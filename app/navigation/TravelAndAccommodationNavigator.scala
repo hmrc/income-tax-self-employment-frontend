@@ -53,13 +53,17 @@ class TravelAndAccommodationNavigator @Inject() {
           controllers.journeys.expenses.travelAndAccommodation.routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode)
 
     case SimplifiedExpensesPage =>
-      // TODO - no/false path needs to be done - 'Do you want to calculate a fix rated' page
-      _ =>
-        (taxYear, businessId) =>
-          controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
+      ua => (taxYear, businessId) => handleSimplifiedExpenses(ua, taxYear, businessId, NormalMode)
 
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
+
+  private def handleSimplifiedExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode) =
+    userAnswers.get(SimplifiedExpensesPage, businessId) match {
+      case Some(true)  => controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
+      case Some(false) => controllers.journeys.expenses.travelAndAccommodation.routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, mode)
+      case _ => JourneyRecoveryController.onPageLoad()
+    }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>
     _ => (_, _) => JourneyRecoveryController.onPageLoad()
