@@ -32,7 +32,7 @@ class UseSimplifiedExpensesControllerSpec extends SpecBase {
         "must return OK and the correct view for a GET" in {
 
           val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
 

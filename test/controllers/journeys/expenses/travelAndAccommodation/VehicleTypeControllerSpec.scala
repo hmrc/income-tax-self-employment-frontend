@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
+import forms.VehicleTypeFormProvider
 import models.common.UserType
 import models.database.UserAnswers
 import models.{NormalMode, VehicleType}
@@ -46,12 +46,14 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
   val formProvider            = new VehicleTypeFormProvider()
   val form: Form[VehicleType] = formProvider("vehicleName")
 
+  val vehicleName = "CarName"
+
   "VehicleType Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
           val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
 
@@ -65,17 +67,17 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
             val view = application.injector.instanceOf[VehicleTypeView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, "CarName", taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
           val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
-            .set(VehicleTypePage, VehicleType.values.head)
+            .set(VehicleTypePage, VehicleType.values.head, Some(businessId))
             .success
             .value
 
@@ -89,7 +91,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), "CarName", taxYear, businessId, NormalMode)(
+            contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), vehicleName, taxYear, businessId, NormalMode)(
               request,
               messages(application)).toString
           }
@@ -98,7 +100,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
         "must redirect to the next page when valid data is submitted" in {
 
           val userAnswers = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, vehicleName, Some(businessId))
             .success
             .value
           val mockSessionRepository = mock[SessionRepository]
@@ -127,7 +129,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
         "must return a Bad Request and errors when invalid data is submitted" in {
           val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName")
+            .set(TravelForWorkYourVehiclePage, vehicleName, Some(businessId))
             .success
             .value
 
@@ -145,7 +147,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, "CarName", taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
           }
         }
       }

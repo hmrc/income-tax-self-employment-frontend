@@ -127,6 +127,11 @@ POST        /:taxYear/:businessId/expenses/travel/change-your-vehicle           
 
 GET         /:taxYear/:businessId/expenses/travel/vehicle-flat-rate                                                                    controllers.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
+GET        /:taxYear/:businessId/expenses/travel/vehicle-flat-rate-choice                                                              controllers.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST       /:taxYear/:businessId/expenses/travel/vehicle-flat-rate-choice                                                              controllers.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET        /:taxYear/:businessId/expenses/travel/change-vehicle-flat-rate-choice                                                       controllers.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST       /:taxYear/:businessId/expenses/travel/change-vehicle-flat-rate-choice                                                       controllers.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+
 ########## Expenses - Office Supplies ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies/amount                                                                      controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

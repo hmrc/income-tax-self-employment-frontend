@@ -37,7 +37,7 @@ class UseSimplifiedExpensesController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
     val redirectRoute: String = "TODO" // TODO next page Your work Mileage
-    getVehicleNameAndLoadPage(data => Ok(view(request.userType, data, redirectRoute)))
+    getVehicleNameAndLoadPage(businessId)(data => Ok(view(request.userType, data, redirectRoute)))
   }
 
 }

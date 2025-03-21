@@ -50,9 +50,9 @@ class VehicleTypeController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getVehicleNameAndLoadPage { name =>
+      getVehicleNameAndLoadPage(businessId) { name =>
         val form: Form[VehicleType] = formProvider(name)
-        val preparedForm = request.userAnswers.get(page) match {
+        val preparedForm = request.userAnswers.get(page, businessId) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -62,7 +62,7 @@ class VehicleTypeController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(TravelForWorkYourVehiclePage) match {
+      request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
         case Some(vehicle) =>
           val form: Form[VehicleType] = formProvider(vehicle)
           form
