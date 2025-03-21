@@ -24,7 +24,12 @@ import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExp
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage, VehicleTypePage}
+import pages.expenses.travelAndAccommodation.{
+  SimplifiedExpensesPage,
+  TravelAndAccommodationExpenseTypePage,
+  TravelForWorkYourVehiclePage,
+  VehicleTypePage
+}
 
 class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
