@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
+
+import forms.{LessThanZeroError, NonNumericError, OverMaxError}
+import forms.mappings.Mappings
+import models.common.{MoneyBounds, UserType}
+import play.api.data.Form
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class VehicleExpensesControllerFormProvider @Inject() extends Mappings with MoneyBounds {
 
-class VehicleExpensesControllerFormProvider @Inject() extends Mappings {
+  def apply(userType: UserType): Form[BigDecimal] = Form(
+    "value" -> currency(s"vehicleExpensesController.error.required.$userType", s"vehicleExpenses.$NonNumericError.$userType")
+      .verifying(greaterThan(minimumValue, s"vehicleExpenses.error.$LessThanZeroError.$userType"))
+      .verifying(lessThan(maximumValue, s"vehicleExpenses.$OverMaxError.$userType"))
+  )
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("vehicleExpensesController.error.required")
-        .verifying(maxLength(100, "vehicleExpensesController.error.length"))
-    )
 }
