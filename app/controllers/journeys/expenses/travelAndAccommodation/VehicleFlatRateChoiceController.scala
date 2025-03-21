@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.VehicleFlatRateChoiceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -46,14 +47,13 @@ class VehicleFlatRateChoiceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = VehicleFlatRateChoicePage
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       getVehicleNameAndLoadPage(businessId) { name =>
         val form: Form[Boolean] = formProvider(name, request.userType)
-        val preparedForm = request.userAnswers.get(VehicleFlatRateChoicePage, businessId) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+        val preparedForm        = fillForm(page, businessId, form)
 
         Ok(view(preparedForm, name, request.userType, taxYear, businessId, mode))
       }
@@ -70,9 +70,9 @@ class VehicleFlatRateChoiceController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicleName, request.userType, taxYear, businessId, mode))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleFlatRateChoicePage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(VehicleFlatRateChoicePage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )
 
         case None =>

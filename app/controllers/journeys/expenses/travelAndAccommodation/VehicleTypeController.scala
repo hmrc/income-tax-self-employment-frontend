@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
 import models.common.{BusinessId, TaxYear}
 import models.{Mode, VehicleType}
@@ -52,10 +53,7 @@ class VehicleTypeController @Inject() (
     implicit request =>
       getVehicleNameAndLoadPage(businessId) { name =>
         val form: Form[VehicleType] = formProvider(name)
-        val preparedForm = request.userAnswers.get(page, businessId) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+        val preparedForm            = fillForm(page, businessId, form)
         Ok(view(preparedForm, name, taxYear, businessId, mode))
       }
   }

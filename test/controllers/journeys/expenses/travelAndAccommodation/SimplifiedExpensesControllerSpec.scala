@@ -89,10 +89,10 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
             .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
             .success
             .value
-            .set(VehicleTypePage, VehicleType.values.head)
+            .set(VehicleTypePage, VehicleType.values.head, Some(businessId))
             .success
             .value
-            .set(SimplifiedExpensesPage, true)
+            .set(SimplifiedExpensesPage, true, Some(businessId))
             .success
             .value
 
