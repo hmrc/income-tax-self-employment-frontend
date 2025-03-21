@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,12 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{NormalMode, _}
 import pages._
-import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.{
+  SimplifiedExpensesPage,
+  TravelAndAccommodationExpenseTypePage,
+  TravelForWorkYourVehiclePage,
+  VehicleTypePage
+}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -41,6 +46,18 @@ class TravelAndAccommodationNavigator @Inject() {
       _ =>
         (taxYear, businessId) =>
           controllers.journeys.expenses.travelAndAccommodation.routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case VehicleTypePage =>
+      _ =>
+        (taxYear, businessId) =>
+          controllers.journeys.expenses.travelAndAccommodation.routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case SimplifiedExpensesPage =>
+      // TODO - no/false path needs to be done - 'Do you want to calculate a fix rated' page
+      _ =>
+        (taxYear, businessId) =>
+          controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
+
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 
