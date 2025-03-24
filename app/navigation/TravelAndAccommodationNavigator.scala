@@ -25,7 +25,8 @@ import pages.expenses.travelAndAccommodation.{
   SimplifiedExpensesPage,
   TravelAndAccommodationExpenseTypePage,
   TravelForWorkYourVehiclePage,
-  VehicleTypePage
+  VehicleTypePage,
+  VehicleFlatRateChoicePage
 }
 import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage, UseSimplifiedExpensesPage}
 import play.api.mvc.Call
@@ -55,13 +56,18 @@ class TravelAndAccommodationNavigator @Inject() {
         (taxYear, businessId) =>
           Some(controllers.journeys.expenses.travelAndAccommodation.routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode))
 
-case UseSimplifiedExpensesPage =>
-_ =>
-(taxYear, businessId) =>
-controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, NormalMode)
+    case UseSimplifiedExpensesPage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController
+              .onPageLoad(taxYear, businessId, NormalMode))
 
     case SimplifiedExpensesPage =>
       ua => (taxYear, businessId) => handleSimplifiedExpenses(ua, taxYear, businessId, NormalMode)
+
+    case VehicleFlatRateChoicePage =>
+      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
     case _ => _ => (_, _) => None
   }
@@ -71,6 +77,13 @@ controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMil
       case true => controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
       case false =>
         controllers.journeys.expenses.travelAndAccommodation.routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, mode)
+    }
+
+  private def handleFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
+    userAnswers.get(VehicleFlatRateChoicePage, businessId) map {
+      case true =>
+        controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
+      case false => ??? // TODO: Navigate to Your Vehicle expenses page once created
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>

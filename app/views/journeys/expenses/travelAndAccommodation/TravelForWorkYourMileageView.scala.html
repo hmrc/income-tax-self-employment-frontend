@@ -29,9 +29,9 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, vehicle: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"travelForWorkYourMileage.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"travelForWorkYourMileage.title.$userType", vehicle))) {
 
     @formHelper(action = routes.TravelForWorkYourMileageController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
     @heading(s"travelForWorkYourMileage.title.$userType")
@@ -41,13 +41,13 @@
         }
 
 <div class="govuk-body govuk-!-margin-bottom-6">
-    <p>@messages(s"travelForWorkYourMileage.p1.info.$userType")</p>
+    <p>@messages(s"travelForWorkYourMileage.p1.info.$userType", vehicle)</p>
 </div>
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"travelForWorkYourMileage.formLabel.$userType")).asPageHeading(Medium)
+                label = LabelViewModel(messages(s"travelForWorkYourMileage.formLabel.$userType", vehicle)).asPageHeading(Medium)
             )
             .asNumeric()
             .withWidth(Fixed10)

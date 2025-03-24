@@ -18,18 +18,19 @@ package forms
 
 import forms.mappings.Mappings
 import models.common.UserType
+import play.api.data.Form
 
 import javax.inject.Inject
-import play.api.data.Form
 
 class TravelForWorkYourMileageFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[Int] =
+  def apply(userType: UserType, vehicle: String): Form[Int] =
     Form(
       "value" -> int(
         s"travelForWorkYourMileage.error.required.$userType",
-        "travelForWorkYourMileage.error.wholeNumber",
-        "travelForWorkYourMileage.error.nonNumeric")
-        .verifying(inRange(0, Int.MaxValue, "travelForWorkYourMileage.error.outOfRange"))
+        s"travelForWorkYourMileage.error.wholeNumber.$userType",
+        s"travelForWorkYourMileage.error.nonNumeric.$userType"
+      )
+        .verifying(inRange(0, Int.MaxValue, s"travelForWorkYourMileage.error.outOfRange.$userType"))
     )
 }

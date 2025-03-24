@@ -39,9 +39,11 @@ class UseSimplifiedExpensesController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val redirectRoute = navigator.nextPage(UseSimplifiedExpensesPage, NormalMode, request.userAnswers, taxYear, businessId).url
-    getVehicleNameAndLoadPage(data => Ok(view(request.userType, data, redirectRoute)))
-  }
-
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
+      val redirectRoute = navigator.nextPage(UseSimplifiedExpensesPage, NormalMode, request.userAnswers, taxYear, businessId).url
+      getVehicleNameAndLoadPage(businessId) { vehicleName =>
+        Ok(view(request.userType, vehicleName, redirectRoute))
+      }
+    }
 }

@@ -21,7 +21,8 @@ import forms.TravelForWorkYourMileageFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.TravelForWorkYourMileagePage
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -38,6 +39,7 @@ class TravelForWorkYourMileageController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    formProvider: TravelForWorkYourMileageFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: TravelForWorkYourMileageView
 )(implicit ec: ExecutionContext)
@@ -45,29 +47,36 @@ class TravelForWorkYourMileageController @Inject() (
     with I18nSupport {
 
   private val page = TravelForWorkYourMileagePage
-  private val form = new TravelForWorkYourMileageFormProvider()
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) { implicit request =>
-      val preparedForm = request.userAnswers.get(page, businessId) match {
-        case None        => form(request.userType)
-        case Some(value) => form(request.userType).fill(value)
-      }
+      getVehicleNameAndLoadPage(businessId) { name =>
+        val preparedForm = request.userAnswers.get(page, businessId) match {
+          case None        => formProvider(request.userType, name)
+          case Some(value) => formProvider(request.userType, name).fill(value)
+        }
 
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, name))
+      }
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData).async { implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
-        )
+      request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
+        case Some(vehicle) =>
+          val form: Form[Int] = formProvider(request.userType, vehicle)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, vehicle))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
+            )
+        case None =>
+          Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+      }
     }
 }

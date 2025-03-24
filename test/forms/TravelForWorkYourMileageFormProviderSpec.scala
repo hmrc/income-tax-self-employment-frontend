@@ -22,7 +22,9 @@ import play.api.data.FormError
 
 class TravelForWorkYourMileageFormProviderSpec extends IntFieldBehaviours {
 
-  val form = new TravelForWorkYourMileageFormProvider()(UserType.Individual)
+  val vehicle = "Grey Astra"
+
+  val form = new TravelForWorkYourMileageFormProvider()(UserType.Individual, vehicle)
 
   ".value" - {
 
@@ -42,8 +44,8 @@ class TravelForWorkYourMileageFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "travelForWorkYourMileage.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "travelForWorkYourMileage.error.wholeNumber")
+      nonNumericError = FormError(fieldName, "travelForWorkYourMileage.error.nonNumeric.individual"),
+      wholeNumberError = FormError(fieldName, "travelForWorkYourMileage.error.wholeNumber.individual")
     )
 
     behave like intFieldWithRange(
@@ -51,7 +53,7 @@ class TravelForWorkYourMileageFormProviderSpec extends IntFieldBehaviours {
       fieldName,
       minimum = minimum,
       maximum = maximum,
-      expectedError = FormError(fieldName, "travelForWorkYourMileage.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "travelForWorkYourMileage.error.outOfRange.individual", Seq(minimum, maximum))
     )
 
     behave like mandatoryField(

@@ -2372,5 +2372,5 @@ travelForWorkYourMileage.error.required.agent = Enter your client’s mileage
 travelForWorkYourMileage.error.wholeNumber.individual = Enter your mileage using whole numbers
 travelForWorkYourMileage.error.wholeNumber.agent = Enter your client’s mileage using whole numbers
 travelForWorkYourMileage.error.outOfRange.individual = Your mileage must be between {0} and {1}
-travelForWorkYourMileage.error.outOfRange.agent = Your mileage must be between {0} and {1}
-travelForWorkYourMileage.change.hidden = TravelForWorkYourMileage
+travelForWorkYourMileage.error.outOfRange.agent = Your client’s mileage must be between {0} and {1}
+travelForWorkYourMileage.change.hidden = TravelForWorkYourMileageHidden
