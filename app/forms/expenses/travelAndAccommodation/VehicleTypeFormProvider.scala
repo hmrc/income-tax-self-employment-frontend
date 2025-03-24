@@ -17,7 +17,7 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
-import models.VehicleType
+import models.journeys.expenses.travelAndAccommodation.VehicleType
 import play.api.data.Form
 
 import javax.inject.Inject

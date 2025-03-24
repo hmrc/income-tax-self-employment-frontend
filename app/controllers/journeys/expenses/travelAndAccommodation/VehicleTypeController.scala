@@ -19,8 +19,9 @@ package controllers.journeys.expenses.travelAndAccommodation
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.{Mode, VehicleType}
+import models.journeys.expenses.travelAndAccommodation.VehicleType
 import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
 import play.api.data.Form

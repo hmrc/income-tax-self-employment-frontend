@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-package models
+package models.journeys.expenses.travelAndAccommodation
 
-import models.common.Enumerable
+import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import viewmodels.WithName
 
-sealed trait VehicleType
+sealed trait YourFlatRateForVehicleExpenses
 
-object VehicleType extends Enumerable.Implicits {
+object YourFlatRateForVehicleExpenses extends Enumerable.Implicits {
 
-  case object CarOrGoodsVehicle extends WithName("carOrGoodsVehicle") with VehicleType
-  case object Motorcycle        extends WithName("motorcycle") with VehicleType
+  case object Flatrate   extends WithName("flatRate") with YourFlatRateForVehicleExpenses
+  case object Actualcost extends WithName("actualCost") with YourFlatRateForVehicleExpenses
 
-  val values: Seq[VehicleType] = Seq(
-    CarOrGoodsVehicle,
-    Motorcycle
+  val values: Seq[YourFlatRateForVehicleExpenses] = Seq(
+    Flatrate,
+    Actualcost
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(
-      content = Text(messages(s"vehicleType.${value.toString}")),
+      content = Text(messages(s"yourFlatRateForVehicleExpenses.${value.toString}")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )
   }
 
-  implicit val enumerable: Enumerable[VehicleType] =
+  implicit val enumerable: Enumerable[YourFlatRateForVehicleExpenses] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

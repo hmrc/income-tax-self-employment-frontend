@@ -18,10 +18,11 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
-import models.{NormalMode, VehicleType}
+import models.NormalMode
 import models.common.UserType
 import play.api.inject.bind
 import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.VehicleType
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

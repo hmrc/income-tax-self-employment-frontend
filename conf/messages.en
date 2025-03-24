@@ -2357,3 +2357,11 @@ vehicleFlatRateChoice.p3.info.agent = If you have records of your client’s act
 vehicleFlatRateChoice.error.required.individual = Select yes if you want to calculate a flat rate
 vehicleFlatRateChoice.error.required.agent = Select yes if your client wants to calculate a flat rate
 vehicleFlatRateChoice.change.hidden = VehicleFlatRateChoice
+
+yourFlatRateForVehicleExpenses.title = Your flat rate for vehicle expenses is £90
+yourFlatRateForVehicleExpenses.heading = Your flat rate for vehicle expenses is £90
+yourFlatRateForVehicleExpenses.flatRate = A flat rate of £90
+yourFlatRateForVehicleExpenses.actualCost = Actual costs
+yourFlatRateForVehicleExpenses.checkYourAnswersLabel = Your flat rate for vehicle expenses is £90
+yourFlatRateForVehicleExpenses.error.required = Select yourFlatRateForVehicleExpenses
+yourFlatRateForVehicleExpenses.change.hidden = YourFlatRateForVehicleExpenses

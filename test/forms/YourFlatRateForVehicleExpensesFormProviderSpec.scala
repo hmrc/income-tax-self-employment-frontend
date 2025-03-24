@@ -16,33 +16,31 @@
 
 package forms
 
-import forms.behaviours.BooleanFieldBehaviours
-import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
-import models.common.UserType
+import forms.behaviours.OptionFieldBehaviours
+import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import play.api.data.FormError
 
-class VehicleFlatRateChoiceFormProviderSpec extends BooleanFieldBehaviours {
+class YourFlatRateForVehicleExpensesFormProviderSpec extends OptionFieldBehaviours {
 
-  val requiredKey = s"vehicleFlatRateChoice.error.required.${UserType.Agent}"
-  val invalidKey  = "error.boolean"
-  val vehicleName = "NewCar"
-
-  val form = new VehicleFlatRateChoiceFormProvider()(vehicleName, UserType.Agent)
+  val form = new YourFlatRateForVehicleExpensesFormProvider()()
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
+    val requiredKey = "yourFlatRateForVehicleExpenses.error.required"
 
-    behave like booleanField(
+    behave like optionsField[YourFlatRateForVehicleExpenses](
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey, Seq(vehicleName))
+      validValues = YourFlatRateForVehicleExpenses.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(vehicleName))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

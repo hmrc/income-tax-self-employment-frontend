@@ -20,7 +20,8 @@ import base.SpecBase
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
 import models.common.UserType
 import models.database.UserAnswers
-import models.{NormalMode, VehicleType}
+import models.NormalMode
+import models.journeys.expenses.travelAndAccommodation.VehicleType
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock

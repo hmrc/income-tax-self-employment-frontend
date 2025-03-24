@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages.expenses.travelAndAccommodation
+package forms.expenses.travelAndAccommodation
 
-import models.journeys.expenses.travelAndAccommodation.VehicleType
-import pages.OneQuestionPage
+import forms.mappings.Mappings
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
+import play.api.data.Form
 
-case object VehicleTypePage extends OneQuestionPage[VehicleType] {
+import javax.inject.Inject
 
-  override def toString: String = "vehicleType"
+class YourFlatRateForVehicleExpensesFormProvider @Inject() extends Mappings {
 
+  def apply(): Form[YourFlatRateForVehicleExpenses] =
+    Form(
+      "value" -> enumerable[YourFlatRateForVehicleExpenses]("yourFlatRateForVehicleExpenses.error.required")
+    )
 }

@@ -17,74 +17,71 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
+import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
-import play.api.data.Form
+import org.mockito.MockitoSugar.mock
+import org.mockito.matchers.MacroBasedMatchers
+import pages.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesPage
+import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
+import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
 import scala.concurrent.Future
 
-class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
+class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBasedMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
-  val vehicleName       = "NewCar"
 
-  val formProvider                            = new VehicleFlatRateChoiceFormProvider()
-  val userAnswersWithVehicleName: UserAnswers = emptyUserAnswers.set(TravelForWorkYourVehiclePage, vehicleName, Some(businessId)).success.value
+  lazy val yourFlatRateForVehicleExpensesRoute: String =
+    routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  lazy val vehicleFlatRateChoiceRoute: String = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, NormalMode).url
+  val formProvider = new YourFlatRateForVehicleExpensesFormProvider()
+  val form         = formProvider()
 
-  "VehicleFlatRateChoice Controller" - {
+  "YourFlatRateForVehicleExpenses Controller" - {
+
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
-      val form: Form[Boolean] = formProvider(vehicleName, userType)
       s"when user is $userType" - {
-
         "must return OK and the correct view for a GET" in {
 
-          val application = applicationBuilder(userAnswers = Some(userAnswersWithVehicleName), userType).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, vehicleFlatRateChoiceRoute)
+            val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
             val result = route(application, request).value
 
-            val view = application.injector.instanceOf[VehicleFlatRateChoiceView]
+            val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, vehicleName, userType, taxYear, businessId, NormalMode)(
-              request,
-              messages(application)).toString
+            contentAsString(result) mustEqual view(form, taxYear, businessId, NormalMode)(request, messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          val userAnswers = userAnswersWithVehicleName.set(VehicleFlatRateChoicePage, true, Some(businessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId).set(YourFlatRateForVehicleExpensesPage, YourFlatRateForVehicleExpenses.values.head).success.value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, vehicleFlatRateChoiceRoute)
+            val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
-            val view = application.injector.instanceOf[VehicleFlatRateChoiceView]
+            val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-
-            contentAsString(result) mustEqual view(form.fill(true), vehicleName, userType, taxYear, businessId, NormalMode)(
+            contentAsString(result) mustEqual view(form.fill(YourFlatRateForVehicleExpenses.values.head), taxYear, businessId, NormalMode)(
               request,
               messages(application)).toString
           }
@@ -93,11 +90,10 @@ class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
         "must redirect to the next page when valid data is submitted" in {
 
           val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
 
           val application =
-            applicationBuilder(userAnswers = Some(userAnswersWithVehicleName), userType)
+            applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userType)
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
@@ -106,8 +102,8 @@ class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             val request =
-              FakeRequest(POST, vehicleFlatRateChoiceRoute)
-                .withFormUrlEncodedBody(("value", "true"))
+              FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+                .withFormUrlEncodedBody(("value", YourFlatRateForVehicleExpenses.values.head.toString))
 
             val result = route(application, request).value
 
@@ -118,23 +114,21 @@ class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
 
         "must return a Bad Request and errors when invalid data is submitted" in {
 
-          val application = applicationBuilder(userAnswers = Some(userAnswersWithVehicleName), userType).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType).build()
 
           running(application) {
             val request =
-              FakeRequest(POST, vehicleFlatRateChoiceRoute)
-                .withFormUrlEncodedBody(("value", ""))
+              FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> ""))
+            val boundForm = form.bind(Map("value" -> "invalid value"))
 
-            val view = application.injector.instanceOf[VehicleFlatRateChoiceView]
+            val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, vehicleName, userType, taxYear, businessId, NormalMode)(
-              request,
-              messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, taxYear, businessId, NormalMode)(request, messages(application)).toString
           }
         }
       }
@@ -145,7 +139,7 @@ class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, vehicleFlatRateChoiceRoute)
+        val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
         val result = route(application, request).value
 
@@ -154,18 +148,19 @@ class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, vehicleFlatRateChoiceRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+            .withFormUrlEncodedBody(("value", YourFlatRateForVehicleExpenses.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
+
         redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }

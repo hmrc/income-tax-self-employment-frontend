@@ -17,67 +17,58 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
-import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
+import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
-import play.api.data.Form
+import pages.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
+import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleFlatRateChoiceController @Inject() (
+class YourFlatRateForVehicleExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: VehicleFlatRateChoiceFormProvider,
+    formProvider: YourFlatRateForVehicleExpensesFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: VehicleFlatRateChoiceView
+    view: YourFlatRateForVehicleExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = VehicleFlatRateChoicePage
+  val form = formProvider()
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getVehicleNameAndLoadPage(businessId) { name =>
-        val form: Form[Boolean] = formProvider(name, request.userType)
-        val preparedForm        = fillForm(page, businessId, form)
-
-        Ok(view(preparedForm, name, request.userType, taxYear, businessId, mode))
+      val preparedForm = request.userAnswers.get(YourFlatRateForVehicleExpensesPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+
+      Ok(view(preparedForm, taxYear, businessId, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
-        case Some(vehicleName) =>
-          val form: Form[Boolean] = formProvider(vehicleName, request.userType)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicleName, request.userType, taxYear, businessId, mode))),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
-            )
-
-        case None =>
-          Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
-      }
-
+      println("=======================")
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
+        )
   }
 }

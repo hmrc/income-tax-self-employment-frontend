@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.standard
 import controllers.journeys.expenses.travelAndAccommodation.routes
 import models._
-import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
