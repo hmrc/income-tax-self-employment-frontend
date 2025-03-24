@@ -2335,7 +2335,7 @@ vehicleType.heading = What kind of vehicle is {0}?
 vehicleType.carOrGoodsVehicle = Car or goods vehicle
 vehicleType.motorcycle = Motorcycle
 vehicleType.checkYourAnswersLabel = Kind of vehicle is {0}?
-vehicleType.error.required = Select what kind of vehicle is {0}
+vehicleType.error.required = Select what kind of vehicle {0} is
 vehicleType.change.hidden = VehicleType
 
 useSimplifiedExpenses.heading.individual = You have to use simplified expenses for {0}
@@ -2343,7 +2343,7 @@ useSimplifiedExpenses.heading.agent = Your client has to use simplified expenses
 useSimplifiedExpenses.info.individual  = This is because you’ve already used simplified expenses for this vehicle.
 useSimplifiedExpenses.info.agent = This is because your client has already used simplified expenses for this vehicle.
 
-vehicleFlatRateChoice.heading.individual = You can choose how to claim your expenses for Tesla
+vehicleFlatRateChoice.heading.individual = You can choose how to claim your expenses for {0}
 vehicleFlatRateChoice.heading.agent = Your client can choose how to claim their expenses for {0}
 vehicleFlatRateChoice.legend.individual = Do you want to calculate a flat rate?
 vehicleFlatRateChoice.legend.agent = Does your client want to calculate a flat rate?
