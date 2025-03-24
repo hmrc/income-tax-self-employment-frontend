@@ -18,64 +18,66 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
+import forms.VehicleFlatRateChoiceFormProvider
+import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.{Mode, VehicleType}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
+import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleTypeController @Inject() (
+class VehicleFlatRateChoiceController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: VehicleTypeFormProvider,
+    formProvider: VehicleFlatRateChoiceFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: VehicleTypeView
+    view: VehicleFlatRateChoiceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = VehicleTypePage
+  private val page = VehicleFlatRateChoicePage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       getVehicleNameAndLoadPage(businessId) { name =>
-        val form: Form[VehicleType] = formProvider(name)
-        val preparedForm            = fillForm(page, businessId, form)
-        Ok(view(preparedForm, name, taxYear, businessId, mode))
+        val form: Form[Boolean] = formProvider(name, request.userType)
+        val preparedForm        = fillForm(page, businessId, form)
+
+        Ok(view(preparedForm, name, request.userType, taxYear, businessId, mode))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
-        case Some(vehicle) =>
-          val form: Form[VehicleType] = formProvider(vehicle)
+        case Some(vehicleName) =>
+          val form: Form[Boolean] = formProvider(vehicleName, request.userType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicleName, request.userType, taxYear, businessId, mode))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )
+
         case None =>
           Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
       }
-  }
 
+  }
 }

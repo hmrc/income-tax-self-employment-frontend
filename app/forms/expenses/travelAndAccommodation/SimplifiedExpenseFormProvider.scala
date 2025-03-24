@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
-import models.VehicleType
+import models.common.UserType
 import play.api.data.Form
+
 import javax.inject.Inject
 
-class VehicleTypeFormProvider @Inject() extends Mappings {
+class SimplifiedExpenseFormProvider @Inject() extends Mappings {
 
-  def apply(vehicleName: String): Form[VehicleType] =
+  def apply(userType: UserType, vehicle: String): Form[Boolean] =
     Form(
-      "value" -> enumerable[VehicleType]("vehicleType.error.required", args = Seq(vehicleName))
+      "value" -> boolean(s"simplifiedExpenses.error.required.$userType", args = Seq(vehicle))
     )
 }

@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages.expenses.travelAndAccommodation
+package forms.expenses.travelAndAccommodation
 
-import models.VehicleType
-import pages.OneQuestionPage
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
 
-case object VehicleTypePage extends OneQuestionPage[VehicleType] {
+import javax.inject.Inject
 
-  override def toString: String = "vehicleType"
-
+class TravelForWorkYourVehicleFormProvider @Inject() extends Mappings {
+  def apply(userType: UserType): Form[String] =
+    Form(
+      "value" -> text(s"travelForWorkYourVehicle.error.required.$userType")
+        .verifying(maxLength(100, "travelForWorkYourVehicle.error.length"))
+    )
 }

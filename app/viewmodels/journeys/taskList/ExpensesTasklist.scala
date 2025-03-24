@@ -184,7 +184,7 @@ object ExpensesTasklist {
       case ExpensesTravelForWork =>
         determineJourneyStartOrCyaUrl(
           expenses.travelAndAccommodation.routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, NormalMode).url,
-          // TODO Attach CYA travel and accommodation journey here
+          // TODO Attach travelAndAccommodation CYA journey here
           expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
         )
       case ExpensesRepairsAndMaintenance =>
