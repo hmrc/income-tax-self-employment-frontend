@@ -17,81 +17,74 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
+import forms.VehicleFlatRateChoiceFormProvider
+import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
-import models.{NormalMode, VehicleType}
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
-import org.mockito.matchers.MacroBasedMatchers
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
+import org.scalatestplus.mockito.MockitoSugar
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
 import play.api.data.Form
-import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
+import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
 
 import scala.concurrent.Future
 
-class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
+class VehicleFlatRateChoiceControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
+  val vehicleName       = "NewCar"
 
-  lazy val vehicleTypeRoute: String = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode).url
+  val formProvider                            = new VehicleFlatRateChoiceFormProvider()
+  val userAnswersWithVehicleName: UserAnswers = emptyUserAnswers.set(TravelForWorkYourVehiclePage, vehicleName, Some(businessId)).success.value
 
-  val formProvider            = new VehicleTypeFormProvider()
-  val form: Form[VehicleType] = formProvider("vehicleName")
+  lazy val vehicleFlatRateChoiceRoute: String = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  val vehicleName = "CarName"
-
-  "VehicleType Controller" - {
+  "VehicleFlatRateChoice Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
+      val form: Form[Boolean] = formProvider(vehicleName, userType)
       s"when user is $userType" - {
-        "must return OK and the correct view for a GET" in {
-          val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
-            .success
-            .value
 
-          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
+        "must return OK and the correct view for a GET" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithVehicleName), userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, vehicleTypeRoute)
+            val request = FakeRequest(GET, vehicleFlatRateChoiceRoute)
 
             val result = route(application, request).value
 
-            val view = application.injector.instanceOf[VehicleTypeView]
+            val view = application.injector.instanceOf[VehicleFlatRateChoiceView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, vehicleName, userType, taxYear, businessId, NormalMode)(
+              request,
+              messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
-            .success
-            .value
-            .set(VehicleTypePage, VehicleType.values.head, Some(businessId))
-            .success
-            .value
+          val userAnswers = userAnswersWithVehicleName.set(VehicleFlatRateChoicePage, true, Some(businessId)).success.value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, vehicleTypeRoute)
+            val request = FakeRequest(GET, vehicleFlatRateChoiceRoute)
 
-            val view = application.injector.instanceOf[VehicleTypeView]
+            val view = application.injector.instanceOf[VehicleFlatRateChoiceView]
 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), vehicleName, taxYear, businessId, NormalMode)(
+
+            contentAsString(result) mustEqual view(form.fill(true), vehicleName, userType, taxYear, businessId, NormalMode)(
               request,
               messages(application)).toString
           }
@@ -99,15 +92,12 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
         "must redirect to the next page when valid data is submitted" in {
 
-          val userAnswers = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, vehicleName, Some(businessId))
-            .success
-            .value
           val mockSessionRepository = mock[SessionRepository]
-          when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val application =
-            applicationBuilder(userAnswers = Some(userAnswers), userType = userType)
+            applicationBuilder(userAnswers = Some(userAnswersWithVehicleName), userType)
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
@@ -115,10 +105,9 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
               .build()
 
           running(application) {
-
             val request =
-              FakeRequest(POST, vehicleTypeRoute)
-                .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
+              FakeRequest(POST, vehicleFlatRateChoiceRoute)
+                .withFormUrlEncodedBody(("value", "true"))
 
             val result = route(application, request).value
 
@@ -128,26 +117,24 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
-          val ua = emptyUserAnswers
-            .set(TravelForWorkYourVehiclePage, vehicleName, Some(businessId))
-            .success
-            .value
 
-          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithVehicleName), userType).build()
 
           running(application) {
             val request =
-              FakeRequest(POST, vehicleTypeRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
+              FakeRequest(POST, vehicleFlatRateChoiceRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-            val boundForm = form.bind(Map("value" -> "invalid value"))
+            val boundForm = form.bind(Map("value" -> ""))
 
-            val view = application.injector.instanceOf[VehicleTypeView]
+            val view = application.injector.instanceOf[VehicleFlatRateChoiceView]
 
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, vehicleName, userType, taxYear, businessId, NormalMode)(
+              request,
+              messages(application)).toString
           }
         }
       }
@@ -158,7 +145,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, vehicleTypeRoute)
+        val request = FakeRequest(GET, vehicleFlatRateChoiceRoute)
 
         val result = route(application, request).value
 
@@ -167,19 +154,18 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, vehicleTypeRoute)
-            .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
+          FakeRequest(POST, vehicleFlatRateChoiceRoute)
+            .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }

@@ -24,7 +24,12 @@ import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExp
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
-import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.{
+  SimplifiedExpensesPage,
+  TravelAndAccommodationExpenseTypePage,
+  TravelForWorkYourVehiclePage,
+  VehicleTypePage
+}
 
 class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
@@ -48,7 +53,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         "navigate to TravelForWorkYourVehiclePage from TravelAndAccommodationExpenseTypePage" in {
           val expectedResult = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
           val ua = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles))
+            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
             .toOption
             .value
 
@@ -58,7 +63,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         "navigate to VehicleTypePage from TravelForWorkYourVehiclePage" in {
           val expectedResult = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode)
           val ua = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles))
+            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
             .toOption
             .value
             .set(TravelForWorkYourVehiclePage, "NewCar")
@@ -66,6 +71,36 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
             .value
 
           navigator.nextPage(TravelForWorkYourVehiclePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+        }
+
+        "navigate to SimplifiedExpensesPage from VehicleTypePage" in {
+          val expectedResult = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          val ua = emptyUserAnswers
+            .set(VehicleTypePage, VehicleType.CarOrGoodsVehicle, Some(businessId))
+            .toOption
+            .value
+
+          navigator.nextPage(VehicleTypePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+        }
+
+        "navigate to UseSimplifiedExpensesPage from SimplifiedExpensesPage when option selected is 'true'" in {
+          val expectedResult = routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
+          val ua = emptyUserAnswers
+            .set(SimplifiedExpensesPage, true, Some(businessId))
+            .toOption
+            .value
+
+          navigator.nextPage(SimplifiedExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
+        }
+
+        "navigate to VehicleFlatRateChoicePage from SimplifiedExpensesPage when option selected is 'false'" in {
+          val expectedResult = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, NormalMode)
+          val ua = emptyUserAnswers
+            .set(SimplifiedExpensesPage, false, Some(businessId))
+            .toOption
+            .value
+
+          navigator.nextPage(SimplifiedExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
         }
       }
 

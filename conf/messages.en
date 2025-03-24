@@ -2335,10 +2335,25 @@ vehicleType.heading = What kind of vehicle is {0}?
 vehicleType.carOrGoodsVehicle = Car or goods vehicle
 vehicleType.motorcycle = Motorcycle
 vehicleType.checkYourAnswersLabel = Kind of vehicle is {0}?
-vehicleType.error.required = Select what kind of vehicle is {0}
+vehicleType.error.required = Select what kind of vehicle {0} is
 vehicleType.change.hidden = VehicleType
 
 useSimplifiedExpenses.heading.individual = You have to use simplified expenses for {0}
 useSimplifiedExpenses.heading.agent = Your client has to use simplified expenses for {0}
 useSimplifiedExpenses.info.individual  = This is because you’ve already used simplified expenses for this vehicle.
 useSimplifiedExpenses.info.agent = This is because your client has already used simplified expenses for this vehicle.
+
+vehicleFlatRateChoice.heading.individual = You can choose how to claim your expenses for {0}
+vehicleFlatRateChoice.heading.agent = Your client can choose how to claim their expenses for {0}
+vehicleFlatRateChoice.legend.individual = Do you want to calculate a flat rate?
+vehicleFlatRateChoice.legend.agent = Does your client want to calculate a flat rate?
+vehicleFlatRateChoice.checkYourAnswersLabel = vehicleFlatRateChoice
+vehicleFlatRateChoice.p1.info.individual = If you know your mileage, we can help you calculate a flat rate for your vehicle expenses.
+vehicleFlatRateChoice.p1.info.agent = If you know your client’s mileage, we can help you calculate a flat rate for their vehicle expenses.
+vehicleFlatRateChoice.p2.info.individual = You can then decide if you want to go ahead with the flat rate or claim actual expenses.
+vehicleFlatRateChoice.p2.info.agent = Your client can then decide if they want to go ahead with the flat rate or claim actual expenses.
+vehicleFlatRateChoice.p3.info.individual = If you have records of your actual expenses, you may choose to skip this step.
+vehicleFlatRateChoice.p3.info.agent = If you have records of your client’s actual expenses, you may choose to skip this step.
+vehicleFlatRateChoice.error.required.individual = Select yes if you want to calculate a flat rate
+vehicleFlatRateChoice.error.required.agent = Select yes if your client wants to calculate a flat rate
+vehicleFlatRateChoice.change.hidden = VehicleFlatRateChoice

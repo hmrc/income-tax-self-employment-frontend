@@ -259,7 +259,7 @@ class MessagesSpec extends SpecBase {
         userSpecificMessagesWithoutAgentVersions.contains(msgKey)
       }
       .filter { case (msgKey, msgValue) =>
-        msgValue.toLowerCase.contains(" you ") && !msgKey.contains(".individual")
+        msgValue.toLowerCase.contains(" you ") && !msgKey.contains(".individual") && !msgValue.toLowerCase.contains(" client’s ")
       }
       .sortBy(_._1)
 

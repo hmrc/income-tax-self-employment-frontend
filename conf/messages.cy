@@ -2018,3 +2018,18 @@ vehicleType.change.hidden = *******Welsh Translation Missing ********
 
 useSimplifiedExpenses.title = *********Missing Welsh Message *********
 useSimplifiedExpenses.info = *********Missing Welsh Message *********
+
+vehicleFlatRateChoice.heading.individual = *********Missing Welsh Message *********
+vehicleFlatRateChoice.heading.agent = *********Missing Welsh Message *********
+vehicleFlatRateChoice.legend.individual = *********Missing Welsh Message *********
+vehicleFlatRateChoice.legend.agent = *********Missing Welsh Message *********
+vehicleFlatRateChoice.checkYourAnswersLabel = *********Missing Welsh Message *********
+vehicleFlatRateChoice.p1.individual = *********Missing Welsh Message *********
+vehicleFlatRateChoice.p1.agent = *********Missing Welsh Message *********
+vehicleFlatRateChoice.p2.individual = *********Missing Welsh Message *********
+vehicleFlatRateChoice.p2.agent = *********Missing Welsh Message *********
+vehicleFlatRateChoice.p3.individual = *********Missing Welsh Message *********
+vehicleFlatRateChoice.p3.agent = *********Missing Welsh Message *********
+vehicleFlatRateChoice.error.required.individual = *********Missing Welsh Message *********
+vehicleFlatRateChoice.error.required.agent = *********Missing Welsh Message *********
+vehicleFlatRateChoice.change.hidden = *********Missing Welsh Message *********

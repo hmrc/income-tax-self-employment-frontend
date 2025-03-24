@@ -17,11 +17,13 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,6 +37,7 @@ class TravelForWorkYourVehicleController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     navigator: TravelAndAccommodationNavigator,
+    formProvider: TravelForWorkYourVehicleFormProvider,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -45,20 +48,17 @@ class TravelForWorkYourVehicleController @Inject() (
     with I18nSupport {
 
   private val page = TravelForWorkYourVehiclePage
-  private val form = new TravelForWorkYourVehicleFormProvider()
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData) { implicit request =>
-      val preparedForm = request.userAnswers.get(page, businessId) match {
-        case None        => form(request.userType)
-        case Some(value) => form(request.userType).fill(value)
-      }
+      val form: Form[String] = formProvider(request.userType)
+      val preparedForm       = fillForm(page, businessId, form)
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData).async { implicit request =>
-      form(request.userType)
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
