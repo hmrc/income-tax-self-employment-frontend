@@ -23,11 +23,11 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class VehicleExpensesControllerFormProvider @Inject() extends Mappings with MoneyBounds {
+class VehicleExpensesFormProvider @Inject() extends Mappings with MoneyBounds {
 
   def apply(userType: UserType): Form[BigDecimal] = Form(
-    "value" -> currency(s"vehicleExpensesController.error.required.$userType", s"vehicleExpenses.$NonNumericError.$userType")
-      .verifying(greaterThan(minimumValue, s"vehicleExpenses.error.$LessThanZeroError.$userType"))
+    "value" -> currency(s"vehicleExpenses.error.required.$userType", s"vehicleExpenses.$NonNumericError.$userType")
+      .verifying(greaterThan(minimumValue, s"vehicleExpenses.$LessThanZeroError.$userType"))
       .verifying(lessThan(maximumValue, s"vehicleExpenses.$OverMaxError.$userType"))
   )
 

@@ -17,11 +17,14 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import forms.expenses.travelAndAccommodation.VehicleExpensesControllerFormProvider
+import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import navigation.TravelAndAccommodationNavigator
 import pages.VehicleExpensesControllerPage
+import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +42,7 @@ class VehicleExpensesController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: VehicleExpensesControllerFormProvider,
+    formProvider: VehicleExpensesFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: VehicleExpensesView
 )(implicit ec: ExecutionContext)
@@ -48,28 +51,33 @@ class VehicleExpensesController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val expenseTypes: Set[TravelAndAccommodationExpenseType] =
+        request.userAnswers.get(TravelAndAccommodationExpenseTypePage).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
       val form: Form[BigDecimal] = formProvider(request.user.userType)
-
       val preparedForm = request.userAnswers.get(VehicleExpensesControllerPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, expenseTypes))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val form: Form[BigDecimal] = formProvider(request.user.userType)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesControllerPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(VehicleExpensesControllerPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      request.userAnswers.get(TravelAndAccommodationExpenseTypePage) match {
+        case Some(expenseTypes) if expenseTypes.contains(LeasedVehicles) || expenseTypes.contains(MyOwnVehicle) =>
+          val form: Form[BigDecimal] = formProvider(request.user.userType)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, expenseTypes))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesControllerPage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(VehicleExpensesControllerPage, mode, updatedAnswers, taxYear, businessId))
+            )
+        case _ =>
+          Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+      }
   }
 }

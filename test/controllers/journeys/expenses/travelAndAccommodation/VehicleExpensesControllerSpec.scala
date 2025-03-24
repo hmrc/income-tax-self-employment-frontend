@@ -18,20 +18,24 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
-import forms.expenses.travelAndAccommodation.VehicleExpensesControllerFormProvider
-import models.NormalMode
+import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
+import models.{NormalMode, VehicleType}
+import models.common.UserType
 import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.VehicleExpensesControllerPage
+import pages.expenses.travelAndAccommodation._
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesControllerView
+import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesView
 
 import scala.concurrent.Future
 
@@ -39,121 +43,165 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider           = new VehicleExpensesControllerFormProvider()
+  val formProvider           = new VehicleExpensesFormProvider()
   val form: Form[BigDecimal] = formProvider(userType)
 
   lazy val vehicleExpensesControllerRoute: String = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
 
-  "VehicleExpensesController Controller" - {
+  "VehicleType Controller" - {
+    Seq(UserType.Individual, UserType.Agent).foreach { userType =>
+      s"when user is $userType" - {
+        "must return OK and the correct view for a GET" in {
+          val answer: Set[TravelAndAccommodationExpenseType] =
+            Set(TravelAndAccommodationExpenseType.LeasedVehicles, TravelAndAccommodationExpenseType.MyOwnVehicle)
+          val ua = emptyUserAnswers
+            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .success
+            .value
 
-    "must return OK and the correct view for a GET" in {
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          running(application) {
+            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
 
-      running(application) {
-        val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+            val result = route(application, request).value
 
-        val result = route(application, request).value
+            val view = application.injector.instanceOf[VehicleExpensesView]
 
-        val view = application.injector.instanceOf[VehicleExpensesControllerView]
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, answer)(request, messages(application)).toString
+          }
+        }
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
-      }
-    }
+        "must populate the view correctly on a GET when the question has previously been answered" in {
+          val answer: Set[TravelAndAccommodationExpenseType] =
+            Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+          val userAnswers = UserAnswers(userAnswersId)
+            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .success
+            .value
+            .set(TravelForWorkYourVehiclePage, "CarName")
+            .success
+            .value
+            .set(VehicleTypePage, VehicleType.values.head)
+            .success
+            .value
+            .set(SimplifiedExpensesPage, true)
+            .success
+            .value
+            .set(VehicleExpensesControllerPage, BigDecimal(25))
+            .success
+            .value
 
-      val userAnswers = UserAnswers(userAnswersId).set(VehicleExpensesControllerPage, BigDecimal(25)).success.value
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          running(application) {
+            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
 
-      running(application) {
-        val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+            val view = application.injector.instanceOf[VehicleExpensesView]
 
-        val view = application.injector.instanceOf[VehicleExpensesControllerView]
+            val result = route(application, request).value
 
-        val result = route(application, request).value
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, answer)(
+              request,
+              messages(application)
+            ).toString
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
-      }
-    }
+          }
+        }
 
-    // TODO
-    "must redirect to the next page when valid data is submitted" ignore {
+        "must redirect to the next page when valid data is submitted" in {
+          val answer: Set[TravelAndAccommodationExpenseType] =
+            Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
-      val mockSessionRepository = mock[SessionRepository]
+          val userAnswers = emptyUserAnswers
+            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .success
+            .value
+            .set(VehicleExpensesControllerPage, BigDecimal(25))
+            .success
+            .value
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          val mockSessionRepository = mock[SessionRepository]
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            // bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+          val application =
+            applicationBuilder(userAnswers = Some(userAnswers), userType = userType)
+              .overrides(
+                bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
+                bind[SessionRepository].toInstance(mockSessionRepository)
+              )
+              .build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, vehicleExpensesControllerRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          running(application) {
+            val request =
+              FakeRequest(POST, vehicleExpensesControllerRoute)
+                .withFormUrlEncodedBody(("value", "12"))
 
-        val result = route(application, request).value
+            val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-    }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual onwardRoute.url
+          }
+        }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+        "must return a Bad Request and errors when invalid data is submitted" in {
+          val answer: Set[TravelAndAccommodationExpenseType] =
+            Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val userAnswers = emptyUserAnswers
+            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .success
+            .value
+            .set(VehicleExpensesControllerPage, BigDecimal(25))
+            .success
+            .value
 
-      running(application) {
-        val request =
-          FakeRequest(POST, vehicleExpensesControllerRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-        val boundForm = form.bind(Map("value" -> ""))
+          running(application) {
+            val request =
+              FakeRequest(POST, vehicleExpensesControllerRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val view = application.injector.instanceOf[VehicleExpensesControllerView]
+            val result = route(application, request).value
 
-        val result = route(application, request).value
+            status(result) mustEqual BAD_REQUEST
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
-      }
-    }
+          }
+        }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+        "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+          val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+          running(application) {
+            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
 
-        val result = route(application, request).value
+            val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          }
+        }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+        "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+          val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, vehicleExpensesControllerRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          running(application) {
+            val request =
+              FakeRequest(POST, vehicleExpensesControllerRoute)
+                .withFormUrlEncodedBody(("value", "answer"))
 
-        val result = route(application, request).value
+            val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          }
+        }
       }
     }
   }
