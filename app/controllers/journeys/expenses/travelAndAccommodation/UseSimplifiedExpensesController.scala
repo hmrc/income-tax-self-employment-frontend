@@ -17,7 +17,10 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import models.NormalMode
 import models.common.{BusinessId, TaxYear}
+import navigation.TravelAndAccommodationNavigator
+import pages.expenses.travelAndAccommodation.UseSimplifiedExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,13 +33,14 @@ class UseSimplifiedExpensesController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    navigator: TravelAndAccommodationNavigator,
     val controllerComponents: MessagesControllerComponents,
     view: UseSimplifiedExpensesView
 ) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
-    val redirectRoute: String = "TODO" // TODO next page Your work Mileage
+    val redirectRoute = navigator.nextPage(UseSimplifiedExpensesPage, NormalMode, request.userAnswers, taxYear, businessId).url
     getVehicleNameAndLoadPage(data => Ok(view(request.userType, data, redirectRoute)))
   }
 

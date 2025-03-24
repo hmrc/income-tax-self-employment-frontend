@@ -21,7 +21,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{NormalMode, _}
 import pages._
-import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage, UseSimplifiedExpensesPage}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -41,6 +41,12 @@ class TravelAndAccommodationNavigator @Inject() {
       _ =>
         (taxYear, businessId) =>
           controllers.journeys.expenses.travelAndAccommodation.routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode)
+
+    case UseSimplifiedExpensesPage =>
+      _ =>
+        (taxYear, businessId) =>
+          controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, NormalMode)
+
     case _ => _ => (_, _) => JourneyRecoveryController.onPageLoad()
   }
 

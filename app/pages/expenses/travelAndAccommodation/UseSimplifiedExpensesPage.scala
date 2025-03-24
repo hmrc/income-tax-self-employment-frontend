@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages.expenses.travelAndAccommodation
 
-import forms.mappings.Mappings
-import models.common.UserType
+import models.Mode
+import models.common.{BusinessId, TaxYear}
+import pages.Page
+import play.api.mvc.Call
 
-import javax.inject.Inject
-import play.api.data.Form
+case object UseSimplifiedExpensesPage extends Page {
+  def route(mode: Mode, taxYear: TaxYear, businessId: BusinessId): Call =
+    controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
 
-class TravelForWorkYourMileageFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Int] =
-    Form(
-      "value" -> int(
-        s"travelForWorkYourMileage.error.required.$userType",
-        "travelForWorkYourMileage.error.wholeNumber",
-        "travelForWorkYourMileage.error.nonNumeric")
-        .verifying(inRange(0, Int.MaxValue, "travelForWorkYourMileage.error.outOfRange"))
-    )
 }

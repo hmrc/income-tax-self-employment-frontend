@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package forms
+package pages.expenses.travelAndAccommodation
 
-import forms.mappings.Mappings
-import models.common.UserType
+import pages.OneQuestionPage
 
-import javax.inject.Inject
-import play.api.data.Form
+case object TravelForWorkDisallowableAmountPage extends OneQuestionPage[BigDecimal] {
+  override def toString: String = "travelForWorkDisallowableAmount"
 
-class TravelForWorkYourMileageFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Int] =
-    Form(
-      "value" -> int(
-        s"travelForWorkYourMileage.error.required.$userType",
-        "travelForWorkYourMileage.error.wholeNumber",
-        "travelForWorkYourMileage.error.nonNumeric")
-        .verifying(inRange(0, Int.MaxValue, "travelForWorkYourMileage.error.outOfRange"))
-    )
 }
