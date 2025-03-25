@@ -26,7 +26,7 @@ sealed trait YourFlatRateForVehicleExpenses
 object YourFlatRateForVehicleExpenses extends Enumerable.Implicits {
 
   case object Flatrate   extends WithName("flatRate") with YourFlatRateForVehicleExpenses
-  case object Actualcost extends WithName("actualCost") with YourFlatRateForVehicleExpenses
+  case object Actualcost extends WithName("actualCosts") with YourFlatRateForVehicleExpenses
 
   val values: Seq[YourFlatRateForVehicleExpenses] = Seq(
     Flatrate,
@@ -35,7 +35,7 @@ object YourFlatRateForVehicleExpenses extends Enumerable.Implicits {
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(
-      content = Text(messages(s"yourFlatRateForVehicleExpenses.${value.toString}")),
+      content = Text(messages(s"expenses.${value.toString}")),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )

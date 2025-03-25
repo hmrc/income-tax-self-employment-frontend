@@ -26,13 +26,15 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.mockito.matchers.MacroBasedMatchers
-import pages.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesPage
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, YourFlatRateForVehicleExpensesPage}
+import play.api.data.Form
 import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
 import scala.concurrent.Future
@@ -43,9 +45,10 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
   lazy val yourFlatRateForVehicleExpensesRoute: String =
     routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
-
-  val formProvider = new YourFlatRateForVehicleExpensesFormProvider()
-  val form         = formProvider()
+  val workMileage                                = "90"
+  val formProvider                               = new YourFlatRateForVehicleExpensesFormProvider()
+  val form: Form[YourFlatRateForVehicleExpenses] = formProvider()
+  val summaryList: SummaryList                   = SummaryList()
 
   "YourFlatRateForVehicleExpenses Controller" - {
 
@@ -53,7 +56,9 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType).build()
+          val userAnswers = emptyUserAnswers.set(SimplifiedExpensesPage, true, Some(businessId)).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
             val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
@@ -63,14 +68,22 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
             val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, taxYear, businessId, userType, workMileage, summaryList, showSelection = true, NormalMode)(
+              request,
+              messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
           val userAnswers =
-            UserAnswers(userAnswersId).set(YourFlatRateForVehicleExpensesPage, YourFlatRateForVehicleExpenses.values.head).success.value
+            UserAnswers(userAnswersId)
+              .set(SimplifiedExpensesPage, true, Some(businessId))
+              .success
+              .value
+              .set(YourFlatRateForVehicleExpensesPage, YourFlatRateForVehicleExpenses.values.head)
+              .success
+              .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
@@ -82,19 +95,31 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(YourFlatRateForVehicleExpenses.values.head), taxYear, businessId, NormalMode)(
-              request,
-              messages(application)).toString
+            contentAsString(result) mustEqual view(
+              form.fill(YourFlatRateForVehicleExpenses.values.head),
+              taxYear,
+              businessId,
+              userType,
+              workMileage,
+              summaryList,
+              showSelection = true,
+              NormalMode)(request, messages(application)).toString
           }
         }
 
         "must redirect to the next page when valid data is submitted" in {
 
+          val userAnswers =
+            UserAnswers(userAnswersId)
+              .set(SimplifiedExpensesPage, true, Some(businessId))
+              .success
+              .value
+
           val mockSessionRepository = mock[SessionRepository]
           when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userType)
+            applicationBuilder(userAnswers = Some(userAnswers), userType = userType)
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
@@ -115,7 +140,13 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
         "must return a Bad Request and errors when invalid data is submitted" in {
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType).build()
+          val userAnswers =
+            UserAnswers(userAnswersId)
+              .set(SimplifiedExpensesPage, true, Some(businessId))
+              .success
+              .value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
             val request =
@@ -129,7 +160,15 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(
+              boundForm,
+              taxYear,
+              businessId,
+              userType,
+              workMileage,
+              summaryList,
+              showSelection = true,
+              NormalMode)(request, messages(application)).toString
           }
         }
       }

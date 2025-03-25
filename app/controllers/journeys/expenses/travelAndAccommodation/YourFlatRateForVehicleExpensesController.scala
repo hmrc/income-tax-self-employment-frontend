@@ -20,12 +20,19 @@ import controllers.actions._
 import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
+import models.requests.DataRequest
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, YourFlatRateForVehicleExpensesPage}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import repositories.SessionRepository
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils.formatSumMoneyNoNegative
+import viewmodels.checkAnswers.buildKeyValueRow
 import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
 import javax.inject.Inject
@@ -45,7 +52,7 @@ class YourFlatRateForVehicleExpensesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[YourFlatRateForVehicleExpenses] = formProvider()
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -53,21 +60,65 @@ class YourFlatRateForVehicleExpensesController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
+      loadPage(preparedForm, Ok, taxYear, businessId, mode)
 
-      Ok(view(preparedForm, taxYear, businessId, mode))
+  }
+
+  private def loadPage(form: Form[_], status: Status, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
+      request: DataRequest[AnyContent]): Result = {
+    val workMileage              = BigDecimal(90.00)
+    val summaryList: SummaryList = buildSummaryList(workMileage)
+    val showSelection            = request.userAnswers.get(SimplifiedExpensesPage, businessId).contains(false)
+    status(view(form, taxYear, businessId, request.userType, workMileage.toString(), summaryList, showSelection, mode))
+  }
+
+  private def buildSummaryList(workMileage: BigDecimal)(implicit request: DataRequest[AnyContent]): SummaryList = {
+
+    def standardLimitRow(mileage: BigDecimal, limit: BigDecimal) = buildKeyValueRow(
+      s"yourFlatRateForVehicleExpenses.c1.45p",
+      s"yourFlatRateForVehicleExpenses.c2.45p",
+      optKeyArgs = Seq(mileage.toString()),
+      optValueArgs = Seq(limit.toString())
+    )
+
+    def aboveLimitRow(aboveMileage: BigDecimal, aboveLimit: BigDecimal) = buildKeyValueRow(
+      s"yourFlatRateForVehicleExpenses.c1.25p",
+      s"yourFlatRateForVehicleExpenses.c2.25p",
+      optKeyArgs = Seq(aboveMileage.toString()),
+      optValueArgs = Seq(aboveLimit.toString())
+    )
+
+    val rows = if (workMileage > 10000) {
+      val aboveMileage     = workMileage - 10000
+      val aboveLimitAmount = aboveMileage * 0.25
+      val limitAmount      = 10000 * 0.45
+      Seq(standardLimitRow(10000, limitAmount), aboveLimitRow(aboveMileage, aboveLimitAmount))
+    } else {
+      val limit = workMileage * 0.45
+      Seq(standardLimitRow(workMileage, limit))
+    }
+
+    SummaryList(rows)
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      request.userAnswers.get(SimplifiedExpensesPage, businessId) match {
+        case Some(boolean) if boolean =>
+          Future.successful(Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, request.userAnswers, taxYear, businessId)))
+        case Some(boolean) if !boolean =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(loadPage(formWithErrors, BadRequest, taxYear, businessId, mode)),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
+            )
+        case None => Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+      }
+
   }
 }
