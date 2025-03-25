@@ -59,7 +59,6 @@ class YourFlatRateForVehicleExpensesController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      println("=======================")
       form
         .bindFromRequest()
         .fold(

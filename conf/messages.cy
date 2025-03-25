@@ -2033,3 +2033,14 @@ vehicleFlatRateChoice.p3.agent = *********Missing Welsh Message *********
 vehicleFlatRateChoice.error.required.individual = *********Missing Welsh Message *********
 vehicleFlatRateChoice.error.required.agent = *********Missing Welsh Message *********
 vehicleFlatRateChoice.change.hidden = *********Missing Welsh Message *********
+
+yourFlatRateForVehicleExpenses.heading.individual = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.heading.agent = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.legend.individual = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.legend.agent = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.flatRate = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.actualCost = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.checkYourAnswersLabel = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.error.required.individual = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.error.required.agent = *********Missing Welsh Message *********
+yourFlatRateForVehicleExpenses.change.hidden = *********Missing Welsh Message *********
