@@ -46,7 +46,7 @@ import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAm
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
-import pages.expenses.travelForWork.{TravelForWorkAmountPage, TravelForWorkDisallowableAmountPage}
+import pages.expenses.travelAndAccommodation.{TravelForWorkAmountPage, TravelForWorkDisallowableAmountPage}
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
