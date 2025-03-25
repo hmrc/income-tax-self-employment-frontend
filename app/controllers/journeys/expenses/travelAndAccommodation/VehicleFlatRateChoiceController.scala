@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.VehicleFlatRateChoiceFormProvider
+import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator

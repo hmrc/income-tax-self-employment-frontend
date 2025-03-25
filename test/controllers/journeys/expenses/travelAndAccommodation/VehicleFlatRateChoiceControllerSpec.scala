@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.VehicleFlatRateChoiceFormProvider
+import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers

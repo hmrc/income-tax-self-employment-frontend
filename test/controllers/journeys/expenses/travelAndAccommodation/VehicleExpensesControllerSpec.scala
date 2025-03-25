@@ -27,7 +27,6 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.VehicleExpensesControllerPage
 import pages.expenses.travelAndAccommodation._
 import play.api.data.Form
 import play.api.inject.bind
@@ -52,10 +51,10 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
-          val answer: Set[TravelAndAccommodationExpenseType] =
+          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
             Set(TravelAndAccommodationExpenseType.LeasedVehicles, TravelAndAccommodationExpenseType.MyOwnVehicle)
           val ua = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer)
             .success
             .value
 
@@ -69,16 +68,18 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
             val view = application.injector.instanceOf[VehicleExpensesView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, answer)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
+              request,
+              messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
-          val answer: Set[TravelAndAccommodationExpenseType] =
+          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
             Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
           val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer)
             .success
             .value
             .set(TravelForWorkYourVehiclePage, "CarName")
@@ -90,7 +91,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
             .set(SimplifiedExpensesPage, true)
             .success
             .value
-            .set(VehicleExpensesControllerPage, BigDecimal(25))
+            .set(VehicleExpensesPage, BigDecimal(25))
             .success
             .value
 
@@ -104,7 +105,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, answer)(
+            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
               request,
               messages(application)
             ).toString
@@ -113,14 +114,14 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
         }
 
         "must redirect to the next page when valid data is submitted" in {
-          val answer: Set[TravelAndAccommodationExpenseType] =
+          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
             Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
           val userAnswers = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer)
             .success
             .value
-            .set(VehicleExpensesControllerPage, BigDecimal(25))
+            .set(VehicleExpensesPage, BigDecimal(25))
             .success
             .value
 
@@ -148,14 +149,14 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
-          val answer: Set[TravelAndAccommodationExpenseType] =
+          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
             Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
           val userAnswers = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, answer)
+            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer)
             .success
             .value
-            .set(VehicleExpensesControllerPage, BigDecimal(25))
+            .set(VehicleExpensesPage, BigDecimal(25))
             .success
             .value
 

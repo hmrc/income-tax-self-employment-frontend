@@ -23,8 +23,7 @@ import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import navigation.TravelAndAccommodationNavigator
-import pages.VehicleExpensesControllerPage
-import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
+import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, VehicleExpensesPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +53,7 @@ class VehicleExpensesController @Inject() (
       val expenseTypes: Set[TravelAndAccommodationExpenseType] =
         request.userAnswers.get(TravelAndAccommodationExpenseTypePage).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
       val form: Form[BigDecimal] = formProvider(request.user.userType)
-      val preparedForm = request.userAnswers.get(VehicleExpensesControllerPage) match {
+      val preparedForm = request.userAnswers.get(VehicleExpensesPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -72,9 +71,9 @@ class VehicleExpensesController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, expenseTypes))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesControllerPage, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(VehicleExpensesControllerPage, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(VehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )
         case _ =>
           Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
