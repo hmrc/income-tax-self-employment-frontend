@@ -41,10 +41,10 @@ class TravelForWorkYourMileageControllerSpec extends SpecBase with MockitoSugar 
 
   def onwardRoute = Call("GET", "/foo")
 
-  val mileage = 300
-  val vehicle = "Grey Astra"
+  val mileage: BigDecimal = 300.00
+  val vehicle             = "Grey Astra"
 
-  case class UserScenario(userType: UserType, form: Form[Int])
+  case class UserScenario(userType: UserType, form: Form[BigDecimal])
 
   private val userScenarios = Seq(
     UserScenario(UserType.Individual, formProvider(UserType.Individual, vehicle)),
@@ -90,7 +90,9 @@ class TravelForWorkYourMileageControllerSpec extends SpecBase with MockitoSugar 
           "must populate the view correctly on a GET when the question has previously been answered" in {
             val userAnswers = UserAnswers(userAnswersId)
               .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
-              .flatMap(_.set(TravelForWorkYourMileagePage, mileage, Some(businessId)))
+              .success
+              .value
+              .set(TravelForWorkYourMileagePage, mileage, Some(businessId))
               .success
               .value
 

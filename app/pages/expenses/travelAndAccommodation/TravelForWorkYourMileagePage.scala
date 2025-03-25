@@ -20,7 +20,7 @@ import models.common.BusinessId
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object TravelForWorkYourMileagePage extends QuestionPage[Int] {
+case object TravelForWorkYourMileagePage extends QuestionPage[BigDecimal] {
 
   override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
 

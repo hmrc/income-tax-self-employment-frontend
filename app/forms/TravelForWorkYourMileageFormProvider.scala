@@ -17,20 +17,21 @@
 package forms
 
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TravelForWorkYourMileageFormProvider @Inject() extends Mappings {
+class TravelForWorkYourMileageFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: UserType, vehicle: String): Form[Int] =
+  def apply(userType: UserType, vehicle: String): Form[BigDecimal] =
     Form(
-      "value" -> int(
+      "value" -> bigDecimal(
         s"travelForWorkYourMileage.error.required.$userType",
-        s"travelForWorkYourMileage.error.wholeNumber.$userType",
-        s"travelForWorkYourMileage.error.nonNumeric.$userType"
+        s"travelForWorkYourMileage.error.nonNumeric.$userType",
+        args = Seq(vehicle)
       )
-        .verifying(inRange(0, Int.MaxValue, s"travelForWorkYourMileage.error.outOfRange.$userType"))
+        .verifying(greaterThan(minimumValue, s"travelForWorkYourMileage.error.lessThanZero.$userType", Some(vehicle)))
+        .verifying(lessThan(maximumValue, s"travelForWorkYourMileage.error.overMax.$userType", Some(vehicle)))
     )
 }

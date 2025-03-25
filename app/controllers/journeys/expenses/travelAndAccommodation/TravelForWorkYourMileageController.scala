@@ -64,7 +64,7 @@ class TravelForWorkYourMileageController @Inject() (
     (identify andThen getData andThen requireData).async { implicit request =>
       request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
         case Some(vehicle) =>
-          val form: Form[Int] = formProvider(request.userType, vehicle)
+          val form: Form[BigDecimal] = formProvider(request.userType, vehicle)
           form
             .bindFromRequest()
             .fold(

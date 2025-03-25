@@ -16,50 +16,66 @@
 
 package forms
 
-import forms.behaviours.IntFieldBehaviours
+import forms.behaviours.BigDecimalFieldBehaviours
+import models.common.MoneyBounds.maximumValue
 import models.common.UserType
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Form, FormError}
 
-class TravelForWorkYourMileageFormProviderSpec extends IntFieldBehaviours {
+class TravelForWorkYourMileageFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  val vehicle = "Grey Astra"
+  val vehicle             = "Grey Astra"
+  val minimum: BigDecimal = zeroValue
+  val maximum: BigDecimal = maximumValue
 
-  val form = new TravelForWorkYourMileageFormProvider()(UserType.Individual, vehicle)
+  val validDataGenerator: Gen[String] = bigDecimalsInRangeWithCommas(minimum, maximum)
 
-  ".value" - {
+  val requiredError     = "travelForWorkYourMileage.error.required"
+  val nonNumericError   = "travelForWorkYourMileage.error.nonNumeric"
+  val lessThanZeroError = "travelForWorkYourMileage.error.lessThanZero"
+  val overMaxError      = "travelForWorkYourMileage.error.overMax"
 
-    val fieldName = "value"
+  def getFormProvider(userType: UserType): Form[BigDecimal] =
+    new TravelForWorkYourMileageFormProvider()(userType, vehicle)
 
-    val minimum = 0
-    val maximum = Int.MaxValue
+  val userTypes: List[UserType] = List(UserType.Individual, UserType.Agent)
 
-    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
+  userTypes.foreach { userType =>
+    s"form for $userType should" - {
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      validDataGenerator
-    )
+      val form: Form[BigDecimal] = getFormProvider(userType)
 
-    behave like intField(
-      form,
-      fieldName,
-      nonNumericError = FormError(fieldName, "travelForWorkYourMileage.error.nonNumeric.individual"),
-      wholeNumberError = FormError(fieldName, "travelForWorkYourMileage.error.wholeNumber.individual")
-    )
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        validDataGenerator
+      )
 
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "travelForWorkYourMileage.error.outOfRange.individual", Seq(minimum, maximum))
-    )
+      behave like bigDecimalField(
+        form,
+        fieldName,
+        nonNumericError = FormError(fieldName, s"$nonNumericError.$userType", Seq(vehicle))
+      )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, s"travelForWorkYourMileage.error.required.individual")
-    )
+      behave like bigDecimalFieldWithMinimum(
+        form,
+        fieldName,
+        minimum,
+        expectedError = FormError(fieldName, s"$lessThanZeroError.$userType", Seq(vehicle))
+      )
+
+      behave like bigDecimalFieldWithMaximum(
+        form,
+        fieldName,
+        maximum,
+        expectedError = FormError(fieldName, s"$overMaxError.$userType", Seq(vehicle))
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, s"$requiredError.$userType", Seq(vehicle))
+      )
+    }
   }
 }
