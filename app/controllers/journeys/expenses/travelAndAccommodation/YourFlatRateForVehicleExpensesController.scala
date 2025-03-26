@@ -71,15 +71,16 @@ class YourFlatRateForVehicleExpensesController @Inject() (
         val totalFlatRateExpenses: BigDecimal = TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage)
         status(
           view(
-            form,
-            taxYear,
-            businessId,
-            request.userType,
-            stripTrailingZeros(workMileage),
-            formatMoney(totalFlatRateExpenses),
-            summaryList,
-            showSelection,
-            mode))
+            form = form,
+            taxYear = taxYear,
+            businessId = businessId,
+            userType = request.userType,
+            mileage = stripTrailingZeros(workMileage),
+            totalFlatRateExpenses = formatMoney(totalFlatRateExpenses),
+            summaryList = summaryList,
+            showSelection = showSelection,
+            mode = mode
+          ))
       case _ =>
         Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }

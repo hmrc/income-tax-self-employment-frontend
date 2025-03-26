@@ -21,8 +21,6 @@ import models.requests.DataRequest
 import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
-import java.text.NumberFormat
-import java.util.Locale
 
 package object travelAndAccommodation {
 
