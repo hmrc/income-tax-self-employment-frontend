@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
 
-import javax.inject.Inject
+import forms.{LessThanZeroError, NonNumericError, OverMaxError}
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
-class VehicleFlatRateChoiceFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(vehicleName: String, userType: UserType): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"vehicleFlatRateChoice.error.required.$userType", args = Seq(vehicleName))
-    )
+class VehicleExpensesFormProvider @Inject() extends Mappings with MoneyBounds {
+
+  def apply(userType: UserType): Form[BigDecimal] = Form(
+    "value" -> currency(s"vehicleExpenses.error.required.$userType", s"vehicleExpenses.$NonNumericError.$userType")
+      .verifying(greaterThan(minimumValue, s"vehicleExpenses.$LessThanZeroError.$userType"))
+      .verifying(lessThan(maximumValue, s"vehicleExpenses.$OverMaxError.$userType"))
+  )
+
 }

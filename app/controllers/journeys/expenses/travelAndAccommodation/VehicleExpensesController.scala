@@ -17,67 +17,66 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
-import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
+import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
+import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, VehicleExpensesPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
+import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleFlatRateChoiceController @Inject() (
+class VehicleExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: VehicleFlatRateChoiceFormProvider,
+    formProvider: VehicleExpensesFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: VehicleFlatRateChoiceView
+    view: VehicleExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = VehicleFlatRateChoicePage
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      getVehicleNameAndLoadPage(businessId) { name =>
-        val form: Form[Boolean] = formProvider(name, request.userType)
-        val preparedForm        = fillForm(page, businessId, form)
-
-        Ok(view(preparedForm, name, request.userType, taxYear, businessId, mode))
+      val expenseTypes: Set[TravelAndAccommodationExpenseType] =
+        request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
+      val form: Form[BigDecimal] = formProvider(request.user.userType)
+      val preparedForm = request.userAnswers.get(VehicleExpensesPage, businessId) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, expenseTypes))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
-        case Some(vehicleName) =>
-          val form: Form[Boolean] = formProvider(vehicleName, request.userType)
+      request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
+        case Some(expenseTypes) if expenseTypes.contains(LeasedVehicles) || expenseTypes.contains(MyOwnVehicle) =>
+          val form: Form[BigDecimal] = formProvider(request.user.userType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicleName, request.userType, taxYear, businessId, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, expenseTypes))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
+                } yield Redirect(navigator.nextPage(VehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )
-
-        case None =>
+        case _ =>
           Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
       }
-
   }
 }

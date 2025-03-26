@@ -21,14 +21,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{NormalMode, _}
 import pages._
-import pages.expenses.travelAndAccommodation.{
-  SimplifiedExpensesPage,
-  TravelAndAccommodationExpenseTypePage,
-  TravelForWorkYourVehiclePage,
-  VehicleTypePage,
-  VehicleFlatRateChoicePage
-}
-import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage, UseSimplifiedExpensesPage}
+import pages.expenses.travelAndAccommodation._
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -39,6 +32,7 @@ import javax.inject.{Inject, Singleton}
 class TravelAndAccommodationNavigator @Inject() {
 
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
+
     case TravelAndAccommodationExpenseTypePage =>
       _ =>
         (taxYear, businessId) =>
@@ -69,6 +63,9 @@ class TravelAndAccommodationNavigator @Inject() {
     case VehicleFlatRateChoicePage =>
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
+    case VehicleExpensesPage =>
+      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
+
     case _ => _ => (_, _) => None
   }
 
@@ -83,7 +80,8 @@ class TravelAndAccommodationNavigator @Inject() {
     userAnswers.get(VehicleFlatRateChoicePage, businessId) map {
       case true =>
         controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
-      case false => ??? // TODO: Navigate to Your Vehicle expenses page once created
+      case false =>
+        controllers.journeys.expenses.travelAndAccommodation.routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>

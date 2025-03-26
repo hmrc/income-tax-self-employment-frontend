@@ -22,11 +22,10 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class TravelForWorkYourVehicleFormProvider @Inject() extends Mappings {
+class VehicleFlatRateChoiceFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType): Form[String] =
+  def apply(vehicleName: String, userType: UserType): Form[Boolean] =
     Form(
-      "value" -> text(s"travelForWorkYourVehicle.error.required.$userType")
-        .verifying(maxLength(100, "travelForWorkYourVehicle.error.length"))
+      "value" -> boolean(s"vehicleFlatRateChoice.error.required.$userType", args = Seq(vehicleName))
     )
 }
