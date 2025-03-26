@@ -33,11 +33,12 @@
 @layout(pageTitle = title(form, messages(s"travelForWorkYourVehicle.heading.$userType"))) {
 
     @formHelper(action = controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, mode)) {
-    @heading(s"travelForWorkYourVehicle.heading.$userType")
 
     @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @heading(s"travelForWorkYourVehicle.heading.$userType")
 
         <div class="govuk-body govuk-!-margin-bottom-6">
             <p>@messages(s"travelAndAccommodation.p1.info.$userType")</p>

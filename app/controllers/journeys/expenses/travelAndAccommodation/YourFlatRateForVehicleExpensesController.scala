@@ -20,19 +20,17 @@ import controllers.actions._
 import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import models.requests.DataRequest
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, YourFlatRateForVehicleExpensesPage}
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourMileagePage, YourFlatRateForVehicleExpensesPage}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.MoneyUtils.formatSumMoneyNoNegative
-import viewmodels.checkAnswers.buildKeyValueRow
+import viewmodels.checkAnswers.expenses.travelAndAccommodation.TravelMileageSummaryViewModel
 import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
 import javax.inject.Inject
@@ -61,49 +59,29 @@ class YourFlatRateForVehicleExpensesController @Inject() (
         case Some(value) => form.fill(value)
       }
       loadPage(preparedForm, Ok, taxYear, businessId, mode)
-
   }
 
   private def loadPage(form: Form[_], status: Status, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
-      request: DataRequest[AnyContent]): Result = {
-    val workMileage              = BigDecimal(90.00)
-    val summaryList: SummaryList = buildSummaryList(workMileage)
-    val showSelection            = request.userAnswers.get(SimplifiedExpensesPage, businessId).contains(false)
-    status(view(form, taxYear, businessId, request.userType, workMileage.toString(), summaryList, showSelection, mode))
-  }
-
-  private def buildSummaryList(workMileage: BigDecimal)(implicit request: DataRequest[AnyContent]): SummaryList = {
-    val overTheLimitPrice: Double = 0.25
-    val limitPrice: Double        = 0.45
-    val mileageLimit: Int         = 10000
-
-    def standardLimitRow(mileage: BigDecimal, limit: BigDecimal) = buildKeyValueRow(
-      s"yourFlatRateForVehicleExpenses.c1.45p",
-      s"yourFlatRateForVehicleExpenses.c2.45p",
-      optKeyArgs = Seq(stripTrailingZeros(mileage)),
-      optValueArgs = Seq(limit.toString())
-    )
-
-    val rows = if (workMileage > mileageLimit) {
-      val aboveMileage     = workMileage - mileageLimit
-      val aboveLimitAmount = aboveMileage * overTheLimitPrice
-      val limitAmount      = mileageLimit * limitPrice
-
-      def aboveLimitRow(aboveMileage: BigDecimal, aboveLimit: BigDecimal) = buildKeyValueRow(
-        s"yourFlatRateForVehicleExpenses.c1.25p",
-        s"yourFlatRateForVehicleExpenses.c2.25p",
-        optKeyArgs = Seq(stripTrailingZeros(aboveMileage)),
-        optValueArgs = Seq(aboveLimit.toString())
-      )
-
-      Seq(standardLimitRow(mileageLimit, limitAmount), aboveLimitRow(aboveMileage, aboveLimitAmount))
-    } else {
-      val limit = workMileage * limitPrice
-      Seq(standardLimitRow(workMileage, limit))
+      request: DataRequest[AnyContent]): Result =
+    request.userAnswers.get(TravelForWorkYourMileagePage, businessId) match {
+      case Some(workMileage) =>
+        val summaryList: SummaryList          = TravelMileageSummaryViewModel.buildSummaryList(workMileage)
+        val showSelection: Boolean            = request.userAnswers.get(SimplifiedExpensesPage, businessId).contains(false)
+        val totalFlatRateExpenses: BigDecimal = TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage)
+        status(
+          view(
+            form,
+            taxYear,
+            businessId,
+            request.userType,
+            stripTrailingZeros(workMileage),
+            stripTrailingZeros(totalFlatRateExpenses),
+            summaryList,
+            showSelection,
+            mode))
+      case _ =>
+        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
-
-    SummaryList(rows).copy(classes = "govuk-summary-list--half")
-  }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>

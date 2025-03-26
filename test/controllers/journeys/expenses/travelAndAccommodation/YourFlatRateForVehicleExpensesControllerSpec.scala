@@ -26,7 +26,7 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.mockito.matchers.MacroBasedMatchers
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, YourFlatRateForVehicleExpensesPage}
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourMileagePage, YourFlatRateForVehicleExpensesPage}
 import play.api.data.Form
 import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
@@ -35,6 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.expenses.travelAndAccommodation.TravelMileageSummaryViewModel
 import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
 import scala.concurrent.Future
@@ -45,10 +46,11 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
   lazy val yourFlatRateForVehicleExpensesRoute: String =
     routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
-  val workMileage                                = "90"
+  val workMileage: String                        = "90"
+  val mileage: BigDecimal                        = BigDecimal(workMileage)
+  val totalFlatRate: String                      = stripTrailingZeros(TravelMileageSummaryViewModel.totalFlatRateExpense(mileage))
   val formProvider                               = new YourFlatRateForVehicleExpensesFormProvider()
   val form: Form[YourFlatRateForVehicleExpenses] = formProvider()
-  val summaryList: SummaryList                   = SummaryList()
 
   "YourFlatRateForVehicleExpenses Controller" - {
 
@@ -56,9 +58,17 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
 
-          val userAnswers = emptyUserAnswers.set(SimplifiedExpensesPage, true, Some(businessId)).success.value
+          val userAnswers = emptyUserAnswers
+            .set(SimplifiedExpensesPage, true, Some(businessId))
+            .success
+            .value
+            .set(TravelForWorkYourMileagePage, mileage, Some(businessId))
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
+
+          val summaryList: SummaryList = TravelMileageSummaryViewModel.buildSummaryList(mileage)(messages(application))
 
           running(application) {
             val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
@@ -68,9 +78,16 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
             val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, taxYear, businessId, userType, workMileage, summaryList, showSelection = true, NormalMode)(
-              request,
-              messages(application)).toString
+            contentAsString(result) mustEqual view(
+              form,
+              taxYear,
+              businessId,
+              userType,
+              workMileage,
+              totalFlatRate,
+              summaryList,
+              showSelection = false,
+              NormalMode)(request, messages(application)).toString
           }
         }
 
@@ -84,9 +101,13 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               .set(YourFlatRateForVehicleExpensesPage, YourFlatRateForVehicleExpenses.values.head)
               .success
               .value
+              .set(TravelForWorkYourMileagePage, mileage, Some(businessId))
+              .success
+              .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
+          val summaryList: SummaryList = TravelMileageSummaryViewModel.buildSummaryList(mileage)(messages(application))
           running(application) {
             val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
@@ -101,9 +122,11 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               businessId,
               userType,
               workMileage,
+              totalFlatRate,
               summaryList,
-              showSelection = true,
-              NormalMode)(request, messages(application)).toString
+              showSelection = false,
+              NormalMode
+            )(request, messages(application)).toString
           }
         }
 
@@ -112,6 +135,9 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
           val userAnswers =
             UserAnswers(userAnswersId)
               .set(SimplifiedExpensesPage, true, Some(businessId))
+              .success
+              .value
+              .set(TravelForWorkYourMileagePage, mileage, Some(businessId))
               .success
               .value
 
@@ -145,9 +171,13 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               .set(SimplifiedExpensesPage, false, Some(businessId))
               .success
               .value
+              .set(TravelForWorkYourMileagePage, mileage, Some(businessId))
+              .success
+              .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
+          val summaryList: SummaryList = TravelMileageSummaryViewModel.buildSummaryList(mileage)(messages(application))
           running(application) {
             val request =
               FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
@@ -166,6 +196,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               businessId,
               userType,
               workMileage,
+              totalFlatRate,
               summaryList,
               showSelection = true,
               NormalMode)(request, messages(application)).toString
