@@ -51,9 +51,9 @@ class VehicleExpensesController @Inject() (
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val expenseTypes: Set[TravelAndAccommodationExpenseType] =
-        request.userAnswers.get(TravelAndAccommodationExpenseTypePage).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
+        request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
       val form: Form[BigDecimal] = formProvider(request.user.userType)
-      val preparedForm = request.userAnswers.get(VehicleExpensesPage) match {
+      val preparedForm = request.userAnswers.get(VehicleExpensesPage, businessId) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -62,7 +62,7 @@ class VehicleExpensesController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(TravelAndAccommodationExpenseTypePage) match {
+      request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
         case Some(expenseTypes) if expenseTypes.contains(LeasedVehicles) || expenseTypes.contains(MyOwnVehicle) =>
           val form: Form[BigDecimal] = formProvider(request.user.userType)
           form
