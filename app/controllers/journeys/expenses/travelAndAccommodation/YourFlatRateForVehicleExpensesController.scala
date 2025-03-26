@@ -73,32 +73,36 @@ class YourFlatRateForVehicleExpensesController @Inject() (
   }
 
   private def buildSummaryList(workMileage: BigDecimal)(implicit request: DataRequest[AnyContent]): SummaryList = {
+    val overTheLimitPrice: Double = 0.25
+    val limitPrice: Double        = 0.45
+    val mileageLimit: Int         = 10000
 
     def standardLimitRow(mileage: BigDecimal, limit: BigDecimal) = buildKeyValueRow(
       s"yourFlatRateForVehicleExpenses.c1.45p",
       s"yourFlatRateForVehicleExpenses.c2.45p",
-      optKeyArgs = Seq(mileage.toString()),
+      optKeyArgs = Seq(stripTrailingZeros(mileage)),
       optValueArgs = Seq(limit.toString())
     )
 
-    def aboveLimitRow(aboveMileage: BigDecimal, aboveLimit: BigDecimal) = buildKeyValueRow(
-      s"yourFlatRateForVehicleExpenses.c1.25p",
-      s"yourFlatRateForVehicleExpenses.c2.25p",
-      optKeyArgs = Seq(aboveMileage.toString()),
-      optValueArgs = Seq(aboveLimit.toString())
-    )
+    val rows = if (workMileage > mileageLimit) {
+      val aboveMileage     = workMileage - mileageLimit
+      val aboveLimitAmount = aboveMileage * overTheLimitPrice
+      val limitAmount      = mileageLimit * limitPrice
 
-    val rows = if (workMileage > 10000) {
-      val aboveMileage     = workMileage - 10000
-      val aboveLimitAmount = aboveMileage * 0.25
-      val limitAmount      = 10000 * 0.45
-      Seq(standardLimitRow(10000, limitAmount), aboveLimitRow(aboveMileage, aboveLimitAmount))
+      def aboveLimitRow(aboveMileage: BigDecimal, aboveLimit: BigDecimal) = buildKeyValueRow(
+        s"yourFlatRateForVehicleExpenses.c1.25p",
+        s"yourFlatRateForVehicleExpenses.c2.25p",
+        optKeyArgs = Seq(stripTrailingZeros(aboveMileage)),
+        optValueArgs = Seq(aboveLimit.toString())
+      )
+
+      Seq(standardLimitRow(mileageLimit, limitAmount), aboveLimitRow(aboveMileage, aboveLimitAmount))
     } else {
-      val limit = workMileage * 0.45
+      val limit = workMileage * limitPrice
       Seq(standardLimitRow(workMileage, limit))
     }
 
-    SummaryList(rows)
+    SummaryList(rows).copy(classes = "govuk-summary-list--half")
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {

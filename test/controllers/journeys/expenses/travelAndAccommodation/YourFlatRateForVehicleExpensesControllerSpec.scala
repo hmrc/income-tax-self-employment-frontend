@@ -142,7 +142,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
           val userAnswers =
             UserAnswers(userAnswersId)
-              .set(SimplifiedExpensesPage, true, Some(businessId))
+              .set(SimplifiedExpensesPage, false, Some(businessId))
               .success
               .value
 
