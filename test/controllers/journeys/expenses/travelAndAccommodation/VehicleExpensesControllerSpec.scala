@@ -19,10 +19,10 @@ package controllers.journeys.expenses.travelAndAccommodation
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
 import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
-import models.{NormalMode, VehicleType}
+import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
-import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType}
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
