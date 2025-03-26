@@ -16,7 +16,7 @@
 
 package forms.expenses.travelAndAccommodation
 
-import forms.behaviours.{BigDecimalFieldBehaviours, SimpleFieldBehaviours}
+import forms.behaviours.BigDecimalFieldBehaviours
 import models.common.UserType
 import play.api.data.FormError
 
