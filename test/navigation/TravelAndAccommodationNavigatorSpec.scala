@@ -98,6 +98,19 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
           navigator.nextPage(SimplifiedExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
         }
 
+        "navigate to VehicleExpensesPage from VehicleFlatRateChoicePage when option selected is 'false'" in {
+          val expectedResult = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          val ua = emptyUserAnswers
+            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
+            .toOption
+            .value
+            .set(VehicleFlatRateChoicePage, false, Some(businessId))
+            .toOption
+            .value
+
+          navigator.nextPage(VehicleFlatRateChoicePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+        }
+
         "navigate to YourFlatRateForVehicleExpensesPage from TravelForWorkYourMileagePage when option selected is 'false'" in {
           val expectedResult = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
           val ua = emptyUserAnswers

@@ -57,6 +57,9 @@ class TravelAndAccommodationNavigator @Inject() {
 
     case VehicleFlatRateChoicePage =>
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
+
+    case VehicleExpensesPage =>
+      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
     case TravelForWorkYourMileagePage =>
       _ =>
         (taxYear, businessId) =>
@@ -77,8 +80,9 @@ class TravelAndAccommodationNavigator @Inject() {
   private def handleFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     userAnswers.get(VehicleFlatRateChoicePage, businessId) map {
       case true =>
-        routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
-      case false => ??? // TODO: Navigate to Your Vehicle expenses page once created
+        controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
+      case false =>
+        controllers.journeys.expenses.travelAndAccommodation.routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>

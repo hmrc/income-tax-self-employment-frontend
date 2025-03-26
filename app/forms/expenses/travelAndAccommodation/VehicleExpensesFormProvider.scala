@@ -16,17 +16,19 @@
 
 package forms.expenses.travelAndAccommodation
 
+import forms.{LessThanZeroError, NonNumericError, OverMaxError}
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TravelForWorkYourVehicleFormProvider @Inject() extends Mappings {
+class VehicleExpensesFormProvider @Inject() extends Mappings with MoneyBounds {
 
-  def apply(userType: UserType): Form[String] =
-    Form(
-      "value" -> text(s"travelForWorkYourVehicle.error.required.$userType")
-        .verifying(maxLength(100, "travelForWorkYourVehicle.error.length"))
-    )
+  def apply(userType: UserType): Form[BigDecimal] = Form(
+    "value" -> currency(s"vehicleExpenses.error.required.$userType", s"vehicleExpenses.$NonNumericError.$userType")
+      .verifying(greaterThan(minimumValue, s"vehicleExpenses.$LessThanZeroError.$userType"))
+      .verifying(lessThan(maximumValue, s"vehicleExpenses.$OverMaxError.$userType"))
+  )
+
 }

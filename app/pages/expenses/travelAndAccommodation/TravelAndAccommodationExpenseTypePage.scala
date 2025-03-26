@@ -16,10 +16,14 @@
 
 package pages.expenses.travelAndAccommodation
 
+import models.common.BusinessId
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import pages.OneQuestionPage
+import play.api.libs.json.JsPath
 
 case object TravelAndAccommodationExpenseTypePage extends OneQuestionPage[Set[TravelAndAccommodationExpenseType]] {
+
+  override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
 
   override def toString: String = "travelAndAccommodationExpenseType"
 
