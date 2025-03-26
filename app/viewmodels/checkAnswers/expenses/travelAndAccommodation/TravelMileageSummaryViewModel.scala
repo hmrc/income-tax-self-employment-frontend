@@ -19,6 +19,7 @@ package viewmodels.checkAnswers.expenses.travelAndAccommodation
 import controllers.journeys.expenses.travelAndAccommodation.stripTrailingZeros
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.buildKeyValueRow
 
 object TravelMileageSummaryViewModel {
@@ -33,7 +34,7 @@ object TravelMileageSummaryViewModel {
       s"yourFlatRateForVehicleExpenses.c1.45p",
       s"yourFlatRateForVehicleExpenses.c2.45p",
       optKeyArgs = Seq(stripTrailingZeros(mileage)),
-      optValueArgs = Seq(limit.toString())
+      optValueArgs = Seq(formatMoney(limit))
     )
 
     val rows = if (workMileage > mileageLimit) {
@@ -45,7 +46,7 @@ object TravelMileageSummaryViewModel {
         s"yourFlatRateForVehicleExpenses.c1.25p",
         s"yourFlatRateForVehicleExpenses.c2.25p",
         optKeyArgs = Seq(stripTrailingZeros(aboveMileage)),
-        optValueArgs = Seq(aboveLimit.toString())
+        optValueArgs = Seq(formatMoney(aboveLimit))
       )
 
       Seq(standardLimitRow(mileageLimit, limitAmount), aboveLimitRow(aboveMileage, aboveLimitAmount))

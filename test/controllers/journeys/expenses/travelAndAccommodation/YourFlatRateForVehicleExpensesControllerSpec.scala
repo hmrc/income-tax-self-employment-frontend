@@ -35,6 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.expenses.travelAndAccommodation.TravelMileageSummaryViewModel
 import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
@@ -48,7 +49,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
     routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
   val workMileage: String                        = "90"
   val mileage: BigDecimal                        = BigDecimal(workMileage)
-  val totalFlatRate: String                      = stripTrailingZeros(TravelMileageSummaryViewModel.totalFlatRateExpense(mileage))
+  val totalFlatRate: String                      = formatMoney(TravelMileageSummaryViewModel.totalFlatRateExpense(mileage))
   val formProvider                               = new YourFlatRateForVehicleExpensesFormProvider()
   val form: Form[YourFlatRateForVehicleExpenses] = formProvider()
 

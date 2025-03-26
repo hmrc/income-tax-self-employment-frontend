@@ -54,8 +54,8 @@
             @govukRadios(
                 RadiosViewModel(
                     field  = form("value"),
-                    legend =  LegendViewModel(messages(s"yourFlatRateForVehicleExpenses.legend.$userType", mileage)).withCssClass("govuk-fieldset__legend--m"),
-                    items  = YourFlatRateForVehicleExpenses.options
+                    legend =  LegendViewModel(messages(s"yourFlatRateForVehicleExpenses.legend.$userType", totalFlatRateExpenses)).withCssClass("govuk-fieldset__legend--m"),
+                    items  = YourFlatRateForVehicleExpenses.options(totalFlatRateExpenses)
                 )
             )
         }

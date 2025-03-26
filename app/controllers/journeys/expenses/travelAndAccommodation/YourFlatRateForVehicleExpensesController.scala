@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils.formatMoney
 import viewmodels.checkAnswers.expenses.travelAndAccommodation.TravelMileageSummaryViewModel
 import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesView
 
@@ -75,7 +76,7 @@ class YourFlatRateForVehicleExpensesController @Inject() (
             businessId,
             request.userType,
             stripTrailingZeros(workMileage),
-            stripTrailingZeros(totalFlatRateExpenses),
+            formatMoney(totalFlatRateExpenses),
             summaryList,
             showSelection,
             mode))
