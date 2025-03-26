@@ -17,8 +17,10 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
+import models.NormalMode
 import models.common.UserType
-import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
+import navigation.TravelAndAccommodationNavigator
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, UseSimplifiedExpensesPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesView
@@ -45,8 +47,13 @@ class UseSimplifiedExpensesControllerSpec extends SpecBase {
 
             val view = application.injector.instanceOf[UseSimplifiedExpensesView]
 
+            val expectedUrl = application.injector
+              .instanceOf[TravelAndAccommodationNavigator]
+              .nextPage(UseSimplifiedExpensesPage, NormalMode, ua, taxYear, businessId)
+              .url
+
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(userType, "CarName", "TODO")(request, messages(application)).toString
+            contentAsString(result) mustEqual view(userType, "CarName", expectedUrl)(request, messages(application)).toString
           }
         }
 

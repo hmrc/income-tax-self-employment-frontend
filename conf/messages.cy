@@ -2034,6 +2034,23 @@ vehicleFlatRateChoice.error.required.individual = *********Missing Welsh Message
 vehicleFlatRateChoice.error.required.agent = *********Missing Welsh Message *********
 vehicleFlatRateChoice.change.hidden = *********Missing Welsh Message *********
 
+travelForWorkYourMileage.title.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.title.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.formLabel.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.formLabel.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.p1.info.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.p1.info.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.checkYourAnswersLabel = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.nonNumeric.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.nonNumeric.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.required.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.required.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.lessThanZero.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.lessThanZero.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.overMax.individual = *********Missing Welsh Message *********
+travelForWorkYourMileage.error.overMax.agent = *********Missing Welsh Message *********
+travelForWorkYourMileage.change.hidden = *********Missing Welsh Message *********
+
 yourFlatRateForVehicleExpenses.heading.individual = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.heading.agent = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.legend.individual = *********Missing Welsh Message *********

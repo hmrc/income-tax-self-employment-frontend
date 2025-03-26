@@ -2358,6 +2358,23 @@ vehicleFlatRateChoice.error.required.individual = Select yes if you want to calc
 vehicleFlatRateChoice.error.required.agent = Select yes if your client wants to calculate a flat rate
 vehicleFlatRateChoice.change.hidden = VehicleFlatRateChoice
 
+travelForWorkYourMileage.title.individual = Your work mileage
+travelForWorkYourMileage.title.agent = Your client’s work mileage
+travelForWorkYourMileage.formLabel.individual = How many miles did you travel in {0}?
+travelForWorkYourMileage.formLabel.agent = How many miles did your client travel in {0}?
+travelForWorkYourMileage.p1.info.individual = Tell us how many miles you travelled in {0} during the tax year and we’ll work out the flat rate amount you can claim.
+travelForWorkYourMileage.p1.info.agent = Tell us how many miles your client travelled in {0} during the tax year and we’ll work out the flat rate amount your client can claim.
+travelForWorkYourMileage.checkYourAnswersLabel = TravelForWorkYourMileage
+travelForWorkYourMileage.error.nonNumeric.individual = The number of work miles you travelled in {0} must be a number
+travelForWorkYourMileage.error.nonNumeric.agent = The number of work miles your client travelled in {0} must be a number
+travelForWorkYourMileage.error.required.individual = Enter the number of work miles you travelled in {0}
+travelForWorkYourMileage.error.required.agent = Enter the number of work miles your client travelled in {0}
+travelForWorkYourMileage.error.lessThanZero.individual = The number of work miles you travelled in {0} must be more than 0
+travelForWorkYourMileage.error.lessThanZero.agent = The number of work miles your client travelled in {0} must be more than 0
+travelForWorkYourMileage.error.overMax.individual = The number of work miles you travelled in {0} must be less than 100,000,000,000
+travelForWorkYourMileage.error.overMax.agent = The number of work miles your client travelled in {0} must be less than 100,000,000,000
+travelForWorkYourMileage.change.hidden = TravelForWorkYourMileageHidden
+
 yourFlatRateForVehicleExpenses.heading.individual = Your flat rate for vehicle expenses is £{0}
 yourFlatRateForVehicleExpenses.heading.agent = Your client’s flat rate for vehicle expenses is £{0}
 yourFlatRateForVehicleExpenses.p2.individual = You do not have to use flat rates for all your vehicles. However, once you use the flat rates for a vehicle, you must continue to do so as long as you use it for your self-employment.
