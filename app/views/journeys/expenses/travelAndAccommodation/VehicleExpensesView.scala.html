@@ -40,11 +40,11 @@
 
     @formHelper(action = routes.VehicleExpensesController.onSubmit(taxYear, businessId, mode)) {
 
-        @heading(s"vehicleExpenses.title.$userType")
-
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))
         }
+
+        @heading(s"vehicleExpenses.title.$userType")
 
             <p class="govuk-body">@{messages(s"vehicleExpenses.can.claim.$userType")}</p>
                 <ul class="govuk-body govuk-list--bullet">
