@@ -845,6 +845,26 @@ vehicleExpenses.error.overMax.individual = The amount you’re claiming in vehic
 vehicleExpenses.error.lessThanZero.agent = The amount your client is claiming in vehicle expenses must be more than £0
 vehicleExpenses.error.lessThanZero.individual = The amount you’re claiming in vehicle expenses must be more than £0
 
+## Costs Not Covered
+costsNotCovered.title.common = Costs not covered by the flat rate
+costsNotCovered.p1.individual = The flat rate does not cover incidental expenses on work journeys. This means you can claim costs such as:
+costsNotCovered.p1.agent = The flat rate does not cover incidental expenses on work journeys. This means your client can claim costs such as:
+costsNotCovered.tolls.common = tolls
+costsNotCovered.congestion.common  = congestion charges
+costsNotCovered.parking.common = parking fees
+costsNotCovered.p2.individual = You cannot claim any amount that covers personal use.
+costsNotCovered.p2.agent = Your client cannot claim any amount that covers personal use.
+costsNotCovered.subheading.individual = How much did you spend on tolls, congestion charges and parking?
+costsNotCovered.subheading.agent = How much did your client spend on tolls, congestion charges and parking?
+costsNotCovered.error.required.individual =  Enter the amount you spent on tolls, congestion charges and parking
+costsNotCovered.error.required.agent = Enter the amount your client spent on tolls, congestion charges and parking
+costsNotCovered.error.nonNumeric.individual = The amount you spent on tolls, congestion charges and parking must be a number
+costsNotCovered.error.nonNumeric.agent = The amount your client spent on tolls, congestion charges and parking must be a number
+costsNotCovered.error.overMax.agent = The amount your client spent on tolls, congestion charges and parking must be less than £100,000,000,000
+costsNotCovered.error.overMax.individual = The amount you spent on tolls, congestion charges and parking must be less than £100,000,000,000
+costsNotCovered.error.lessThanZero.individual = The amount you spent on tolls, congestion charges and parking must be more than £0
+costsNotCovered.error.lessThanZero.agent = The amount your client spent on tolls, congestion charges and parking must be more than £0
+
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount

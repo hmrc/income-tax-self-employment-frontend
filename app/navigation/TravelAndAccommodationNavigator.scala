@@ -32,6 +32,7 @@ import javax.inject.{Inject, Singleton}
 class TravelAndAccommodationNavigator @Inject() {
 
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
+
     case TravelAndAccommodationExpenseTypePage =>
       _ =>
         (taxYear, businessId) =>
@@ -66,6 +67,12 @@ class TravelAndAccommodationNavigator @Inject() {
           Some(
             routes.YourFlatRateForVehicleExpensesController
               .onPageLoad(taxYear, businessId, NormalMode))
+    //    case YourFlatRateForVehicleExpensesPage =>
+    //      _ =>
+    //        (taxYear, businessId) =>
+    //          Some(
+    //            controllers.journeys.expenses.travelAndAccommodation.routes.CostsNotCoveredController
+    //              .onPageLoad(taxYear, businessId, NormalMode))
 
     case _ => _ => (_, _) => None
   }
