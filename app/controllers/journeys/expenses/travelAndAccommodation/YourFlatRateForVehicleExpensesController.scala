@@ -51,57 +51,59 @@ class YourFlatRateForVehicleExpensesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val form: Form[YourFlatRateForVehicleExpenses] = formProvider()
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(YourFlatRateForVehicleExpensesPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      request.userAnswers.get(TravelForWorkYourMileagePage, businessId) match {
+        case Some(workMileage) =>
+          val form: Form[YourFlatRateForVehicleExpenses] = formProvider(workMileage, request.userType)
+          val preparedForm = request.userAnswers.get(YourFlatRateForVehicleExpensesPage, businessId) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+          loadPage(preparedForm, workMileage, Ok, taxYear, businessId, mode)
+        case _ =>
+          Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       }
-      loadPage(preparedForm, Ok, taxYear, businessId, mode)
   }
 
-  private def loadPage(form: Form[_], status: Status, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
-      request: DataRequest[AnyContent]): Result =
-    request.userAnswers.get(TravelForWorkYourMileagePage, businessId) match {
-      case Some(workMileage) =>
-        val summaryList: SummaryList          = TravelMileageSummaryViewModel.buildSummaryList(workMileage)
-        val showSelection: Boolean            = request.userAnswers.get(SimplifiedExpensesPage, businessId).contains(false)
-        val totalFlatRateExpenses: BigDecimal = TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage)
-        status(
-          view(
-            form = form,
-            taxYear = taxYear,
-            businessId = businessId,
-            userType = request.userType,
-            mileage = stripTrailingZeros(workMileage),
-            totalFlatRateExpenses = formatMoney(totalFlatRateExpenses),
-            summaryList = summaryList,
-            showSelection = showSelection,
-            mode = mode
-          ))
-      case _ =>
-        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
-    }
+  private def loadPage(form: Form[_], workMileage: BigDecimal, status: Status, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit
+      request: DataRequest[AnyContent]): Result = {
+    val summaryList: SummaryList          = TravelMileageSummaryViewModel.buildSummaryList(workMileage)
+    val showSelection: Boolean            = request.userAnswers.get(SimplifiedExpensesPage, businessId).contains(false)
+    val totalFlatRateExpenses: BigDecimal = TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage)
+    status(
+      view(
+        form = form,
+        taxYear = taxYear,
+        businessId = businessId,
+        userType = request.userType,
+        mileage = stripTrailingZeros(workMileage),
+        totalFlatRateExpenses = formatMoney(totalFlatRateExpenses),
+        summaryList = summaryList,
+        showSelection = showSelection,
+        mode = mode
+      ))
+
+  }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(SimplifiedExpensesPage, businessId) match {
-        case Some(boolean) if boolean =>
+      (request.userAnswers.get(SimplifiedExpensesPage, businessId), request.userAnswers.get(TravelForWorkYourMileagePage, businessId)) match {
+        case (Some(boolean), _) if boolean =>
           Future.successful(Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, request.userAnswers, taxYear, businessId)))
-        case Some(boolean) if !boolean =>
+        case (Some(boolean), Some(workMileage)) if !boolean =>
+          val form: Form[YourFlatRateForVehicleExpenses] = formProvider(workMileage, request.userType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(loadPage(formWithErrors, BadRequest, taxYear, businessId, mode)),
+              formWithErrors => Future.successful(loadPage(formWithErrors, workMileage, BadRequest, taxYear, businessId, mode)),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )
-        case None => Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+        case _ => Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
       }
 
   }

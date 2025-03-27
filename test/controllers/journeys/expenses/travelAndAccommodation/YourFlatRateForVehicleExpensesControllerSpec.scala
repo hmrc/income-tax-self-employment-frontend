@@ -47,16 +47,16 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
   lazy val yourFlatRateForVehicleExpensesRoute: String =
     routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
-  val workMileage: String                        = "90"
-  val mileage: BigDecimal                        = BigDecimal(workMileage)
-  val totalFlatRate: String                      = formatMoney(TravelMileageSummaryViewModel.totalFlatRateExpense(mileage))
-  val formProvider                               = new YourFlatRateForVehicleExpensesFormProvider()
-  val form: Form[YourFlatRateForVehicleExpenses] = formProvider()
+  val workMileage: String   = "90"
+  val mileage: BigDecimal   = BigDecimal(workMileage)
+  val totalFlatRate: String = formatMoney(TravelMileageSummaryViewModel.totalFlatRateExpense(mileage))
+  val formProvider          = new YourFlatRateForVehicleExpensesFormProvider()
 
   "YourFlatRateForVehicleExpenses Controller" - {
 
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       s"when user is $userType" - {
+        val form: Form[YourFlatRateForVehicleExpenses] = formProvider(mileage, userType)
         "must return OK and the correct view for a GET" in {
 
           val userAnswers = emptyUserAnswers
@@ -89,6 +89,25 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               summaryList,
               showSelection = false,
               NormalMode)(request, messages(application)).toString
+          }
+        }
+
+        "redirect to Journey Recovery for a GET if no existing data is found for TravelForWorkYourMileagePage" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(SimplifiedExpensesPage, true, Some(businessId))
+            .success
+            .value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
+
+          running(application) {
+            val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
           }
         }
 
@@ -162,6 +181,25 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual onwardRoute.url
+          }
+        }
+
+        "redirect to Journey Recovery for a POST if no existing data is found for TravelForWorkYourMileagePage" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(SimplifiedExpensesPage, true, Some(businessId))
+            .success
+            .value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
+
+          running(application) {
+            val request = FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
           }
         }
 

@@ -18,29 +18,36 @@ package forms
 
 import forms.behaviours.OptionFieldBehaviours
 import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
+import models.common.UserType
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import play.api.data.FormError
-
 class YourFlatRateForVehicleExpensesFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new YourFlatRateForVehicleExpensesFormProvider()()
+  val mileage: BigDecimal   = 200
+  val totalFlatRate: String = "90.00"
 
   ".value" - {
+    UserType.values foreach { userType =>
+      s"for the userType $userType" - {
+        val form = new YourFlatRateForVehicleExpensesFormProvider()(mileage, userType)
 
-    val fieldName   = "value"
-    val requiredKey = "yourFlatRateForVehicleExpenses.error.required"
+        val fieldName   = "value"
+        val requiredKey = s"yourFlatRateForVehicleExpenses.error.required.$userType"
 
-    behave like optionsField[YourFlatRateForVehicleExpenses](
-      form,
-      fieldName,
-      validValues = YourFlatRateForVehicleExpenses.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+        behave like optionsField[YourFlatRateForVehicleExpenses](
+          form,
+          fieldName,
+          validValues = YourFlatRateForVehicleExpenses.values,
+          invalidError = FormError(fieldName, "error.invalid", Seq(totalFlatRate))
+        )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, requiredKey, Seq(totalFlatRate))
+        )
+      }
+    }
+
   }
 }
