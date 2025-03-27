@@ -16,7 +16,7 @@
 
 package models
 
-import models.journeys.expenses.travelAndAccommodation.VehicleType
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -25,34 +25,37 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class VehicleTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class YourFlatRateForVehicleExpensesSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "VehicleType" - {
+  "YourFlatRateForVehicleExpenses" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(VehicleType.values.toSeq)
+      val gen = Gen.oneOf(YourFlatRateForVehicleExpenses.values.toSeq)
 
-      forAll(gen) { vehicleType =>
-        JsString(vehicleType.toString).validate[VehicleType].asOpt.value mustEqual vehicleType
+      forAll(gen) { yourFlatRateForVehicleExpenses =>
+        JsString(yourFlatRateForVehicleExpenses.toString)
+          .validate[YourFlatRateForVehicleExpenses]
+          .asOpt
+          .value mustEqual yourFlatRateForVehicleExpenses
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!VehicleType.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!YourFlatRateForVehicleExpenses.values.map(_.toString).contains(_))
 
       forAll(gen) { invalidValue =>
-        JsString(invalidValue).validate[VehicleType] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[YourFlatRateForVehicleExpenses] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(VehicleType.values.toSeq)
+      val gen = Gen.oneOf(YourFlatRateForVehicleExpenses.values.toSeq)
 
-      forAll(gen) { vehicleType =>
-        Json.toJson(vehicleType) mustEqual JsString(vehicleType.toString)
+      forAll(gen) { yourFlatRateForVehicleExpenses =>
+        Json.toJson(yourFlatRateForVehicleExpenses) mustEqual JsString(yourFlatRateForVehicleExpenses.toString)
       }
     }
   }

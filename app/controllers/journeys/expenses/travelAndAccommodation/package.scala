@@ -32,4 +32,6 @@ package object travelAndAccommodation {
         Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 
+  def stripTrailingZeros(value: BigDecimal): String =
+    value.bigDecimal.stripTrailingZeros().toPlainString
 }

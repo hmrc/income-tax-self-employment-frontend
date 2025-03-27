@@ -16,12 +16,17 @@
 
 package generators
 
-import models.VehicleType
 import models.journeys.expenses.individualCategories._
+import models.journeys.expenses.travelAndAccommodation.{VehicleType, YourFlatRateForVehicleExpenses}
 import models.journeys.income.{HowMuchTradingAllowance, TradingAllowance}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryYourFlatRateForVehicleExpenses: Arbitrary[YourFlatRateForVehicleExpenses] =
+    Arbitrary {
+      Gen.oneOf(YourFlatRateForVehicleExpenses.values.toSeq)
+    }
 
   implicit lazy val arbitraryVehicleType: Arbitrary[VehicleType] =
     Arbitrary {

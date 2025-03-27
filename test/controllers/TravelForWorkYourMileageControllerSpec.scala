@@ -22,11 +22,13 @@ import forms.TravelForWorkYourMileageFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, Mode, NormalMode}
+import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,7 +41,7 @@ class TravelForWorkYourMileageControllerSpec extends SpecBase with MockitoSugar 
 
   val formProvider = new TravelForWorkYourMileageFormProvider()
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val mileage: BigDecimal = 300.00
   val vehicle             = "Grey Astra"
@@ -130,6 +132,10 @@ class TravelForWorkYourMileageControllerSpec extends SpecBase with MockitoSugar 
 
             val application =
               applicationBuilder(userAnswers = Some(userAnswers), userType = scenario.userType)
+                .overrides(
+                  bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
+                  bind[SessionRepository].toInstance(mockSessionRepository)
+                )
                 .build()
 
             running(application) {
@@ -140,7 +146,7 @@ class TravelForWorkYourMileageControllerSpec extends SpecBase with MockitoSugar 
               val result = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+              redirectLocation(result).value mustEqual onwardRoute.url
             }
           }
 

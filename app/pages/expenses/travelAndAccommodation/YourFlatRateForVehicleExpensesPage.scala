@@ -16,11 +16,10 @@
 
 package pages.expenses.travelAndAccommodation
 
-import models.journeys.expenses.travelAndAccommodation.VehicleType
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import pages.OneQuestionPage
 
-case object VehicleTypePage extends OneQuestionPage[VehicleType] {
+case object YourFlatRateForVehicleExpensesPage extends OneQuestionPage[YourFlatRateForVehicleExpenses] {
 
-  override def toString: String = "vehicleType"
-
+  override def toString: String = "yourFlatRateForVehicleExpenses"
 }

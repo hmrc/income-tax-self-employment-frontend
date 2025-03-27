@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package pages.expenses.travelAndAccommodation
+package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
-import models.journeys.expenses.travelAndAccommodation.VehicleType
-import pages.OneQuestionPage
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case object VehicleTypePage extends OneQuestionPage[VehicleType] {
+class TravelMileageSummaryViewModelSpec extends AnyFreeSpec with Matchers {
 
-  override def toString: String = "vehicleType"
+  "TravelMileageSummaryViewModel" - {
+    "calculate total expense when the mileage is more then the limit" in {
+      TravelMileageSummaryViewModel.totalFlatRateExpense(15000) mustBe 5750.00
+    }
+
+    "calculate total expense when the mileage is less then the limit" in {
+      TravelMileageSummaryViewModel.totalFlatRateExpense(500) mustBe 225.00
+    }
+  }
 
 }

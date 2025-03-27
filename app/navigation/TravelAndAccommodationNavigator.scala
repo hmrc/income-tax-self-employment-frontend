@@ -16,7 +16,7 @@
 
 package navigation
 
-import controllers.standard.routes._
+import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.{NormalMode, _}
@@ -32,29 +32,24 @@ import javax.inject.{Inject, Singleton}
 class TravelAndAccommodationNavigator @Inject() {
 
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
-
     case TravelAndAccommodationExpenseTypePage =>
       _ =>
         (taxYear, businessId) =>
           Some(
-            controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController
+            routes.TravelForWorkYourVehicleController
               .onPageLoad(taxYear, businessId, NormalMode))
 
     case TravelForWorkYourVehiclePage =>
-      _ =>
-        (taxYear, businessId) =>
-          Some(controllers.journeys.expenses.travelAndAccommodation.routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
+      _ => (taxYear, businessId) => Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
 
     case VehicleTypePage =>
-      _ =>
-        (taxYear, businessId) =>
-          Some(controllers.journeys.expenses.travelAndAccommodation.routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode))
+      _ => (taxYear, businessId) => Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode))
 
     case UseSimplifiedExpensesPage =>
       _ =>
         (taxYear, businessId) =>
           Some(
-            controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController
+            routes.TravelForWorkYourMileageController
               .onPageLoad(taxYear, businessId, NormalMode))
 
     case SimplifiedExpensesPage =>
@@ -65,15 +60,21 @@ class TravelAndAccommodationNavigator @Inject() {
 
     case VehicleExpensesPage =>
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
+    case TravelForWorkYourMileagePage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            routes.YourFlatRateForVehicleExpensesController
+              .onPageLoad(taxYear, businessId, NormalMode))
 
     case _ => _ => (_, _) => None
   }
 
   private def handleSimplifiedExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     userAnswers.get(SimplifiedExpensesPage, businessId) map {
-      case true => controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
+      case true => routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
       case false =>
-        controllers.journeys.expenses.travelAndAccommodation.routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, mode)
+        routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, mode)
     }
 
   private def handleFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
@@ -85,13 +86,13 @@ class TravelAndAccommodationNavigator @Inject() {
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>
-    _ => (_, _) => JourneyRecoveryController.onPageLoad()
+    _ => (_, _) => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
     mode match {
       case NormalMode =>
-        normalRoutes(page)(userAnswers)(taxYear, businessId).getOrElse(JourneyRecoveryController.onPageLoad())
+        normalRoutes(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
         checkRouteMap(page)(userAnswers)(taxYear, businessId)
     }

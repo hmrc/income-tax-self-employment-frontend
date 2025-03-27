@@ -17,7 +17,7 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.behaviours.OptionFieldBehaviours
-import models.VehicleType
+import models.journeys.expenses.travelAndAccommodation.VehicleType
 import play.api.data.FormError
 
 class VehicleTypeFormProviderSpec extends OptionFieldBehaviours {

@@ -131,11 +131,16 @@ package object checkAnswers {
                                  value: BigDecimal,
                                  classes: String = "",
                                  optKeyArgs: Seq[String] = Seq.empty,
+                                 optValueArgs: Seq[String] = Seq.empty,
                                  contentInBold: Boolean = false)(implicit messages: Messages): SummaryListRow =
-    buildKeyValueRow(keyMessage, formatPosNegMoneyWithPounds(value), classes, optKeyArgs, contentInBold)
+    buildKeyValueRow(keyMessage, formatPosNegMoneyWithPounds(value), classes, optKeyArgs, optValueArgs, contentInBold)
 
-  def buildKeyValueRow(keyMessage: String, value: String, classes: String = "", optKeyArgs: Seq[String] = Seq.empty, contentInBold: Boolean = false)(
-      implicit messages: Messages): SummaryListRow = {
+  def buildKeyValueRow(keyMessage: String,
+                       value: String,
+                       classes: String = "",
+                       optKeyArgs: Seq[String] = Seq.empty,
+                       optValueArgs: Seq[String] = Seq.empty,
+                       contentInBold: Boolean = false)(implicit messages: Messages): SummaryListRow = {
     val fontWeight = if (contentInBold) "govuk-!-font-weight-bold" else "govuk-!-font-weight-regular"
     SummaryListRowViewModel(
       key = Key(
@@ -143,7 +148,7 @@ package object checkAnswers {
         classes = s"$fontWeight hmrc-summary-list__key"
       ),
       value = Value(
-        content = HtmlContent(messages(value)),
+        content = HtmlContent(messages(value, optValueArgs: _*)),
         classes = s"$fontWeight hmrc-summary-list__key govuk-!-text-align-right"
       )
     ).withCssClass(classes)

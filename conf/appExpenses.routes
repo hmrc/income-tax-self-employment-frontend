@@ -142,6 +142,11 @@ POST       /:taxYear/:businessId/expenses/travel/vehicle-expenses               
 GET        /:taxYear/:businessId/expenses/travel/change-vehicle-expenses                                                               controllers.journeys.expenses.travelAndAccommodation.VehicleExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST       /:taxYear/:businessId/expenses/travel/change-vehicle-expenses                                                               controllers.journeys.expenses.travelAndAccommodation.VehicleExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET        /:taxYear/:businessId/expenses/travel/vehicles-simplified-mileage-amount-playback                                           controllers.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST       /:taxYear/:businessId/expenses/travel/vehicles-simplified-mileage-amount-playback                                           controllers.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET        /:taxYear/:businessId/expenses/travel/change-vehicles-simplified-mileage-amount-playback                                    controllers.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST       /:taxYear/:businessId/expenses/travel/change-vehicles-simplified-mileage-amount-playback                                    controllers.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId,mode: Mode = CheckMode)
+
 ########## Expenses - Office Supplies ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies/amount                                                                      controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

@@ -17,11 +17,11 @@
 package navigation
 
 import base.SpecBase
-import controllers.standard
 import controllers.journeys.expenses.travelAndAccommodation.routes
+import controllers.standard
 import models._
-import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
+import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.travelAndAccommodation._
@@ -109,6 +109,16 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
             .value
 
           navigator.nextPage(VehicleFlatRateChoicePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+        }
+
+        "navigate to YourFlatRateForVehicleExpensesPage from TravelForWorkYourMileagePage when option selected is 'false'" in {
+          val expectedResult = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourMileagePage, BigDecimal(200), Some(businessId))
+            .toOption
+            .value
+
+          navigator.nextPage(TravelForWorkYourMileagePage, mode, ua, taxYear, businessId) shouldBe expectedResult
         }
       }
 

@@ -17,15 +17,20 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
-import models.journeys.expenses.travelAndAccommodation.VehicleType
+import models.common.UserType
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import play.api.data.Form
+import utils.MoneyUtils.formatMoney
+import viewmodels.checkAnswers.expenses.travelAndAccommodation.TravelMileageSummaryViewModel
 
 import javax.inject.Inject
 
-class VehicleTypeFormProvider @Inject() extends Mappings {
+class YourFlatRateForVehicleExpensesFormProvider @Inject() extends Mappings {
 
-  def apply(vehicleName: String): Form[VehicleType] =
+  def apply(workMileage: BigDecimal, userType: UserType): Form[YourFlatRateForVehicleExpenses] =
     Form(
-      "value" -> enumerable[VehicleType]("vehicleType.error.required", args = Seq(vehicleName))
+      "value" -> enumerable[YourFlatRateForVehicleExpenses](
+        s"yourFlatRateForVehicleExpenses.error.required.$userType",
+        args = Seq(formatMoney(TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage))))
     )
 }
