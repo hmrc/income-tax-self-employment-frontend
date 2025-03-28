@@ -22,11 +22,13 @@ import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
 import pages.AddAnotherVehiclePage
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.expenses.travelAndAccommodation.AddAnotherVehicleSummary
 import views.html.journeys.expenses.travelAndAccommodation.AddAnotherVehicleView
 
 import javax.inject.Inject
@@ -48,22 +50,29 @@ class AddAnotherVehicleController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form: Form[Boolean] = formProvider(request.user.userType)
+      val form: Form[Boolean]   = formProvider(request.user.userType)
+      val vehicleDetails        = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
+      val numberOfVehicles: Int = request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).map(_.length).getOrElse(0)
+
       val preparedForm = request.userAnswers.get(AddAnotherVehiclePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      Ok(view(preparedForm, mode, vehicleDetails, request.user.userType, taxYear, businessId, numberOfVehicles))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val form: Form[Boolean] = formProvider(request.user.userType)
+      val form: Form[Boolean]   = formProvider(request.user.userType)
+      val numberOfVehicles: Int = request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).map(_.length).getOrElse(0)
+      val vehicleDetails        = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
+
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, vehicleDetails, request.userType, taxYear, businessId, numberOfVehicles))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherVehiclePage, value))

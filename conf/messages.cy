@@ -2096,3 +2096,10 @@ yourFlatRateForVehicleExpenses.checkYourAnswersLabel = *********Missing Welsh Me
 yourFlatRateForVehicleExpenses.error.required.individual = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.error.required.agent = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.change.hidden = *********Missing Welsh Message *********
+
+addAnotherVehicle.title.individual = *********Missing Welsh Message *********
+addAnotherVehicle.title.agent = *********Missing Welsh Message *********
+addAnotherVehicle.subheading.individual = *********Missing Welsh Message *********
+addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
+addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
+addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
