@@ -18,7 +18,6 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
-import forms.expenses.travelAndAccommodation.CostsNotCoveredFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
@@ -34,7 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.expenses.travelAndAccommodation.CostsNotCoveredView
-import controllers.journeys.expenses.travelAndAccommodation
+import forms.standard.CurrencyFormProvider
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 
 import scala.concurrent.Future
@@ -43,8 +42,14 @@ class CostsNotCoveredControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider           = new CostsNotCoveredFormProvider()
-  val form: Form[BigDecimal] = formProvider(userType)
+  val formProvider = new CurrencyFormProvider()
+  val form: Form[BigDecimal] = formProvider(
+    CostsNotCoveredPage,
+    userType,
+    minValueError = s"costsNotCovered.error.lessThanZero.$userType",
+    maxValueError = s"costsNotCovered.error.overMax.$userType",
+    nonNumericError = s"costsNotCovered.error.nonNumeric.$userType"
+  )
 
   lazy val costsNotCoveredControllerRoute: String = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, NormalMode).url
 

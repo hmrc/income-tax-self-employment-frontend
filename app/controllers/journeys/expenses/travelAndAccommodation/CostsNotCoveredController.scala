@@ -17,12 +17,11 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import forms.expenses.travelAndAccommodation.CostsNotCoveredFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.TravelAndAccommodationNavigator
 import pages.CostsNotCoveredPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -39,20 +38,28 @@ class CostsNotCoveredController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: CostsNotCoveredFormProvider,
+    formProvider: CurrencyFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: CostsNotCoveredView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val page = CostsNotCoveredPage
+  private val form = (userType: UserType) =>
+    formProvider(
+      page = page,
+      userType = userType,
+      minValueError = s"costsNotCovered.error.lessThanZero.$userType",
+      maxValueError = s"costsNotCovered.error.overMax.$userType",
+      nonNumericError = s"costsNotCovered.error.nonNumeric.$userType"
+    )
+
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form: Form[BigDecimal] = formProvider(request.user.userType)
-
       val preparedForm = request.userAnswers.get(CostsNotCoveredPage, businessId) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => form(request.userType)
+        case Some(value) => form(request.userType).fill(value)
       }
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
@@ -60,15 +67,13 @@ class CostsNotCoveredController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val form: Form[BigDecimal] = formProvider(request.user.userType)
-
-      form
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CostsNotCoveredPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CostsNotCoveredPage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(CostsNotCoveredPage, mode, updatedAnswers, taxYear, businessId))
         )

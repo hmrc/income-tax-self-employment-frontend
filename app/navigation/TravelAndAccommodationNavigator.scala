@@ -84,19 +84,23 @@ class TravelAndAccommodationNavigator @Inject() {
         routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, mode)
     }
 
+  private def handleYourVehicleExpensesFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call =
+    userAnswers.get(SimplifiedExpensesPage, businessId) match {
+      case Some(true) => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
+      case Some(false) =>
+        userAnswers.get(YourFlatRateForVehicleExpensesPage) match {
+          case Some(YourFlatRateForVehicleExpenses.Flatrate)   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
+          case Some(YourFlatRateForVehicleExpenses.Actualcost) => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
+        }
+      case None => standard.routes.JourneyRecoveryController.onPageLoad()
+    }
+
   private def handleFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     userAnswers.get(VehicleFlatRateChoicePage, businessId) map {
       case true =>
         routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
       case false =>
         routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
-    }
-
-  private def handleYourVehicleExpensesFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call =
-    userAnswers.get(YourFlatRateForVehicleExpensesPage) match {
-      case Some(YourFlatRateForVehicleExpenses.Flatrate)   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
-      case Some(YourFlatRateForVehicleExpenses.Actualcost) => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
-      case _                                               => standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>

@@ -17,11 +17,12 @@
 package views.journeys.expenses
 
 import base.SpecBase
-import forms.expenses.travelAndAccommodation.CostsNotCoveredFormProvider
+import forms.standard.CurrencyFormProvider
 import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import pages.CostsNotCoveredPage
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -48,9 +49,14 @@ class CostsNotCoveredViewSpec extends SpecBase with MockitoSugar with BeforeAndA
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
 
-          val formProvider = new CostsNotCoveredFormProvider()
-
-          val form: Form[BigDecimal] = formProvider(userType)
+          val formProvider = new CurrencyFormProvider()
+          val form: Form[BigDecimal] = formProvider(
+            CostsNotCoveredPage,
+            userType,
+            minValueError = s"costsNotCovered.error.lessThanZero.$userType",
+            maxValueError = s"costsNotCovered.error.overMax.$userType",
+            nonNumericError = s"costsNotCovered.error.nonNumeric.$userType"
+          )
 
           val request = FakeRequest(GET, "/")
           val result  = createView(form, NormalMode, userType, taxYear, businessId)(request)
