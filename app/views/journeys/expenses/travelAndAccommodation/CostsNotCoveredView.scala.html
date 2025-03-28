@@ -1,0 +1,72 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.InputWidth._
+@import controllers.journeys.expenses.travelAndAccommodation.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import views.html.components.Heading
+
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    heading: Heading,
+    govukInput: GovukInput,
+    govukButton: GovukButton
+)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("costsNotCovered.title.common"))) {
+
+    @formHelper(action = routes.CostsNotCoveredController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))
+        }
+
+        @heading(s"costsNotCovered.title.common")
+
+            <p class="govuk-body">@{messages(s"costsNotCovered.p1.$userType")}</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>@{messages("costsNotCovered.tolls.common")}</li>
+                <li>@{messages("costsNotCovered.congestion.common")}</li>
+                <li>@{messages("costsNotCovered.parking.common")}</li>
+            </ul>
+            <p class="govuk-body">@{messages(s"costsNotCovered.p2.$userType")}</p>
+
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = LabelViewModel(messages(s"costsNotCovered.subheading.$userType"))
+                .withCssClass("govuk-label--m"),
+            )
+            .asNumeric()
+            .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
+
+@{
+// $COVERAGE-OFF$
+}

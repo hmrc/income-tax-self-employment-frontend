@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController
-import forms.TravelForWorkYourMileageFormProvider
+import controllers.standard
+import forms.expenses.travelAndAccommodation.TravelForWorkYourMileageFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.{CheckMode, Mode, NormalMode}

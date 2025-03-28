@@ -26,7 +26,7 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.mockito.matchers.MacroBasedMatchers
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourMileagePage, YourFlatRateForVehicleExpensesPage}
+import pages.expenses.travelAndAccommodation._
 import play.api.data.Form
 import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
@@ -186,12 +186,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
         "redirect to Journey Recovery for a POST if no existing data is found for TravelForWorkYourMileagePage" in {
 
-          val userAnswers = emptyUserAnswers
-            .set(SimplifiedExpensesPage, true, Some(businessId))
-            .success
-            .value
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
+          val application = applicationBuilder(userAnswers = None, userType).build()
 
           running(application) {
             val request = FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
