@@ -17,8 +17,10 @@
 package navigation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
+import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import models.{NormalMode, _}
 import pages._
 import pages.expenses.travelAndAccommodation._
@@ -61,18 +63,16 @@ class TravelAndAccommodationNavigator @Inject() {
 
     case VehicleExpensesPage =>
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
+
     case TravelForWorkYourMileagePage =>
       _ =>
         (taxYear, businessId) =>
           Some(
             routes.YourFlatRateForVehicleExpensesController
               .onPageLoad(taxYear, businessId, NormalMode))
-    //    case YourFlatRateForVehicleExpensesPage =>
-    //      _ =>
-    //        (taxYear, businessId) =>
-    //          Some(
-    //            controllers.journeys.expenses.travelAndAccommodation.routes.CostsNotCoveredController
-    //              .onPageLoad(taxYear, businessId, NormalMode))
+
+    case YourFlatRateForVehicleExpensesPage =>
+      ua => (taxYear, businessId) => Some(handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode))
 
     case _ => _ => (_, _) => None
   }
@@ -87,9 +87,16 @@ class TravelAndAccommodationNavigator @Inject() {
   private def handleFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     userAnswers.get(VehicleFlatRateChoicePage, businessId) map {
       case true =>
-        controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
+        routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, mode)
       case false =>
-        controllers.journeys.expenses.travelAndAccommodation.routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
+        routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
+    }
+
+  private def handleYourVehicleExpensesFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call =
+    userAnswers.get(YourFlatRateForVehicleExpensesPage) match {
+      case Some(YourFlatRateForVehicleExpenses.Flatrate)   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
+      case Some(YourFlatRateForVehicleExpenses.Actualcost) => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
+      case _                                               => standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>
