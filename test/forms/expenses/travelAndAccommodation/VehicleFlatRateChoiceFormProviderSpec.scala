@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.expenses.travelAndAccommodation
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.common.UserType
 import play.api.data.FormError
 
