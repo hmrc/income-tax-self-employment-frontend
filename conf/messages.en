@@ -845,6 +845,14 @@ vehicleExpenses.error.overMax.individual = The amount you’re claiming in vehic
 vehicleExpenses.error.lessThanZero.agent = The amount your client is claiming in vehicle expenses must be more than £0
 vehicleExpenses.error.lessThanZero.individual = The amount you’re claiming in vehicle expenses must be more than £0
 
+## Add another vehicle
+addAnotherVehicle.title.individual = You have added {0} vehicle
+addAnotherVehicle.title.agent = Your client has added {0} vehicle
+addAnotherVehicle.subheading.individual = Do you need to add another vehicle?
+addAnotherVehicle.subheading.agent = Does your client need to add another vehicle?
+addAnotherVehicle.error.required.individual = Select yes if you need to add another vehicle
+addAnotherVehicle.error.required.agent = Select yes if your client need to add another vehicle
+
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
