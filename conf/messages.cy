@@ -2096,3 +2096,8 @@ yourFlatRateForVehicleExpenses.checkYourAnswersLabel = *********Missing Welsh Me
 yourFlatRateForVehicleExpenses.error.required.individual = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.error.required.agent = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.change.hidden = *********Missing Welsh Message *********
+
+disallowableTransportAndAccommodation.heading.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.heading.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********
