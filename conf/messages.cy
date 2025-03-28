@@ -2151,3 +2151,9 @@ addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
 
+
+
+disallowableTransportAndAccommodation.heading.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.heading.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********
