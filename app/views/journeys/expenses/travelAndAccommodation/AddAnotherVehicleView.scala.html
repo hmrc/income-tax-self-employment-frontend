@@ -16,29 +16,36 @@
 
 @import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.travelAndAccommodation.routes
+@import views.html.components.Heading
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
+    heading: Heading,
+    govukSummaryList: GovukSummaryList,
     govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, vehicleName: SummaryList, userType: UserType, taxYear: TaxYear, businessId: BusinessId, numberOfVehicles: Int)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("addAnotherVehicle.title"))) {
+@layout(pageTitle = title(form, messages(s"addAnotherVehicle.title.$userType"))) {
 
     @formHelper(action = routes.AddAnotherVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))
         }
+
+        @heading(s"addAnotherVehicle.title.$userType")
+        @govukSummaryList(vehicleName)
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("addAnotherVehicle.heading")).asPageHeading()
+                legend = LegendViewModel(messages(s"addAnotherVehicle.subheading.$userType", numberOfVehicles))
+                .withCssClass("govuk-fieldset__legend--m")
             )
         )
 

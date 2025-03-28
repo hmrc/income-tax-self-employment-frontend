@@ -2140,3 +2140,11 @@ publicTransportAndAccommodationExpenses.error.overMax.agent                     
 publicTransportAndAccommodationExpenses.error.overMax.individual                    = *********Missing Welsh Message *********
 publicTransportAndAccommodationExpenses.error.lessThanZero.agent                    = *********Missing Welsh Message *********
 publicTransportAndAccommodationExpenses.error.lessThanZero.individual               = *********Missing Welsh Message *********
+
+
+addAnotherVehicle.title.individual = *********Missing Welsh Message *********
+addAnotherVehicle.title.agent = *********Missing Welsh Message *********
+addAnotherVehicle.subheading.individual = *********Missing Welsh Message *********
+addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
+addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
+addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
