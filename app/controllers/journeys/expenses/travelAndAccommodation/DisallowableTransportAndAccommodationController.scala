@@ -18,6 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import controllers.journeys.fillForm
+import forms.expenses.travelAndAccommodation.DisallowableTransportAndAccommodationFormProvider
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
@@ -47,11 +48,10 @@ class DisallowableTransportAndAccommodationController @Inject() (
     with I18nSupport {
 
   private val page = DisallowableTransportAndAccommodationPage
-  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some("disallowableTransportAndAccommodation"))
+  private val form = (userType: UserType) => formProvider(page, userType)
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-
       val filledForm = fillForm(page, businessId, form(request.userType))
       Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
