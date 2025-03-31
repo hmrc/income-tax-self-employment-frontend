@@ -67,6 +67,9 @@ class TravelAndAccommodationNavigator @Inject() {
             routes.YourFlatRateForVehicleExpensesController
               .onPageLoad(taxYear, businessId, NormalMode))
 
+    case TravelAndAccommodationCYAPage =>
+      ???
+
     case _ => _ => (_, _) => None
   }
 

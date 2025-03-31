@@ -2419,3 +2419,6 @@ yourFlatRateForVehicleExpenses.checkYourAnswersLabel = yourFlatRateForVehicleExp
 yourFlatRateForVehicleExpenses.error.required.individual = Select if you want to report your vehicle expenses as a flat rate of £{0} or actual costs
 yourFlatRateForVehicleExpenses.error.required.agent = Select if your client wants to report their vehicle expenses as a flat rate of £{0} or actual costs
 yourFlatRateForVehicleExpenses.change.hidden = YourFlatRateForVehicleExpenses
+
+travelAndAccommodationExpensesCYA.title = travelAndAccommodationExpensesCYA
+travelAndAccommodationExpensesCYA.heading = travelAndAccommodationExpensesCYA
