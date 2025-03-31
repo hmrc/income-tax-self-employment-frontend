@@ -40,7 +40,10 @@ class TravelAndAccommodationNavigator @Inject() {
       userAnswers => (taxYear, businessId) => handleTravelAndAccomodationExpenses(userAnswers, taxYear, businessId)
 
     case TravelForWorkYourVehiclePage =>
-      _ => (taxYear, businessId) => Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
+      _ =>
+        (taxYear, businessId) =>
+          Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
+      // Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
 
     case VehicleTypePage =>
       _ => (taxYear, businessId) => Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode))

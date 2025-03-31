@@ -46,7 +46,7 @@ object AddAnotherVehicleSummary {
     )
 
     SummaryListRowViewModel(
-      key = s"Vehicle $index",
+      key = "",
       value = value,
       actions = Seq(
         ActionItemViewModel("site.change", routes.VehicleTypeController.onPageLoad(taxYear, businessId, CheckMode).url)

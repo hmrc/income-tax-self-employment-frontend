@@ -50,29 +50,26 @@ class AddAnotherVehicleController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val form: Form[Boolean]   = formProvider(request.user.userType)
-      val vehicleDetails        = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
-      val numberOfVehicles: Int = request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).map(_.length).getOrElse(0)
+      val form: Form[Boolean] = formProvider(request.user.userType)
+      val vehicleDetails      = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
 
       val preparedForm = request.userAnswers.get(AddAnotherVehiclePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, vehicleDetails, request.user.userType, taxYear, businessId, numberOfVehicles))
+      Ok(view(preparedForm, mode, vehicleDetails, request.user.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val form: Form[Boolean]   = formProvider(request.user.userType)
-      val numberOfVehicles: Int = request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).map(_.length).getOrElse(0)
-      val vehicleDetails        = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
+      val form: Form[Boolean] = formProvider(request.user.userType)
+      val vehicleDetails      = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, vehicleDetails, request.userType, taxYear, businessId, numberOfVehicles))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, vehicleDetails, request.userType, taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherVehiclePage, value))
