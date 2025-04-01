@@ -18,8 +18,9 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
 import models.common.{BusinessId, TaxYear}
+import models.requests.DataRequest
 import navigation.TravelAndAccommodationNavigator
 import pages.AddAnotherVehiclePage
 import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
@@ -28,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.expenses.travelAndAccommodation.AddAnotherVehicleSummary
+import viewmodels.components.{OneColumnSummaryAction, OneColumnSummaryRow}
 import views.html.journeys.expenses.travelAndAccommodation.AddAnotherVehicleView
 
 import javax.inject.Inject
@@ -51,25 +52,24 @@ class AddAnotherVehicleController @Inject() (
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val form: Form[Boolean] = formProvider(request.user.userType)
-      val vehicleDetails      = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
 
       val preparedForm = request.userAnswers.get(AddAnotherVehiclePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, vehicleDetails, request.user.userType, taxYear, businessId))
+      Ok(view(preparedForm, mode, vehicleDetails(taxYear, businessId), request.user.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val form: Form[Boolean] = formProvider(request.user.userType)
-      val vehicleDetails      = AddAnotherVehicleSummary.buildSummaryList(taxYear, businessId, request.userAnswers)
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, vehicleDetails, request.userType, taxYear, businessId))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, vehicleDetails(taxYear, businessId), request.userType, taxYear, businessId))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherVehiclePage, value))
@@ -77,4 +77,18 @@ class AddAnotherVehicleController @Inject() (
             } yield Redirect(navigator.nextPage(AddAnotherVehiclePage, mode, updatedAnswers, taxYear, businessId))
         )
   }
+
+  private def vehicleDetails(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[AnyContent]): List[OneColumnSummaryRow] =
+    request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).toList.flatMap { vehicleName =>
+      List(
+        OneColumnSummaryRow(
+          vehicleName,
+          actions = List(
+            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
+            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+          )
+        )
+      )
+    }
+
 }

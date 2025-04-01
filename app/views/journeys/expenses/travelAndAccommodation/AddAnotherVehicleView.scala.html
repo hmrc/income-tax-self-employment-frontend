@@ -17,6 +17,8 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.travelAndAccommodation.routes
 @import views.html.components.Heading
+@import views.html.components._
+@import viewmodels.components._
 
 @this(
     layout: templates.Layout,
@@ -24,23 +26,23 @@
     govukErrorSummary: GovukErrorSummary,
     heading: Heading,
     govukSummaryList: GovukSummaryList,
+    errorSummarySection: ErrorSummarySection,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    oneColumnSummary: OneColumnSummary
 )
 
-@(form: Form[_], mode: Mode, vehicleName: SummaryList, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, vehicles: List[OneColumnSummaryRow], userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"addAnotherVehicle.title.$userType"))) {
 
     @formHelper(action = routes.AddAnotherVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))
-        }
+        @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value"))
 
-        @heading(s"addAnotherVehicle.title.$userType", Some(vehicleName.rows.size.toString))
+        @heading(s"addAnotherVehicle.title.$userType", Some(vehicles.size.toString))
 
-        @govukSummaryList(vehicleName)
+        @oneColumnSummary(vehicles)
 
         @govukRadios(
             RadiosViewModel.yesNo(
