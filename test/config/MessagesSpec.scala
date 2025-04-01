@@ -42,6 +42,18 @@ class MessagesSpec extends SpecBase {
     "language.day.singular"
   )
 
+  private val publicTravelDuplicateValueExclusionKeys = Set(
+    "publicTransportAndAccommodationExpenses.can.claim.hotel-room",
+    "publicTransportAndAccommodationExpenses.title.agent",
+    "publicTransportAndAccommodationExpenses.can.claim.agent",
+    "publicTransportAndAccommodationExpenses.title.individual",
+    "publicTransportAndAccommodationExpenses.cannot.claim.travel-cost-home-work",
+    "businessPremisesAmount.claim.individual",
+    "publicTransportAndAccommodationExpenses.heading.individual",
+    "publicTransportAndAccommodationExpenses.heading.agent",
+    "publicTransportAndAccommodationExpenses.can.claim.individual"
+  )
+
   private val exclusionKeysEn: Set[String] = Set(
     "wdaSpecialRateClaimAmount.p4",
     "structuresBuildingsPreviousClaimUse.title.agent",
@@ -217,7 +229,11 @@ class MessagesSpec extends SpecBase {
     }
 
     "english messages file" in {
-      val messages: List[(String, String)] = filterExcludedKeys(english.toList, exclusionKeysEn, exclusionKeySubstrings)
+      val messages: List[(String, String)] = filterExcludedKeys(
+        english.toList,
+        exclusionKeysEn ++ publicTravelDuplicateValueExclusionKeys,
+        exclusionKeySubstrings
+      )
 
       val result = checkMessagesAreUnique(messages, messages)
 

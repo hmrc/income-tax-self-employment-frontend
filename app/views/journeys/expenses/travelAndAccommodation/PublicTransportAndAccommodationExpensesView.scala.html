@@ -1,0 +1,82 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.journeys.expenses.travelAndAccommodation.routes
+@import models.common.{BusinessId, TaxYear, UserType}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import viewmodels.InputWidth._
+@import views.html.components.Heading
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    heading: Heading,
+    govukInput: GovukInput,
+    govukButton: GovukButton
+)
+
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"publicTransportAndAccommodationExpenses.title.$userType"))) {
+
+    @formHelper(action = routes.PublicTransportAndAccommodationExpensesController.onSubmit(taxYear, businessId, mode)) {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))
+        }
+
+        @heading(s"publicTransportAndAccommodationExpenses.heading.$userType")
+            <p class="govuk-body">@{messages(s"publicTransportAndAccommodationExpenses.can.claim.$userType")}</p>
+                <ul class="govuk-body govuk-list--bullet">
+                    <li>@{messages(s"publicTransportAndAccommodationExpenses.can.claim.train-bus-air-taxi")}</li>
+                    <li>@{messages(s"publicTransportAndAccommodationExpenses.can.claim.hotel-room")}</li>
+                    <li>@{messages(s"publicTransportAndAccommodationExpenses.can.claim.meals-on-overnight-business-trips")}</li>
+                </ul>
+
+            <p class="govuk-body">@{messages(s"publicTransportAndAccommodationExpenses.cannot.claim.$userType")}</p>
+            <ul class="govuk-body govuk-list--bullet">
+                <li>@{messages("publicTransportAndAccommodationExpenses.cannot.claim.personal-use")}</li>
+                <li>@{messages("publicTransportAndAccommodationExpenses.cannot.claim.travel-cost-home-work")}</li>
+                <li>@{messages("publicTransportAndAccommodationExpenses.cannot.claim.other-meals")}</li>
+            </ul>
+
+            @govukInput(
+                InputViewModel(
+                    field = form("value"),
+                    label = LabelViewModel(
+                        messages(
+                            s"publicTransportAndAccommodationExpenses.subheading.$userType"
+                        )
+                    )
+                    .withCssClass("govuk-label--m"),
+                ).withHint(
+                    HintViewModel(messages("publicTransportAndAccommodationExpenses.hint"))
+                )
+                .asNumeric()
+                .withWidth(Fixed10)
+                .withPrefix(PrefixOrSuffix(content = Text("£")))
+            )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
+
+@{
+// $COVERAGE-OFF$
+}

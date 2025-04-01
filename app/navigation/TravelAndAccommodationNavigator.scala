@@ -20,6 +20,7 @@ import controllers.journeys.expenses.travelAndAccommodation.routes
 import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import models.{NormalMode, _}
 import pages._
@@ -36,11 +37,7 @@ class TravelAndAccommodationNavigator @Inject() {
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
 
     case TravelAndAccommodationExpenseTypePage =>
-      _ =>
-        (taxYear, businessId) =>
-          Some(
-            routes.TravelForWorkYourVehicleController
-              .onPageLoad(taxYear, businessId, NormalMode))
+      userAnswers => (taxYear, businessId) => handleTravelAndAccomodationExpenses(userAnswers, taxYear, businessId)
 
     case TravelForWorkYourVehiclePage =>
       _ => (taxYear, businessId) => Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
@@ -74,8 +71,23 @@ class TravelAndAccommodationNavigator @Inject() {
     case YourFlatRateForVehicleExpensesPage =>
       ua => (taxYear, businessId) => Some(handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode))
 
+    case PublicTransportAndAccommodationExpensesPage =>
+      _ => (taxYear, businessId) => None // TODO Navigate to "How much of the public transport and accommodation is disallowable" page
     case _ => _ => (_, _) => None
   }
+
+  private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId) =
+    userAnswers.get(TravelAndAccommodationExpenseTypePage).map(_.toSeq) match {
+      case Some(Seq(PublicTransportAndOtherAccommodation)) =>
+        Option(
+          routes.PublicTransportAndAccommodationExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+        )
+      case _ =>
+        Some(
+          routes.TravelForWorkYourVehicleController
+            .onPageLoad(taxYear, businessId, NormalMode)
+        )
+    }
 
   private def handleSimplifiedExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     userAnswers.get(SimplifiedExpensesPage, businessId) map {
