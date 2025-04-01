@@ -20,21 +20,22 @@
 
 @(rows: List[OneColumnSummaryRow])(implicit request: Request[_], messages: Messages)
 
-<ul class="govuk-task-list">
+<dl class="govuk-summary-list">
 @rows.map { row =>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link govuk-!-padding-top-0 govuk-!-padding-bottom-0">
-        <div class="govuk-task-list__name-and-hint govuk-!-padding-top-2">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
             @row.messageKey
-        </div>
-        <div class="govuk-summary-list__actions">
-            <ul class="govuk-summary-list__actions-list" style="display: flex; gap: 10px;">
+        </dt>
+
+        <dd class="govuk-summary-list__actions govuk-!-width-one-third">
+            <ul class="govuk-summary-list__actions-list">
                 @row.actions.map { action =>
                 <li class="govuk-summary-list__actions-list-item">
                     <a class="govuk-link" href="@action.url">@messages(action.messageKey)<span class="govuk-visually-hidden">@messages(row.messageKey)</span></a>
                 </li>
                 }
             </ul>
-        </div>
-    </li>
+        </dd>
+    </div>
 }
-</ul>
+</dl>
