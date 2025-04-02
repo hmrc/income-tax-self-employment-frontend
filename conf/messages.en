@@ -844,6 +844,8 @@ vehicleExpenses.error.overMax.agent = The amount your client is claiming in vehi
 vehicleExpenses.error.overMax.individual = The amount you’re claiming in vehicle expenses must be less than £100,000,000,000
 vehicleExpenses.error.lessThanZero.agent = The amount your client is claiming in vehicle expenses must be more than £0
 vehicleExpenses.error.lessThanZero.individual = The amount you’re claiming in vehicle expenses must be more than £0
+vehicleExpenses.change.hidden.individual = Change your vehicle expenses
+vehicleExpenses.change.hidden.agent = Change your client’s vehicle expenses
 
 ## Costs Not Covered
 costsNotCovered.title.common = Costs not covered by the flat rate
@@ -2380,6 +2382,8 @@ travelAndAccommodation.p2.info.agent = You cannot use your client’s registrati
 travelForWorkYourVehicle.error.required.individual = Enter a name to identify your vehicle
 travelForWorkYourVehicle.error.required.agent = Enter a name to identify your client’s vehicle
 travelForWorkYourVehicle.error.length = Your vehicle’s name must be 100 characters or less
+travelForWorkYourVehicle.change.hidden.individual = Change how you want to identify your vehicle 
+travelForWorkYourVehicle.change.hidden.agent = Change how you want to identify your client’s vehicle 
 
 vehicleType.heading = What kind of vehicle is {0}?
 vehicleType.carOrGoodsVehicle = Car or goods vehicle
@@ -2440,5 +2444,5 @@ yourFlatRateForVehicleExpenses.error.required.individual = Select if you want to
 yourFlatRateForVehicleExpenses.error.required.agent = Select if your client wants to report their vehicle expenses as a flat rate of £{0} or actual costs
 yourFlatRateForVehicleExpenses.change.hidden = YourFlatRateForVehicleExpenses
 
-travelAndAccommodationExpensesCYA.title = travelAndAccommodationExpensesCYA
-travelAndAccommodationExpensesCYA.heading = travelAndAccommodationExpensesCYA
+travelAndAccommodationExpensesCYA.title.individual = Check your travel and accommodation expenses
+travelAndAccommodationExpensesCYA.heading.agent = Check your client’s travel and accommodation expenses

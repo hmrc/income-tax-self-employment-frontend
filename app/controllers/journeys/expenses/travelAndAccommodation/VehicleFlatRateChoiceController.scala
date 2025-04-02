@@ -17,18 +17,20 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
+import pages.expenses.tailoring.individualCategories.DisallowableIrrecoverableDebtsPage
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
+import play.api.libs.json._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,8 +72,9 @@ class VehicleFlatRateChoiceController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicleName, request.userType, taxYear, businessId, mode))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
+                  editedUserAnswers <- clearDependentPages(VehicleFlatRateChoicePage, value, request.userAnswers, businessId)
+                  updatedAnswers    <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+                  _                 <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )
 

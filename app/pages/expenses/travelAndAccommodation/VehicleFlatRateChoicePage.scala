@@ -17,8 +17,11 @@
 package pages.expenses.travelAndAccommodation
 
 import pages.OneQuestionPage
+import queries.Settable
 
 case object VehicleFlatRateChoicePage extends OneQuestionPage[Boolean] {
+
+  override val dependentPagesWhenNo: List[Settable[_]] = List(TravelForWorkYourMileagePage)
 
   override def toString: String = "vehicleFlatRateChoice"
 }

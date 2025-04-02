@@ -19,6 +19,6 @@ package pages.expenses.travelAndAccommodation
 import pages.Page
 
 object TravelAndAccommodationCYAPage extends Page {
-  override def toString: String = "travelAndAccommodationCya"
+  override def toString: String = "travelAndAccommodationExpensesCYA"
 
 }

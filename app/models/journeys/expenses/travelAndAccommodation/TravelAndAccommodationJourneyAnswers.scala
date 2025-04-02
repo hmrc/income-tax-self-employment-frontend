@@ -16,12 +16,12 @@
 
 package models.journeys.expenses.travelAndAccommodation
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, Format}
 
 case class TravelAndAccommodationJourneyAnswers(
     expenseType: TravelAndAccommodationExpenseType
 )
 
 object TravelAndAccommodationJourneyAnswers {
-  implicit val formats: OFormat[TravelAndAccommodationJourneyAnswers] = Json.format[TravelAndAccommodationJourneyAnswers]
+  implicit val formats: Format[TravelAndAccommodationJourneyAnswers] = Json.format[TravelAndAccommodationJourneyAnswers]
 }

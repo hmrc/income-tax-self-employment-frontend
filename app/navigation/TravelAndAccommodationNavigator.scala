@@ -62,7 +62,11 @@ class TravelAndAccommodationNavigator @Inject() {
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
     case VehicleExpensesPage =>
-      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
+      ua =>
+        (taxYear, businessId) =>
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
 
     case TravelForWorkYourMileagePage =>
       _ =>
@@ -74,8 +78,14 @@ class TravelAndAccommodationNavigator @Inject() {
     case YourFlatRateForVehicleExpensesPage =>
       ua => (taxYear, businessId) => Some(handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode))
 
-    case TravelAndAccommodationCYAPage =>
-      ???
+    case CostsNotCoveredPage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
+
+    case TravelAndAccommodationCYAPage => _ => (_, _) => Some(Call("GET", "/"))
 
     case _ => _ => (_, _) => None
   }

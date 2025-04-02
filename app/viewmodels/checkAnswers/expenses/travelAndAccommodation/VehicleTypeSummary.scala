@@ -20,31 +20,25 @@ import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import pages.expenses.travelAndAccommodation.VehicleTypePage
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.buildRowString
 
 object VehicleTypeSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(VehicleTypePage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"vehicleType.$answer"))
-        )
-      )
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+    answers
+      .get(VehicleTypePage, businessId)
+      .map { answer =>
+        val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
 
-      SummaryListRowViewModel(
-        key = "vehicleType.checkYourAnswersLabel",
-        value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.VehicleTypeController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("vehicleType.change.hidden"))
+        buildRowString(
+          answer = messages(s"vehicleType.$answer"),
+          callLink = routes.VehicleTypeController.onPageLoad(taxYear, businessId, CheckMode),
+          keyMessage = messages("vehicleType.heading", vehicleName),
+          changeMessage = "vehicleType.checkYourAnswersLabel",
+          rightTextAlign = true
         )
-      )
-    }
+      }
 }

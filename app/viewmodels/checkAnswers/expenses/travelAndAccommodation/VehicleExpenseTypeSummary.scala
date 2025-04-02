@@ -21,8 +21,9 @@ import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
-import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
+import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage}
 import play.api.i18n.Messages
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowString
 
@@ -35,43 +36,41 @@ object VehicleExpenseTypeSummary {
       userType: UserType
   )(implicit messages: Messages): Option[SummaryListRow] =
     answers
-      .get(TravelAndAccommodationExpenseTypePage, Some(businessId))
-      .map { answer =>
-        buildRowString(
-          answer.toString,
-          routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
-          messages(s"travelAndAccommodationExpenseType.${answer.toString}.$userType"),
-          s"travelAndAccommodationExpenseType.title.$userType",
-          rightTextAlign = true
-        )
+      .get(TravelAndAccommodationExpenseTypePage, businessId)
+      .flatMap {
+        case set if set.isEmpty =>
+          None
+        case set =>
+          val orderedOptions = List(
+            "myOwnVehicle",
+            "leasedVehicles",
+            "publicTransportAndOtherAccommodation"
+          )
+
+          val sortedOptions = set.toList.sortBy { option =>
+            orderedOptions.indexOf(option.toString)
+          }
+
+          val htmlContent = sortedOptions
+            .map { expenseType =>
+              val messageKey = expenseType match {
+                case TravelAndAccommodationExpenseType.MyOwnVehicle =>
+                  s"travelAndAccommodationExpenseType.${expenseType.toString}.$userType"
+                case _ =>
+                  s"travelAndAccommodationExpenseType.${expenseType.toString}.common"
+              }
+              Html(s"<div>${messages(messageKey)}</div>")
+            }
+            .mkString("")
+
+          Some(
+            buildRowString(
+              answer = htmlContent,
+              callLink = routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
+              keyMessage = messages(s"travelAndAccommodationExpenseType.title.$userType"),
+              changeMessage = s"travelAndAccommodationExpenseType.title.$userType",
+              rightTextAlign = true
+            )
+          )
       }
-
 }
-
-//def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-//  answers.get(SelfEmploymentAbroadPage, Some(businessId)).map { answer =>
-//  buildRowBoolean(
-//  answer,
-//  routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode),
-//  s"selfEmploymentAbroad.title.$userType",
-//  "selfEmploymentAbroad.change.hidden"
-//  )
-//  }
-
-//    answers.get(TravelAndAccommodationExpenseTypePage).map { answer =>
-//      val value = ValueViewModel(
-//        HtmlContent(
-//          HtmlFormat.escape(messages(s"travelAndAccommodationExpenseType.$answer"))
-//        )
-//      )
-
-//      SummaryListRowViewModel(
-//        key = "travelAndAccommodationExpenseType.checkYourAnswersLabel",
-//        value = value,
-//        actions = Seq(
-//          ActionItemViewModel("site.change", routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode).url)
-//            .withVisuallyHiddenText(messages("travelAndAccommodationExpenseType.change.hidden"))
-//        )
-//      )
-//    }
-//  }

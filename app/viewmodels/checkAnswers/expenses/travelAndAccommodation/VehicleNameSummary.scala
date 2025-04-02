@@ -16,28 +16,27 @@
 
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
-import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
+import controllers.journeys.expenses.travelAndAccommodation.routes
 import viewmodels.checkAnswers.buildRowString
 
-object TravelForWorkYourMileageSummary {
+object VehicleNameSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TravelForWorkYourMileagePage, businessId).map { answer =>
-      val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
-
-      buildRowString(
-        formatMoney(answer),
-        routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
-        rightTextAlign = true,
-        keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
-        changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType"
-      )
-    }
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    answers
+      .get(TravelForWorkYourVehiclePage, businessId)
+      .map { answer =>
+        buildRowString(
+          answer,
+          callLink = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode),
+          keyMessage = messages(s"travelForWorkYourVehicle.formLabel.$userType"),
+          changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+          rightTextAlign = true
+        )
+      }
 }

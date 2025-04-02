@@ -20,24 +20,25 @@ import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
-import viewmodels.checkAnswers.buildRowString
+import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 
-object TravelForWorkYourMileageSummary {
+object SimplifiedExpensesSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TravelForWorkYourMileagePage, businessId).map { answer =>
-      val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    answers
+      .get(SimplifiedExpensesPage, businessId)
+      .map { answer =>
+        val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
 
-      buildRowString(
-        formatMoney(answer),
-        routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
-        rightTextAlign = true,
-        keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
-        changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType"
-      )
-    }
+        buildRowString(
+          formatAnswer(answer.toString),
+          callLink = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+          keyMessage = messages(s"simplifiedExpenses.subheading.$userType", vehicleName),
+          changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+          rightTextAlign = true
+        )
+      }
 }

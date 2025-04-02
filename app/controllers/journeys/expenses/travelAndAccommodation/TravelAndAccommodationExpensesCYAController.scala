@@ -17,23 +17,31 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.{handleSubmitAnswersResult, routes}
+import controllers.handleSubmitAnswersResult
+import models.NormalMode
 import models.common.Journey.ExpensesTravelForWork
-import models.common.{BusinessId, JourneyContextWithNino, TaxYear, UserType}
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationJourneyAnswers
+import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.TravelForWorkYourMileageSummary
-import viewmodels.checkAnswers.expenses.travelAndAccommodation.{VehicleExpenseTypeSummary, VehicleTypeSummary}
+import viewmodels.checkAnswers.expenses.travelAndAccommodation.{
+  CostsNotCoveredSummary,
+  SimplifiedExpensesSummary,
+  TravelForWorkYourMileageSummary,
+  VehicleExpenseTypeSummary,
+  VehicleExpensesSummary,
+  VehicleFlatRateChoiceSummary,
+  VehicleNameSummary,
+  VehicleTypeSummary,
+  YourFlatRateForVehicleExpensesSummary
+}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
-import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.NormalMode
-import navigation.TravelAndAccommodationNavigator
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -53,14 +61,20 @@ class TravelAndAccommodationExpensesCYAController @Inject() (
     with I18nSupport
     with Logging {
 
-  val page = TravelAndAccommodationCYAPage
-
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getData andThen getJourneyAnswers[TravelAndAccommodationJourneyAnswers](req =>
       req.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)) andThen requireData) { implicit request =>
       val summaryList = SummaryListCYA.summaryListOpt(
         rows = List(
-          VehicleExpenseTypeSummary.row(request.userAnswers, taxYear, businessId, request.userType)
+          VehicleExpenseTypeSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          VehicleNameSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          VehicleTypeSummary.row(request.userAnswers, taxYear, businessId),
+          SimplifiedExpensesSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          VehicleFlatRateChoiceSummary.row(taxYear, businessId, request.userAnswers, request.userType),
+          TravelForWorkYourMileageSummary.row(taxYear, businessId, request.userAnswers, request.userType),
+          YourFlatRateForVehicleExpensesSummary.row(taxYear, businessId, request.userAnswers, request.userType),
+          CostsNotCoveredSummary.row(request.userAnswers, taxYear, businessId, request.userType),
+          VehicleExpensesSummary.row(taxYear, businessId, request.userAnswers, request.userType)
         )
       )
 
@@ -70,7 +84,7 @@ class TravelAndAccommodationExpensesCYAController @Inject() (
           taxYear,
           request.userType,
           summaryList,
-          navigator.nextPage(page, NormalMode, request.userAnswers, taxYear, businessId)
+          navigator.nextPage(TravelAndAccommodationCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
         ))
     }
 

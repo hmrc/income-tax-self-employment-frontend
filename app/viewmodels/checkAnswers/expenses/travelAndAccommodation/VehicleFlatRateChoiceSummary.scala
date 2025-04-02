@@ -18,27 +18,23 @@ package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.VehicleFlatRateChoicePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 
 object VehicleFlatRateChoiceSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(VehicleFlatRateChoicePage).map { answer =>
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = "vehicleFlatRateChoice.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("vehicleFlatRateChoice.change.hidden"))
-        )
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(VehicleFlatRateChoicePage, businessId).map { answer =>
+      buildRowString(
+        formatAnswer(answer.toString),
+        callLink = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, CheckMode),
+        keyMessage = messages(s"vehicleFlatRateChoice.legend.$userType"),
+        changeMessage = s"travelForWorkYourVehicle.change.hidden",
+        rightTextAlign = true
       )
     }
 }
