@@ -2155,5 +2155,15 @@ addAnotherVehicle.error.required.agent = *********Missing Welsh Message ********
 
 disallowableTransportAndAccommodation.heading.individual = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.heading.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.required.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.required.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.nonNumeric.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.nonNumeric.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.lessThanZero.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.lessThanZero.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.overMax.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.overMax.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********
