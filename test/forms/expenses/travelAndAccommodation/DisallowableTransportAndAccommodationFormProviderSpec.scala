@@ -16,52 +16,24 @@
 
 package forms.expenses.travelAndAccommodation
 
-import forms.behaviours.IntFieldBehaviours
+import base.forms.CurrencyFormProviderBaseSpec
 import models.common.UserType
-import play.api.data.FormError
+import play.api.data.Form
+import utils.MoneyUtils.formatMoney
 
-class DisallowableTransportAndAccommodationFormProviderSpec extends IntFieldBehaviours {
+class DisallowableTransportAndAccommodationFormProviderSpec
+    extends CurrencyFormProviderBaseSpec("DisallowableTransportAndAccommodationFormProvider") {
 
-  ".value" - {
-    UserType.values foreach { userType =>
-      val form = new DisallowableTransportAndAccommodationFormProvider()(userType)
+  private lazy val amount       = 5623.50
+  private lazy val amountString = formatMoney(amount, addDecimalForWholeNumbers = false)
 
-      s"for the userType $userType" - {
+  override def getFormProvider(userType: UserType): Form[BigDecimal] = new DisallowableTransportAndAccommodationFormProvider()(userType, amount)
 
-        val fieldName = "value"
+  override lazy val requiredError: String                     = "disallowableTransportAndAccommodation.error.required"
+  override lazy val nonNumericError: String                   = "disallowableTransportAndAccommodation.error.nonNumeric"
+  override lazy val lessThanZeroError: String                 = "disallowableTransportAndAccommodation.error.lessThanZero"
+  override lazy val overMaxError: String                      = "disallowableTransportAndAccommodation.error.overAmount"
+  override lazy val optionalArgumentsAll: Option[Seq[String]] = Some(Seq(amountString))
+  override lazy val maximum: BigDecimal                       = amount
 
-        val minimum = 0
-        val maximum = 1000
-
-        val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          validDataGenerator
-        )
-
-        behave like intField(
-          form,
-          fieldName,
-          nonNumericError = FormError(fieldName, "disallowableTransportAndAccommodation.error.nonNumeric"),
-          wholeNumberError = FormError(fieldName, "disallowableTransportAndAccommodation.error.wholeNumber")
-        )
-
-        behave like intFieldWithRange(
-          form,
-          fieldName,
-          minimum = minimum,
-          maximum = maximum,
-          expectedError = FormError(fieldName, "disallowableTransportAndAccommodation.error.outOfRange", Seq(minimum, maximum))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, "disallowableTransportAndAccommodation.error.required")
-        )
-      }
-    }
-  }
 }

@@ -18,15 +18,16 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.standard.CurrencyFormProvider
+import forms.expenses.travelAndAccommodation.DisallowableTransportAndAccommodationFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.DisallowableTransportAndAccommodationPage
+import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.travelAndAccommodation.DisallowableTransportAndAccommodationView
 
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class DisallowableTransportAndAccommodationController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: CurrencyFormProvider,
+    formProvider: DisallowableTransportAndAccommodationFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DisallowableTransportAndAccommodationView
 )(implicit ec: ExecutionContext)
@@ -47,26 +48,36 @@ class DisallowableTransportAndAccommodationController @Inject() (
     with I18nSupport {
 
   private val page = DisallowableTransportAndAccommodationPage
-  private val form = (userType: UserType) => formProvider(page, userType, prefix = Some("disallowableTransportAndAccommodation"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      request.userAnswers.get(CostsNotCoveredPage, businessId) match {
+        case Some(expenses) =>
+          val form       = formProvider(request.userType, expenses)
+          val filledForm = fillForm(page, businessId, form)
+          Ok(view(filledForm, mode, request.userType, taxYear, businessId, formatMoney(expenses)))
+        case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+      }
 
-      val filledForm = fillForm(page, businessId, form(request.userType))
-      Ok(view(filledForm, mode, request.userType, taxYear, businessId))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableTransportAndAccommodationPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DisallowableTransportAndAccommodationPage, mode, updatedAnswers, taxYear, businessId))
-        )
+      request.userAnswers.get(CostsNotCoveredPage, businessId) match {
+        case Some(expenses) =>
+          val form = formProvider(request.userType, expenses)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, formatMoney(expenses)))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DisallowableTransportAndAccommodationPage, value, Some(businessId)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(DisallowableTransportAndAccommodationPage, mode, updatedAnswers, taxYear, businessId))
+            )
+        case _ => Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+      }
   }
 }

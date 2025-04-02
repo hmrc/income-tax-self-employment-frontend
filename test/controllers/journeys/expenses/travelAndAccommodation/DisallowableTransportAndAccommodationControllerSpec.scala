@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.standard.CurrencyFormProvider
+import forms.expenses.travelAndAccommodation.DisallowableTransportAndAccommodationFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
@@ -25,36 +25,43 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DisallowableTransportAndAccommodationPage
+import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.travelAndAccommodation.DisallowableTransportAndAccommodationView
 
 import scala.concurrent.Future
 
 class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new CurrencyFormProvider()
+  val formProvider = new DisallowableTransportAndAccommodationFormProvider()
 
   def onwardRoute: Call = Call("GET", "/foo")
 
   val validAnswer: BigDecimal = 35
+  val expenses: BigDecimal    = 50
+  val strExpense = formatMoney(expenses)
 
   lazy val disallowableTransportAndAccommodationRoute: String =
     routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode).url
 
   "DisallowableTransportAndAccommodation Controller" - {
     UserType.values.foreach { userType =>
-      val form: Form[BigDecimal] = formProvider(DisallowableTransportAndAccommodationPage, userType)
+      val form: Form[BigDecimal] = formProvider(userType, expenses)
 
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
+          val userAnswers = emptyUserAnswers
+            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .success
+            .value
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
             val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
@@ -64,15 +71,35 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, strExpense)(request, messages(application)).toString
+          }
+        }
+
+        "redirect to 'there is a problem' page when data is missing for the page 'TODO'" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType).build()
+
+          running(application) {
+            val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          val userAnswers = UserAnswers(userAnswersId).set(DisallowableTransportAndAccommodationPage, validAnswer, Some(businessId)).success.value
+          val userAnswers = UserAnswers(userAnswersId)
+            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .success
+            .value
+            .set(DisallowableTransportAndAccommodationPage, validAnswer, Some(businessId))
+            .success
+            .value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
             val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
@@ -82,7 +109,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, userType, taxYear, businessId)(
+            contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, userType, taxYear, businessId, strExpense)(
               request,
               messages(application)).toString
           }
@@ -90,12 +117,16 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
         "must redirect to the next page when valid data is submitted" in {
 
+          val userAnswers = UserAnswers(userAnswersId)
+            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .success
+            .value
           val mockSessionRepository = mock[SessionRepository]
 
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(userAnswers), userType)
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
@@ -115,8 +146,12 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
+          val userAnswers = UserAnswers(userAnswersId)
+            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .success
+            .value
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           running(application) {
             val request =
@@ -130,7 +165,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, strExpense)(request, messages(application)).toString
           }
         }
       }

@@ -17,20 +17,26 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
-import models.common.UserType
+import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
+import utils.MoneyUtils
 
 import javax.inject.Inject
 
-class DisallowableTransportAndAccommodationFormProvider @Inject() extends Mappings {
+class DisallowableTransportAndAccommodationFormProvider @Inject() extends Mappings with MoneyBounds with MoneyUtils {
 
-  def apply(userType: UserType): Form[Int] =
+  def apply(userType: UserType, allowableAmount: BigDecimal): Form[BigDecimal] = {
+
+    val allowableAmountString = formatMoney(allowableAmount)
     Form(
-      "value" -> int(
-        "disallowableTransportAndAccommodation.error.required",
-        "disallowableTransportAndAccommodation.error.wholeNumber",
-        "disallowableTransportAndAccommodation.error.nonNumeric"
+      "value" -> currency(
+        s"disallowableTransportAndAccommodation.error.required.$userType",
+        s"disallowableTransportAndAccommodation.error.nonNumeric.$userType",
+        Seq(allowableAmountString)
       )
-        .verifying(inRange(0, 1000, "disallowableTransportAndAccommodation.error.outOfRange"))
+        .verifying(greaterThan(minimumValue, s"disallowableTransportAndAccommodation.error.lessThanZero.$userType", Some(allowableAmountString)))
+        .verifying(
+          lessThanOrEqualTo(allowableAmount, s"disallowableTransportAndAccommodation.error.overAmount.$userType", Some(allowableAmountString)))
     )
+  }
 }

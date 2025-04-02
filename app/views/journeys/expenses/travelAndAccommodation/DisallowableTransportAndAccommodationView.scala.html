@@ -27,9 +27,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, expenses: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"disallowableTransportAndAccommodation.heading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses))) {
 
     @formHelper(action = routes.DisallowableTransportAndAccommodationController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -40,7 +40,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType")).asPageHeading()
+                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses)).asPageHeading()
             )
             .asNumeric()
             .withWidth(Fixed10)
