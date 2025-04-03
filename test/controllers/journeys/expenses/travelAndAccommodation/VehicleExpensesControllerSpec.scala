@@ -118,7 +118,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
             Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
           val userAnswers = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer)
+            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer, Some(businessId))
             .success
             .value
             .set(VehicleExpensesPage, BigDecimal(25))
@@ -153,7 +153,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
             Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
           val userAnswers = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer)
+            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer, Some(businessId))
             .success
             .value
             .set(VehicleExpensesPage, BigDecimal(25))

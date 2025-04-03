@@ -17,13 +17,11 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import forms.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.requests.DataRequest
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -40,20 +38,27 @@ class PublicTransportAndAccommodationExpensesController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: PublicTransportAndAccommodationExpensesFormProvider,
+    formProvider: CurrencyFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: PublicTransportAndAccommodationExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(implicit request: DataRequest[AnyContent]): Form[BigDecimal] = formProvider(request.userType)
+  private val form = (userType: UserType) =>
+    formProvider(
+      page = PublicTransportAndAccommodationExpensesPage,
+      userType = userType,
+      minValueError = s"publicTransportAndAccommodationExpenses.error.lessThanZero.$userType",
+      maxValueError = s"publicTransportAndAccommodationExpenses.error.overMax.$userType",
+      nonNumericError = s"publicTransportAndAccommodationExpenses.error.nonNumeric.$userType"
+    )
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(PublicTransportAndAccommodationExpensesPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(PublicTransportAndAccommodationExpensesPage, businessId) match {
+        case None        => form(request.userType)
+        case Some(value) => form(request.userType).fill(value)
       }
 
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
@@ -61,13 +66,13 @@ class PublicTransportAndAccommodationExpensesController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form
+      form(request.userType)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(PublicTransportAndAccommodationExpensesPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PublicTransportAndAccommodationExpensesPage, value, Option(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(
               navigator.nextPage(

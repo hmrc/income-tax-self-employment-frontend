@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import forms.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesFormProvider
+import forms.standard.CurrencyFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.{Mode, NormalMode}
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -36,8 +37,6 @@ import scala.concurrent.Future
 
 class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new PublicTransportAndAccommodationExpensesFormProvider()
-
   def onwardRoute  = Call("GET", "/foo")
   private val mode = NormalMode
 
@@ -48,20 +47,23 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
       .onPageLoad(taxYear, businessId, mode)
       .url
 
-  private def onSubmitRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
-    controllers.journeys.expenses.travelAndAccommodation.routes.PublicTransportAndAccommodationExpensesController
-      .onSubmit(taxYear, businessId, mode)
-      .url
-
   "PublicTransportAndAccommodationExpenses Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
+      val formProvider = new CurrencyFormProvider()
+      val form: Form[BigDecimal] = formProvider(
+        PublicTransportAndAccommodationExpensesPage,
+        userType,
+        minValueError = s"publicTransportAndAccommodationExpenses.error.lessThanZero.$userType",
+        maxValueError = s"publicTransportAndAccommodationExpenses.error.overMax.$userType",
+        nonNumericError = s"publicTransportAndAccommodationExpenses.error.nonNumeric.$userType"
+      )
+
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
 
           val ua          = emptyUserAnswers
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
           val request     = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
-          val form        = formProvider(userType)
 
           running(application) {
             val result = route(application, request).value
@@ -83,14 +85,15 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
 
           running(application) {
             val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
-            val form    = formProvider(userType).fill(validAnswer)
             val view =
               application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, mode, userType, taxYear, businessId)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form.fill(validAnswer), mode, userType, taxYear, businessId)(
+              request,
+              messages(application)).toString
           }
         }
 

@@ -72,12 +72,12 @@ class TravelAndAccommodationNavigator @Inject() {
       ua => (taxYear, businessId) => Some(handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode))
 
     case PublicTransportAndAccommodationExpensesPage =>
-      _ => (taxYear, businessId) => None // TODO Navigate to "How much of the public transport and accommodation is disallowable" page
+      _ => (_, _) => None // TODO Navigate to "How much of the public transport and accommodation is disallowable" page
     case _ => _ => (_, _) => None
   }
 
   private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId) =
-    userAnswers.get(TravelAndAccommodationExpenseTypePage).map(_.toSeq) match {
+    userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).map(_.toSeq) match {
       case Some(Seq(PublicTransportAndOtherAccommodation)) =>
         Option(
           routes.PublicTransportAndAccommodationExpensesController.onPageLoad(taxYear, businessId, NormalMode)
