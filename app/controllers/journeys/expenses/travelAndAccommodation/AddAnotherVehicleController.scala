@@ -90,14 +90,6 @@ class AddAnotherVehicleController @Inject() (
             OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
           )
         )
-        // for testing until page is finished
-//        OneColumnSummaryRow(
-//          "vehicleName",
-//          actions = List(
-//            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-//            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
-//          )
-//        )
       )
     }
 
