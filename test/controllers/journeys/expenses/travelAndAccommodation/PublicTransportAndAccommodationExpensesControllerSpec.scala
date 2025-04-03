@@ -17,119 +17,94 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import base.SpecBase.fakeOptionalRequest.userType
-import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
-import models.NormalMode
-import models.common.UserType
-import models.database.UserAnswers
-import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType}
+import forms.standard.CurrencyFormProvider
+import models.common.{BusinessId, TaxYear, UserType}
+import models.{Mode, NormalMode}
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.travelAndAccommodation._
+import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesView
+import views.html.journeys.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesView
 
 import scala.concurrent.Future
 
-class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
+class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute: Call = Call("GET", "/foo")
+  def onwardRoute  = Call("GET", "/foo")
+  private val mode = NormalMode
 
-  val formProvider           = new VehicleExpensesFormProvider()
-  val form: Form[BigDecimal] = formProvider(userType)
+  val validAnswer = BigDecimal(89.55)
 
-  lazy val vehicleExpensesControllerRoute: String = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
+  private def onPageLoadRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
+    controllers.journeys.expenses.travelAndAccommodation.routes.PublicTransportAndAccommodationExpensesController
+      .onPageLoad(taxYear, businessId, mode)
+      .url
 
-  "VehicleType Controller" - {
+  "PublicTransportAndAccommodationExpenses Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
+      val formProvider = new CurrencyFormProvider()
+      val form: Form[BigDecimal] = formProvider(
+        PublicTransportAndAccommodationExpensesPage,
+        userType,
+        minValueError = s"publicTransportAndAccommodationExpenses.error.lessThanZero.$userType",
+        maxValueError = s"publicTransportAndAccommodationExpenses.error.overMax.$userType",
+        nonNumericError = s"publicTransportAndAccommodationExpenses.error.nonNumeric.$userType"
+      )
+
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
-          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
-            Set(TravelAndAccommodationExpenseType.LeasedVehicles, TravelAndAccommodationExpenseType.MyOwnVehicle)
-          val ua = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer, Some(businessId))
-            .success
-            .value
 
+          val ua          = emptyUserAnswers
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
+          val request     = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
           running(application) {
-            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
-
             val result = route(application, request).value
-
-            val view = application.injector.instanceOf[VehicleExpensesView]
+            val view   = application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
-              request,
-              messages(application)).toString
+            contentAsString(result) mustEqual view(form, mode, userType, taxYear, businessId)(request, messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
-          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
-            Set(TravelAndAccommodationExpenseType.LeasedVehicles)
 
-          val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer, Some(businessId))
-            .success
-            .value
-            .set(TravelForWorkYourVehiclePage, "CarName", Some(businessId))
-            .success
-            .value
-            .set(VehicleTypePage, VehicleType.values.head, Some(businessId))
-            .success
-            .value
-            .set(SimplifiedExpensesPage, true, Some(businessId))
-            .success
-            .value
-            .set(VehicleExpensesPage, BigDecimal(25), Some(businessId))
+          val userAnswers = emptyUserAnswers
+            .set(PublicTransportAndAccommodationExpensesPage, validAnswer, Option(businessId))
             .success
             .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
-
-            val view = application.injector.instanceOf[VehicleExpensesView]
+            val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
+            val view =
+              application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
+            contentAsString(result) mustEqual view(form.fill(validAnswer), mode, userType, taxYear, businessId)(
               request,
-              messages(application)
-            ).toString
-
+              messages(application)).toString
           }
         }
 
         "must redirect to the next page when valid data is submitted" in {
-          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
-            Set(TravelAndAccommodationExpenseType.LeasedVehicles)
-
-          val userAnswers = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer, Some(businessId))
-            .success
-            .value
-            .set(VehicleExpensesPage, BigDecimal(25))
-            .success
-            .value
 
           val mockSessionRepository = mock[SessionRepository]
+
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val application =
-            applicationBuilder(userAnswers = Some(userAnswers), userType = userType)
+            applicationBuilder(userAnswers = Some(emptyUserAnswers))
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
@@ -138,8 +113,8 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             val request =
-              FakeRequest(POST, vehicleExpensesControllerRoute)
-                .withFormUrlEncodedBody(("value", "12"))
+              FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
+                .withFormUrlEncodedBody(("value", validAnswer.toString))
 
             val result = route(application, request).value
 
@@ -149,28 +124,19 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
-          val travelExpenseAnswer: Set[TravelAndAccommodationExpenseType] =
-            Set(TravelAndAccommodationExpenseType.LeasedVehicles)
-
           val userAnswers = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, travelExpenseAnswer, Some(businessId))
-            .success
-            .value
-            .set(VehicleExpensesPage, BigDecimal(25))
+            .set(PublicTransportAndAccommodationExpensesPage, BigDecimal(-20), Option(businessId))
             .success
             .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
           running(application) {
-            val request =
-              FakeRequest(POST, vehicleExpensesControllerRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
+            val request = FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
 
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-
           }
         }
 
@@ -179,7 +145,7 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
           val application = applicationBuilder(userAnswers = None).build()
 
           running(application) {
-            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+            val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
             val result = route(application, request).value
 
@@ -194,12 +160,13 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             val request =
-              FakeRequest(POST, vehicleExpensesControllerRoute)
-                .withFormUrlEncodedBody(("value", "answer"))
+              FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
+                .withFormUrlEncodedBody(("value", validAnswer.toString))
 
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
+
             redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
           }
         }
