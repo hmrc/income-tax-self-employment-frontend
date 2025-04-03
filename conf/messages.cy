@@ -2151,3 +2151,7 @@ addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
 
+
+removeVehicle.title                                                                 = *********Missing Welsh Message *********
+removeVehicle.error.required.agent                                                  = *********Missing Welsh Message *********
+removeVehicle.error.required.individual                                             = *********Missing Welsh Message *********
