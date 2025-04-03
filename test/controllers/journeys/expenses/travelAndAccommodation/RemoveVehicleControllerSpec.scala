@@ -25,7 +25,7 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.expenses.travelAndAccommodation.RemoveVehiclePage
+import pages.expenses.travelAndAccommodation.{RemoveVehiclePage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -40,16 +40,21 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider        = new RemoveVehicleFormProvider()
-  val form: Form[Boolean] = formProvider()
+  val formProvider    = new RemoveVehicleFormProvider()
+  val vehicle: String = "vehicle"
 
   lazy val removeVehicleRoute: String = routes.RemoveVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
 
   "RemoveVehicle Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       s"when user is $userType" - {
-        "must return OK and the correct view for a GET" ignore {
+        val form: Form[Boolean] = formProvider(userType, vehicle)
+
+        "must return OK and the correct view for a GET" in {
           val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
+            .success
+            .value
             .set(RemoveVehiclePage, true, Some(businessId))
             .success
             .value
@@ -64,7 +69,7 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
             val view = application.injector.instanceOf[RemoveVehicleView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, vehicle)(request, messages(application)).toString
           }
         }
 
@@ -82,7 +87,7 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(true), NormalMode, userType, taxYear, businessId)(
+            contentAsString(result) mustEqual view(form.fill(true), NormalMode, userType, taxYear, businessId, vehicle)(
               request,
               messages(application)).toString
           }
@@ -134,7 +139,9 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, vehicle)(
+              request,
+              messages(application)).toString
           }
         }
 

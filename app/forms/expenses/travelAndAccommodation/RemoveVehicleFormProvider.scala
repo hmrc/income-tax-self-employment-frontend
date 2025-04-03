@@ -17,14 +17,15 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
+import models.common.UserType
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class RemoveVehicleFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(userType: UserType, vehicle: String): Form[Boolean] =
     Form(
-      "value" -> boolean("removeVehicle.error.required")
+      "value" -> boolean(s"removeVehicle.error.required.$userType", args = Seq(vehicle))
     )
 }

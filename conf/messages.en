@@ -2489,3 +2489,7 @@ disallowableTransportAndAccommodation.error.overMax.individual = The amount you 
 disallowableTransportAndAccommodation.error.overMax.agent = The amount your client spent on travel and accommodation that is disallowable must be £{0} or less
 disallowableTransportAndAccommodation.checkYourAnswersLabel = DisallowableTransportAndAccommodation
 disallowableTransportAndAccommodation.change.hidden = DisallowableTransportAndAccommodationh
+
+removeVehicle.title                                                                 = Are you sure you want to remove {0}?
+removeVehicle.error.required.agent                                                  = Enter message amount your
+removeVehicle.error.required.individual                                             = Enter message amount your client

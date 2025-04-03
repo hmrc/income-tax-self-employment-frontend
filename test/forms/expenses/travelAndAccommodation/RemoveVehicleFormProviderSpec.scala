@@ -18,30 +18,38 @@ package forms.expenses.travelAndAccommodation
 
 import forms.behaviours.BooleanFieldBehaviours
 import models.common.UserType
-import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 
 class RemoveVehicleFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "removeVehicle.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new RemoveVehicleFormProvider()()
+  val invalidKey      = "error.boolean"
+  val vehicle: String = "vehicle"
 
   ".value" - {
 
-    val fieldName = "value"
+    case class UserScenario(userType: UserType)
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    userScenarios.foreach { userScenario =>
+      val form = new RemoveVehicleFormProvider()(userScenario.userType, vehicle)
+
+      s"when user is an ${userScenario.userType}, form should " - {
+
+        val fieldName = "value"
+
+        behave like booleanField(
+          form,
+          fieldName,
+          invalidError = FormError(fieldName, invalidKey, Seq(vehicle))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, s"removeVehicle.error.required.${userScenario.userType}", Seq(vehicle))
+        )
+      }
+    }
   }
 }

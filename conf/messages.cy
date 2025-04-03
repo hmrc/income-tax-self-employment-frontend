@@ -2167,3 +2167,7 @@ disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Miss
 disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********
+
+removeVehicle.title                                                                 = *********Missing Welsh Message *********
+removeVehicle.error.required.agent                                                  = *********Missing Welsh Message *********
+removeVehicle.error.required.individual                                             = *********Missing Welsh Message *********
