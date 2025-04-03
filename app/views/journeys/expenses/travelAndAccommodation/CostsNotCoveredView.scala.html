@@ -56,6 +56,7 @@
                 .withCssClass("govuk-label--m"),
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
 
