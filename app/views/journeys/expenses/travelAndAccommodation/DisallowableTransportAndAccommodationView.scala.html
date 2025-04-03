@@ -25,7 +25,8 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, expenses: String)(implicit request: Request[_], messages: Messages)
@@ -38,10 +39,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @heading(s"disallowableTransportAndAccommodation.heading.$userType", Some(expenses))
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses)).asPageHeading(LabelSize.Large)
+                label = LabelViewModel(messages("site.hint.amount")).withCssClass("govuk-hint")
             )
             .asNumeric()
             .withWidth(Fixed10)
