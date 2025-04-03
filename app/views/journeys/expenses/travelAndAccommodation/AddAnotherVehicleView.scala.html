@@ -40,7 +40,11 @@
 
         @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value"))
 
-        @heading(s"addAnotherVehicle.title.$userType", Some(vehicles.size.toString))
+        @heading(if (vehicles.size > 1) {
+            s"addAnotherVehiclePlural.title.$userType"
+        } else {
+            s"addAnotherVehicle.title.$userType"
+        }, Some(vehicles.size.toString))
 
         @oneColumnSummary(vehicles)
 

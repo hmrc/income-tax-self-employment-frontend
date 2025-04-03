@@ -2144,7 +2144,10 @@ publicTransportAndAccommodationExpenses.error.lessThanZero.individual           
 
 addAnotherVehicle.title.individual = *********Missing Welsh Message *********
 addAnotherVehicle.title.agent = *********Missing Welsh Message *********
+addAnotherVehiclePlural.title.individual = *********Missing Welsh Message *********
+addAnotherVehiclePlural.title.agent = *********Missing Welsh Message *********
 addAnotherVehicle.subheading.individual = *********Missing Welsh Message *********
 addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
+

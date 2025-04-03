@@ -53,7 +53,7 @@ class AddAnotherVehicleController @Inject() (
     implicit request =>
       val form: Form[Boolean] = formProvider(request.user.userType)
 
-      val preparedForm = request.userAnswers.get(AddAnotherVehiclePage) match {
+      val preparedForm = request.userAnswers.get(AddAnotherVehiclePage, businessId) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -72,7 +72,7 @@ class AddAnotherVehicleController @Inject() (
             Future.successful(BadRequest(view(formWithErrors, mode, vehicleDetails(taxYear, businessId), request.userType, taxYear, businessId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherVehiclePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherVehiclePage, value, Some(businessId)))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddAnotherVehiclePage, mode, updatedAnswers, taxYear, businessId))
         )
@@ -84,17 +84,20 @@ class AddAnotherVehicleController @Inject() (
         OneColumnSummaryRow(
           vehicleName,
           actions = List(
+            // TODO navigate to 11a for change (CYA) - and amend view tests
             OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
-          )
-        ),
-        OneColumnSummaryRow(
-          "vehicleName",
-          actions = List(
-            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
+            // TODO navigate to 12a for remove - and amend view tests
             OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
           )
         )
+        // for testing until page is finished
+//        OneColumnSummaryRow(
+//          "vehicleName",
+//          actions = List(
+//            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
+//            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+//          )
+//        )
       )
     }
 

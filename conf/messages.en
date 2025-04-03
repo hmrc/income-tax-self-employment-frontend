@@ -868,6 +868,8 @@ costsNotCovered.error.lessThanZero.agent = The amount your client spent on tolls
 ## Add another vehicle
 addAnotherVehicle.title.individual = You have added {0} vehicle
 addAnotherVehicle.title.agent = Your client has added {0} vehicle
+addAnotherVehiclePlural.title.individual = You have added {0} vehicles
+addAnotherVehiclePlural.title.agent = Your client has added {0} vehicles
 addAnotherVehicle.subheading.individual = Do you need to add another vehicle?
 addAnotherVehicle.subheading.agent = Does your client need to add another vehicle?
 addAnotherVehicle.error.required.individual = Select yes if you need to add another vehicle
