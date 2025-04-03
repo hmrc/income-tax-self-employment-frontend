@@ -76,7 +76,7 @@ class TravelAndAccommodationNavigator @Inject() {
     case PublicTransportAndAccommodationExpensesPage =>
       ua => (taxYear, businessId) => handlePublicTransportAndAccom(ua, taxYear, businessId, NormalMode)
 
-     case AddAnotherVehiclePage =>
+    case AddAnotherVehiclePage =>
       ua =>
         (taxYear, businessId) =>
           Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
@@ -142,7 +142,7 @@ class TravelAndAccommodationNavigator @Inject() {
             // TODO false and does not PublicTransportAndOtherAccommodation == have you finished page(last page)
             routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
         }
-      case None => standard.routes.JourneyRecoveryController.onPageLoad()
+      case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>
