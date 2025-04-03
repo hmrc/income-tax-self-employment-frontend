@@ -46,13 +46,7 @@ class PublicTransportAndAccommodationExpensesController @Inject() (
     with I18nSupport {
 
   private val form = (userType: UserType) =>
-    formProvider(
-      page = PublicTransportAndAccommodationExpensesPage,
-      userType = userType,
-      minValueError = s"publicTransportAndAccommodationExpenses.error.lessThanZero.$userType",
-      maxValueError = s"publicTransportAndAccommodationExpenses.error.overMax.$userType",
-      nonNumericError = s"publicTransportAndAccommodationExpenses.error.nonNumeric.$userType"
-    )
+    formProvider(PublicTransportAndAccommodationExpensesPage, userType, prefix = Some("publicTransportAndAccommodationExpenses"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
