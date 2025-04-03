@@ -20,10 +20,12 @@ import base.SpecBase
 import controllers.journeys.expenses.travelAndAccommodation.routes
 import controllers.standard
 import models._
+import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
+import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import pages.expenses.travelAndAccommodation._
 
 class TravelAndAccommodationNavigatorSpec extends SpecBase {
@@ -120,6 +122,35 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
           navigator.nextPage(TravelForWorkYourMileagePage, mode, ua, taxYear, businessId) shouldBe expectedResult
         }
+
+        "navigate to DisallowableTransportAndAccommodationPage from PublicTransportAndAccommodationExpensesPage" +
+          " when TravelForWorkPage option selected is 'YesDisallowable'" in {
+            val expectedResult = routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode)
+            val ua = emptyUserAnswers
+              .set(TravelForWorkPage, TravelForWork.YesDisallowable, Some(businessId))
+              .toOption
+              .value
+              .set(PublicTransportAndAccommodationExpensesPage, BigDecimal(200), Some(businessId))
+              .toOption
+              .value
+
+            navigator.nextPage(PublicTransportAndAccommodationExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          }
+
+        "navigate to TravelAndAccommodationCYA from PublicTransportAndAccommodationExpensesPage" +
+          " when TravelForWorkPage option selected is 'YesAllowable'" ignore {
+            val expectedResult = routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode)
+            val ua = emptyUserAnswers
+              .set(TravelForWorkPage, TravelForWork.YesAllowable, Some(businessId))
+              .toOption
+              .value
+              .set(PublicTransportAndAccommodationExpensesPage, BigDecimal(200), Some(businessId))
+              .toOption
+              .value
+
+            navigator.nextPage(PublicTransportAndAccommodationExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          }
+
       }
 
       "in CheckMode" - {

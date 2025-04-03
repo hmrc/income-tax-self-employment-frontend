@@ -20,11 +20,13 @@ import controllers.journeys.expenses.travelAndAccommodation.routes
 import controllers.standard
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, YourFlatRateForVehicleExpenses}
 import models.{NormalMode, _}
 import pages._
+import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import pages.expenses.travelAndAccommodation._
 import play.api.mvc.Call
 
@@ -73,8 +75,9 @@ class TravelAndAccommodationNavigator @Inject() {
       ua => (taxYear, businessId) => Some(handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode))
 
     case PublicTransportAndAccommodationExpensesPage =>
-      _ => (_, _) => None // TODO Navigate to "How much of the public transport and accommodation is disallowable" page
-    case AddAnotherVehiclePage =>
+      ua => (taxYear, businessId) => handlePublicTransportAndAccom(ua, taxYear, businessId, NormalMode)
+
+     case AddAnotherVehiclePage =>
       ua =>
         (taxYear, businessId) =>
           Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
@@ -83,6 +86,12 @@ class TravelAndAccommodationNavigator @Inject() {
 
     case _ => _ => (_, _) => None
   }
+
+  private def handlePublicTransportAndAccom(ua: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
+    ua.get(TravelForWorkPage, businessId) map {
+      case TravelForWork.YesDisallowable => routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, mode)
+      case _                             => ??? // TODO Check your answers page
+    }
 
   private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId) =
     userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).map(_.toSeq) match {

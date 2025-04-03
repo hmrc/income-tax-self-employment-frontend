@@ -25,7 +25,8 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage}
+import pages.DisallowableTransportAndAccommodationPage
+import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -45,7 +46,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
   val validAnswer: BigDecimal = 35
   val expenses: BigDecimal    = 50
-  val strExpense = formatMoney(expenses)
+  val strExpense              = formatMoney(expenses)
 
   lazy val disallowableTransportAndAccommodationRoute: String =
     routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode).url
@@ -57,7 +58,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
           val userAnswers = emptyUserAnswers
-            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .set(PublicTransportAndAccommodationExpensesPage, expenses, Some(businessId))
             .success
             .value
 
@@ -71,7 +72,9 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, strExpense)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, strExpense)(
+              request,
+              messages(application)).toString
           }
         }
 
@@ -92,7 +95,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
           val userAnswers = UserAnswers(userAnswersId)
-            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .set(PublicTransportAndAccommodationExpensesPage, expenses, Some(businessId))
             .success
             .value
             .set(DisallowableTransportAndAccommodationPage, validAnswer, Some(businessId))
@@ -118,7 +121,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
         "must redirect to the next page when valid data is submitted" in {
 
           val userAnswers = UserAnswers(userAnswersId)
-            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .set(PublicTransportAndAccommodationExpensesPage, expenses, Some(businessId))
             .success
             .value
           val mockSessionRepository = mock[SessionRepository]
@@ -147,7 +150,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
         "must return a Bad Request and errors when invalid data is submitted" in {
           val userAnswers = UserAnswers(userAnswersId)
-            .set(CostsNotCoveredPage, expenses, Some(businessId))
+            .set(PublicTransportAndAccommodationExpensesPage, expenses, Some(businessId))
             .success
             .value
 
@@ -165,7 +168,9 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, strExpense)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, strExpense)(
+              request,
+              messages(application)).toString
           }
         }
       }

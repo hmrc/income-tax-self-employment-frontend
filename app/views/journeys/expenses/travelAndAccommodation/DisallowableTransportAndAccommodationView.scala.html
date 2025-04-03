@@ -17,6 +17,7 @@
 @import viewmodels.InputWidth._
 @import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.travelAndAccommodation.routes
+@import viewmodels.LabelSize
 @import views.html.components._
 
 @this(
@@ -40,7 +41,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses)).asPageHeading()
+                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses)).asPageHeading(LabelSize.Large)
             )
             .asNumeric()
             .withWidth(Fixed10)

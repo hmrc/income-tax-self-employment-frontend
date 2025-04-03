@@ -22,7 +22,8 @@ import forms.expenses.travelAndAccommodation.DisallowableTransportAndAccommodati
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage}
+import pages.DisallowableTransportAndAccommodationPage
+import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,7 +52,7 @@ class DisallowableTransportAndAccommodationController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      request.userAnswers.get(CostsNotCoveredPage, businessId) match {
+      request.userAnswers.get(PublicTransportAndAccommodationExpensesPage, businessId) match {
         case Some(expenses) =>
           val form       = formProvider(request.userType, expenses)
           val filledForm = fillForm(page, businessId, form)
@@ -63,7 +64,7 @@ class DisallowableTransportAndAccommodationController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(CostsNotCoveredPage, businessId) match {
+      request.userAnswers.get(PublicTransportAndAccommodationExpensesPage, businessId) match {
         case Some(expenses) =>
           val form = formProvider(request.userType, expenses)
           form
