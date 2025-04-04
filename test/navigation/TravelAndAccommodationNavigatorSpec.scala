@@ -120,6 +120,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
           navigator.nextPage(TravelForWorkYourMileagePage, mode, ua, taxYear, businessId) shouldBe expectedResult
         }
+
       }
 
       "in CheckMode" - {
@@ -130,6 +131,19 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
             val expectedResult = standard.routes.JourneyRecoveryController.onPageLoad()
 
             navigator.nextPage(UnknownPage, mode, emptyUserAnswers, taxYear, businessId) shouldBe expectedResult
+          }
+
+          "navigate to AddAnotherVehicle change link from RemoveVehicle" in {
+            val expectedResult = routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, CheckMode)
+            val ua = emptyUserAnswers
+              .set(TravelForWorkYourVehiclePage, "vehicle", Some(businessId))
+              .toOption
+              .value
+              .set(RemoveVehiclePage, true, Some(businessId))
+              .toOption
+              .value
+
+            navigator.nextPage(RemoveVehiclePage, mode, ua, taxYear, businessId) shouldBe expectedResult
           }
         }
       }

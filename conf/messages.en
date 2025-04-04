@@ -2477,6 +2477,7 @@ publicTransportAndAccommodationExpenses.error.overMax.individual                
 publicTransportAndAccommodationExpenses.error.lessThanZero.agent                    = The amount your client is claiming on public transport and accommodation expenses must be more than £0
 publicTransportAndAccommodationExpenses.error.lessThanZero.individual               = The amount you’re claiming on public transport and accommodation expenses must be more than £0
 
-removeVehicle.title                                                                 = Are you sure you want to remove {0}?
-removeVehicle.error.required.agent                                                  = Enter message amount your
-removeVehicle.error.required.individual                                             = Enter message amount your client
+removeVehicle.title.individual                                                      = Are you sure you want to remove {0}?
+removeVehicle.title.agent                                                           = Is your client sure they want to remove {0}?
+removeVehicle.error.required.individual                                             = Enter message amount you
+removeVehicle.error.agent                                                           = Enter message amount your client

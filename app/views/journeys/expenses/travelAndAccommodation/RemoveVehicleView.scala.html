@@ -29,7 +29,7 @@
 
 @(form: Form[_],  mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, vehicle: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("removeVehicle.title", vehicle))) {
+@layout(pageTitle = title(form, messages(s"removeVehicle.title.$userType", vehicle))) {
 
     @formHelper(action = routes.RemoveVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -38,7 +38,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("removeVehicle.title", vehicle)).asPageHeading()
+                legend = LegendViewModel(messages(s"removeVehicle.title.$userType", vehicle)).asPageHeading()
             )
         )
 
