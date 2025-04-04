@@ -18,9 +18,9 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import controllers.journeys.fillForm
-import forms.expenses.travelAndAccommodation.DisallowableTransportAndAccommodationFormProvider
+import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import navigation.TravelAndAccommodationNavigator
 import pages.DisallowableTransportAndAccommodationPage
 import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
@@ -41,7 +41,7 @@ class DisallowableTransportAndAccommodationController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: DisallowableTransportAndAccommodationFormProvider,
+    formProvider: CurrencyFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DisallowableTransportAndAccommodationView
 )(implicit ec: ExecutionContext)
@@ -49,13 +49,14 @@ class DisallowableTransportAndAccommodationController @Inject() (
     with I18nSupport {
 
   private val page = DisallowableTransportAndAccommodationPage
+  private val form = (userType: UserType, expenses: BigDecimal) =>
+    formProvider(page, userType, maxValue = expenses, prefix = Some("disallowableTransportAndAccommodation"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(PublicTransportAndAccommodationExpensesPage, businessId) match {
         case Some(expenses) =>
-          val form       = formProvider(request.userType, expenses)
-          val filledForm = fillForm(page, businessId, form)
+          val filledForm = fillForm(page, businessId, form(request.userType, expenses))
           Ok(view(filledForm, mode, request.userType, taxYear, businessId, formatMoney(expenses)))
         case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       }
@@ -66,8 +67,7 @@ class DisallowableTransportAndAccommodationController @Inject() (
     implicit request =>
       request.userAnswers.get(PublicTransportAndAccommodationExpensesPage, businessId) match {
         case Some(expenses) =>
-          val form = formProvider(request.userType, expenses)
-          form
+          form(request.userType, expenses)
             .bindFromRequest()
             .fold(
               formWithErrors =>
