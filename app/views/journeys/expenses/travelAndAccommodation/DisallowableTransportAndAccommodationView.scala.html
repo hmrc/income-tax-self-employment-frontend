@@ -15,44 +15,38 @@
  *@
 
 @import viewmodels.InputWidth._
+@import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.travelAndAccommodation.routes
-@import models.common.{TaxYear, BusinessId, UserType}
+@import viewmodels.LabelSize
 @import views.html.components._
-@import viewmodels.LabelSize.Medium
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton,
-    heading: Heading
+    govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, vehicle: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, expenses: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"travelForWorkYourMileage.title.$userType", vehicle))) {
+@layout(pageTitle = title(form, messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses))) {
 
-    @formHelper(action = routes.TravelForWorkYourMileageController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-
+    @formHelper(action = routes.DisallowableTransportAndAccommodationController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @heading(s"travelForWorkYourMileage.title.$userType")
-
-        <div class="govuk-body govuk-!-margin-bottom-6">
-            <p>@messages(s"travelForWorkYourMileage.p1.info.$userType", vehicle)</p>
-        </div>
-
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"travelForWorkYourMileage.formLabel.$userType", vehicle)).asPageHeading(Medium)
+                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses)).asPageHeading(LabelSize.Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
         @govukButton(

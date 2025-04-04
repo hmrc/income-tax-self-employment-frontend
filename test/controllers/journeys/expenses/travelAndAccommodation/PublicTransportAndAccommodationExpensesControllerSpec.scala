@@ -50,13 +50,8 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
   "PublicTransportAndAccommodationExpenses Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       val formProvider = new CurrencyFormProvider()
-      val form: Form[BigDecimal] = formProvider(
-        PublicTransportAndAccommodationExpensesPage,
-        userType,
-        minValueError = s"publicTransportAndAccommodationExpenses.error.lessThanZero.$userType",
-        maxValueError = s"publicTransportAndAccommodationExpenses.error.overMax.$userType",
-        nonNumericError = s"publicTransportAndAccommodationExpenses.error.nonNumeric.$userType"
-      )
+      val form: Form[BigDecimal] =
+        formProvider(PublicTransportAndAccommodationExpensesPage, userType, prefix = Some("publicTransportAndAccommodationExpenses"))
 
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {

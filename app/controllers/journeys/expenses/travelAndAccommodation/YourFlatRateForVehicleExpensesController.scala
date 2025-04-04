@@ -99,7 +99,7 @@ class YourFlatRateForVehicleExpensesController @Inject() (
               formWithErrors => Future.successful(loadPage(formWithErrors, workMileage, BadRequest, taxYear, businessId, mode)),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )
