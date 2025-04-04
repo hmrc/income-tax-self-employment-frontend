@@ -2489,3 +2489,7 @@ disallowableTransportAndAccommodation.error.overMax.individual = The amount you 
 disallowableTransportAndAccommodation.error.overMax.agent = The amount your client spent on travel and accommodation that is disallowable must be £{0} or less
 disallowableTransportAndAccommodation.checkYourAnswersLabel = DisallowableTransportAndAccommodation
 disallowableTransportAndAccommodation.change.hidden = DisallowableTransportAndAccommodationh
+
+publicTransportAndAccommodationExpenses.change.hidden                               = The amount you’re claiming on public transport and accommodation expenses must be more than £0
+publicTransportAndAccommodationExpensesCya.title.individual                         = Check your public transport, hotel room costs and meals on overnight trip expenses
+publicTransportAndAccommodationExpensesCya.title.agent                              = Check your client public transport, hotel room costs and meals on overnight trip expenses
