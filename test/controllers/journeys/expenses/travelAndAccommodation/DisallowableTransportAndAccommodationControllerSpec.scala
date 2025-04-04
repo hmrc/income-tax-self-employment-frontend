@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
+import forms.standard.CurrencyFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
@@ -39,20 +40,20 @@ import scala.concurrent.Future
 
 class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DisallowableTransportAndAccommodationFormProvider()
-
+  val formProvider = new CurrencyFormProvider()
   def onwardRoute: Call = Call("GET", "/foo")
 
   val validAnswer: BigDecimal = 35
   val expenses: BigDecimal    = 50
-  val strExpense              = formatMoney(expenses)
+  val strExpense: String = formatMoney(expenses)
+  val form: UserType => Form[BigDecimal] = (userType: UserType) =>
+    formProvider(DisallowableTransportAndAccommodationPage, userType, maxValue = expenses, prefix = Some("disallowableTransportAndAccommodation"))
 
   lazy val disallowableTransportAndAccommodationRoute: String =
     routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode).url
 
   "DisallowableTransportAndAccommodation Controller" - {
     UserType.values.foreach { userType =>
-      val form: Form[BigDecimal] = formProvider(userType, expenses)
 
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
@@ -71,7 +72,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, strExpense)(
+            contentAsString(result) mustEqual view(form(userType), NormalMode, userType, taxYear, businessId, strExpense)(
               request,
               messages(application)).toString
           }
@@ -111,7 +112,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, userType, taxYear, businessId, strExpense)(
+            contentAsString(result) mustEqual view(form(userType).fill(validAnswer), NormalMode, userType, taxYear, businessId, strExpense)(
               request,
               messages(application)).toString
           }
@@ -160,7 +161,7 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
               FakeRequest(POST, disallowableTransportAndAccommodationRoute)
                 .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> "invalid value"))
+            val boundForm = form(userType).bind(Map("value" -> "invalid value"))
 
             val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
