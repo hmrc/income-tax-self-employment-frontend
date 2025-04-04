@@ -29,15 +29,14 @@ import viewmodels.checkAnswers.buildRowString
 object TravelForWorkYourMileageSummary {
 
   def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TravelForWorkYourMileagePage, businessId).map { answer =>
-      val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
-
-      buildRowString(
-        formatMoney(answer),
-        routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
-        rightTextAlign = true,
-        keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
-        changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType"
-      )
-    }
+    for {
+      mileageAnswer <- answers.get(TravelForWorkYourMileagePage, businessId)
+      vehicleName   <- answers.get(TravelForWorkYourVehiclePage, businessId)
+    } yield buildRowString(
+      formatMoney(mileageAnswer),
+      callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, CheckMode),
+      keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
+      changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+      rightTextAlign = true
+    )
 }

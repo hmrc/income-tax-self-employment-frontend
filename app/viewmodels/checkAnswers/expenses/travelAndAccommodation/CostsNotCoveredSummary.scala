@@ -29,17 +29,13 @@ import utils.MoneyUtils.formatMoney
 object CostsNotCoveredSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(CostsNotCoveredPage, businessId)
-      .map { answer =>
-        val amount = s"£${formatMoney(answer)}"
-
-        buildRowString(
-          amount,
-          callLink = routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
-          keyMessage = messages(s"costsNotCovered.subheading.$userType"),
-          changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
-          rightTextAlign = true
-        )
-      }
+    answers.get(CostsNotCoveredPage, businessId).map { answer =>
+      buildRowString(
+        s"£${formatMoney(answer)}",
+        callLink = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, CheckMode),
+        keyMessage = messages(s"costsNotCovered.subheading.$userType"),
+        changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+        rightTextAlign = true
+      )
+    }
 }

@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import controllers.journeys.clearDependentPages
 import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -88,6 +89,8 @@ class YourFlatRateForVehicleExpensesController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+      println("]]]]]]]]]]]]]]]]]]" + request.userAnswers.get(SimplifiedExpensesPage, businessId))
+      println("]]]]]]]]]]]]]]]]]]2" + request.userAnswers.get(TravelForWorkYourMileagePage, businessId))
       (request.userAnswers.get(SimplifiedExpensesPage, businessId), request.userAnswers.get(TravelForWorkYourMileagePage, businessId)) match {
         case (Some(boolean), _) if boolean =>
           Future.successful(Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, request.userAnswers, taxYear, businessId)))
@@ -99,7 +102,14 @@ class YourFlatRateForVehicleExpensesController @Inject() (
               formWithErrors => Future.successful(loadPage(formWithErrors, workMileage, BadRequest, taxYear, businessId, mode)),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value))
+                  clearedAnswers <- clearDependentPages(
+                    YourFlatRateForVehicleExpensesPage,
+                    value,
+                    request.userAnswers,
+                    businessId
+                  )
+
+                  updatedAnswers <- Future.fromTry(clearedAnswers.set(YourFlatRateForVehicleExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )

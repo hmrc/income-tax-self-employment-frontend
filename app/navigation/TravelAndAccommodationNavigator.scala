@@ -97,16 +97,23 @@ class TravelAndAccommodationNavigator @Inject() {
         routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, mode)
     }
 
-  private def handleYourVehicleExpensesFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call =
-    userAnswers.get(SimplifiedExpensesPage, businessId) match {
+  private def handleYourVehicleExpensesFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call = {
+    println("]]]]]]]]]]]]]]]]]]navigator" + userAnswers.get(SimplifiedExpensesPage, businessId))
+    println("]]]]]]]]]]]]]]]]]]navigator2" + userAnswers.get(YourFlatRateForVehicleExpensesPage, businessId))
+    val x = userAnswers.get(SimplifiedExpensesPage, businessId) match {
       case Some(true) => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
       case Some(false) =>
+        println("I AM HERE")
         userAnswers.get(YourFlatRateForVehicleExpensesPage) match {
           case Some(YourFlatRateForVehicleExpenses.Flatrate)   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
           case Some(YourFlatRateForVehicleExpenses.Actualcost) => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
+          case _                                               => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
         }
       case None => standard.routes.JourneyRecoveryController.onPageLoad()
     }
+    println("VALUE OF X:\n\n\n\n" + x)
+    x
+  }
 
   private def handleFlatRateChoice(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     userAnswers.get(VehicleFlatRateChoicePage, businessId) map {
@@ -116,8 +123,22 @@ class TravelAndAccommodationNavigator @Inject() {
         routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
     }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>
-    _ => (_, _) => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
+
+    case TravelAndAccommodationExpenseTypePage =>
+      _ =>
+        (taxYear, businessId) =>
+          routes.TravelAndAccommodationExpensesCYAController
+            .onPageLoad(taxYear, businessId)
+
+    case TravelForWorkYourVehiclePage =>
+      _ => (taxYear, businessId) => routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
+
+    case VehicleTypePage =>
+      _ => (taxYear, businessId) => routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
+
+    case _ =>
+      _ => (_, _) => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =

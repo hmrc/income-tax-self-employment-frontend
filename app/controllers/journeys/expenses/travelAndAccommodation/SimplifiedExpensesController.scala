@@ -17,12 +17,17 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.{
+  SimplifiedExpensesPage,
+  TravelForWorkYourVehiclePage,
+  VehicleFlatRateChoicePage,
+  YourFlatRateForVehicleExpensesPage
+}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,8 +75,14 @@ class SimplifiedExpensesController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, vehicle))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+                  clearedAnswers <- clearDependentPages(page, value, request.userAnswers, businessId)
+                  _ = println(
+                    s"+++++++ \n\nAfter clearing - yourFlatRateForVehicleExpenses: ${clearedAnswers.get(YourFlatRateForVehicleExpensesPage, businessId)}")
+                  _ = println(s"+++++++ \n\nAfter clearing - vehcileFlatRateChoice: ${clearedAnswers.get(VehicleFlatRateChoicePage)}")
+                  updatedAnswers <- Future.fromTry(clearedAnswers.set(page, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
+                  _ = println(
+                    s"++++++++ \n\nBefore redirect - yourFlatRateForVehicleExpenses: ${updatedAnswers.get(YourFlatRateForVehicleExpensesPage, businessId)}")
                 } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )
         case None =>

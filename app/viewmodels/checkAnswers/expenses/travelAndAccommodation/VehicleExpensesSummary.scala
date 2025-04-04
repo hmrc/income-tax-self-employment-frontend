@@ -31,15 +31,16 @@ object VehicleExpensesSummary {
   def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(VehicleExpensesPage, businessId)
-      .map { answer =>
+      .flatMap { answer =>
         val amount = s"£${formatMoney(answer)}"
-
-        buildRowString(
-          amount,
-          callLink = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
-          keyMessage = messages(s"vehicleExpenses.subheading.$userType"),
-          changeMessage = s"vehicleExpenses.change.hidden.$userType",
-          rightTextAlign = true
+        Some(
+          buildRowString(
+            amount,
+            callLink = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+            keyMessage = messages(s"vehicleExpenses.subheading.$userType"),
+            changeMessage = s"vehicleExpenses.change.hidden.$userType",
+            rightTextAlign = true
+          )
         )
       }
 
