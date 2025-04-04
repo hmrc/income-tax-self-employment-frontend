@@ -2141,7 +2141,6 @@ publicTransportAndAccommodationExpenses.error.overMax.individual                
 publicTransportAndAccommodationExpenses.error.lessThanZero.agent                    = *********Missing Welsh Message *********
 publicTransportAndAccommodationExpenses.error.lessThanZero.individual               = *********Missing Welsh Message *********
 
-
 addAnotherVehicle.title.individual = *********Missing Welsh Message *********
 addAnotherVehicle.title.agent = *********Missing Welsh Message *********
 addAnotherVehiclePlural.title.individual = *********Missing Welsh Message *********
@@ -2171,3 +2170,7 @@ disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Mes
 removeVehicle.title                                                                 = *********Missing Welsh Message *********
 removeVehicle.error.required.agent                                                  = *********Missing Welsh Message *********
 removeVehicle.error.required.individual                                             = *********Missing Welsh Message *********
+removeVehicle.title.individual             = *********Missing Welsh Message *********
+removeVehicle.title.agent                  = *********Missing Welsh Message *********
+removeVehicle.error.required.individual    = *********Missing Welsh Message *********
+removeVehicle.error.agent                  = *********Missing Welsh Message *********

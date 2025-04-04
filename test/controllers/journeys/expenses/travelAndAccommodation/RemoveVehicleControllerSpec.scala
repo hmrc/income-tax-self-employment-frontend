@@ -25,6 +25,7 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.AddAnotherVehiclePage
 import pages.expenses.travelAndAccommodation.{RemoveVehiclePage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -43,7 +44,8 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
   val formProvider    = new RemoveVehicleFormProvider()
   val vehicle: String = "vehicle"
 
-  lazy val removeVehicleRoute: String = routes.RemoveVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val removeVehicleRoute: String       = routes.RemoveVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val removeVehicleSubmitRoute: String = routes.RemoveVehicleController.onSubmit(taxYear, businessId, NormalMode).url
 
   "RemoveVehicle Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
@@ -53,9 +55,6 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
         "must return OK and the correct view for a GET" in {
           val ua = emptyUserAnswers
             .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
-            .success
-            .value
-            .set(RemoveVehiclePage, true, Some(businessId))
             .success
             .value
 
@@ -73,11 +72,19 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
           }
         }
 
-        "must populate the view correctly on a GET when the question has previously been answered" ignore {
+        "must populate the view correctly on a GET when the question has previously been answered" in {
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
+            .success
+            .value
+            .set(AddAnotherVehiclePage, true, Some(businessId))
+            .success
+            .value
+            .set(RemoveVehiclePage, true, Some(businessId))
+            .success
+            .value
 
-          val userAnswers = UserAnswers(userAnswersId).set(RemoveVehiclePage, true, Some(businessId)).success.value
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
           running(application) {
             val request = FakeRequest(GET, removeVehicleRoute)
@@ -93,14 +100,19 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
           }
         }
 
-        "must redirect to the next page when valid data is submitted" ignore {
+        "must redirect to the next page when valid data is submitted" in {
           val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
+            .success
+            .value
+            .set(AddAnotherVehiclePage, true, Some(businessId))
+            .success
+            .value
             .set(RemoveVehiclePage, true, Some(businessId))
             .success
             .value
 
           val mockSessionRepository = mock[SessionRepository]
-
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val application =
@@ -113,7 +125,7 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             val request =
-              FakeRequest(POST, removeVehicleRoute)
+              FakeRequest(POST, removeVehicleSubmitRoute)
                 .withFormUrlEncodedBody(("value", "true"))
 
             val result = route(application, request).value
@@ -123,16 +135,20 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
           }
         }
 
-        "must return a Bad Request and errors when invalid data is submitted" ignore {
+        "must return a Bad Request and errors when invalid data is submitted" in {
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
+            .success
+            .value
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
           running(application) {
             val request =
-              FakeRequest(POST, removeVehicleRoute)
-                .withFormUrlEncodedBody(("value", ""))
+              FakeRequest(POST, removeVehicleSubmitRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> ""))
+            val boundForm = form.bind(Map("value" -> "invalid value"))
 
             val view = application.injector.instanceOf[RemoveVehicleView]
 
@@ -145,7 +161,7 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
           }
         }
 
-        "must redirect to Journey Recovery for a GET if no existing data is found" ignore {
+        "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
           val application = applicationBuilder(userAnswers = None, userType = userType).build()
 
@@ -159,13 +175,13 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
           }
         }
 
-        "must redirect to Journey Recovery for a POST if no existing data is found" ignore {
+        "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
           val application = applicationBuilder(userAnswers = None, userType = userType).build()
 
           running(application) {
             val request =
-              FakeRequest(POST, removeVehicleRoute)
+              FakeRequest(POST, removeVehicleSubmitRoute)
                 .withFormUrlEncodedBody(("value", "true"))
 
             val result = route(application, request).value

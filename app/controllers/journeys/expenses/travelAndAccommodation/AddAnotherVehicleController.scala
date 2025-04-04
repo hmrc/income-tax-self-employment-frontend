@@ -86,8 +86,7 @@ class AddAnotherVehicleController @Inject() (
           actions = List(
             // TODO navigate to 11a for change (CYA) - and amend view tests
             OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-            // TODO navigate to 12a for remove - and amend view tests
-            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+            OneColumnSummaryAction("site.remove", routes.RemoveVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
           )
         )
       )

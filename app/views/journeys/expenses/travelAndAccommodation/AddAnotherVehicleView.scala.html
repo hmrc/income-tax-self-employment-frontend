@@ -40,7 +40,7 @@
 
         @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value"))
 
-        @heading(if (vehicles.size > 1) {
+        @heading(if (vehicles.size > 1 || vehicles.size == 0) {
             s"addAnotherVehiclePlural.title.$userType"
         } else {
             s"addAnotherVehicle.title.$userType"
