@@ -21,8 +21,7 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation
-import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
-import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, YourFlatRateForVehicleExpenses}
 import models.{NormalMode, _}
 import pages._
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
@@ -79,6 +78,13 @@ class TravelAndAccommodationNavigator @Inject() {
     case PublicTransportAndAccommodationExpensesPage =>
       ua => (taxYear, businessId) => handlePublicTransportAndAccom(ua, taxYear, businessId, NormalMode)
 
+    case DisallowableTransportAndAccommodationPage =>
+      _ =>
+        (taxYear, businessId) =>
+          Option(
+            routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
+          )
+
     case AddAnotherVehiclePage =>
       ua =>
         (taxYear, businessId) =>
@@ -91,8 +97,10 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private def handlePublicTransportAndAccom(ua: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     ua.get(TravelForWorkPage, businessId) map {
-      case TravelForWork.YesDisallowable => routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, mode)
-      case _                             => ??? // TODO Check your answers page
+      case TravelForWork.YesDisallowable =>
+        routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, mode)
+      case _ =>
+        routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
     }
 
   private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Option[Call] =
