@@ -40,12 +40,12 @@ import scala.concurrent.Future
 
 class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new CurrencyFormProvider()
+  val formProvider      = new CurrencyFormProvider()
   def onwardRoute: Call = Call("GET", "/foo")
 
   val validAnswer: BigDecimal = 35
   val expenses: BigDecimal    = 50
-  val strExpense: String = formatMoney(expenses)
+  val strExpense: String      = formatMoney(expenses)
   val form: UserType => Form[BigDecimal] = (userType: UserType) =>
     formProvider(DisallowableTransportAndAccommodationPage, userType, maxValue = expenses, prefix = Some("disallowableTransportAndAccommodation"))
 
@@ -54,7 +54,6 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
   "DisallowableTransportAndAccommodation Controller" - {
     UserType.values.foreach { userType =>
-
       s"when user is $userType" - {
         "must return OK and the correct view for a GET" in {
           val userAnswers = emptyUserAnswers
