@@ -34,11 +34,13 @@
 @layout(pageTitle = title(form, messages(s"travelForWorkYourMileage.title.$userType", vehicle))) {
 
     @formHelper(action = routes.TravelForWorkYourMileageController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-    @heading(s"travelForWorkYourMileage.title.$userType")
+
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
+
+        @heading(s"travelForWorkYourMileage.title.$userType")
 
         <div class="govuk-body govuk-!-margin-bottom-6">
             <p>@messages(s"travelForWorkYourMileage.p1.info.$userType", vehicle)</p>

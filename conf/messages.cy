@@ -2114,3 +2114,56 @@ yourFlatRateForVehicleExpenses.checkYourAnswersLabel = *********Missing Welsh Me
 yourFlatRateForVehicleExpenses.error.required.individual = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.error.required.agent = *********Missing Welsh Message *********
 yourFlatRateForVehicleExpenses.change.hidden = *********Missing Welsh Message *********
+
+publicTransportAndAccommodationExpenses.title.agent                                 = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.title.individual                            = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.heading.agent                               = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.heading.individual                          = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.can.claim.agent                             = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.can.claim.individual                        = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.can.claim.train-bus-air-taxi                = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.can.claim.hotel-room                        = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.can.claim.meals-on-overnight-business-trips = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.cannot.claim.agent                          = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.cannot.claim.individual                     = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.cannot.claim.personal-use                   = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.cannot.claim.travel-cost-home-work          = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.cannot.claim.other-meals                    = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.subheading.agent                            = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.subheading.individual                       = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.hint                                        = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.required.agent                        = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.required.individual                   = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.nonNumeric.agent                      = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.nonNumeric.individual                 = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.overMax.agent                         = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.overMax.individual                    = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.lessThanZero.agent                    = *********Missing Welsh Message *********
+publicTransportAndAccommodationExpenses.error.lessThanZero.individual               = *********Missing Welsh Message *********
+
+
+addAnotherVehicle.title.individual = *********Missing Welsh Message *********
+addAnotherVehicle.title.agent = *********Missing Welsh Message *********
+addAnotherVehiclePlural.title.individual = *********Missing Welsh Message *********
+addAnotherVehiclePlural.title.agent = *********Missing Welsh Message *********
+addAnotherVehicle.subheading.individual = *********Missing Welsh Message *********
+addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
+addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
+addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
+
+
+
+disallowableTransportAndAccommodation.heading.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.heading.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.required.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.required.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.nonNumeric.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.nonNumeric.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.lessThanZero.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.lessThanZero.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.overMax.individual = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.overMax.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
+disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********

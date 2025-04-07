@@ -867,6 +867,16 @@ costsNotCovered.error.overMax.individual = The amount you spent on tolls, conges
 costsNotCovered.error.lessThanZero.individual = The amount you spent on tolls, congestion charges and parking must be more than £0
 costsNotCovered.error.lessThanZero.agent = The amount your client spent on tolls, congestion charges and parking must be more than £0
 
+## Add another vehicle
+addAnotherVehicle.title.individual = You have added {0} vehicle
+addAnotherVehicle.title.agent = Your client has added {0} vehicle
+addAnotherVehiclePlural.title.individual = You have added {0} vehicles
+addAnotherVehiclePlural.title.agent = Your client has added {0} vehicles
+addAnotherVehicle.subheading.individual = Do you need to add another vehicle?
+addAnotherVehicle.subheading.agent = Does your client need to add another vehicle?
+addAnotherVehicle.error.required.individual = Select yes if you need to add another vehicle
+addAnotherVehicle.error.required.agent = Select yes if your client needs to add another vehicle
+
 ########## Expenses - Repairs and Maintenance ##########
 
 ## Repairs and maintenance amount
@@ -2446,3 +2456,43 @@ yourFlatRateForVehicleExpenses.change.hidden = YourFlatRateForVehicleExpenses
 
 travelAndAccommodationExpensesCYA.title.individual = Check your travel and accommodation expenses
 travelAndAccommodationExpensesCYA.heading.agent = Check your client’s travel and accommodation expenses
+
+########## Public Transport And Accommodation Expenses ##########
+publicTransportAndAccommodationExpenses.title.agent                                 = Public transport and accommodation expenses
+publicTransportAndAccommodationExpenses.title.individual                            = Public transport and accommodation expenses
+publicTransportAndAccommodationExpenses.heading.agent                               = Public transport and accommodation expenses
+publicTransportAndAccommodationExpenses.heading.individual                          = Public transport and accommodation expenses
+publicTransportAndAccommodationExpenses.can.claim.agent                             = Your client can claim:
+publicTransportAndAccommodationExpenses.can.claim.individual                        = You can claim:
+publicTransportAndAccommodationExpenses.can.claim.train-bus-air-taxi                = train, bus, air, and taxi fares
+publicTransportAndAccommodationExpenses.can.claim.hotel-room                        = hotel room costs
+publicTransportAndAccommodationExpenses.can.claim.meals-on-overnight-business-trips = meals on overnight business trips
+publicTransportAndAccommodationExpenses.cannot.claim.agent                          = Your client can not claim:
+publicTransportAndAccommodationExpenses.cannot.claim.individual                     = You can not claim:
+publicTransportAndAccommodationExpenses.cannot.claim.personal-use                   = any amount that cover personal use
+publicTransportAndAccommodationExpenses.cannot.claim.travel-cost-home-work          = travel costs between home and work
+publicTransportAndAccommodationExpenses.cannot.claim.other-meals                    = other meals
+publicTransportAndAccommodationExpenses.subheading.agent                            = How much did your client spend on public transport and accommodation?
+publicTransportAndAccommodationExpenses.subheading.individual                       = How much did you spend on public transport and accommodation?
+publicTransportAndAccommodationExpenses.hint                                        = For example £600 or £724.20
+publicTransportAndAccommodationExpenses.error.required.agent                        = Enter the amount your client is claiming on public transport and accommodation
+publicTransportAndAccommodationExpenses.error.required.individual                   = Enter the amount you’re claiming on public transport and accommodation
+publicTransportAndAccommodationExpenses.error.nonNumeric.agent                      = The amount your client is claiming on public transport and accommodation expenses must be a number
+publicTransportAndAccommodationExpenses.error.nonNumeric.individual                 = The amount you’re claiming on public transport and accommodation expenses must be a number
+publicTransportAndAccommodationExpenses.error.overMax.agent                         = The amount your client is claiming on public transport and accommodation expenses must be less than £100,000,000,000
+publicTransportAndAccommodationExpenses.error.overMax.individual                    = The amount you’re claiming on public transport and accommodation expenses must be less than £100,000,000,000
+publicTransportAndAccommodationExpenses.error.lessThanZero.agent                    = The amount your client is claiming on public transport and accommodation expenses must be more than £0
+publicTransportAndAccommodationExpenses.error.lessThanZero.individual               = The amount you’re claiming on public transport and accommodation expenses must be more than £0
+
+disallowableTransportAndAccommodation.heading.individual = How much of the £{0} you spent on public transport and accommodation is disallowable?
+disallowableTransportAndAccommodation.heading.agent = How much of the £{0} that your client spent on public transport and accommodation is disallowable?
+disallowableTransportAndAccommodation.error.required.individual = Enter an amount between £1 and £{0} for how much you spent on transport and accommodation that is disallowable
+disallowableTransportAndAccommodation.error.required.agent = Enter an amount between £1 and £{0} for how much your client spent on transport and accommodation that is disallowable
+disallowableTransportAndAccommodation.error.nonNumeric.individual = The amount you spent on travel and accommodation that is disallowable must be a number
+disallowableTransportAndAccommodation.error.nonNumeric.agent = The amount your client spent on travel and accommodation that is disallowable must be a number
+disallowableTransportAndAccommodation.error.lessThanZero.individual = The amount you spent on travel and accommodation that is disallowable must be more than 0
+disallowableTransportAndAccommodation.error.lessThanZero.agent = The amount your client spent on travel and accommodation that is disallowable must be more than 0
+disallowableTransportAndAccommodation.error.overMax.individual = The amount you spent on travel and accommodation that is disallowable must be £{0}  or less
+disallowableTransportAndAccommodation.error.overMax.agent = The amount your client spent on travel and accommodation that is disallowable must be £{0} or less
+disallowableTransportAndAccommodation.checkYourAnswersLabel = DisallowableTransportAndAccommodation
+disallowableTransportAndAccommodation.change.hidden = DisallowableTransportAndAccommodationh

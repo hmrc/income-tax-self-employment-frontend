@@ -1,0 +1,63 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.common.{BusinessId, TaxYear, UserType}
+@import controllers.journeys.expenses.travelAndAccommodation.routes
+@import views.html.components.Heading
+@import views.html.components._
+@import viewmodels.components._
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    heading: Heading,
+    govukSummaryList: GovukSummaryList,
+    errorSummarySection: ErrorSummarySection,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    oneColumnSummary: OneColumnSummary
+)
+
+@(form: Form[_], mode: Mode, vehicles: List[OneColumnSummaryRow], userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"addAnotherVehicle.title.$userType"))) {
+
+    @formHelper(action = routes.AddAnotherVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+
+        @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value"))
+
+        @heading(if (vehicles.size > 1) {
+            s"addAnotherVehiclePlural.title.$userType"
+        } else {
+            s"addAnotherVehicle.title.$userType"
+        }, Some(vehicles.size.toString))
+
+        @oneColumnSummary(vehicles)
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"addAnotherVehicle.subheading.$userType"))
+                .withCssClass("govuk-fieldset__legend--m")
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
