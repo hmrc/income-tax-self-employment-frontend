@@ -89,8 +89,6 @@ class YourFlatRateForVehicleExpensesController @Inject() (
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      println("]]]]]]]]]]]]]]]]]]" + request.userAnswers.get(SimplifiedExpensesPage, businessId))
-      println("]]]]]]]]]]]]]]]]]]2" + request.userAnswers.get(TravelForWorkYourMileagePage, businessId))
       (request.userAnswers.get(SimplifiedExpensesPage, businessId), request.userAnswers.get(TravelForWorkYourMileagePage, businessId)) match {
         case (Some(boolean), _) if boolean =>
           Future.successful(Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, request.userAnswers, taxYear, businessId)))

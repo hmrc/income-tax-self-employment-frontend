@@ -76,13 +76,8 @@ class SimplifiedExpensesController @Inject() (
               value =>
                 for {
                   clearedAnswers <- clearDependentPages(page, value, request.userAnswers, businessId)
-                  _ = println(
-                    s"+++++++ \n\nAfter clearing - yourFlatRateForVehicleExpenses: ${clearedAnswers.get(YourFlatRateForVehicleExpensesPage, businessId)}")
-                  _ = println(s"+++++++ \n\nAfter clearing - vehcileFlatRateChoice: ${clearedAnswers.get(VehicleFlatRateChoicePage)}")
                   updatedAnswers <- Future.fromTry(clearedAnswers.set(page, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
-                  _ = println(
-                    s"++++++++ \n\nBefore redirect - yourFlatRateForVehicleExpenses: ${updatedAnswers.get(YourFlatRateForVehicleExpensesPage, businessId)}")
                 } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )
         case None =>

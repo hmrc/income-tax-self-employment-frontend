@@ -37,7 +37,7 @@ object YourFlatRateForVehicleExpensesSummary {
   def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     (for {
       workMileage <- answers.get(TravelForWorkYourMileagePage, businessId)
-      answer      <- answers.get(YourFlatRateForVehicleExpensesPage)
+      answer      <- answers.get(YourFlatRateForVehicleExpensesPage, businessId)
     } yield {
       val flatRateCalc = TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage)
 

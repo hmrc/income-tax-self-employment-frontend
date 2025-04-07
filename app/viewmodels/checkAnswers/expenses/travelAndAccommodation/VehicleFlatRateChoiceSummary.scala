@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 object VehicleFlatRateChoiceSummary {
 
   def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    if (answers.get(SimplifiedExpensesPage, businessId).contains(true)) {
+    if (answers.get(SimplifiedExpensesPage, businessId).contains(false)) {
       answers.get(VehicleFlatRateChoicePage, businessId).map { answer =>
         buildRowString(
           formatAnswer(answer.toString),

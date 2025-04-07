@@ -36,7 +36,6 @@ package object journeys {
 
     val previousAnswer = userAnswers.get(page, Some(businessId))
     val pagesToClear   = (page.dependentPagesWhenYes ++ page.dependentPagesWhenNo ++ page.dependentPagesWhenAnswerChanges).distinct
-    println(s"================================================= \n Currently clearing: $pagesToClear \n ==================================")
     if (previousAnswer == Option(newAnswer)) {
       Future.successful(userAnswers)
     } else {
