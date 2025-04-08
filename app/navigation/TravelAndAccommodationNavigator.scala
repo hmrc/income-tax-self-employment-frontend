@@ -61,7 +61,7 @@ class TravelAndAccommodationNavigator @Inject() {
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
     case VehicleExpensesPage =>
-      _ => (taxYear, businessId) => Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
 
     case TravelForWorkYourMileagePage =>
       _ =>
@@ -90,7 +90,8 @@ class TravelAndAccommodationNavigator @Inject() {
             routes.TravelAndAccommodationExpensesCYAController
               .onPageLoad(taxYear, businessId))
 
-    case TravelAndAccommodationCYAPage => _ => (_, _) => Some(Call("GET", "/"))
+    case TravelAndAccommodationCYAPage =>
+      _ => (taxYear, businessId) => Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
 
     case _ => _ => (_, _) => None
   }
@@ -154,8 +155,6 @@ class TravelAndAccommodationNavigator @Inject() {
       case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = { case _ =>
-    _ => (_, _) => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
 
     case TravelAndAccommodationExpenseTypePage =>

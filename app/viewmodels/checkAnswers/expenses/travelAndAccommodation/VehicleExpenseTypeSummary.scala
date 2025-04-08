@@ -21,7 +21,7 @@ import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
-import pages.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseTypePage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
