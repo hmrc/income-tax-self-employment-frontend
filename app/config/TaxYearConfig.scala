@@ -34,7 +34,8 @@ object TaxYearConfig {
     2022 -> Class4Limits(9568, 50270, 9, 2),
     2023 -> Class4Limits(11908, 50270, 9.73, 2.73),
     2024 -> Class4Limits(12570, 50270, 9, 2),
-    2025 -> Class4Limits(12570, 50270, 6, 2)
+    2025 -> Class4Limits(12570, 50270, 6, 2),
+    2026 -> Class4Limits(12570, 50270, 6, 2)
   )
 
   val taxYearSmallProfitsThresholdClass2Map: Map[Int, Int] = Map(
@@ -42,7 +43,8 @@ object TaxYearConfig {
     2022 -> 6515,
     2023 -> 6725,
     2024 -> 6725,
-    2025 -> 6725
+    2025 -> 6725,
+    2026 -> 6725
   )
 
   val taxYearStatePensionAgeThresholdMap: Map[Int, Int] = Map(
@@ -50,7 +52,8 @@ object TaxYearConfig {
     2022 -> 66,
     2023 -> 66,
     2024 -> 66,
-    2025 -> 66
+    2025 -> 66,
+    2026 -> 66
   )
 
 }
