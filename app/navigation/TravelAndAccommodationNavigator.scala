@@ -126,7 +126,7 @@ class TravelAndAccommodationNavigator @Inject() {
     userAnswers.get(SimplifiedExpensesPage, businessId) flatMap {
       case true => Some(routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode))
       case false =>
-        userAnswers.get(YourFlatRateForVehicleExpensesPage) map {
+        userAnswers.get(YourFlatRateForVehicleExpensesPage, businessId) map {
           case YourFlatRateForVehicleExpenses.Flatrate   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
           case YourFlatRateForVehicleExpenses.Actualcost => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
         }
@@ -182,7 +182,7 @@ class TravelAndAccommodationNavigator @Inject() {
             .onPageLoad(taxYear, businessId, NormalMode)
 
     case YourFlatRateForVehicleExpensesPage =>
-      ua => (taxYear, businessId) => handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode)
+      ua => (taxYear, businessId) => handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode).get
 
     case CostsNotCoveredPage =>
       _ =>
