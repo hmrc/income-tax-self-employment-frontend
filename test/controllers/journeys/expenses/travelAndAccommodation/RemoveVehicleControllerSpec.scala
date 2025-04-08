@@ -50,7 +50,7 @@ class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
   "RemoveVehicle Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       s"when user is $userType" - {
-        val form: Form[Boolean] = formProvider(userType, vehicle)
+        val form: Form[Boolean] = formProvider(vehicle)
 
         "must return OK and the correct view for a GET" in {
           val ua = emptyUserAnswers

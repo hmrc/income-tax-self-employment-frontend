@@ -52,8 +52,8 @@ class RemoveVehicleController @Inject() (
     implicit request =>
       getVehicleNameAndLoadPage(businessId) { name =>
         val preparedForm = request.userAnswers.get(page, businessId) match {
-          case None        => formProvider(request.userType, name)
-          case Some(value) => formProvider(request.userType, name).fill(value)
+          case None        => formProvider(name)
+          case Some(value) => formProvider(name).fill(value)
         }
 
         Ok(view(preparedForm, mode, request.userType, taxYear, businessId, name))
@@ -64,7 +64,7 @@ class RemoveVehicleController @Inject() (
     implicit request =>
       request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
         case Some(vehicle) =>
-          val form: Form[Boolean] = formProvider(request.userType, vehicle)
+          val form: Form[Boolean] = formProvider(vehicle)
           form
             .bindFromRequest()
             .fold(

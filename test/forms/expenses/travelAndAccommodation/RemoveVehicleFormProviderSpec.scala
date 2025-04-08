@@ -32,7 +32,7 @@ class RemoveVehicleFormProviderSpec extends BooleanFieldBehaviours {
     val userScenarios = Seq(UserScenario(UserType.Individual), UserScenario(UserType.Agent))
 
     userScenarios.foreach { userScenario =>
-      val form = new RemoveVehicleFormProvider()(userScenario.userType, vehicle)
+      val form = new RemoveVehicleFormProvider()(vehicle)
 
       s"when user is an ${userScenario.userType}, form should " - {
 
@@ -47,7 +47,7 @@ class RemoveVehicleFormProviderSpec extends BooleanFieldBehaviours {
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, s"removeVehicle.error.required.${userScenario.userType}", Seq(vehicle))
+          requiredError = FormError(fieldName, s"removeVehicle.error.required.common", Seq(vehicle))
         )
       }
     }

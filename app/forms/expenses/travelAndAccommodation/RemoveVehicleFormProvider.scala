@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 class RemoveVehicleFormProvider @Inject() extends Mappings {
 
-  def apply(userType: UserType, vehicle: String): Form[Boolean] =
+  def apply(vehicle: String): Form[Boolean] =
     Form(
-      "value" -> boolean(s"removeVehicle.error.required.$userType", args = Seq(vehicle))
+      "value" -> boolean(s"removeVehicle.error.required.common", args = Seq(vehicle))
     )
 }

@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
-import builders.OneColumnSummaryBuilder.testVehicle
+import builders.OneColumnSummaryBuilder.{testVehicle, testVehicles}
 import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
 import models.NormalMode
 import models.database.UserAnswers
@@ -35,7 +35,7 @@ import repositories.SessionRepository
 import views.html.journeys.expenses.travelAndAccommodation.AddAnotherVehicleView
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import models.common.UserType
-import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
+import pages.expenses.travelAndAccommodation.{RemoveVehiclePage, TravelForWorkYourVehiclePage}
 
 import scala.concurrent.Future
 

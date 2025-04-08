@@ -2493,3 +2493,5 @@ disallowableTransportAndAccommodation.change.hidden = DisallowableTransportAndAc
 removeVehicle.title                                                                 = Are you sure you want to remove {0}?
 removeVehicle.error.required.agent                                                  = Enter message amount your
 removeVehicle.error.required.individual                                             = Enter message amount your client
+removeVehicle.title.common                                                          = Are you sure you want to remove {0}?
+removeVehicle.error.required.common                                                 = Select yes if you want to remove {0}
