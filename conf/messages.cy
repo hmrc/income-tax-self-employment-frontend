@@ -2150,10 +2150,6 @@ addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
 
-removeVehicle.title.common = *********Missing Welsh Message *********
-removeVehicle.error.required.common = *********Missing Welsh Message *********
-
-
 disallowableTransportAndAccommodation.heading.individual = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.heading.agent = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.error.required.individual = *********Missing Welsh Message *********
@@ -2169,10 +2165,5 @@ disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Miss
 disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********
 
-removeVehicle.title                                                                 = *********Missing Welsh Message *********
-removeVehicle.error.required.agent                                                  = *********Missing Welsh Message *********
-removeVehicle.error.required.individual                                             = *********Missing Welsh Message *********
-removeVehicle.title.individual             = *********Missing Welsh Message *********
-removeVehicle.title.agent                  = *********Missing Welsh Message *********
-removeVehicle.error.required.individual    = *********Missing Welsh Message *********
-removeVehicle.error.agent                  = *********Missing Welsh Message *********
+removeVehicle.title.common = *********Missing Welsh Message *********
+removeVehicle.error.required.common = *********Missing Welsh Message *********
