@@ -25,21 +25,11 @@ import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationJou
 import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.expenses.travelAndAccommodation.{
-  CostsNotCoveredSummary,
-  SimplifiedExpensesSummary,
-  TravelForWorkYourMileageSummary,
-  VehicleExpenseTypeSummary,
-  VehicleExpensesSummary,
-  VehicleFlatRateChoiceSummary,
-  VehicleNameSummary,
-  VehicleTypeSummary,
-  YourFlatRateForVehicleExpensesSummary
-}
+import viewmodels.checkAnswers.expenses.travelAndAccommodation._
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
