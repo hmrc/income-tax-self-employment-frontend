@@ -147,36 +147,6 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
           }
         }
 
-        "must redirect to the next page when zero is entered as a value" in {
-
-          val userAnswers = UserAnswers(userAnswersId)
-            .set(PublicTransportAndAccommodationExpensesPage, expenses, Some(businessId))
-            .success
-            .value
-          val mockSessionRepository = mock[SessionRepository]
-
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-          val application =
-            applicationBuilder(userAnswers = Some(userAnswers), userType)
-              .overrides(
-                bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
-                bind[SessionRepository].toInstance(mockSessionRepository)
-              )
-              .build()
-
-          running(application) {
-            val request =
-              FakeRequest(POST, disallowableTransportAndAccommodationRoute)
-                .withFormUrlEncodedBody(("value", "0"))
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
-        }
-
         "must return a Bad Request and errors when invalid data is submitted" in {
           val userAnswers = UserAnswers(userAnswersId)
             .set(PublicTransportAndAccommodationExpensesPage, expenses, Some(businessId))

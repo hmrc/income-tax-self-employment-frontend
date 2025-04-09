@@ -50,7 +50,7 @@ class DisallowableTransportAndAccommodationController @Inject() (
 
   private val page = DisallowableTransportAndAccommodationPage
   private val form = (userType: UserType, expenses: BigDecimal) =>
-    formProvider(page, userType, maxValue = expenses, minValue = -1, prefix = Some("disallowableTransportAndAccommodation"))
+    formProvider(page, userType, maxValue = expenses, minValue = 0, prefix = Some("disallowableTransportAndAccommodation"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
