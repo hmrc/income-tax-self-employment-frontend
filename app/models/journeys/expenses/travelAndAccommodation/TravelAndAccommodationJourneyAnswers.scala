@@ -19,7 +19,15 @@ package models.journeys.expenses.travelAndAccommodation
 import play.api.libs.json.{Json, Format}
 
 case class TravelAndAccommodationJourneyAnswers(
-    expenseType: TravelAndAccommodationExpenseType
+    expenseType: TravelAndAccommodationExpenseType,
+    vehicleName: String,
+    vehicleType: VehicleType,
+    simplifiedExpenses: Boolean,
+    vehicleFlatRateChoice: Boolean,
+    mileage: BigDecimal,
+    flatRateOrActual: YourFlatRateForVehicleExpenses,
+    costsNotCovered: BigDecimal,
+    vehicleExpenses: BigDecimal
 )
 
 object TravelAndAccommodationJourneyAnswers {

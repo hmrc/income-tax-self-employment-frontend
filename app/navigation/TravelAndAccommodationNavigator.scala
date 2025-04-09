@@ -77,11 +77,7 @@ class TravelAndAccommodationNavigator @Inject() {
       ua => (taxYear, businessId) => handlePublicTransportAndAccom(ua, taxYear, businessId, NormalMode)
 
     case AddAnotherVehiclePage =>
-      ua =>
-        (taxYear, businessId) =>
-          Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
-
-      // TODO CYA page  ticket 11a ->  AddAnotherVehiclePage
+      ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
 
     case CostsNotCoveredPage =>
       _ =>
@@ -99,7 +95,7 @@ class TravelAndAccommodationNavigator @Inject() {
   private def handlePublicTransportAndAccom(ua: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
     ua.get(TravelForWorkPage, businessId) map {
       case TravelForWork.YesDisallowable => routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, mode)
-      case _                             => ??? // TODO Check your answers page
+      case _                             => routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
     }
 
   private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId) =
