@@ -23,7 +23,7 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 
-trait AuthStub {
+object AuthStub {
 
   private val authoriseUri: String = "/auth/authorise"
   private val AGENT_ENROLMENT_KEY  = "HMRC-AS-AGENT"
@@ -90,7 +90,7 @@ trait AuthStub {
         .willReturn(
           aResponse()
             .withStatus(OK)
-            .withBody(successfulAuthResponse(Some(Agent), None, agentEnrolment).toString())
+            .withBody(successfulAuthResponse(Some(Agent), Some(ConfidenceLevel.L250), agentEnrolment).toString())
             .withHeader("Content-Type", "application/json; charset=utf-8")))
 
   def unauthorisedOtherEnrolment(): StubMapping =

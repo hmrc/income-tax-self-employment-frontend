@@ -26,8 +26,8 @@ sealed trait VehicleType
 
 object VehicleType extends Enumerable.Implicits {
 
-  case object CarOrGoodsVehicle extends WithName("carOrGoodsVehicle") with VehicleType
-  case object Motorcycle        extends WithName("motorcycle") with VehicleType
+  case object CarOrGoodsVehicle extends WithName("CarOrGoodsVehicle") with VehicleType
+  case object Motorcycle        extends WithName("Motorcycle") with VehicleType
 
   val values: Seq[VehicleType] = Seq(
     CarOrGoodsVehicle,

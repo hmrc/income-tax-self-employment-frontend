@@ -17,6 +17,7 @@
 package config
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
+import models.common._
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.RequestHeader
@@ -46,6 +47,9 @@ trait FrontendAppConfig {
   def incomeTaxSubmissionStartUrl(taxYear: Int): String
   def viewAndChangeEnterUtrUrl: String
   def viewAndChangeViewUrlAgent: String
+
+  // Answers API
+  def answersApiUrl(ctx: JourneyContext): String
 }
 
 @Singleton
@@ -94,4 +98,9 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
 
   override val viewAndChangeEnterUtrUrl: String  = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents/client-utr"
   override val viewAndChangeViewUrlAgent: String = s"$vcBaseUrl/report-quarterly/income-and-expenses/view/agents"
+
+  def answersApiUrl(ctx: JourneyContext): String =
+    s"$selfEmploymentBEBaseUrl/income-tax-self-employment/answers/users/${ctx.nino}/businesses/${ctx.businessId}" +
+      s"/years/${ctx.taxYear}/journeys/${ctx.journey.entryName}"
+
 }

@@ -63,9 +63,11 @@ class AuthenticatedIdentifierAction @Inject() (
       case _ =>
         throw new UnauthorizedException("Unable to retrieve internal Id")
     } recover {
-      case _: NoActiveSession =>
+      case ex: NoActiveSession =>
+        println(s"NO SESSION ${ex.getMessage}")
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _: AuthorisationException =>
+      case ex: AuthorisationException =>
+        println(s"AUTH EX ${ex.getMessage}")
         Redirect(controllers.standard.routes.UnauthorisedController.onPageLoad)
       case e =>
         logger.error(s"[AuthorisedAction][invokeBlock] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
