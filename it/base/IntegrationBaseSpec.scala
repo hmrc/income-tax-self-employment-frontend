@@ -17,31 +17,43 @@
 package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
+import helpers.SessionCookieHelper
 import integrationData.TimeData
-import models.common.{BusinessId, Mtditid, Nino, TaxYear}
+import models.common._
+import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import org.mockito.Mockito.when
+import org.mongodb.scala.bson.Document
+import org.mongodb.scala.bson.conversions.Bson
+import org.mongodb.scala.model.Filters
+import org.mongodb.scala.result.DeleteResult
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.http.HeaderNames
 import play.api.http.Status.BAD_REQUEST
+import play.api.libs.json.{Format, JsObject, JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import repositories.SessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.TimeMachine
 
 import scala.concurrent.ExecutionContext
 
-trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with ScalaFutures {
+trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with ScalaFutures with BeforeAndAfterEach with SessionCookieHelper {
 
   val mockTimeMachine: TimeMachine = mock[TimeMachine]
 
   when(mockTimeMachine.now).thenReturn(TimeData.testDate)
 
+  protected val internalId: String     = "1"
   protected val businessId: BusinessId = BusinessId("someBusinessId")
-  protected val nino: Nino             = Nino("someNino")
+  protected val nino: Nino             = Nino("AA123123A")
   protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
   protected val taxYear: TaxYear       = TaxYear(mockTimeMachine.now.getYear)
 
@@ -56,16 +68,67 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
     ConnectorResponseError(method, url, HttpError(BAD_REQUEST, HttpErrorBody.parsingError))
 
   implicit val ec: ExecutionContext = ExecutionContext.global
-  implicit val hc: HeaderCarrier    = HeaderCarrier(sessionId = Some(SessionId("sessionIdValue")))
+  implicit val hc: HeaderCarrier    = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
   protected lazy val ws: WSClient = app.injector.instanceOf[WSClient]
 
-  protected def buildClient(urlandUri: String): WSRequest =
+  protected def buildClient(urlandUri: String,
+                            isAgent: Boolean = false,
+                            extraHeaders: Option[Map[String, String]] = None,
+                            extraSessionValues: Option[Map[String, String]] = None): WSRequest =
     ws
       .url(s"http://localhost:$port$urlandUri")
       .withFollowRedirects(false)
+      .addHttpHeaders("Csrf-Token" -> "nocheck")
+      .addHttpHeaders(extraHeaders.getOrElse(Map.empty).toSeq: _*)
+      .addHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(isAgent, extraSessionValues))
+
+  override def afterEach(): Unit = {
+    super.beforeEach()
+    DbHelper.teardown
+  }
+
+  object DbHelper {
+
+    val testAnswers: UserAnswers = UserAnswers(
+      internalId,
+      data = Json.obj()
+    )
+
+    val mongo: SessionRepository = app.injector.instanceOf[SessionRepository]
+
+    val filter: Bson = Filters.equal("id", internalId)
+
+    def insertMany(journeys: (Journey, JsValue)*): Unit = {
+      val answers     = journeys.map { case (section, json) => section.entryName -> json }.toMap
+      val userAnswers = testAnswers.copy(data = Json.toJson(answers).as[JsObject])
+      await(mongo.collection.insertOne(userAnswers).toFuture())
+    }
+
+    def insertEmpty(): Unit =
+      await(mongo.collection.insertOne(testAnswers).toFuture())
+
+    def insertJson(journey: Journey, data: JsValue): Unit =
+      insertMany(journey -> data)
+
+    def insertOne[T](journey: Journey, data: T)(implicit format: Format[T]): Unit =
+      insertMany(journey -> Json.toJson(data))
+
+    def getJson(journey: Journey): Option[JsValue] = {
+      val optAnswers = await(mongo.collection.find[UserAnswers](filter).headOption())
+      optAnswers.flatMap(answers => (answers.data \ journey.entryName).asOpt[JsValue])
+    }
+
+    def get[T](journey: Journey)(implicit format: Format[T]): Option[T] = {
+      val optAnswers = await(mongo.collection.find(filter).headOption())
+      optAnswers.flatMap(answers => (answers.data \ journey.entryName).validate[T].asOpt)
+    }
+
+    def teardown: DeleteResult =
+      await(mongo.collection.deleteMany(Document()).toFuture())
+  }
 }
 
 object IntegrationBaseSpec {
-  val mtditid: Mtditid = Mtditid("mtditid")
+  val mtditid: Mtditid = Mtditid("555555555")
 }
