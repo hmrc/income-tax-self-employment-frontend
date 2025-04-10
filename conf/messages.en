@@ -2492,4 +2492,4 @@ disallowableTransportAndAccommodation.change.hidden = DisallowableTransportAndAc
 
 publicTransportAndAccommodationExpenses.change.hidden                               = The amount you’re claiming on public transport and accommodation expenses must be more than £0
 publicTransportAndAccommodationExpensesCya.title.individual                         = Check your public transport, hotel room costs and meals on overnight trip expenses
-publicTransportAndAccommodationExpensesCya.title.agent                              = Check your client public transport, hotel room costs and meals on overnight trip expenses
+publicTransportAndAccommodationExpensesCya.title.agent                              = Check your client’s public transport, hotel room costs and meals on overnight trip expenses
