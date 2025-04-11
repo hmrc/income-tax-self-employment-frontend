@@ -172,6 +172,8 @@ class MessagesSpec extends SpecBase {
   // TODO Go through this list and fix content for agent
   private val userSpecificMessagesWithoutAgentVersions = List(
     "checkYourSelfEmploymentDetails.accountingType",
+    "removeVehicle.error.required.common",
+    "removeVehicle.title.common",
     "expenses.cyaSummary.agent",
     "expenses.hint.disallowableExpenses",
     "expensesCategories.p1.agent",

@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.VehicleExpensesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
+import utils.MoneyUtils.formatDecimals
 import viewmodels.checkAnswers.buildRowString
 
 object VehicleExpensesSummary {
@@ -32,7 +32,7 @@ object VehicleExpensesSummary {
     answers
       .get(VehicleExpensesPage, businessId)
       .flatMap { answer =>
-        val amount = s"£${formatMoney(answer)}"
+        val amount = s"£${formatDecimals(answer)}"
         Some(
           buildRowString(
             amount,

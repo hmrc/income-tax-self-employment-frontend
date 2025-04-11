@@ -17,100 +17,106 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
-import base.SpecBase.fakeOptionalRequest.userType
-import builders.OneColumnSummaryBuilder.{testVehicle, testVehicles}
-import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
-import models.NormalMode
+import forms.expenses.travelAndAccommodation.RemoveVehicleFormProvider
 import models.database.UserAnswers
+import models.NormalMode
+import models.common.UserType
+import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddAnotherVehiclePage
+import pages.expenses.travelAndAccommodation.{RemoveVehiclePage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.journeys.expenses.travelAndAccommodation.AddAnotherVehicleView
-import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
-import models.common.UserType
-import pages.expenses.travelAndAccommodation.{RemoveVehiclePage, TravelForWorkYourVehiclePage}
+import views.html.journeys.expenses.travelAndAccommodation.RemoveVehicleView
 
 import scala.concurrent.Future
 
-class AddAnotherVehicleControllerSpec extends SpecBase with MockitoSugar {
+class RemoveVehicleControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider: AddAnotherVehicleFormProvider = new AddAnotherVehicleFormProvider()
-  val form: Form[Boolean]                         = formProvider(userType)
+  val formProvider    = new RemoveVehicleFormProvider()
+  val vehicle: String = "vehicle"
 
-  lazy val addAnotherVehicleRoute: String =
-    routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val removeVehicleRoute: String       = routes.RemoveVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val removeVehicleSubmitRoute: String = routes.RemoveVehicleController.onSubmit(taxYear, businessId, NormalMode).url
 
-  "AddAnotherVehicleController Controller" - {
+  "RemoveVehicle Controller" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
       s"when user is $userType" - {
+        val form: Form[Boolean] = formProvider(vehicle)
 
         "must return OK and the correct view for a GET" in {
-          val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelForWorkYourVehiclePage, "Vehicle 1", Some(businessId))
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
             .success
             .value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, addAnotherVehicleRoute)
+            val request = FakeRequest(GET, removeVehicleRoute)
 
             val result = route(application, request).value
 
-            val view = application.injector.instanceOf[AddAnotherVehicleView]
+            val view = application.injector.instanceOf[RemoveVehicleView]
 
             status(result) mustEqual OK
-
-            contentAsString(result) mustEqual view(form, NormalMode, testVehicle, userType, taxYear, businessId)(
-              request,
-              messages(application)).toString
-
+            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, vehicle)(request, messages(application)).toString
           }
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
-          val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelForWorkYourVehiclePage, "Vehicle 1", Some(businessId))
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
             .success
             .value
             .set(AddAnotherVehiclePage, true, Some(businessId))
             .success
             .value
+            .set(RemoveVehiclePage, true, Some(businessId))
+            .success
+            .value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, addAnotherVehicleRoute)
+            val request = FakeRequest(GET, removeVehicleRoute)
 
-            val view = application.injector.instanceOf[AddAnotherVehicleView]
+            val view = application.injector.instanceOf[RemoveVehicleView]
 
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(true), NormalMode, testVehicle, userType, taxYear, businessId)(
+            contentAsString(result) mustEqual view(form.fill(true), NormalMode, userType, taxYear, businessId, vehicle)(
               request,
               messages(application)).toString
-
           }
         }
 
         "must redirect to the next page when valid data is submitted" in {
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
+            .success
+            .value
+            .set(AddAnotherVehiclePage, true, Some(businessId))
+            .success
+            .value
+            .set(RemoveVehiclePage, true, Some(businessId))
+            .success
+            .value
 
           val mockSessionRepository = mock[SessionRepository]
-
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val application =
-            applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            applicationBuilder(userAnswers = Some(ua), userType = userType)
               .overrides(
                 bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
                 bind[SessionRepository].toInstance(mockSessionRepository)
@@ -119,7 +125,7 @@ class AddAnotherVehicleControllerSpec extends SpecBase with MockitoSugar {
 
           running(application) {
             val request =
-              FakeRequest(POST, addAnotherVehicleRoute)
+              FakeRequest(POST, removeVehicleSubmitRoute)
                 .withFormUrlEncodedBody(("value", "true"))
 
             val result = route(application, request).value
@@ -130,29 +136,26 @@ class AddAnotherVehicleControllerSpec extends SpecBase with MockitoSugar {
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
-          val userAnswers = UserAnswers(userAnswersId)
-            .set(TravelForWorkYourVehiclePage, "Vehicle 1", Some(businessId))
-            .success
-            .value
-            .set(AddAnotherVehiclePage, true, Some(businessId))
+          val ua = emptyUserAnswers
+            .set(TravelForWorkYourVehiclePage, vehicle, Some(businessId))
             .success
             .value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
+          val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
           running(application) {
             val request =
-              FakeRequest(POST, addAnotherVehicleRoute)
-                .withFormUrlEncodedBody(("value", "invalid"))
+              FakeRequest(POST, removeVehicleSubmitRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> "invalid"))
+            val boundForm = form.bind(Map("value" -> "invalid value"))
 
-            val view = application.injector.instanceOf[AddAnotherVehicleView]
+            val view = application.injector.instanceOf[RemoveVehicleView]
 
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, NormalMode, testVehicle, userType, taxYear, businessId)(
+            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, vehicle)(
               request,
               messages(application)).toString
           }
@@ -160,26 +163,25 @@ class AddAnotherVehicleControllerSpec extends SpecBase with MockitoSugar {
 
         "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-          val application = applicationBuilder(userAnswers = None).build()
+          val application = applicationBuilder(userAnswers = None, userType = userType).build()
 
           running(application) {
-            val request = FakeRequest(GET, addAnotherVehicleRoute)
+            val request = FakeRequest(GET, removeVehicleRoute)
 
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual
-              controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
           }
         }
 
         "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-          val application = applicationBuilder(userAnswers = None).build()
+          val application = applicationBuilder(userAnswers = None, userType = userType).build()
 
           running(application) {
             val request =
-              FakeRequest(POST, addAnotherVehicleRoute)
+              FakeRequest(POST, removeVehicleSubmitRoute)
                 .withFormUrlEncodedBody(("value", "true"))
 
             val result = route(application, request).value

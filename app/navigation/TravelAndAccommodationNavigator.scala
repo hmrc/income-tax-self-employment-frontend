@@ -22,7 +22,7 @@ import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
-import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, YourFlatRateForVehicleExpenses}
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import models.{NormalMode, _}
 import pages._
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
@@ -98,7 +98,7 @@ class TravelAndAccommodationNavigator @Inject() {
       case _                             => routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
     }
 
-  private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId) =
+  private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Option[Call] =
     userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).map(_.toSeq) match {
       case Some(Seq(PublicTransportAndOtherAccommodation)) =>
         Option(
@@ -140,10 +140,9 @@ class TravelAndAccommodationNavigator @Inject() {
     userAnswers.get(AddAnotherVehiclePage, businessId) match {
       case Some(true) => routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, mode)
       case Some(false) =>
-        userAnswers.get(TravelAndAccommodationExpenseTypePage) match {
+        userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
           case Some(expenseTypes) if expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
-            // TODO false and contains PublicTransportAndOtherAccommodation == page 13
-            routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
+            routes.PublicTransportAndAccommodationExpensesController.onPageLoad(taxYear, businessId, mode)
           case Some(expenseTypes) if !expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
             // TODO false and does not PublicTransportAndOtherAccommodation == have you finished page(last page)
             routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
@@ -151,50 +150,66 @@ class TravelAndAccommodationNavigator @Inject() {
       case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Call = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
 
     case TravelAndAccommodationExpenseTypePage =>
       _ =>
         (taxYear, businessId) =>
-          routes.TravelAndAccommodationExpensesCYAController
-            .onPageLoad(taxYear, businessId)
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
 
     case TravelForWorkYourVehiclePage =>
-      _ => (taxYear, businessId) => routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
 
     case VehicleTypePage =>
-      _ => (taxYear, businessId) => routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
 
     case SimplifiedExpensesPage =>
-      ua => (taxYear, businessId) => handleSimplifiedExpenses(ua, taxYear, businessId, NormalMode).get
+      ua => (taxYear, businessId) => handleSimplifiedExpenses(ua, taxYear, businessId, NormalMode)
 
     case VehicleFlatRateChoicePage =>
-      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode).get
+      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
     case TravelForWorkYourMileagePage =>
       _ =>
         (taxYear, businessId) =>
-          routes.YourFlatRateForVehicleExpensesController
-            .onPageLoad(taxYear, businessId, NormalMode)
+          Some(
+            routes.YourFlatRateForVehicleExpensesController
+              .onPageLoad(taxYear, businessId, NormalMode))
 
     case YourFlatRateForVehicleExpensesPage =>
-      ua => (taxYear, businessId) => handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode).get
+      ua => (taxYear, businessId) => handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
     case CostsNotCoveredPage =>
       _ =>
         (taxYear, businessId) =>
-          routes.TravelAndAccommodationExpensesCYAController
-            .onPageLoad(taxYear, businessId)
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
+
+    case RemoveVehiclePage =>
+      ua => (taxYear, businessId) => handleRemoveVehicle(ua, taxYear, businessId)
+
+    case AddAnotherVehiclePage =>
+      ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
 
     case _ =>
-      _ => (_, _) => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
+      _ => (_, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }
+
+  private def handleRemoveVehicle(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Option[Call] =
+    userAnswers.get(RemoveVehiclePage, businessId) map {
+      case true => routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, CheckMode)
+      case false =>
+        routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+    }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Call =
     mode match {
       case NormalMode =>
         normalRoutes(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId)
+        checkRouteMap(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 }

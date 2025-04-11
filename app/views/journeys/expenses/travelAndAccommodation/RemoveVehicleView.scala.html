@@ -14,45 +14,31 @@
  * limitations under the License.
  *@
 
-@import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.travelAndAccommodation.routes
-@import views.html.components.Heading
+@import models.common._
 @import views.html.components._
-@import viewmodels.components._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList,
     errorSummarySection: ErrorSummarySection,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    oneColumnSummary: OneColumnSummary
+    govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, vehicles: List[OneColumnSummaryRow], userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],  mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, vehicle: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"addAnotherVehicle.title.$userType"))) {
+@layout(pageTitle = title(form, messages(s"removeVehicle.title.common", vehicle))) {
 
-    @formHelper(action = routes.AddAnotherVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveVehicleController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value"))
-
-        @heading(if (vehicles.size > 1 || vehicles.size == 0) {
-            s"addAnotherVehiclePlural.title.$userType"
-        } else {
-            s"addAnotherVehicle.title.$userType"
-        }, Some(vehicles.size.toString))
-
-        @oneColumnSummary(vehicles)
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"addAnotherVehicle.subheading.$userType"))
-                .withCssClass("govuk-fieldset__legend--m")
+                legend = LegendViewModel(messages(s"removeVehicle.title.common", vehicle)).asPageHeading()
             )
         )
 

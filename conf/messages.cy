@@ -2141,7 +2141,6 @@ publicTransportAndAccommodationExpenses.error.overMax.individual                
 publicTransportAndAccommodationExpenses.error.lessThanZero.agent                    = *********Missing Welsh Message *********
 publicTransportAndAccommodationExpenses.error.lessThanZero.individual               = *********Missing Welsh Message *********
 
-
 addAnotherVehicle.title.individual = *********Missing Welsh Message *********
 addAnotherVehicle.title.agent = *********Missing Welsh Message *********
 addAnotherVehiclePlural.title.individual = *********Missing Welsh Message *********
@@ -2150,8 +2149,6 @@ addAnotherVehicle.subheading.individual = *********Missing Welsh Message *******
 addAnotherVehicle.subheading.agent = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.individual = *********Missing Welsh Message *********
 addAnotherVehicle.error.required.agent = *********Missing Welsh Message *********
-
-
 
 disallowableTransportAndAccommodation.heading.individual = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.heading.agent = *********Missing Welsh Message *********
@@ -2167,3 +2164,6 @@ disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Miss
 disallowableTransportAndAccommodation.error.moreThenAmount.agent = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.checkYourAnswersLabel = *********Missing Welsh Message *********
 disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Message *********
+
+removeVehicle.title.common = *********Missing Welsh Message *********
+removeVehicle.error.required.common = *********Missing Welsh Message *********

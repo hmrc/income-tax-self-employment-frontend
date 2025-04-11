@@ -78,19 +78,29 @@ class AddAnotherVehicleController @Inject() (
         )
   }
 
-  private def vehicleDetails(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[AnyContent]): List[OneColumnSummaryRow] =
-    request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).toList.flatMap { vehicleName =>
-      List(
+  private def vehicleDetails(taxYear: TaxYear, businessId: BusinessId)(implicit request: DataRequest[AnyContent]): List[OneColumnSummaryRow] = {
+    val vehicles = request.userAnswers.get(TravelForWorkYourVehiclePage, businessId).toList
+
+    if (vehicles.size == 1) {
+      vehicles.map { vehicleName =>
         OneColumnSummaryRow(
           vehicleName,
           actions = List(
-            // TODO navigate to 11a for change (CYA) - and amend view tests
-            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-            // TODO navigate to 12a for remove - and amend view tests
-            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
           )
         )
-      )
+      }
+    } else {
+      vehicles.map { vehicleName =>
+        OneColumnSummaryRow(
+          vehicleName,
+          actions = List(
+            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
+            OneColumnSummaryAction("site.remove", routes.RemoveVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+          )
+        )
+      }
     }
+  }
 
 }
