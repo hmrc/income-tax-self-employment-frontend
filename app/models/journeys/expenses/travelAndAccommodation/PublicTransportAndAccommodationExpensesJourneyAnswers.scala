@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package forms.expenses.travelAndAccommodation
+package models.journeys.expenses.travelAndAccommodation
+import play.api.libs.json._
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class RemoveVehicleFormProvider @Inject() extends Mappings {
-
-  def apply(vehicle: String): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"removeVehicle.error.required.common", args = Seq(vehicle))
-    )
+case class PublicTransportAndAccommodationExpensesJourneyAnswers(
+    publicTransportAndAccommodationExpenses: BigDecimal,
+    disallowableTransportAndAccommodation: Option[BigDecimal]
+)
+object PublicTransportAndAccommodationExpensesJourneyAnswers {
+  implicit val formats: OFormat[PublicTransportAndAccommodationExpensesJourneyAnswers] =
+    Json.format[PublicTransportAndAccommodationExpensesJourneyAnswers]
 }

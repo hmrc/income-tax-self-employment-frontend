@@ -83,6 +83,7 @@ journeys.expenses-financial-charges = Bank, credit card and other financial char
 journeys.expenses-irrecoverable-debts = Irrecoverable debts
 journeys.expenses-depreciation = Depreciation costs
 journeys.expenses-other-expenses = Other expenses
+journeys.expenses-public-transport-amount = Public Transport
 journeys.capital-allowances-tailoring = Allowances for vehicles, equipment and buildings
 journeys.capital-allowances-tailoring.CASH = Cars and asset based allowances
 journeys.capital-allowances-zero-emission-cars = Zero-emission cars
@@ -2492,3 +2493,8 @@ disallowableTransportAndAccommodation.change.hidden = DisallowableTransportAndAc
 
 removeVehicle.title.common            = Are you sure you want to remove {0}?
 removeVehicle.error.required.common   = Select yes if you want to remove {0}
+publicTransportAndAccommodationExpenses.change.hidden                               = The amount you’re claiming on public transport and accommodation expenses must be more than £0
+publicTransportAndAccommodationExpensesCya.title.individual                         = Check your public transport, hotel room costs and meals on overnight trip expenses
+publicTransportAndAccommodationExpensesCya.title.agent                              = Check your client’s public transport, hotel room costs and meals on overnight trip expenses
+publicTransportAndAccommodationExpensesCya.inset.agent                               = We will only save the total amount. Other information will not be saved
+publicTransportAndAccommodationExpensesCya.inset.individual                          = We will only save the total amount. Other information will not be saved

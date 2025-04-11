@@ -16,13 +16,9 @@
 
 package pages.expenses.travelAndAccommodation
 
-import models.common.BusinessId
 import pages.OneQuestionPage
-import play.api.libs.json.JsPath
 
 case object PublicTransportAndAccommodationExpensesPage extends OneQuestionPage[BigDecimal] {
-
-  override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
 
   override def toString: String = "publicTransportAndAccommodationExpenses"
 }

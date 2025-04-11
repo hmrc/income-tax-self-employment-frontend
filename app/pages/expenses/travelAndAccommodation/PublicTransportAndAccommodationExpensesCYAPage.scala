@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package forms.expenses.travelAndAccommodation
+package pages.expenses.travelAndAccommodation
+import pages.Page
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class RemoveVehicleFormProvider @Inject() extends Mappings {
-
-  def apply(vehicle: String): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"removeVehicle.error.required.common", args = Seq(vehicle))
-    )
+case object PublicTransportAndAccommodationExpensesCYAPage extends Page {
+  override def toString: String = "publicTransportAndAccommodationExpensesCya"
 }
