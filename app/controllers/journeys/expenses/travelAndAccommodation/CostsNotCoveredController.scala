@@ -45,10 +45,9 @@ class CostsNotCoveredController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val page = CostsNotCoveredPage
   private val form = (userType: UserType) =>
     formProvider(
-      page = page,
+      page = CostsNotCoveredPage,
       userType = userType,
       minValueError = s"costsNotCovered.error.lessThanZero.$userType",
       maxValueError = s"costsNotCovered.error.overMax.$userType",

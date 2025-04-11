@@ -33,9 +33,9 @@ package object journeys {
   def clearDependentPages[A](page: QuestionPage[A], newAnswer: A, userAnswers: UserAnswers, businessId: BusinessId)(implicit
       ec: ExecutionContext,
       reads: Reads[A]): Future[UserAnswers] = {
+
     val previousAnswer = userAnswers.get(page, Some(businessId))
     val pagesToClear   = (page.dependentPagesWhenYes ++ page.dependentPagesWhenNo ++ page.dependentPagesWhenAnswerChanges).distinct
-
     if (previousAnswer == Option(newAnswer)) {
       Future.successful(userAnswers)
     } else {

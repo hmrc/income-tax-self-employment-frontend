@@ -18,6 +18,7 @@ package models.journeys.expenses.travelAndAccommodation
 
 import models.common.{Enumerable, WithName}
 import play.api.i18n.Messages
+import play.api.libs.json.{JsString, Writes}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
@@ -40,6 +41,11 @@ object YourFlatRateForVehicleExpenses extends Enumerable.Implicits {
       id = Some(s"value_$index")
     )
   }
+
+  implicit val writes: Writes[YourFlatRateForVehicleExpenses] =
+    Writes[YourFlatRateForVehicleExpenses] { value =>
+      JsString(value.toString)
+    }
 
   implicit val enumerable: Enumerable[YourFlatRateForVehicleExpenses] =
     Enumerable(values.map(v => v.toString -> v): _*)

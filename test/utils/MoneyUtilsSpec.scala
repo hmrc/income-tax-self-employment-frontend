@@ -89,4 +89,38 @@ class MoneyUtilsSpec extends AnyWordSpec with Matchers with MoneyUtils {
       }
     }
   }
+
+  "formatDecimals" when {
+    "the amount is a whole number" should {
+      "display without decimal places" in {
+        val bigDecimals     = List(0, 100, 100.0, 10000, -200, -500.00)
+        val expectedResults = List("0", "100", "100", "10,000", "-200", "-500")
+        bigDecimals.map(formatDecimals(_)) should contain theSameElementsInOrderAs expectedResults
+      }
+    }
+
+    "the amount has decimal places" should {
+      "show exactly two decimal places" in {
+        val bigDecimals = List(
+          100.5, 100.50, 100.499, 100.501, 0.1, -123.45, -78.9
+        )
+        val expectedResults = List(
+          "100.50",
+          "100.50",
+          "100.50",
+          "100.50",
+          "0.10",
+          "-123.45",
+          "-78.90"
+        )
+        bigDecimals.map(formatDecimals(_)) should contain theSameElementsInOrderAs expectedResults
+      }
+
+      "add commas as thousand separators" in {
+        val bigDecimals     = List(1234.56, 12345.67, 987654.32)
+        val expectedResults = List("1,234.56", "12,345.67", "987,654.32")
+        bigDecimals.map(formatDecimals(_)) should contain theSameElementsInOrderAs expectedResults
+      }
+    }
+  }
 }

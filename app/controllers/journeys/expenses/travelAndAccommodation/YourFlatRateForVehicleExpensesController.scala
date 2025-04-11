@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import controllers.journeys.clearDependentPages
 import forms.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -99,7 +100,14 @@ class YourFlatRateForVehicleExpensesController @Inject() (
               formWithErrors => Future.successful(loadPage(formWithErrors, workMileage, BadRequest, taxYear, businessId, mode)),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourFlatRateForVehicleExpensesPage, value, Some(businessId)))
+                  clearedAnswers <- clearDependentPages(
+                    YourFlatRateForVehicleExpensesPage,
+                    value,
+                    request.userAnswers,
+                    businessId
+                  )
+
+                  updatedAnswers <- Future.fromTry(clearedAnswers.set(YourFlatRateForVehicleExpensesPage, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(YourFlatRateForVehicleExpensesPage, mode, updatedAnswers, taxYear, businessId))
             )

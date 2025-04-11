@@ -173,6 +173,9 @@ POST       /:taxYear/:businessId/expenses/travel/remove-Vehicle                 
 GET        /:taxYear/:businessId/expenses/travel/change-remove-vehicle                                                                 controllers.journeys.expenses.travelAndAccommodation.RemoveVehicleController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST       /:taxYear/:businessId/expenses/travel/change-remove-vehicle                                                                 controllers.journeys.expenses.travelAndAccommodation.RemoveVehicleController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET        /:taxYear/:businessId/expenses/travel/travel-accommodation-check-answers                                                    controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST       /:taxYear/:businessId/expenses/travel/travel-accommodation-check-answers                                                    controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 ########## Expenses - Office Supplies ##########
 
 GET         /:taxYear/:businessId/expenses/office-supplies/amount                                                                      controllers.journeys.expenses.officeSupplies.OfficeSuppliesAmountController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

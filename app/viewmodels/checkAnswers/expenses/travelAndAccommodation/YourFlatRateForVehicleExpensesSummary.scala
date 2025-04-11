@@ -18,33 +18,44 @@ package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.travelAndAccommodation.YourFlatRateForVehicleExpensesPage
+import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, YourFlatRateForVehicleExpensesPage}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import utils.MoneyUtils.formatDecimals
+import viewmodels.checkAnswers.buildRowString
 
 object YourFlatRateForVehicleExpensesSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(YourFlatRateForVehicleExpensesPage).map { answer =>
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"yourFlatRateForVehicleExpenses.$answer"))
-        )
-      )
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    (for {
+      workMileage <- answers.get(TravelForWorkYourMileagePage, businessId)
+      answer      <- answers.get(YourFlatRateForVehicleExpensesPage, businessId)
+    } yield {
+      val flatRateCalc = formatDecimals(TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage))
 
-      SummaryListRowViewModel(
-        key = "yourFlatRateForVehicleExpenses.checkYourAnswersLabel",
-        value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("yourFlatRateForVehicleExpenses.change.hidden"))
-        )
-      )
-    }
+      answer match {
+        case YourFlatRateForVehicleExpenses.Flatrate =>
+          Some(
+            buildRowString(
+              messages("expenses.flatRate", flatRateCalc),
+              callLink = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+              keyMessage = messages(s"yourFlatRateForVehicleExpenses.legend.$userType", flatRateCalc),
+              changeMessage = messages(s"yourFlatRateForVehicleExpenses.change.hidden.$userType", flatRateCalc),
+              rightTextAlign = true
+            ))
+
+        case YourFlatRateForVehicleExpenses.Actualcost =>
+          Some(
+            buildRowString(
+              messages("expenses.actualCosts"),
+              callLink = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+              keyMessage = messages(s"yourFlatRateForVehicleExpenses.legend.$userType", flatRateCalc),
+              changeMessage = messages(s"yourFlatRateForVehicleExpenses.change.hidden.$userType"),
+              rightTextAlign = true
+            ))
+      }
+    }).flatten
 }
