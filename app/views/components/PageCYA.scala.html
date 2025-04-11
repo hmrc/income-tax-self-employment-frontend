@@ -41,6 +41,12 @@
 
         @govukSummaryList(summaryList)
 
+        @if(messages.isDefinedAt(s"$pageName.hint.$userType")) {
+            <div class="govuk-inset-text">
+                @messages(s"$pageName.hint.$userType")
+            </div>
+        }
+
         <div class="govuk-button-group govuk-!-margin-top-9">
             @govukButton(ButtonViewModel(messages("site.saveAndContinue")))
         </div>
