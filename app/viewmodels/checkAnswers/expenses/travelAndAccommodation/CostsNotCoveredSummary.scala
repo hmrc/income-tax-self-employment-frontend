@@ -34,7 +34,7 @@ object CostsNotCoveredSummary {
         s"£${formatDecimals(answer)}",
         callLink = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, CheckMode),
         keyMessage = messages(s"costsNotCovered.subheading.$userType"),
-        changeMessage = "costsNotCovered.change.hidden",
+        changeMessage = messages(s"costsNotCovered.change.hidden.$userType"),
         rightTextAlign = true
       )
     }

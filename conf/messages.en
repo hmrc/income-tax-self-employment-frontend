@@ -803,6 +803,8 @@ travelAndAccommodationExpenseType.myOwnVehicle.agent = My client’s own vehicle
 travelAndAccommodationExpenseType.myOwnVehicle.individual = My own vehicles
 travelAndAccommodationExpenseType.leasedVehicles.common = Leased vehicles
 travelAndAccommodationExpenseType.publicTransportAndOtherAccommodation.common = Public transport, hotel room costs and meals on overnight trips
+travelAndAccommodationExpenseType.change.hidden.individual = Change what travel expenses you need to claim
+travelAndAccommodationExpenseType.change.hidden.agent = Change what travel expenses your client needs to claim
 
 ##Travel and Accommodation simplified expenses
 simplifiedExpenses.title.common = Simplified expenses for vehicles
@@ -811,7 +813,8 @@ simplifiedExpenses.p1.agent = Simplified expenses are a way of calculating some 
 simplifiedExpenses.p2.individual = If you’ve used {0} in previous tax years, you may have already used simplified expenses.
 simplifiedExpenses.p2.agent = If your client has used {0} in previous tax years, they may have already used simplified expenses.
 simplifiedExpenses.subheading.individual = Have you used simplified expenses for {0} before?
-simplifiedExpenses.subheading.change.hidden.individual = Have you used simplified expenses before?
+simplifiedExpenses.change.hidden.individual = Change if you have used simplified expenses before
+simplifiedExpenses.change.hidden.agent = Change if your client has used simplified expenses before
 simplifiedExpenses.subheading.agent = Has your client used simplified expenses for {0} before?
 simplifiedExpenses.subheading.change.hidden.agent = Has your client used simplified expenses before?
 simplifiedExpenses.error.required.individual = Select yes if you’ve used simplified expenses for {0} before
@@ -846,8 +849,8 @@ vehicleExpenses.error.overMax.agent = The amount your client is claiming in vehi
 vehicleExpenses.error.overMax.individual = The amount you’re claiming in vehicle expenses must be less than £100,000,000,000
 vehicleExpenses.error.lessThanZero.agent = The amount your client is claiming in vehicle expenses must be more than £0
 vehicleExpenses.error.lessThanZero.individual = The amount you’re claiming in vehicle expenses must be more than £0
-vehicleExpenses.change.hidden.individual = Change your vehicle expenses
-vehicleExpenses.change.hidden.agent = Change your client’s vehicle expenses
+vehicleExpenses.change.hidden.individual = Change how much you are claiming in vehicle expenses
+vehicleExpenses.change.hidden.agent = Change how much your client is claiming in vehicle expenses
 
 ## Costs Not Covered
 costsNotCovered.title.common = Costs not covered by the flat rate
@@ -868,7 +871,8 @@ costsNotCovered.error.overMax.agent = The amount your client spent on tolls, con
 costsNotCovered.error.overMax.individual = The amount you spent on tolls, congestion charges and parking must be less than £100,000,000,000
 costsNotCovered.error.lessThanZero.individual = The amount you spent on tolls, congestion charges and parking must be more than £0
 costsNotCovered.error.lessThanZero.agent = The amount your client spent on tolls, congestion charges and parking must be more than £0
-costsNotCovered.change.hidden = costsNotCovered
+costsNotCovered.change.hidden.individual = Change how much you spent on tolls, congestion and parking
+costsNotCovered.change.hidden.agent = Change how much your client spent on tolls, congestion and parking
 
 ## Add another vehicle
 addAnotherVehicle.title.individual = You have added {0} vehicle
@@ -2395,15 +2399,15 @@ travelAndAccommodation.p2.info.agent = You cannot use your client’s registrati
 travelForWorkYourVehicle.error.required.individual = Enter a name to identify your vehicle
 travelForWorkYourVehicle.error.required.agent = Enter a name to identify your client’s vehicle
 travelForWorkYourVehicle.error.length = Your vehicle’s name must be 100 characters or less
-travelForWorkYourVehicle.change.hidden.individual = Change how you want to identify your vehicle 
-travelForWorkYourVehicle.change.hidden.agent = Change how you want to identify your client’s vehicle 
+travelForWorkYourVehicle.change.hidden.individual = Change how you want to identify your vehicle
+travelForWorkYourVehicle.change.hidden.agent = Change how you want to identify your client’s vehicle
 
 vehicleType.heading = What kind of vehicle is {0}?
 vehicleType.carOrGoodsVehicle = Car or goods vehicle
 vehicleType.motorcycle = Motorcycle
 vehicleType.checkYourAnswersLabel = Kind of vehicle is {0}?
 vehicleType.error.required = Select what kind of vehicle {0} is
-vehicleType.change.hidden = VehicleType
+vehicleType.change.hidden = Change what kind of vehicle {0} is
 
 useSimplifiedExpenses.heading.individual = You have to use simplified expenses for {0}
 useSimplifiedExpenses.heading.agent = Your client has to use simplified expenses for {0}
@@ -2423,7 +2427,9 @@ vehicleFlatRateChoice.p3.info.individual = If you have records of your actual ex
 vehicleFlatRateChoice.p3.info.agent = If you have records of your client’s actual expenses, you may choose to skip this step.
 vehicleFlatRateChoice.error.required.individual = Select yes if you want to calculate a flat rate
 vehicleFlatRateChoice.error.required.agent = Select yes if your client wants to calculate a flat rate
-vehicleFlatRateChoice.change.hidden = VehicleFlatRateChoice
+vehicleFlatRateChoice.change.hidden.individual = Change if you want to calculate a flat rate
+vehicleFlatRateChoice.change.hidden.agent = Change if your client wants to calculate a flat rate
+
 
 travelForWorkYourMileage.title.individual = Your work mileage
 travelForWorkYourMileage.title.agent = Your client’s work mileage
@@ -2440,7 +2446,8 @@ travelForWorkYourMileage.error.lessThanZero.individual = The number of work mile
 travelForWorkYourMileage.error.lessThanZero.agent = The number of work miles your client travelled in {0} must be more than 0
 travelForWorkYourMileage.error.overMax.individual = The number of work miles you travelled in {0} must be less than 100,000,000,000
 travelForWorkYourMileage.error.overMax.agent = The number of work miles your client travelled in {0} must be less than 100,000,000,000
-travelForWorkYourMileage.change.hidden = TravelForWorkYourMileageHidden
+travelForWorkYourMileage.change.hidden.individual = Change how many miles you travelled in {0}
+travelForWorkYourMileage.change.hidden.agent = Change how many miles your client travelled in {0}
 
 yourFlatRateForVehicleExpenses.heading.individual = Your flat rate for vehicle expenses is £{0}
 yourFlatRateForVehicleExpenses.heading.agent = Your client’s flat rate for vehicle expenses is £{0}
@@ -2455,7 +2462,8 @@ yourFlatRateForVehicleExpenses.legend.agent = Will you report your client’s ve
 yourFlatRateForVehicleExpenses.checkYourAnswersLabel = yourFlatRateForVehicleExpenses
 yourFlatRateForVehicleExpenses.error.required.individual = Select if you want to report your vehicle expenses as a flat rate of £{0} or actual costs
 yourFlatRateForVehicleExpenses.error.required.agent = Select if your client wants to report their vehicle expenses as a flat rate of £{0} or actual costs
-yourFlatRateForVehicleExpenses.change.hidden = YourFlatRateForVehicleExpenses
+yourFlatRateForVehicleExpenses.change.hidden.individual = Change if you want to report your vehicle expenses as a flat rate of £{0} or actual costs
+yourFlatRateForVehicleExpenses.change.hidden.agent = Change if your client wants to report their vehicle expenses as a flat rate of £{0} or actual costs
 
 travelAndAccommodationExpensesCYA.title.individual = Check your travel and accommodation expenses
 travelAndAccommodationExpensesCYA.heading.agent = Check your client’s travel and accommodation expenses

@@ -34,7 +34,7 @@ object VehicleFlatRateChoiceSummary {
           formatAnswer(answer.toString),
           callLink = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, CheckMode),
           keyMessage = messages(s"vehicleFlatRateChoice.legend.$userType"),
-          changeMessage = "vehicleFlatRateChoice.change.hidden",
+          changeMessage = messages(s"vehicleFlatRateChoice.change.hidden.$userType"),
           rightTextAlign = true
         )
       }

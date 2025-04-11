@@ -68,7 +68,7 @@ object VehicleExpenseTypeSummary {
               answer = htmlContent,
               callLink = routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, CheckMode),
               keyMessage = messages(s"travelAndAccommodationExpenseType.title.$userType"),
-              changeMessage = s"travelAndAccommodationExpenseType.title.$userType",
+              changeMessage = messages(s"travelAndAccommodationExpenseType.change.hidden.$userType"),
               rightTextAlign = true
             )
           )

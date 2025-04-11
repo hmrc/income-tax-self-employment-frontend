@@ -36,7 +36,7 @@ object TravelForWorkYourMileageSummary {
       formatDecimals(mileageAnswer),
       callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, CheckMode),
       keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
-      changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+      changeMessage = messages(s"travelForWorkYourMileage.change.hidden.$userType", vehicleName),
       rightTextAlign = true
     )
 }

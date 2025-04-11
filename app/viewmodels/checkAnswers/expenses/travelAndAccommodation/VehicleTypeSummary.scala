@@ -37,7 +37,7 @@ object VehicleTypeSummary {
           answer = messages(s"vehicleType.$answer"),
           callLink = routes.VehicleTypeController.onPageLoad(taxYear, businessId, CheckMode),
           keyMessage = messages("vehicleType.heading", vehicleName),
-          changeMessage = "vehicleType.checkYourAnswersLabel",
+          changeMessage = messages("vehicleType.change.hidden", vehicleName),
           rightTextAlign = true
         )
       }

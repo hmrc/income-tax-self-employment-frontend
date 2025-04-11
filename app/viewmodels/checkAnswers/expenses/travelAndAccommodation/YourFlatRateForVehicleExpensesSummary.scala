@@ -43,7 +43,7 @@ object YourFlatRateForVehicleExpensesSummary {
               messages("expenses.flatRate", flatRateCalc),
               callLink = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
               keyMessage = messages(s"yourFlatRateForVehicleExpenses.legend.$userType", flatRateCalc),
-              changeMessage = "yourFlatRateForVehicleExpenses.change.hidden",
+              changeMessage = messages(s"yourFlatRateForVehicleExpenses.change.hidden.$userType", flatRateCalc),
               rightTextAlign = true
             ))
 
@@ -53,7 +53,7 @@ object YourFlatRateForVehicleExpensesSummary {
               messages("expenses.actualCosts"),
               callLink = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
               keyMessage = messages(s"yourFlatRateForVehicleExpenses.legend.$userType", flatRateCalc),
-              changeMessage = s"yourFlatRateForVehicleExpenses.change.hidden",
+              changeMessage = messages(s"yourFlatRateForVehicleExpenses.change.hidden.$userType"),
               rightTextAlign = true
             ))
       }
