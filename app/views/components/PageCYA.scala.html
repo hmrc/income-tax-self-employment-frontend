@@ -41,9 +41,9 @@
 
         @govukSummaryList(summaryList)
 
-        @if(messages.isDefinedAt(s"$pageName.hint.$userType")) {
+        @if(messages.isDefinedAt(s"$pageName.inset.$userType")) {
             <div class="govuk-inset-text">
-                @messages(s"$pageName.hint.$userType")
+                @messages(s"$pageName.inset.$userType")
             </div>
         }
 

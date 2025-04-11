@@ -53,7 +53,8 @@ class MessagesSpec extends SpecBase {
     "publicTransportAndAccommodationExpenses.heading.agent",
     "publicTransportAndAccommodationExpenses.can.claim.individual",
     "publicTransportAndAccommodationExpenses.error.lessThanZero.individual",
-    "publicTransportAndAccommodationExpenses.change.hidden"
+    "publicTransportAndAccommodationExpenses.change.hidden",
+    "publicTransportAndAccommodationExpensesCya.inset.individual"
   )
 
   private val exclusionKeysEn: Set[String] = Set(
