@@ -23,15 +23,15 @@ import models.database.UserAnswers
 import pages.CostsNotCoveredPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.MoneyUtils.formatDecimals
 import viewmodels.checkAnswers.buildRowString
-import utils.MoneyUtils.formatMoney
 
 object CostsNotCoveredSummary {
 
   def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CostsNotCoveredPage, businessId).map { answer =>
       buildRowString(
-        s"£${formatMoney(answer)}",
+        s"£${formatDecimals(answer)}",
         callLink = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, CheckMode),
         keyMessage = messages(s"costsNotCovered.subheading.$userType"),
         changeMessage = "costsNotCovered.change.hidden",

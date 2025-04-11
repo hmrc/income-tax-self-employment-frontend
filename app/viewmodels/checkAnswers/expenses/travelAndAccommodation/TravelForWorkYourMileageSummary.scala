@@ -23,7 +23,7 @@ import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
+import utils.MoneyUtils.formatDecimals
 import viewmodels.checkAnswers.buildRowString
 
 object TravelForWorkYourMileageSummary {
@@ -33,7 +33,7 @@ object TravelForWorkYourMileageSummary {
       mileageAnswer <- answers.get(TravelForWorkYourMileagePage, businessId)
       vehicleName   <- answers.get(TravelForWorkYourVehiclePage, businessId)
     } yield buildRowString(
-      formatMoney(mileageAnswer),
+      formatDecimals(mileageAnswer),
       callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, CheckMode),
       keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
       changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",

@@ -21,16 +21,11 @@ import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
-import pages.CostsNotCoveredPage
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, YourFlatRateForVehicleExpensesPage}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.MoneyUtils.formatMoney
-import viewmodels.checkAnswers.{buildRowString, formatAnswer}
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import utils.MoneyUtils.formatDecimals
+import viewmodels.checkAnswers.buildRowString
 
 object YourFlatRateForVehicleExpensesSummary {
 
@@ -39,7 +34,7 @@ object YourFlatRateForVehicleExpensesSummary {
       workMileage <- answers.get(TravelForWorkYourMileagePage, businessId)
       answer      <- answers.get(YourFlatRateForVehicleExpensesPage, businessId)
     } yield {
-      val flatRateCalc = TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage)
+      val flatRateCalc = formatDecimals(TravelMileageSummaryViewModel.totalFlatRateExpense(workMileage))
 
       answer match {
         case YourFlatRateForVehicleExpenses.Flatrate =>
