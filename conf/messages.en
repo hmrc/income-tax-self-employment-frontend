@@ -811,7 +811,9 @@ simplifiedExpenses.p1.agent = Simplified expenses are a way of calculating some 
 simplifiedExpenses.p2.individual = If you’ve used {0} in previous tax years, you may have already used simplified expenses.
 simplifiedExpenses.p2.agent = If your client has used {0} in previous tax years, they may have already used simplified expenses.
 simplifiedExpenses.subheading.individual = Have you used simplified expenses for {0} before?
+simplifiedExpenses.subheading.change.hidden.individual = Have you used simplified expenses before?
 simplifiedExpenses.subheading.agent = Has your client used simplified expenses for {0} before?
+simplifiedExpenses.subheading.change.hidden.agent = Has your client used simplified expenses before?
 simplifiedExpenses.error.required.individual = Select yes if you’ve used simplified expenses for {0} before
 simplifiedExpenses.error.required.agent = Select yes if your client has used simplified expenses for {0} before
 
@@ -866,6 +868,7 @@ costsNotCovered.error.overMax.agent = The amount your client spent on tolls, con
 costsNotCovered.error.overMax.individual = The amount you spent on tolls, congestion charges and parking must be less than £100,000,000,000
 costsNotCovered.error.lessThanZero.individual = The amount you spent on tolls, congestion charges and parking must be more than £0
 costsNotCovered.error.lessThanZero.agent = The amount your client spent on tolls, congestion charges and parking must be more than £0
+costsNotCovered.change.hidden = costsNotCovered
 
 ## Add another vehicle
 addAnotherVehicle.title.individual = You have added {0} vehicle

@@ -17,15 +17,15 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.handleSubmitAnswersResult
 import models.NormalMode
 import models.common.Journey.ExpensesTravelForWork
-import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
+import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationJourneyAnswers
 import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepositoryBase
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
@@ -34,7 +34,7 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class TravelAndAccommodationExpensesCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -44,6 +44,7 @@ class TravelAndAccommodationExpensesCYAController @Inject() (
     requireData: DataRequiredAction,
     service: SelfEmploymentService,
     navigator: TravelAndAccommodationNavigator,
+    sessionRepository: SessionRepositoryBase,
     val controllerComponents: MessagesControllerComponents,
     view: CheckYourAnswersView
 )(implicit executionContext: ExecutionContext)
@@ -74,15 +75,21 @@ class TravelAndAccommodationExpensesCYAController @Inject() (
           taxYear,
           request.userType,
           summaryList,
-          navigator.nextPage(TravelAndAccommodationCYAPage, NormalMode, request.userAnswers, taxYear, businessId)
+          routes.TravelAndAccommodationExpensesCYAController.onSubmit(taxYear, businessId)
         ))
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesTravelForWork)
-      val result  = service.submitAnswers[TravelAndAccommodationJourneyAnswers](context, request.userAnswers)
-
-      handleSubmitAnswersResult(context, result)
-  }
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
+      Future.successful(
+        Redirect(
+          navigator.nextPage(
+            TravelAndAccommodationCYAPage,
+            NormalMode,
+            request.userAnswers,
+            taxYear,
+            businessId
+          ))
+      )
+    }
 }

@@ -37,7 +37,7 @@ object SimplifiedExpensesSummary {
           formatAnswer(answer.toString),
           callLink = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, CheckMode),
           keyMessage = messages(s"simplifiedExpenses.subheading.$userType", vehicleName),
-          changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+          changeMessage = messages(s"simplifiedExpenses.subheading.change.hidden.$userType"),
           rightTextAlign = true
         )
       }
