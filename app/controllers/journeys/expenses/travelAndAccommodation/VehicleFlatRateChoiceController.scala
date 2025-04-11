@@ -22,7 +22,7 @@ import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage, YourFlatRateForVehicleExpensesPage}
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleFlatRateChoicePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

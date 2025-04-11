@@ -22,12 +22,7 @@ import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{
-  SimplifiedExpensesPage,
-  TravelForWorkYourVehiclePage,
-  VehicleFlatRateChoicePage,
-  YourFlatRateForVehicleExpensesPage
-}
+import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

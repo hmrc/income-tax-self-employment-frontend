@@ -25,8 +25,6 @@ import navigation.TravelAndAccommodationNavigator
 import pages.expenses.travelAndAccommodation.TravelAndAccommodationCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepositoryBase
-import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.expenses.travelAndAccommodation._
@@ -42,9 +40,7 @@ class TravelAndAccommodationExpensesCYAController @Inject() (
     getData: DataRetrievalAction,
     getJourneyAnswers: SubmittedDataRetrievalActionProvider,
     requireData: DataRequiredAction,
-    service: SelfEmploymentService,
     navigator: TravelAndAccommodationNavigator,
-    sessionRepository: SessionRepositoryBase,
     val controllerComponents: MessagesControllerComponents,
     view: CheckYourAnswersView
 )(implicit executionContext: ExecutionContext)
