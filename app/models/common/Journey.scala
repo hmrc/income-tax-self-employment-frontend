@@ -47,15 +47,21 @@ import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.travelAndAccommodation.{
+  SimplifiedExpensesPage,
+  TravelAndAccommodationExpenseTypePage,
+  TravelForWorkYourMileagePage,
+  TravelForWorkYourVehiclePage,
+  VehicleExpensesPage,
+  VehicleFlatRateChoicePage,
+  VehicleTypePage,
+  YourFlatRateForVehicleExpensesPage,
   PublicTransportAndAccommodationExpensesPage,
-  TravelForWorkAmountPage,
-  TravelForWorkDisallowableAmountPage
 }
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
 import pages.nics._
-import pages.{DisallowableTransportAndAccommodationPage, Page, QuestionPage}
+import pages.{CostsNotCoveredPage, Page, QuestionPage,DisallowableTransportAndAccommodationPage, }
 import play.api.mvc.PathBindable
 import queries.Settable
 
@@ -156,7 +162,18 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   }
 
   case object ExpensesTravelForWork extends Journey("expenses-travel-for-work") {
-    override val pageKeys: List[PageName] = List(TravelForWorkAmountPage.pageName, TravelForWorkDisallowableAmountPage.pageName)
+    override val pageKeys: List[PageName] =
+      List(
+        TravelAndAccommodationExpenseTypePage.pageName,
+        TravelForWorkYourVehiclePage.pageName,
+        VehicleTypePage.pageName,
+        SimplifiedExpensesPage.pageName,
+        VehicleFlatRateChoicePage.pageName,
+        TravelForWorkYourMileagePage.pageName,
+        YourFlatRateForVehicleExpensesPage.pageName,
+        CostsNotCoveredPage.pageName,
+        VehicleExpensesPage.pageName
+      )
   }
 
   case object ExpensesAdvertisingOrMarketing extends Journey("expenses-advertising-marketing") {

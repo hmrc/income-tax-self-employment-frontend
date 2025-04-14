@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
+import controllers.journeys.{clearDependentPages, fillForm}
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
@@ -70,7 +70,8 @@ class SimplifiedExpensesController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode, vehicle))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
+                  clearedAnswers <- clearDependentPages(page, value, request.userAnswers, businessId)
+                  updatedAnswers <- Future.fromTry(clearedAnswers.set(page, value, Some(businessId)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
             )

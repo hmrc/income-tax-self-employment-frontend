@@ -42,6 +42,17 @@ trait MoneyUtils {
   def formatSumMoneyNoNegative(amounts: List[BigDecimal]): String =
     s"£${formatMoney(amounts.sum, addDecimalForWholeNumbers = false).replace("-", "")}"
 
+  def formatDecimals(amount: BigDecimal): String = {
+    val decimalFormatWhole    = new DecimalFormat("#,##0", new java.text.DecimalFormatSymbols(Locale.UK))
+    val decimalFormatFraction = new DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(Locale.UK))
+
+    if (amount % 1 == 0) {
+      decimalFormatWhole.format(amount)
+    } else {
+      decimalFormatFraction.format(amount)
+    }
+  }
+
 }
 
 object MoneyUtils extends MoneyUtils

@@ -20,24 +20,22 @@ import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, VehicleFlatRateChoicePage}
+import pages.CostsNotCoveredPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.{buildRowString, formatAnswer}
+import utils.MoneyUtils.formatDecimals
+import viewmodels.checkAnswers.buildRowString
 
-object VehicleFlatRateChoiceSummary {
+object CostsNotCoveredSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    if (answers.get(SimplifiedExpensesPage, businessId).contains(false)) {
-      answers.get(VehicleFlatRateChoicePage, businessId).map { answer =>
-        buildRowString(
-          formatAnswer(answer.toString),
-          callLink = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, CheckMode),
-          keyMessage = messages(s"vehicleFlatRateChoice.legend.$userType"),
-          changeMessage = messages(s"vehicleFlatRateChoice.change.hidden.$userType"),
-          rightTextAlign = true
-        )
-      }
-    } else None
-
+  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(CostsNotCoveredPage, businessId).map { answer =>
+      buildRowString(
+        s"£${formatDecimals(answer)}",
+        callLink = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, CheckMode),
+        keyMessage = messages(s"costsNotCovered.subheading.$userType"),
+        changeMessage = messages(s"costsNotCovered.change.hidden.$userType"),
+        rightTextAlign = true
+      )
+    }
 }

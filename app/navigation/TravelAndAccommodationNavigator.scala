@@ -60,10 +60,7 @@ class TravelAndAccommodationNavigator @Inject() {
       ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
 
     case VehicleExpensesPage =>
-      _ =>
-        (taxYear, businessId) =>
-          // TODO redirect to the CYA page - correct journey in prototype
-          Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
 
     case TravelForWorkYourMileagePage =>
       _ =>
@@ -86,11 +83,17 @@ class TravelAndAccommodationNavigator @Inject() {
           )
 
     case AddAnotherVehiclePage =>
-      ua =>
-        (taxYear, businessId) =>
-          Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
+      ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
 
-      // TODO CYA page  ticket 11a ->  AddAnotherVehiclePage
+    case CostsNotCoveredPage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
+
+    case TravelAndAccommodationCYAPage =>
+      _ => (taxYear, businessId) => Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
 
     case _ => _ => (_, _) => None
   }
@@ -127,7 +130,7 @@ class TravelAndAccommodationNavigator @Inject() {
     userAnswers.get(SimplifiedExpensesPage, businessId) flatMap {
       case true => Some(routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode))
       case false =>
-        userAnswers.get(YourFlatRateForVehicleExpensesPage) map {
+        userAnswers.get(YourFlatRateForVehicleExpensesPage, businessId) map {
           case YourFlatRateForVehicleExpenses.Flatrate   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
           case YourFlatRateForVehicleExpenses.Actualcost => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
         }
@@ -157,13 +160,50 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
 
+    case TravelAndAccommodationExpenseTypePage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
+
+    case TravelForWorkYourVehiclePage =>
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
+
+    case VehicleTypePage =>
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
+
+    case SimplifiedExpensesPage =>
+      ua => (taxYear, businessId) => handleSimplifiedExpenses(ua, taxYear, businessId, NormalMode)
+
+    case VehicleFlatRateChoicePage =>
+      ua => (taxYear, businessId) => handleFlatRateChoice(ua, taxYear, businessId, NormalMode)
+
+    case TravelForWorkYourMileagePage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            routes.YourFlatRateForVehicleExpensesController
+              .onPageLoad(taxYear, businessId, NormalMode))
+
+    case YourFlatRateForVehicleExpensesPage =>
+      ua => (taxYear, businessId) => handleYourVehicleExpensesFlatRateChoice(ua, taxYear, businessId, NormalMode)
+
+    case CostsNotCoveredPage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId))
+
     case RemoveVehiclePage =>
       ua => (taxYear, businessId) => handleRemoveVehicle(ua, taxYear, businessId)
 
     case AddAnotherVehiclePage =>
       ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
 
-    case _ => _ => (_, _) => None
+    case _ =>
+      _ => (_, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }
 
   private def handleRemoveVehicle(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Option[Call] =
