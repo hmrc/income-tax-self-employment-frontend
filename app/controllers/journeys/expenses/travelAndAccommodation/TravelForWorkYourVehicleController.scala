@@ -18,16 +18,14 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
-import models.Mode
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
-import navigation.TravelAndAccommodationNavigator
+import models.{Index, Mode, NormalMode}
 import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
@@ -37,8 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TravelForWorkYourVehicleController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: TravelAndAccommodationNavigator,
     formProvider: TravelForWorkYourVehicleFormProvider,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -52,41 +48,40 @@ class TravelForWorkYourVehicleController @Inject() (
 
   private val page = TravelForWorkYourVehiclePage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData).async { implicit request =>
+println("===========================")
       val ctx                = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
       val form: Form[String] = formProvider(request.userType)
 
-      answersService.getAnswers[VehicleDetailsDb](ctx, Some(1)).map { optVehicleDetails =>
+      answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map { optVehicleDetails =>
         val preparedForm = optVehicleDetails
           .flatMap(_.description)
           .fold(form)(form.fill)
 
-        Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId, index))
       }
     }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData).async { implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
 
       formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, index))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-              oldAnswers     <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(1))
-              storedAnswers <- answersService.replaceAnswers(
+              oldAnswers     <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
+              _ <- answersService.replaceAnswers(
                 ctx,
                 oldAnswers
                   .getOrElse(VehicleDetailsDb())
                   .copy(description = Some(value)),
-                Some(1)
+                Some(index)
               )
-            } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
+            } yield Redirect(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
         )
     }
 }

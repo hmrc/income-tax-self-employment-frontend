@@ -101,7 +101,7 @@ class TravelAndAccommodationNavigator @Inject() {
       case _ =>
         Some(
           routes.TravelForWorkYourVehicleController
-            .onPageLoad(taxYear, businessId, NormalMode)
+            .onPageLoad(taxYear, businessId, Index(0), NormalMode)
         )
     }
 
@@ -132,7 +132,7 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private def handleAddAnotherVehicle(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call =
     userAnswers.get(AddAnotherVehiclePage, businessId) match {
-      case Some(true) => routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, mode)
+      case Some(true) => routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, Index(0), mode)
       case Some(false) =>
         userAnswers.get(TravelAndAccommodationExpenseTypePage) match {
           case Some(expenseTypes) if expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>

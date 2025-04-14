@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
-import models.{CheckMode, Mode}
+import models.{CheckMode, Index, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import navigation.TravelAndAccommodationNavigator
@@ -85,9 +85,9 @@ class AddAnotherVehicleController @Inject() (
           vehicleName,
           actions = List(
             // TODO navigate to 11a for change (CYA) - and amend view tests
-            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
+            OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, Index(0), CheckMode).url),
             // TODO navigate to 12a for remove - and amend view tests
-            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+            OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, Index(0), CheckMode).url)
           )
         )
       )

@@ -20,11 +20,11 @@ import base.SpecBase
 import controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController
 import controllers.standard.routes.JourneyRecoveryController
 import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, JourneyContext, TaxYear, UserType}
 import models.database.UserAnswers
-import models.{CheckMode, Mode, NormalMode}
-import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
-import org.mockito.ArgumentMatchers.any
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
+import models.{CheckMode, Index, Mode, NormalMode}
+import org.mockito.ArgumentMatchersSugar.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -34,8 +34,8 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.SelfEmploymentService
+import services.answers.AnswersService
 import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
 
 import scala.concurrent.Future
@@ -44,9 +44,10 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
   private val testAnswer = "Work Van"
 
-  private def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute: Call = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode)
 
-  private val formProvider = new TravelForWorkYourVehicleFormProvider()
+  private val formProvider       = new TravelForWorkYourVehicleFormProvider()
+  private val mockAnswersService = mock[AnswersService]
 
   case class UserScenario(userType: UserType, form: Form[String])
 
@@ -55,11 +56,11 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
     UserScenario(UserType.Agent, formProvider(UserType.Agent))
   )
 
-  private def onPageLoadRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
-    TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, mode).url
+  private def onPageLoadRoute(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): String =
+    TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, mode).url
 
-  private def onSubmitRoute(taxYear: TaxYear, businessId: BusinessId, mode: Mode): String =
-    TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, mode).url
+  private def onSubmitRoute(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): String =
+    TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, index, mode).url
 
   private val mockService: SelfEmploymentService = mock[SelfEmploymentService]
 
@@ -73,10 +74,17 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
       s"when user is ${scenario.userType}" - {
         "onPageLoad" - {
           "must return OK and the correct view" in {
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = scenario.userType).build()
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = scenario.userType)
+              .overrides(
+                bind[AnswersService].toInstance(mockAnswersService)
+              )
+              .build()
+
+            when(mockAnswersService.getAnswers[VehicleDetailsDb](any[JourneyContext], any[Option[Index]])(any, any))
+              .thenReturn(Future.successful(Some(VehicleDetailsDb())))
 
             running(application) {
-              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, NormalMode))
+              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, index, NormalMode))
               val result  = route(application, request).value
               val view    = application.injector.instanceOf[TravelForWorkYourVehicleView]
 
@@ -86,7 +94,8 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
                 NormalMode,
                 scenario.userType,
                 taxYear,
-                businessId
+                businessId,
+                index
               )(request, messages(application)).toString
             }
           }
@@ -97,10 +106,17 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
               .success
               .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), userType = scenario.userType).build()
+            when(mockAnswersService.getAnswers[VehicleDetailsDb](any[JourneyContext], any[Option[Index]])(any, any))
+              .thenReturn(Future.successful(Some(VehicleDetailsDb(description = Some(testAnswer)))))
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers), userType = scenario.userType)
+              .overrides(
+                bind[AnswersService].toInstance(mockAnswersService)
+              )
+              .build()
 
             running(application) {
-              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, CheckMode))
+              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, index, CheckMode))
               val view    = application.injector.instanceOf[TravelForWorkYourVehicleView]
               val result  = route(application, request).value
 
@@ -112,7 +128,8 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
                 CheckMode,
                 scenario.userType,
                 taxYear,
-                businessId
+                businessId,
+                index
               )(request, messages(application)).toString
             }
           }
@@ -121,7 +138,7 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
             val application = applicationBuilder(userAnswers = None).build()
 
             running(application) {
-              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, NormalMode))
+              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, index, NormalMode))
               val result  = route(application, request).value
 
               status(result) mustBe SEE_OTHER
@@ -132,20 +149,24 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
         "onSubmit" - {
           "must redirect to the next page when valid data is submitted" in {
-            val mockSessionRepository = mock[SessionRepository]
-            when(mockSessionRepository.set(any)).thenReturn(Future.successful(true))
+
+            val vehicleDetailsDb = VehicleDetailsDb(description = Some("new Car"))
+            when(mockAnswersService.getAnswers[VehicleDetailsDb](any[JourneyContext], any[Option[Index]])(any, any))
+              .thenReturn(Future.successful(Some(vehicleDetailsDb)))
+
+            when(mockAnswersService.replaceAnswers[VehicleDetailsDb](any[JourneyContext], any[VehicleDetailsDb], any[Option[Index]])(any, any))
+              .thenReturn(Future.successful(VehicleDetailsDb(description = Some(testAnswer))))
 
             val application =
               applicationBuilder(userAnswers = Some(emptyUserAnswers), userType = scenario.userType)
                 .overrides(
-                  bind[TravelAndAccommodationNavigator].toInstance(new FakeTravelAndAccommodationNavigator(onwardRoute)),
-                  bind[SessionRepository].toInstance(mockSessionRepository)
+                  bind[AnswersService].toInstance(mockAnswersService)
                 )
                 .build()
 
             running(application) {
               val request =
-                FakeRequest(POST, onSubmitRoute(taxYear, businessId, NormalMode))
+                FakeRequest(POST, onSubmitRoute(taxYear, businessId, index, NormalMode))
                   .withFormUrlEncodedBody(("value", testAnswer))
 
               val result = route(application, request).value
@@ -160,7 +181,7 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
             running(application) {
               val request =
-                FakeRequest(POST, onSubmitRoute(taxYear, businessId, NormalMode))
+                FakeRequest(POST, onSubmitRoute(taxYear, businessId, index, NormalMode))
                   .withFormUrlEncodedBody(("value", ""))
 
               val boundForm = scenario.form.bind(Map("value" -> ""))
@@ -173,7 +194,8 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
                 NormalMode,
                 scenario.userType,
                 taxYear,
-                businessId
+                businessId,
+                index
               )(request, messages(application)).toString
             }
           }
@@ -183,7 +205,7 @@ class TravelForWorkYourVehicleControllerSpec extends SpecBase with MockitoSugar 
 
             running(application) {
               val request =
-                FakeRequest(POST, onSubmitRoute(taxYear, businessId, NormalMode))
+                FakeRequest(POST, onSubmitRoute(taxYear, businessId, index, NormalMode))
                   .withFormUrlEncodedBody(("value", testAnswer))
 
               val result = route(application, request).value

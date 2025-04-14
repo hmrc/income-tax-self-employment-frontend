@@ -2,8 +2,8 @@ package helpers
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import models.Index
 import models.common.JourneyContext
-import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.{JsValue, Json}
 
 object AnswersApiStub {
@@ -11,7 +11,7 @@ object AnswersApiStub {
   def answersApiUrl(ctx: JourneyContext) =
     s"/income-tax-self-employment/answers/users/${ctx.nino}/businesses/${ctx.businessId}/years/${ctx.taxYear.endYear}/journeys/${ctx.journey.entryName}"
 
-  def collectionApiUrl(ctx: JourneyContext, index: Int) = answersApiUrl(ctx) + s"/$index"
+  def collectionApiUrl(ctx: JourneyContext, index: Index) = answersApiUrl(ctx) + s"/${index.value}"
 
   def getAnswers(ctx: JourneyContext)(status: Int, response: Option[JsValue] = None): StubMapping =
     stubFor(
@@ -24,7 +24,7 @@ object AnswersApiStub {
         )
     )
 
-  def getIndex(ctx: JourneyContext, index: Int)(status: Int, response: Option[JsValue] = None): StubMapping =
+  def getIndex(ctx: JourneyContext, index: Index)(status: Int, response: Option[JsValue] = None): StubMapping =
     stubFor(
       get(urlMatching(collectionApiUrl(ctx, index)))
         .willReturn(
@@ -47,7 +47,7 @@ object AnswersApiStub {
         )
     )
 
-  def replaceIndex(ctx: JourneyContext, body: JsValue, index: Int)(status: Int): StubMapping =
+  def replaceIndex(ctx: JourneyContext, body: JsValue, index: Index)(status: Int): StubMapping =
     stubFor(
       put(urlMatching(collectionApiUrl(ctx, index)))
         .willReturn(
@@ -68,7 +68,7 @@ object AnswersApiStub {
         )
     )
 
-  def deleteIndex(ctx: JourneyContext, index: Int)(status: Int): StubMapping =
+  def deleteIndex(ctx: JourneyContext, index: Index)(status: Int): StubMapping =
     stubFor(
       delete(urlMatching(collectionApiUrl(ctx, index)))
         .willReturn(

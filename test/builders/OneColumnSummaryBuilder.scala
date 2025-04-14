@@ -18,24 +18,26 @@ package builders
 
 import base.SpecBase.{businessId, taxYear}
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
+import models.{CheckMode, Index}
 import viewmodels.components.{OneColumnSummaryAction, OneColumnSummaryRow}
 
 object OneColumnSummaryBuilder {
+
+  val index: Index = Index(0)
 
   val testVehicles: List[OneColumnSummaryRow] = List(
     OneColumnSummaryRow(
       messageKey = "Vehicle 1",
       actions = List(
-        OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-        OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+        OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode).url),
+        OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode).url)
       )
     ),
     OneColumnSummaryRow(
       messageKey = "Vehicle 2",
       actions = List(
-        OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-        OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+        OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode).url),
+        OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode).url)
       )
     )
   )
@@ -44,8 +46,8 @@ object OneColumnSummaryBuilder {
     OneColumnSummaryRow(
       messageKey = "Vehicle 1",
       actions = List(
-        OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url),
-        OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, CheckMode).url)
+        OneColumnSummaryAction("site.change", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode).url),
+        OneColumnSummaryAction("site.remove", routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode).url)
       )
     )
   )

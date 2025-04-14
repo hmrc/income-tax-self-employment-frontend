@@ -2,6 +2,7 @@ package connectors.answers
 
 import base.IntegrationBaseSpec
 import helpers.{AnswersApiStub, WiremockSpec}
+import models.Index
 import models.common.Journey.ExpensesTravelForWork
 import models.common.JourneyAnswersContext
 import models.journeys.expenses.travelAndAccommodation.{OwnVehicles, TravelExpensesDb}
@@ -57,37 +58,37 @@ class AnswersApiConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
     "the optional index parameter is provided" must {
       "return the correct model if the API returns OK for the index" in {
-        AnswersApiStub.getIndex(testContext, 1)(OK, Some(Json.toJson(testTravelExpensesAnswers)))
-        AnswersApiStub.getIndex(testContext, 2)(OK, Some(Json.toJson(testTravelExpensesAnswers)))
+        AnswersApiStub.getIndex(testContext, Index(1))(OK, Some(Json.toJson(testTravelExpensesAnswers)))
+        AnswersApiStub.getIndex(testContext, Index(2))(OK, Some(Json.toJson(testTravelExpensesAnswers)))
 
-        val result  = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(1)))
-        val result2 = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(2)))
+        val result  = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(Index(1))))
+        val result2 = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(Index(2))))
 
         result mustBe Some(testTravelExpensesAnswers)
         result2 mustBe Some(testTravelExpensesAnswers)
       }
 
       "return None if the API returns OK for the index, but the returned JSON isn't valid" in {
-        AnswersApiStub.getIndex(testContext, 1)(OK, Some(Json.obj("expensesToClaim" -> "Lorry")))
+        AnswersApiStub.getIndex(testContext, Index(1))(OK, Some(Json.obj("expensesToClaim" -> "Lorry")))
 
-        val result = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(1)))
+        val result = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(Index(1))))
 
         result mustBe None
       }
 
       "return None if the API returns NOT FOUND for the index" in {
-        AnswersApiStub.getIndex(testContext, 1)(NOT_FOUND)
+        AnswersApiStub.getIndex(testContext, Index(1))(NOT_FOUND)
 
-        val result = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(1)))
+        val result = await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(Index(1))))
 
         result mustBe None
       }
 
       "throw an internal server exception for any other status" in {
-        AnswersApiStub.getIndex(testContext, 1)(BAD_GATEWAY)
+        AnswersApiStub.getIndex(testContext, Index(1))(BAD_GATEWAY)
 
         assertThrows[InternalServerException] {
-          await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(1)))
+          await(connector.getAnswers[TravelExpensesDb](testContext, index = Some(Index(1))))
         }
       }
     }
@@ -153,10 +154,10 @@ class AnswersApiConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
       }
 
       "throw an internal server exception for any other status" in {
-        AnswersApiStub.replaceIndex(testContext, Json.toJson(testTravelExpensesAnswers), index = 1)(BAD_GATEWAY)
+        AnswersApiStub.replaceIndex(testContext, Json.toJson(testTravelExpensesAnswers), index = Index(1))(BAD_GATEWAY)
 
         assertThrows[InternalServerException] {
-          await(connector.replaceAnswers[TravelExpensesDb](testContext, testTravelExpensesAnswers, index = Some(1)))
+          await(connector.replaceAnswers[TravelExpensesDb](testContext, testTravelExpensesAnswers, index = Some(Index(1))))
         }
       }
     }
@@ -203,18 +204,18 @@ class AnswersApiConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
     "the optional index parameter is provided" must {
       "return true if the operation succeeds" in {
-        AnswersApiStub.deleteIndex(testContext, index = 1)(NO_CONTENT)
+        AnswersApiStub.deleteIndex(testContext, index = Index(1))(NO_CONTENT)
 
-        val result = await(connector.deleteAnswers(testContext, index = Some(1)))
+        val result = await(connector.deleteAnswers(testContext, index = Some(Index(1))))
 
         result mustBe true
       }
 
       "throw an internal server exception if any other response is received" in {
-        AnswersApiStub.deleteIndex(testContext, index = 1)(BAD_GATEWAY)
+        AnswersApiStub.deleteIndex(testContext, index = Index(1))(BAD_GATEWAY)
 
         assertThrows[InternalServerException] {
-          await(connector.deleteAnswers(testContext, index = Some(1)))
+          await(connector.deleteAnswers(testContext, index = Some(Index(1))))
         }
       }
     }

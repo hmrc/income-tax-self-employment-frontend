@@ -48,7 +48,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         }
 
         "navigate to TravelForWorkYourVehiclePage from TravelAndAccommodationExpenseTypePage" in {
-          val expectedResult = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, NormalMode)
           val ua = emptyUserAnswers
             .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
             .toOption
