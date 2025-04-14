@@ -55,13 +55,13 @@ import pages.expenses.travelAndAccommodation.{
   VehicleFlatRateChoicePage,
   VehicleTypePage,
   YourFlatRateForVehicleExpensesPage,
-  PublicTransportAndAccommodationExpensesPage,
+  PublicTransportAndAccommodationExpensesPage
 }
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
 import pages.nics._
-import pages.{CostsNotCoveredPage, Page, QuestionPage,DisallowableTransportAndAccommodationPage, }
+import pages.{CostsNotCoveredPage, Page, QuestionPage, DisallowableTransportAndAccommodationPage}
 import play.api.mvc.PathBindable
 import queries.Settable
 
