@@ -18,25 +18,25 @@ package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.travelAndAccommodation.TravelForWorkYourMileagePage
+import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import utils.MoneyUtils.formatDecimals
+import viewmodels.checkAnswers.buildRowString
 
 object TravelForWorkYourMileageSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TravelForWorkYourMileagePage).map { answer =>
-      SummaryListRowViewModel(
-        key = "travelForWorkYourMileage.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, CheckMode).url)
-            .withVisuallyHiddenText(messages("travelForWorkYourMileage.change.hidden"))
-        )
-      )
-    }
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+    for {
+      mileageAnswer <- answers.get(TravelForWorkYourMileagePage, businessId)
+      vehicleName   <- answers.get(TravelForWorkYourVehiclePage, businessId)
+    } yield buildRowString(
+      formatDecimals(mileageAnswer),
+      callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, CheckMode),
+      keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
+      changeMessage = messages(s"travelForWorkYourMileage.change.hidden.$userType", vehicleName),
+      rightTextAlign = true
+    )
 }

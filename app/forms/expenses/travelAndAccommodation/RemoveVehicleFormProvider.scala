@@ -17,7 +17,6 @@
 package forms.expenses.travelAndAccommodation
 
 import forms.mappings.Mappings
-import models.common.UserType
 import play.api.data.Form
 
 import javax.inject.Inject
