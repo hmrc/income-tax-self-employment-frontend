@@ -36,14 +36,14 @@
 
     @heading("selectCapitalAllowances.zeroEmissionCar")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"zecAllowance.p1.$userType")</p>
-        <p>@messages(s"capitalAllowance.useFirstYearAllowance")</p>
-        <p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"zecAllowance.p1.$userType")</p>
+        <p class="govuk-body">@messages(s"capitalAllowance.useFirstYearAllowance")</p>
+        <p class="govuk-body">
             <span class="govuk-!-font-weight-bold">@messages("capitalAllowance.inThisTaxYear")</span><br>
             @messages(s"zecAllowance.p3.$userType")
         </p>
-        <p>
+        <p class="govuk-body">
             <span class="govuk-!-font-weight-bold">@messages("capitalAllowance.multipleTaxYears")</span><br>
             @messages(s"zecAllowance.p4.$userType")
             @link(linkHrefKey = "capitalAllowance.linkHref", linkTextKey = "capitalAllowance.linkText")

@@ -35,8 +35,8 @@
 
     @heading("liveAtBusinessPremises.heading")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages("liveAtBusinessPremises.l1")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages("liveAtBusinessPremises.l1")</p>
     </div>
 
     @formHelper(action = routes.LiveAtBusinessPremisesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

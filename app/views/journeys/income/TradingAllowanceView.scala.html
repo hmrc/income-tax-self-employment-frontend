@@ -36,14 +36,14 @@
 @accrualDependentDetails = {
     @if(accountingType == AccountingType.Accrual){
         @foldableDetails(messages("capitalAllowances.understandingCapitalAllowances"), "govuk-!-margin-bottom-3") {
-            <p>@messages(s"capitalAllowances.p1.$userType")</p>
-            <p>@messages(s"capitalAllowances.p2.$userType")</p>
+            <p class="govuk-body">@messages(s"capitalAllowances.p1.$userType")</p>
+            <p class="govuk-body">@messages(s"capitalAllowances.p2.$userType")</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>@messages("capitalAllowances.l1")</li>
                 <li>@messages("capitalAllowances.l2")</li>
                 <li>@messages("capitalAllowances.l3")</li>
             </ul>
-            <p>@messages("capitalAllowances.p3")</p>
+            <p class="govuk-body">@messages("capitalAllowances.p3")</p>
         }
     }
 }
@@ -54,17 +54,17 @@
 
     @heading("tradingAllowance.title")
 
-    <div class="govuk-body">
-        <p>@messages(s"tradingAllowance.p1.$userType")</p>
-        <p>@messages(s"tradingAllowance.p2.$userType")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"tradingAllowance.p1.$userType")</p>
+        <p class="govuk-body">@messages(s"tradingAllowance.p2.$userType")</p>
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("tradingAllowance.l1")</li>
             <li>@messages("tradingAllowance.l2")</li>
         </ul>
         @accrualDependentDetails
-        <p>@messages(s"tradingAllowance.p3.$userType")</p>
-        <p>@messages(s"tradingAllowance.p4.$userType")</p>
-        <p>@messages(s"tradingAllowance.p5.$userType")</p>
+        <p class="govuk-body">@messages(s"tradingAllowance.p3.$userType")</p>
+        <p class="govuk-body">@messages(s"tradingAllowance.p4.$userType")</p>
+        <p class="govuk-body">@messages(s"tradingAllowance.p5.$userType")</p>
         @link("tradingAllowance.p6.href", s"tradingAllowance.p6.$userType")
     </div>
 

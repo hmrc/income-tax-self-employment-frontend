@@ -35,17 +35,17 @@
 
     @heading("balancingCharge.title")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">
             @messages(s"balancingCharge.p1.$userType")
             @messages("balancingCharge.p2")
             @messages(s"balancingCharge.p3.$userType")
         </p>
-        <p>
+        <p class="govuk-body">
             @messages(s"balancingCharge.p4.$userType")
             @messages(s"balancingCharge.p5.$userType")
         </p>
-        <p>@messages("balancingAllowance.p7.read")
+        <p class="govuk-body">@messages("balancingAllowance.p7.read")
             <a class="govuk-link" target="_blank" href=@messages("balancingAllowance.p7.href") >@messages("balancingCharge.p6.link")</a>
             @messages("common.opensInNewTab")
         </p>

@@ -35,13 +35,13 @@
 
     @heading("incomeNotCountedAsTurnover.title")
 
-    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>@messages(s"incomeNotCountedAsTurnover.p1.$userType")</p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"incomeNotCountedAsTurnover.p1.$userType")</p>
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"incomeNotCountedAsTurnover.l1.$userType")</li>
             <li>@messages(s"incomeNotCountedAsTurnover.l2.$userType")</li>
         </ul>
-        <p>@messages("incomeNotCountedAsTurnover.p2")</p>
+        <p class="govuk-body">@messages("incomeNotCountedAsTurnover.p2")</p>
     </div>
 
     @formHelper(action = routes.IncomeNotCountedAsTurnoverController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

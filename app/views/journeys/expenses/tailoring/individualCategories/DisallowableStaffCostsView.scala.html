@@ -34,11 +34,11 @@
 
     @heading("disallowableStaffCosts.title")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">
         @messages(s"site.theseInclude")
         </p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <ul class="govuk-list govuk-list--bullet">
             @if(userType.equals("individual")) {
                 <li>@messages(s"expenses.contributions.$userType")</li>
             } else {
