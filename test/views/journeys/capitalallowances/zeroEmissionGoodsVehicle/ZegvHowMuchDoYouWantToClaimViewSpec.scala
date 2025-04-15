@@ -28,7 +28,7 @@ import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuc
 class ZegvHowMuchDoYouWantToClaimViewSpec extends ViewBaseSpec {
 
   "view" should {
-    def view     = application.injector.instanceOf[ZegvHowMuchDoYouWantToClaimView]
+    def view     = app.injector.instanceOf[ZegvHowMuchDoYouWantToClaimView]
     val form     = individualFormProvider.bind(Map("howMuchDoYouWantToClaim" -> "fullCost"))
     val fullCost = 1000
 

@@ -83,5 +83,5 @@ lazy val itSettings = Defaults.testSettings ++ Seq(
     baseDirectory.value / "it" / "resources"
   ),
   parallelExecution := false,
-  fork              := true
+  fork              := false
 )
