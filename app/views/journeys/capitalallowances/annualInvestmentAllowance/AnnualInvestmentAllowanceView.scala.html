@@ -34,23 +34,23 @@
 
     <h1 class="govuk-heading-l">@messages("selectCapitalAllowances.annualInvestment.cya")</h1>
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"annualInvestmentAllowance.p1.$userType")</p>
-        <p>@messages(s"annualInvestmentAllowance.p2.$userType")</p>
-        <p>@messages(s"annualInvestmentAllowance.p3.$userType")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"annualInvestmentAllowance.p1.$userType")</p>
+        <p class="govuk-body">@messages(s"annualInvestmentAllowance.p2.$userType")</p>
+        <p class="govuk-body">@messages(s"annualInvestmentAllowance.p3.$userType")</p>
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"annualInvestmentAllowance.l1.$userType")</li>
             <li>@messages(s"annualInvestmentAllowance.l2.$userType")</li>
         </ul>
 
-        <h1 class="govuk-heading-m">@messages("annualInvestmentAllowance.aiaLimit")</h1>
+        <h2 class="govuk-heading-m">@messages("annualInvestmentAllowance.aiaLimit")</h2>
 
-        <p>
+        <p class="govuk-body">
             @messages(s"annualInvestmentAllowance.p4.$userType")
             <a class="govuk-link" target="_blank" href=@messages("annualInvestmentAllowance.link1.href") >@messages(s"annualInvestmentAllowance.link1.$userType")</a>
             @messages("common.opensInNewTab").
         </p>
-        <p>
+        <p class="govuk-body">
             <a class="govuk-link" target="_blank" href=@messages("annualInvestmentAllowance.link2.href") >@messages("annualInvestmentAllowance.link2")</a>
             @messages("common.opensInNewTab")
         </p>

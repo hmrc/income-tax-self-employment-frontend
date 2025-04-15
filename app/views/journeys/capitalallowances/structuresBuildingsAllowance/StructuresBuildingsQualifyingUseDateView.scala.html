@@ -34,8 +34,8 @@
 
   @heading("structuresBuildingsQualifyingUseDate.title")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>@messages(s"structuresBuildingsQualifyingUseDate.p1")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"structuresBuildingsQualifyingUseDate.p1")</p>
     </div>
 
     @formHelper(action = routes.StructuresBuildingsQualifyingUseDateController.onSubmit(taxYear, businessId,index, mode), Symbol("autoComplete") -> "off") {

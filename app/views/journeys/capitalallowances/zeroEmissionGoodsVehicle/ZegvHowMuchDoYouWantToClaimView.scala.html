@@ -64,10 +64,10 @@
 
     @heading("capitalAllowance.claimingTheAllowance")
 
-    <div class="govuk-body">
-        <p>@messages(s"capitalAllowance.p1.$userType")</p>
-        <p>@messages(s"capitalAllowance.p2.$userType")</p>
-        <p>@messages(s"zegvHowMuchDoYouWantToClaim.p3.$userType")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"capitalAllowance.p1.$userType")</p>
+        <p class="govuk-body">@messages(s"capitalAllowance.p2.$userType")</p>
+        <p class="govuk-body">@messages(s"zegvHowMuchDoYouWantToClaim.p3.$userType")</p>
     </div>
 
     @formHelper(action = routes.ZegvHowMuchDoYouWantToClaimController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

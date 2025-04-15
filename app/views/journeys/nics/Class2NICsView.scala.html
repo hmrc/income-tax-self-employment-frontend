@@ -38,9 +38,9 @@
 
     @heading("class2NICs.title")
 
-    <div class="govuk-body govuk-!-margin-bottom-6">
-        <p>@messages(s"class2NICs.p1.$userType", getThresholdForTaxYearFormatted(taxYear))</p>
-        <p>@messages(s"class2NICs.p2.$userType")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"class2NICs.p1.$userType", getThresholdForTaxYearFormatted(taxYear))</p>
+        <p class="govuk-body">@messages(s"class2NICs.p2.$userType")</p>
     </div>
 
         @twoRadios(form, "class2NICs", userType, taxYear, inline = true)

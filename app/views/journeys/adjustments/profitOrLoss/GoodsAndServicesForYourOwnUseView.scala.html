@@ -42,12 +42,12 @@
 
     @heading(s"goodsAndServicesForYourOwnUse.title.$userType")
 
-    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-        <p>@messages(s"goodsAndServicesForYourOwnUse.p1.$userType.$accountingType")<p>
-    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-        <li>@messages(s"goodsAndServicesForYourOwnUse.l1.$userType")</li>
-        <li>@messages(s"goodsAndServicesForYourOwnUse.l2")</li>
-    </ul>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"goodsAndServicesForYourOwnUse.p1.$userType.$accountingType")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"goodsAndServicesForYourOwnUse.l1.$userType")</li>
+            <li>@messages(s"goodsAndServicesForYourOwnUse.l2")</li>
+        </ul>
     </div>
 
     @formHelper(action = routes.GoodsAndServicesForYourOwnUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

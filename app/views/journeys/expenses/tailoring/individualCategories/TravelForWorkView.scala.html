@@ -35,11 +35,11 @@
 
     @heading("travelForWork.title")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">
         @messages(s"site.canInclude.$userType")
         </p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"travelForWork.l1.$userType")</li>
             <li>@messages("travelForWork.l2")</li>
             <li>@messages("travelForWork.l3")</li>
@@ -49,7 +49,7 @@
         </ul>
     </div>
     <div class="govuk-inset-text">
-        <p>@messages("travelForWork.insetText")</p>
+        <p class="govuk-body">@messages("travelForWork.insetText")</p>
     </div>
 
     @formHelper(action = controllers.journeys.expenses.tailoring.individualCategories.routes.TravelForWorkController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

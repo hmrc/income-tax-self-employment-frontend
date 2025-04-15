@@ -35,14 +35,14 @@
 
     @heading(s"structuresBuildingsPreviousClaimUse.title.$userType")
 
-    <div class="govuk-body">
-        <p>@messages(s"structuresBuildingsPreviousClaimUse.p1.$userType")</p>
-        <ul class="govuk-body govuk-list--bullet">
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"structuresBuildingsPreviousClaimUse.p1.$userType")</p>
+        <ul class="govuk-list govuk-list--bullet">
             <li>@{messages("structuresBuildingsPreviousClaimUse.l1")}</li>
             <li>@{messages("structuresBuildingsPreviousClaimUse.l2")}</li>
         </ul>
-        <p>@messages(s"continueClaimingAllowanceForExistingSite.p2.$userType")</p>
-        <p>@messages(s"continueClaimingAllowanceForExistingSite.p3.$userType")</p>
+        <p class="govuk-body">@messages(s"continueClaimingAllowanceForExistingSite.p2.$userType")</p>
+        <p class="govuk-body">@messages(s"continueClaimingAllowanceForExistingSite.p3.$userType")</p>
     </div>
 
     @formHelper(action = routes.ContinueClaimingAllowanceForExistingSiteController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {

@@ -38,22 +38,18 @@
 
     @heading(s"class4NICs.title")
 
-    <div class="govuk-body govuk-!-margin-bottom-6">
-        <p>@messages(s"class4NICs.p1.$userType", getFiguresForTaxYearFormatted(taxYear, "lowerProfitsLimit"))</p>
-        <p>
-            @messages(s"class4NICs.p2.$userType", taxYear.startYear.toString, taxYear.toString)
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>@messages(s"class4NICs.l1", getFiguresForTaxYearFormatted(taxYear, "rateBetweenLimits"), getFiguresForTaxYearFormatted(taxYear, "lowerProfitsLimit"), getFiguresForTaxYearFormatted(taxYear, "upperProfitsLimit"))</li>
-                    <li>@messages(s"class4NICs.l2", getFiguresForTaxYearFormatted(taxYear, "rateAboveUpperLimit"), getFiguresForTaxYearFormatted(taxYear, "upperProfitsLimit"))</li>
-                </ul>
-        </p>
-        <p>
-            @messages(s"class4NICs.p3.$userType")
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>@messages(s"class4ExemptionReason.trusteeExecutorAdmin.$userType")</li>
-                    <li>@messages(s"class4NICs.l4.$userType")</li>
-                </ul>
-        </p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"class4NICs.p1.$userType", getFiguresForTaxYearFormatted(taxYear, "lowerProfitsLimit"))</p>
+        <p class="govuk-body">@messages(s"class4NICs.p2.$userType", taxYear.startYear.toString, taxYear.toString)</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"class4NICs.l1", getFiguresForTaxYearFormatted(taxYear, "rateBetweenLimits"), getFiguresForTaxYearFormatted(taxYear, "lowerProfitsLimit"), getFiguresForTaxYearFormatted(taxYear, "upperProfitsLimit"))</li>
+            <li>@messages(s"class4NICs.l2", getFiguresForTaxYearFormatted(taxYear, "rateAboveUpperLimit"), getFiguresForTaxYearFormatted(taxYear, "upperProfitsLimit"))</li>
+        </ul>
+        <p class="govuk-body">@messages(s"class4NICs.p3.$userType")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"class4ExemptionReason.trusteeExecutorAdmin.$userType")</li>
+            <li>@messages(s"class4NICs.l4.$userType")</li>
+        </ul>
     </div>
 
         @twoRadios(form, "class4NICs", userType, taxYear, inline = true)
