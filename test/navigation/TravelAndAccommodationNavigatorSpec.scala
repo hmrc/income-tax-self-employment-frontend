@@ -22,7 +22,8 @@ import controllers.standard
 import models._
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
-import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType}
+import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
+import models.journeys.expenses.travelAndAccommodation.{FlatRate, TravelAndAccommodationExpenseType, VehicleDetailsDb, VehicleType}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
@@ -38,6 +39,16 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
     "navigating to the next page" - {
       "in NormalMode" - {
         val mode = NormalMode
+
+        val vehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
+          description = Some("NewCar"),
+          vehicleType = Some(CarOrGoodsVehicle),
+          usedSimplifiedExpenses = Some(true),
+          calculateFlatRate = Some(true),
+          workMileage = Some(100000),
+          expenseMethod = Some(FlatRate),
+          costsOutsideFlatRate = Some(BigDecimal("100.00"))
+        )
 
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {
@@ -59,45 +70,29 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
         "navigate to VehicleTypePage from TravelForWorkYourVehiclePage" in {
           val expectedResult = routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode)
-          val ua = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
-            .toOption
-            .value
-            .set(TravelForWorkYourVehiclePage, "NewCar")
-            .toOption
-            .value
 
-          navigator.nextIndexPage(TravelForWorkYourVehiclePage, mode, ua, taxYear, businessId, index) shouldBe expectedResult
+          navigator.nextIndexPage(TravelForWorkYourVehiclePage, mode, vehicleDetails, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to SimplifiedExpensesPage from VehicleTypePage" in {
-          val expectedResult = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode)
-          val ua = emptyUserAnswers
-            .set(VehicleTypePage, VehicleType.CarOrGoodsVehicle, Some(businessId))
-            .toOption
-            .value
+          val expectedResult = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, NormalMode)
+          val vd             = vehicleDetails.copy(vehicleType = Some(VehicleType.CarOrGoodsVehicle))
 
-          navigator.nextIndexPage(VehicleTypePage, mode, ua, taxYear, businessId, index) shouldBe expectedResult
+          navigator.nextIndexPage(VehicleTypePage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to UseSimplifiedExpensesPage from SimplifiedExpensesPage when option selected is 'true'" in {
-          val expectedResult = routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
-          val ua = emptyUserAnswers
-            .set(SimplifiedExpensesPage, true, Some(businessId))
-            .toOption
-            .value
+          val expectedResult = routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId, index)
+          val vd             = vehicleDetails.copy(usedSimplifiedExpenses = Some(true))
 
-          navigator.nextPage(SimplifiedExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          navigator.nextIndexPage(SimplifiedExpensesPage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to VehicleFlatRateChoicePage from SimplifiedExpensesPage when option selected is 'false'" in {
           val expectedResult = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, NormalMode)
-          val ua = emptyUserAnswers
-            .set(SimplifiedExpensesPage, false, Some(businessId))
-            .toOption
-            .value
+          val vd             = vehicleDetails.copy(usedSimplifiedExpenses = Some(false))
 
-          navigator.nextPage(SimplifiedExpensesPage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          navigator.nextIndexPage(SimplifiedExpensesPage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to VehicleExpensesPage from VehicleFlatRateChoicePage when option selected is 'false'" in {

@@ -17,18 +17,16 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
-import models.common.Journey.{ExpensesVehicleDetails, values}
-import models.{Index, Mode}
+import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, VehicleType}
+import models.{Index, Mode}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
+import pages.expenses.travelAndAccommodation.VehicleTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
@@ -87,7 +85,7 @@ class VehicleTypeController @Inject() (
                         .copy(vehicleType = Some(value)),
                       Some(index)
                     )
-                  } yield Redirect(navigator.nextIndexPage[VehicleDetailsDb](page, mode, newData, taxYear, businessId, index))
+                  } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
               )
           case None =>
             Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))

@@ -24,6 +24,8 @@ import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
+import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
+import models.journeys.expenses.travelAndAccommodation.{FlatRate, VehicleDetailsDb}
 import org.mockito.Mockito.when
 import org.mongodb.scala.bson.Document
 import org.mongodb.scala.bson.conversions.Bson
@@ -58,6 +60,15 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
   protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
   protected val taxYear: TaxYear       = TaxYear(mockTimeMachine.now.getYear)
   protected val index: Index           = Index(1)
+  val testVehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
+    description = Some("Car"),
+    vehicleType = Some(CarOrGoodsVehicle),
+    usedSimplifiedExpenses = Some(true),
+    calculateFlatRate = Some(true),
+    workMileage = Some(100000),
+    expenseMethod = Some(FlatRate),
+    costsOutsideFlatRate = Some(BigDecimal("100.00"))
+  )
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(
     timeout = Span(sys.env.get("INTEGRATION_TEST_PATIENCE_TIMEOUT_SEC").fold(2)(x => Integer.parseInt(x)), Seconds),

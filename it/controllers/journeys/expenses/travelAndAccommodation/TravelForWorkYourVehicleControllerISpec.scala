@@ -1,39 +1,20 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.IntegrationBaseSpec
-import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.JourneyAnswersContext
-import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
-import models.journeys.expenses.travelAndAccommodation.{FlatRate, VehicleDetailsDb}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
 
 class TravelForWorkYourVehicleControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
   val url: String                        = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, NormalMode).url
   val submitUrl: String                  = routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, index, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesVehicleDetails)
-
-  val testVehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
-    description = Some("Car"),
-    vehicleType = Some(CarOrGoodsVehicle),
-    usedSimplifiedExpenses = Some(true),
-    calculateFlatRate = Some(true),
-    workMileage = Some(100000),
-    expenseMethod = Some(FlatRate),
-    costsOutsideFlatRate = Some(BigDecimal("100.00"))
-  )
-
-  val view        = app.injector.instanceOf[TravelForWorkYourVehicleView]
-  val form        = new TravelForWorkYourVehicleFormProvider()
-  val messagesApi = app.injector.instanceOf[MessagesApi]
 
   "GET /:taxYear/:businessId/expenses/travel/your-vehicle" when {
     "the user is an agent" must {

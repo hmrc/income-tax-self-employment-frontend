@@ -82,7 +82,7 @@ class TravelForWorkYourVehicleController @Inject() (
                   .copy(description = Some(value)),
                 Some(index)
               )
-            } yield Redirect(navigator.nextIndexPage[VehicleDetailsDb](page, mode, newData, taxYear, businessId, index))
+            } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
         )
     }
 }

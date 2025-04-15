@@ -21,25 +21,24 @@ import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.JourneyAnswersContext
-import models.journeys.expenses.travelAndAccommodation.VehicleType
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+class SimplifiedExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String       = routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode).url
-  val submitUrl: String = routes.VehicleTypeController.onSubmit(taxYear, businessId, index, NormalMode).url
-
+  lazy val url: String                   = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, NormalMode).url
+  lazy val onSubmitUrl: String           = routes.SimplifiedExpensesController.onSubmit(taxYear, businessId, index, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesVehicleDetails)
 
-  "GET /:taxYear/:businessId/expenses/travel/vehicle-type" when {
+  "GET /:taxYear/:businessId/expenses/:index/simplified-expenses" when {
     "the user is an agent" must {
       "return OK with the correct view" in {
         AuthStub.agentAuthorised()
-        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(vehicleType = None))))
+        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(usedSimplifiedExpenses = None))))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url, isAgent = true).get())
@@ -55,11 +54,11 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
         val result = await(buildClient(url, isAgent = true).get())
 
-        val ele = Jsoup.parse(result.body).select("input[id=value_0]")
+        val doc: Document = Jsoup.parse(result.body)
         result.header(HeaderNames.LOCATION) mustBe None
         result.status mustBe OK
-        ele.`val`() mustBe "CarOrGoodsVehicle"
-        ele.select("input[id=value_0]").hasAttr("checked") mustBe true
+        doc.select("input[id=value]").`val`() mustBe "true"
+        doc.select("input[id=value]").hasAttr("checked") mustBe true
       }
     }
 
@@ -100,7 +99,7 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
     }
   }
 
-  "POST /:taxYear/:businessId/expenses/travel/vehicle-type" when {
+  "POST /:taxYear/:businessId/expenses/:index/simplified-expenses" when {
     "the user selects a valid vehicle-type" must {
       "redirect to the next page" in {
 
@@ -109,10 +108,10 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(VehicleType.values.head.toString))))
+        val result = await(buildClient(onSubmitUrl).post(Map("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId, index).url)
       }
     }
 
@@ -122,7 +121,7 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails)))
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(onSubmitUrl).post(Map("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

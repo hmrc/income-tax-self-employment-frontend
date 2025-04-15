@@ -41,7 +41,7 @@ class SimplifiedExpensesViewSpec extends SpecBase with MockitoSugar with BeforeA
   val view: SimplifiedExpensesView = application.injector.instanceOf[SimplifiedExpensesView]
 
   def createView(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_]): Html =
-    view(form, userType, taxYear, businessId, mode, "vehicle")(request, messages)
+    view(form, userType, taxYear, businessId, index, mode, "vehicle")(request, messages)
 
   "SimplifiedExpensesView" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
@@ -55,7 +55,9 @@ class SimplifiedExpensesViewSpec extends SpecBase with MockitoSugar with BeforeA
           val request = FakeRequest(GET, "/")
           val result  = createView(form, NormalMode, userType, taxYear, businessId)(request)
 
-          contentAsString(result) mustEqual view(form, userType, taxYear, businessId, NormalMode, "vehicle")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, userType, taxYear, businessId, index, NormalMode, "vehicle")(
+            request,
+            messages(application)).toString
         }
       }
     }
