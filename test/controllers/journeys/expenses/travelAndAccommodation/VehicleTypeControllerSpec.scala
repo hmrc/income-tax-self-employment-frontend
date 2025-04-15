@@ -42,7 +42,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  lazy val vehicleTypeRoute: String = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val vehicleTypeRoute: String = routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode).url
 
   val formProvider            = new VehicleTypeFormProvider()
   val form: Form[VehicleType] = formProvider("vehicleName")
@@ -68,7 +68,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
             val view = application.injector.instanceOf[VehicleTypeView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form, vehicleName, taxYear, businessId, index, NormalMode)(request, messages(application)).toString
           }
         }
 
@@ -92,7 +92,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), vehicleName, taxYear, businessId, NormalMode)(
+            contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), vehicleName, taxYear, businessId, index, NormalMode)(
               request,
               messages(application)).toString
           }
@@ -148,7 +148,7 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
             val result = route(application, request).value
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(boundForm, vehicleName, taxYear, businessId, index, NormalMode)(request, messages(application)).toString
           }
         }
       }

@@ -19,8 +19,8 @@ import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehi
 
 class TravelForWorkYourVehicleControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String                        = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode).url
-  val submitUrl: String                  = routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, NormalMode).url
+  val url: String                        = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, NormalMode).url
+  val submitUrl: String                  = routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, index, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesVehicleDetails)
 
   val testVehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
@@ -112,7 +112,7 @@ class TravelForWorkYourVehicleControllerISpec extends WiremockSpec with Integrat
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("Car"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode).url)
       }
     }
 

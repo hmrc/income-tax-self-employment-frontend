@@ -18,7 +18,8 @@ package services.answers
 
 import connectors.answers.AnswersApiConnector
 import jakarta.inject.{Inject, Singleton}
-import models.common.JourneyContext
+import models.Index
+import models.common.{BusinessId, Journey, JourneyContext, JourneyContextWithNino, Mtditid, Nino, TaxYear}
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -27,13 +28,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AnswersService @Inject() (connector: AnswersApiConnector)(implicit ex: ExecutionContext) {
 
-  def getAnswers[T](ctx: JourneyContext, index: Option[Int] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[Option[T]] =
+  def getAnswers[T](ctx: JourneyContext, index: Option[Index] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[Option[T]] =
     connector.getAnswers(ctx, index)
 
   def getAnswersAsList[T](ctx: JourneyContext)(implicit format: Format[T], hc: HeaderCarrier): Future[List[T]] =
     connector.getAnswersAsList(ctx)
 
-  def replaceAnswers[T](ctx: JourneyContext, data: T, index: Option[Int] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[T] =
+  def replaceAnswers[T](ctx: JourneyContext, data: T, index: Option[Index] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[T] =
     connector.replaceAnswers(ctx, data, index)
 
   def replaceAnswersAsList[T](ctx: JourneyContext, data: List[T])(implicit format: Format[T], hc: HeaderCarrier): Future[List[T]] =

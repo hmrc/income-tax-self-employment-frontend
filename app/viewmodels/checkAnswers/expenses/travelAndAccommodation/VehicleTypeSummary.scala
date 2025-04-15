@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
+import models.{CheckMode, Index}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}

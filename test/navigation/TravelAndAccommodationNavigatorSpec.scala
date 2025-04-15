@@ -48,7 +48,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         }
 
         "navigate to TravelForWorkYourVehiclePage from TravelAndAccommodationExpenseTypePage" in {
-          val expectedResult = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, NormalMode)
           val ua = emptyUserAnswers
             .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
             .toOption
@@ -58,7 +58,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         }
 
         "navigate to VehicleTypePage from TravelForWorkYourVehiclePage" in {
-          val expectedResult = routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode)
           val ua = emptyUserAnswers
             .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
             .toOption
@@ -67,7 +67,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
             .toOption
             .value
 
-          navigator.nextPage(TravelForWorkYourVehiclePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          navigator.nextIndexPage(TravelForWorkYourVehiclePage, mode, ua, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to SimplifiedExpensesPage from VehicleTypePage" in {
@@ -77,7 +77,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
             .toOption
             .value
 
-          navigator.nextPage(VehicleTypePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          navigator.nextIndexPage(VehicleTypePage, mode, ua, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to UseSimplifiedExpensesPage from SimplifiedExpensesPage when option selected is 'true'" in {

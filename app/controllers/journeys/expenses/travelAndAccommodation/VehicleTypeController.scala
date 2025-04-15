@@ -19,7 +19,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
-import models.Mode
+import models.{Index, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.VehicleType
 import navigation.TravelAndAccommodationNavigator
@@ -50,24 +50,24 @@ class VehicleTypeController @Inject() (
 
   private val page = VehicleTypePage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
       getVehicleNameAndLoadPage(businessId) { name =>
         val form: Form[VehicleType] = formProvider(name)
         val preparedForm            = fillForm(page, businessId, form)
-        Ok(view(preparedForm, name, taxYear, businessId, mode))
+        Ok(view(preparedForm, name, taxYear, businessId, index, mode))
       }
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
       request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
         case Some(vehicle) =>
           val form: Form[VehicleType] = formProvider(vehicle)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, index, mode))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
@@ -77,6 +77,6 @@ class VehicleTypeController @Inject() (
         case None =>
           Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
       }
-  }
+    }
 
 }

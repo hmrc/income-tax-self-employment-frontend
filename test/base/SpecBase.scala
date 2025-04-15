@@ -20,6 +20,7 @@ import builders.UserBuilder
 import config.FrontendAppConfig
 import cats.implicits.catsSyntaxOptionId
 import controllers.actions._
+import models.Index
 import models.common.UserType.Individual
 import models.common._
 import models.database.UserAnswers
@@ -64,6 +65,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val typeOfBusiness: TypeOfBusiness = TypeOfBusiness("Self Employed")
   val zeroValue: BigDecimal          = 0
   val maxAmountValue: BigDecimal     = 100000000000.00
+  val index =  Index(1)
 
   val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
   val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)

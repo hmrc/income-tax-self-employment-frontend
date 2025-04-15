@@ -19,6 +19,7 @@ package base
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import helpers.SessionCookieHelper
 import integrationData.TimeData
+import models.Index
 import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
@@ -56,6 +57,7 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
   protected val nino: Nino             = Nino("AA123123A")
   protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
   protected val taxYear: TaxYear       = TaxYear(mockTimeMachine.now.getYear)
+  protected val index: Index           = Index(1)
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(
     timeout = Span(sys.env.get("INTEGRATION_TEST_PATIENCE_TIMEOUT_SEC").fold(2)(x => Integer.parseInt(x)), Seconds),

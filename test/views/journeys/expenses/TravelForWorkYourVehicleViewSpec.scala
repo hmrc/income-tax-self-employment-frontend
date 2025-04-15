@@ -17,7 +17,7 @@
 package views.journeys.expenses
 
 import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
-import models.{Mode, NormalMode}
+import models.{Index, Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -29,6 +29,7 @@ class TravelForWorkYourVehicleViewSpec extends ViewBaseSpec {
 
   private val view         = app.injector.instanceOf[TravelForWorkYourVehicleView]
   private val formProvider = app.injector.instanceOf[TravelForWorkYourVehicleFormProvider]
+  private val index = Index(1)
 
   val taxYear    = TaxYear(2025)
   val businessId = BusinessId("XAIS123456789012")
@@ -36,7 +37,7 @@ class TravelForWorkYourVehicleViewSpec extends ViewBaseSpec {
   def form(userType: UserType): Form[String] = formProvider(userType)
 
   def view(userType: UserType, mode: Mode, form: Form[String]): Document = Jsoup.parse(
-    view(form, mode, userType, taxYear, businessId)(fakeRequest, messages).body
+    view(form, mode, userType, taxYear, businessId, index)(fakeRequest, messages).body
   )
 
   object Expected {

@@ -40,12 +40,6 @@ class TravelAndAccommodationNavigator @Inject() {
     case TravelAndAccommodationExpenseTypePage =>
       userAnswers => (taxYear, businessId) => handleTravelAndAccomodationExpenses(userAnswers, taxYear, businessId)
 
-    case TravelForWorkYourVehiclePage =>
-      _ => (taxYear, businessId) => Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, NormalMode))
-
-    case VehicleTypePage =>
-      _ => (taxYear, businessId) => Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode))
-
     case UseSimplifiedExpensesPage =>
       _ =>
         (taxYear, businessId) =>
@@ -115,7 +109,7 @@ class TravelAndAccommodationNavigator @Inject() {
       case _ =>
         Some(
           routes.TravelForWorkYourVehicleController
-            .onPageLoad(taxYear, businessId, NormalMode)
+            .onPageLoad(taxYear, businessId, Index(1), NormalMode)
         )
     }
 
@@ -146,7 +140,7 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private def handleAddAnotherVehicle(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Call =
     userAnswers.get(AddAnotherVehiclePage, businessId) match {
-      case Some(true) => routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, mode)
+      case Some(true) => routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, Index(1), mode)
       case Some(false) =>
         userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
           case Some(expenseTypes) if expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
@@ -219,5 +213,26 @@ class TravelAndAccommodationNavigator @Inject() {
         normalRoutes(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
         checkRouteMap(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+    }
+
+  private def normalIndexRoutes[T]: Page => T => (TaxYear, BusinessId, Index) => Option[Call] = {
+    case TravelForWorkYourVehiclePage =>
+      _ => (taxYear, businessId, index) => Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode))
+    case VehicleTypePage =>
+      _ => (taxYear, businessId, index) => Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, NormalMode))
+    case _ => _ => (_, _, _) => None
+  }
+
+  private def checkIndexRouteMap[T]: Page => T => (TaxYear, BusinessId, Index) => Option[Call] = {
+
+    case _ => _ => (_, _, _) => None
+  }
+
+  def nextIndexPage[T](page: Page, mode: Mode, model: T, taxYear: TaxYear, businessId: BusinessId, index: Index): Call =
+    mode match {
+      case NormalMode =>
+        normalIndexRoutes(page)(model)(taxYear, businessId, index).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+      case CheckMode =>
+        checkIndexRouteMap(page)(model)(taxYear, businessId, index).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 }
