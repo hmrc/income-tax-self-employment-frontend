@@ -223,9 +223,8 @@ class TravelAndAccommodationNavigator @Inject() {
     case _ => _ => (_, _, _) => None
   }
 
-  private def checkIndexRouteMap[T]: Page => T => (TaxYear, BusinessId, Index) => Option[Call] = {
-
-    case _ => _ => (_, _, _) => None
+  private def checkIndexRouteMap[T]: Page => T => (TaxYear, BusinessId, Index) => Option[Call] = { case _ =>
+    _ => (_, _, _) => None
   }
 
   def nextIndexPage[T](page: Page, mode: Mode, model: T, taxYear: TaxYear, businessId: BusinessId, index: Index): Call =

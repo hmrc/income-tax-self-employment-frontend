@@ -29,7 +29,7 @@ class TravelForWorkYourVehicleViewSpec extends ViewBaseSpec {
 
   private val view         = app.injector.instanceOf[TravelForWorkYourVehicleView]
   private val formProvider = app.injector.instanceOf[TravelForWorkYourVehicleFormProvider]
-  private val index = Index(1)
+  private val index        = Index(1)
 
   val taxYear    = TaxYear(2025)
   val businessId = BusinessId("XAIS123456789012")

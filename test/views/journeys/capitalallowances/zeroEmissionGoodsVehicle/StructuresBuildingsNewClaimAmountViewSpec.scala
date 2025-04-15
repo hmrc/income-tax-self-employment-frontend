@@ -33,9 +33,9 @@ import views.html.journeys.capitalallowances.structuresBuildingsAllowance.Struct
 
 class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
 
-  val formProvider = new StructuresBuildingsNewClaimAmountFormProvider()
-  val intIndex: Int   = 0
-  val mode: Mode   = NormalMode
+  val formProvider  = new StructuresBuildingsNewClaimAmountFormProvider()
+  val intIndex: Int = 0
+  val mode: Mode    = NormalMode
 
   val application: Application = new GuiceApplicationBuilder().build()
 
