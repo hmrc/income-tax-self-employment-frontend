@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package pages.expenses.travelAndAccommodation
+package models.journeys.expenses.travelAndAccommodation
+import play.api.libs.json._
 
-import pages.OneQuestionPage
-
-case object PublicTransportAndAccommodationExpensesPage extends OneQuestionPage[BigDecimal] {
-
-  override def toString: String = "publicTransportAndAccommodationExpenses"
+case class PublicTransportAndAccommodationExpensesJourneyAnswers(
+    publicTransportAndAccommodationExpenses: BigDecimal,
+    disallowableTransportAndAccommodation: Option[BigDecimal]
+)
+object PublicTransportAndAccommodationExpensesJourneyAnswers {
+  implicit val formats: OFormat[PublicTransportAndAccommodationExpensesJourneyAnswers] =
+    Json.format[PublicTransportAndAccommodationExpensesJourneyAnswers]
 }

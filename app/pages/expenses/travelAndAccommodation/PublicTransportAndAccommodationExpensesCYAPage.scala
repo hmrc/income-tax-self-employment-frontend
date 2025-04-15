@@ -15,10 +15,8 @@
  */
 
 package pages.expenses.travelAndAccommodation
+import pages.Page
 
-import pages.OneQuestionPage
-
-case object PublicTransportAndAccommodationExpensesPage extends OneQuestionPage[BigDecimal] {
-
-  override def toString: String = "publicTransportAndAccommodationExpenses"
+case object PublicTransportAndAccommodationExpensesCYAPage extends Page {
+  override def toString: String = "publicTransportAndAccommodationExpensesCya"
 }

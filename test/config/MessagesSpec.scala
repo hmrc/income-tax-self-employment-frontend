@@ -51,7 +51,10 @@ class MessagesSpec extends SpecBase {
     "businessPremisesAmount.claim.individual",
     "publicTransportAndAccommodationExpenses.heading.individual",
     "publicTransportAndAccommodationExpenses.heading.agent",
-    "publicTransportAndAccommodationExpenses.can.claim.individual"
+    "publicTransportAndAccommodationExpenses.can.claim.individual",
+    "publicTransportAndAccommodationExpenses.error.lessThanZero.individual",
+    "publicTransportAndAccommodationExpenses.change.hidden",
+    "publicTransportAndAccommodationExpensesCya.inset.individual"
   )
 
   private val exclusionKeysEn: Set[String] = Set(

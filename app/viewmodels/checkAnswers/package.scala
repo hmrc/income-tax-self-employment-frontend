@@ -25,7 +25,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 import utils.MoneyUtils.{formatMoney, formatPosNegMoneyWithPounds}
-import viewmodels.govuk.all.FluentActionItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
