@@ -97,25 +97,17 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
         "navigate to VehicleExpensesPage from VehicleFlatRateChoicePage when option selected is 'false'" in {
           val expectedResult = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, NormalMode)
-          val ua = emptyUserAnswers
-            .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
-            .toOption
-            .value
-            .set(VehicleFlatRateChoicePage, false, Some(businessId))
-            .toOption
-            .value
+          val vd             = vehicleDetails.copy(calculateFlatRate = Some(false))
 
-          navigator.nextPage(VehicleFlatRateChoicePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+          navigator.nextIndexPage(VehicleFlatRateChoicePage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to YourFlatRateForVehicleExpensesPage from TravelForWorkYourMileagePage when option selected is 'false'" in {
           val expectedResult = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
-          val ua = emptyUserAnswers
-            .set(TravelForWorkYourMileagePage, BigDecimal(200), Some(businessId))
-            .toOption
-            .value
+          val vd             = vehicleDetails.copy(workMileage = Some(BigDecimal(200)))
 
-          navigator.nextPage(TravelForWorkYourMileagePage, mode, ua, taxYear, businessId) shouldBe expectedResult
+
+          navigator.nextIndexPage(TravelForWorkYourMileagePage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to DisallowableTransportAndAccommodationPage from PublicTransportAndAccommodationExpensesPage" +

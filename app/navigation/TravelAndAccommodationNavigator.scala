@@ -50,6 +50,8 @@ class TravelAndAccommodationNavigator @Inject() {
           Option(
             routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
           )
+    case VehicleExpensesPage =>
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
 
     case AddAnotherVehiclePage =>
       ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
@@ -185,9 +187,6 @@ class TravelAndAccommodationNavigator @Inject() {
 
     case VehicleFlatRateChoicePage =>
       data => (taxYear, businessId, index) => handleFlatRateChoice(data, taxYear, businessId, index, NormalMode)
-
-    case VehicleExpensesPage =>
-      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
 
     case TravelForWorkYourMileagePage =>
       _ =>
