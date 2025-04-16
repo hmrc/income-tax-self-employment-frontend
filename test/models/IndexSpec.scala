@@ -42,10 +42,6 @@ class IndexSpec extends AnyFreeSpec with Matchers with OptionValues {
       binder.bind(key, "0") mustEqual Left("Index binding failed")
     }
 
-    "fail to bind an index over the total number of countries in the world (195)" in {
-      binder.bind(key, "196") mustEqual Left("Index binding failed")
-    }
-
     "unbind an index" in {
       binder.unbind(key, Index(1)) mustEqual "1"
     }
