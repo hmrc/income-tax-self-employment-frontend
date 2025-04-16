@@ -22,8 +22,8 @@ case class VehicleDetailsDb(description: Option[String] = None,
                             vehicleType: Option[VehicleType] = None,
                             usedSimplifiedExpenses: Option[Boolean] = None,
                             calculateFlatRate: Option[Boolean] = None,
-                            workMileage: Option[Int] = None,
-                            expenseMethod: Option[ExpenseMethod] = None,
+                            workMileage: Option[BigDecimal] = None,
+                            expenseMethod: Option[YourFlatRateForVehicleExpenses] = None,
                             costsOutsideFlatRate: Option[BigDecimal] = None)
 
 object VehicleDetailsDb {

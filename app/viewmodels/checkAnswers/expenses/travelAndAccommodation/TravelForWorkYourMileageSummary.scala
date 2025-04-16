@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
+import models.{CheckMode, Index}
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourMileagePage, TravelForWorkYourVehiclePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,13 +28,13 @@ import viewmodels.checkAnswers.buildRowString
 
 object TravelForWorkYourMileageSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
     for {
       mileageAnswer <- answers.get(TravelForWorkYourMileagePage, businessId)
       vehicleName   <- answers.get(TravelForWorkYourVehiclePage, businessId)
     } yield buildRowString(
       formatDecimals(mileageAnswer),
-      callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, CheckMode),
+      callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, index, CheckMode),
       keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
       changeMessage = messages(s"travelForWorkYourMileage.change.hidden.$userType", vehicleName),
       rightTextAlign = true

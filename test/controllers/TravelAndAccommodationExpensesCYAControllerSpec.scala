@@ -32,7 +32,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.CostsNotCoveredPage
 import pages.expenses.travelAndAccommodation._
 import play.api.i18n.Messages
-import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json.Format.{GenericFormat, invariantFunctorFormat}
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Call, Result}
 import play.api.test.FakeRequest
@@ -112,14 +112,14 @@ class TravelAndAccommodationExpensesCYAControllerSpec extends CYAOnPageLoadContr
   )(implicit messages: Messages): SummaryList = {
     val rows = List(
       VehicleExpenseTypeSummary.row(userAnswers, taxYear, businessId, userType),
-      VehicleNameSummary.row(userAnswers, taxYear, businessId, userType),
-      VehicleTypeSummary.row(userAnswers, taxYear, businessId),
-      SimplifiedExpensesSummary.row(userAnswers, taxYear, businessId, userType),
-      VehicleFlatRateChoiceSummary.row(taxYear, businessId, userAnswers, userType),
-      TravelForWorkYourMileageSummary.row(taxYear, businessId, userAnswers, userType),
+      VehicleNameSummary.row(userAnswers, taxYear, businessId, userType, index),
+      VehicleTypeSummary.row(userAnswers, taxYear, businessId, index),
+      SimplifiedExpensesSummary.row(userAnswers, taxYear, businessId, userType, index),
+      VehicleFlatRateChoiceSummary.row(taxYear, businessId, userAnswers, userType, index),
+      TravelForWorkYourMileageSummary.row(taxYear, businessId, userAnswers, userType, index),
       YourFlatRateForVehicleExpensesSummary.row(taxYear, businessId, userAnswers, userType),
       CostsNotCoveredSummary.row(userAnswers, taxYear, businessId, userType),
-      VehicleExpensesSummary.row(taxYear, businessId, userAnswers, userType)
+      VehicleExpensesSummary.row(taxYear, businessId, userAnswers, userType, index)
     ).flatten
 
     SummaryList(rows = rows, classes = "govuk-!-margin-bottom-7")

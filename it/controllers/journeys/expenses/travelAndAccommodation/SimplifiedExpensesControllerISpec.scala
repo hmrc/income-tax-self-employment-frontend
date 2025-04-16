@@ -100,7 +100,7 @@ class SimplifiedExpensesControllerISpec extends WiremockSpec with IntegrationBas
   }
 
   "POST /:taxYear/:businessId/expenses/:index/simplified-expenses" when {
-    "the user selects a valid vehicle-type" must {
+    "the user selects a valid option" must {
       "redirect to the next page" in {
 
         AuthStub.authorised()
@@ -115,7 +115,7 @@ class SimplifiedExpensesControllerISpec extends WiremockSpec with IntegrationBas
       }
     }
 
-    "the user submits without entering a vehicle description" must {
+    "the user submits without selecting an option" must {
       "return BAD REQUEST" in {
         AuthStub.authorised()
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails)))

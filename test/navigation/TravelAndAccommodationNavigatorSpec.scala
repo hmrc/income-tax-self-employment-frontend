@@ -23,7 +23,7 @@ import models._
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
-import models.journeys.expenses.travelAndAccommodation.{FlatRate, TravelAndAccommodationExpenseType, VehicleDetailsDb, VehicleType}
+import models.journeys.expenses.travelAndAccommodation.{FlatRate, TravelAndAccommodationExpenseType, VehicleDetailsDb, VehicleType, YourFlatRateForVehicleExpenses}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
@@ -46,7 +46,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
           usedSimplifiedExpenses = Some(true),
           calculateFlatRate = Some(true),
           workMileage = Some(100000),
-          expenseMethod = Some(FlatRate),
+          expenseMethod = Some(YourFlatRateForVehicleExpenses.Flatrate),
           costsOutsideFlatRate = Some(BigDecimal("100.00"))
         )
 
@@ -89,14 +89,14 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         }
 
         "navigate to VehicleFlatRateChoicePage from SimplifiedExpensesPage when option selected is 'false'" in {
-          val expectedResult = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, index, NormalMode)
           val vd             = vehicleDetails.copy(usedSimplifiedExpenses = Some(false))
 
           navigator.nextIndexPage(SimplifiedExpensesPage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }
 
         "navigate to VehicleExpensesPage from VehicleFlatRateChoicePage when option selected is 'false'" in {
-          val expectedResult = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, NormalMode)
           val ua = emptyUserAnswers
             .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
             .toOption

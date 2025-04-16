@@ -19,7 +19,7 @@ package services.answers
 import connectors.answers.AnswersApiConnector
 import jakarta.inject.{Inject, Singleton}
 import models.Index
-import models.common.{BusinessId, Journey, JourneyContext, JourneyContextWithNino, Mtditid, Nino, TaxYear}
+import models.common.JourneyContext
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.HeaderCarrier
 

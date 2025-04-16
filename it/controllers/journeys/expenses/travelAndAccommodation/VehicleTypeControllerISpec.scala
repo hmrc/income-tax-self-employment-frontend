@@ -116,7 +116,7 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
       }
     }
 
-    "the user submits without entering a vehicle description" must {
+    "the user submits without selecting a vehicle type" must {
       "return BAD REQUEST" in {
         AuthStub.authorised()
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails)))

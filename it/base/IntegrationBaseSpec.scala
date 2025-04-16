@@ -25,7 +25,7 @@ import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
-import models.journeys.expenses.travelAndAccommodation.{FlatRate, VehicleDetailsDb}
+import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, YourFlatRateForVehicleExpenses}
 import org.mockito.Mockito.when
 import org.mongodb.scala.bson.Document
 import org.mongodb.scala.bson.conversions.Bson
@@ -66,7 +66,7 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
     usedSimplifiedExpenses = Some(true),
     calculateFlatRate = Some(true),
     workMileage = Some(100000),
-    expenseMethod = Some(FlatRate),
+    expenseMethod = Some(YourFlatRateForVehicleExpenses.Flatrate),
     costsOutsideFlatRate = Some(BigDecimal("100.00"))
   )
 

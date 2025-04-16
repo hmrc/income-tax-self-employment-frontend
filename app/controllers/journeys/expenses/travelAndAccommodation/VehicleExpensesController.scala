@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
-import models.Mode
+import models.{Index, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
@@ -48,7 +48,7 @@ class VehicleExpensesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val expenseTypes: Set[TravelAndAccommodationExpenseType] =
         request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
@@ -57,10 +57,10 @@ class VehicleExpensesController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, expenseTypes))
+      Ok(view(preparedForm, mode, request.userType, taxYear, businessId, expenseTypes, index))
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
         case Some(expenseTypes) if expenseTypes.contains(LeasedVehicles) || expenseTypes.contains(MyOwnVehicle) =>
@@ -68,7 +68,7 @@ class VehicleExpensesController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, expenseTypes))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, expenseTypes, index))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleExpensesPage, value, Some(businessId)))

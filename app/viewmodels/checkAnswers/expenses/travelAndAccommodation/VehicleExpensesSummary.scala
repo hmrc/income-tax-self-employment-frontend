@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
+import models.{CheckMode, Index}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.VehicleExpensesPage
@@ -28,7 +28,7 @@ import viewmodels.checkAnswers.buildRowString
 
 object VehicleExpensesSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
     answers
       .get(VehicleExpensesPage, businessId)
       .flatMap { answer =>
@@ -36,7 +36,7 @@ object VehicleExpensesSummary {
         Some(
           buildRowString(
             amount,
-            callLink = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, CheckMode),
+            callLink = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, CheckMode),
             keyMessage = messages(s"vehicleExpenses.subheading.$userType"),
             changeMessage = s"vehicleExpenses.change.hidden.$userType",
             rightTextAlign = true

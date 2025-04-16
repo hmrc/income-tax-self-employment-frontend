@@ -17,18 +17,17 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.{clearDependentPages, fillForm}
+import controllers.journeys.clearDependentPages
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.common.Journey.ExpensesVehicleDetails
-import models.{Index, Mode}
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, VehicleType}
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
+import models.{Index, Mode}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage}
+import pages.expenses.travelAndAccommodation.SimplifiedExpensesPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesView
@@ -79,7 +78,8 @@ class SimplifiedExpensesController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, index, mode, vehicle))),
                 value =>
                   for {
-                   // clearedAnswers <- clearDependentPages(page, value, request.userAnswers, businessId)
+
+                    // clearedAnswers <- clearDependentPages(page, value, request.userAnswers, businessId) TODO check the page mappings
 
                     oldAnswers <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
                     newData <- answersService.replaceAnswers(
