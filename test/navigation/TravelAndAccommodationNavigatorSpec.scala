@@ -23,7 +23,13 @@ import models._
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
-import models.journeys.expenses.travelAndAccommodation.{FlatRate, TravelAndAccommodationExpenseType, VehicleDetailsDb, VehicleType, YourFlatRateForVehicleExpenses}
+import models.journeys.expenses.travelAndAccommodation.{
+  FlatRate,
+  TravelAndAccommodationExpenseType,
+  VehicleDetailsDb,
+  VehicleType,
+  YourFlatRateForVehicleExpenses
+}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
@@ -105,7 +111,6 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         "navigate to YourFlatRateForVehicleExpensesPage from TravelForWorkYourMileagePage when option selected is 'false'" in {
           val expectedResult = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
           val vd             = vehicleDetails.copy(workMileage = Some(BigDecimal(200)))
-
 
           navigator.nextIndexPage(TravelForWorkYourMileagePage, mode, vd, taxYear, businessId, index) shouldBe expectedResult
         }

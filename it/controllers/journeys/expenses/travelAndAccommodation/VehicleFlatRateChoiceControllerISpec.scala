@@ -111,7 +111,8 @@ class VehicleFlatRateChoiceControllerISpec extends WiremockSpec with Integration
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, index, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(
+          routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, index, NormalMode).url)
       }
     }
 

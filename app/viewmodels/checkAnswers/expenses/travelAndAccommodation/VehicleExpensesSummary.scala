@@ -28,7 +28,8 @@ import viewmodels.checkAnswers.buildRowString
 
 object VehicleExpensesSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit
+      messages: Messages): Option[SummaryListRow] =
     answers
       .get(VehicleExpensesPage, businessId)
       .flatMap { answer =>

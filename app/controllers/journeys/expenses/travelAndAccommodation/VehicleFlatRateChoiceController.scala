@@ -82,11 +82,12 @@ class VehicleFlatRateChoiceController @Inject() (
                     oldAnswers <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
-                      data = updateData(value,
+                      data = updateData(
+                        value,
                         oldAnswers
                           .getOrElse(VehicleDetailsDb())
                           .copy(calculateFlatRate = Some(value))),
-                        Some(index)
+                      Some(index)
                     )
                   } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
               )

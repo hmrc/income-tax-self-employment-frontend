@@ -108,7 +108,8 @@ class TravelForWorkYourMileageControllerISpec extends WiremockSpec with Integrat
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("100.00"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(
+          routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url)
       }
     }
 

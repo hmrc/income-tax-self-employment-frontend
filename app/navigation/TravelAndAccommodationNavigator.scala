@@ -97,7 +97,11 @@ class TravelAndAccommodationNavigator @Inject() {
         routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, index, mode)
     }
 
-  private def handleYourVehicleExpensesFlatRateChoice(vehicleDetails: VehicleDetailsDb, taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Option[Call] =
+  private def handleYourVehicleExpensesFlatRateChoice(vehicleDetails: VehicleDetailsDb,
+                                                      taxYear: TaxYear,
+                                                      businessId: BusinessId,
+                                                      index: Index,
+                                                      mode: Mode): Option[Call] =
     vehicleDetails.usedSimplifiedExpenses flatMap {
       case true => Some(routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode))
       case false =>
@@ -107,7 +111,11 @@ class TravelAndAccommodationNavigator @Inject() {
         }
     }
 
-  private def handleFlatRateChoice(vehicleDetails: VehicleDetailsDb, taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Option[Call] =
+  private def handleFlatRateChoice(vehicleDetails: VehicleDetailsDb,
+                                   taxYear: TaxYear,
+                                   businessId: BusinessId,
+                                   index: Index,
+                                   mode: Mode): Option[Call] =
     vehicleDetails.calculateFlatRate map {
       case true =>
         routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, index, mode)
@@ -196,7 +204,7 @@ class TravelAndAccommodationNavigator @Inject() {
               .onPageLoad(taxYear, businessId, NormalMode))
 
     case YourFlatRateForVehicleExpensesPage =>
-      data => (taxYear, businessId, index) => handleYourVehicleExpensesFlatRateChoice(data, taxYear, businessId, index,NormalMode)
+      data => (taxYear, businessId, index) => handleYourVehicleExpensesFlatRateChoice(data, taxYear, businessId, index, NormalMode)
     case _ => _ => (_, _, _) => None
   }
 

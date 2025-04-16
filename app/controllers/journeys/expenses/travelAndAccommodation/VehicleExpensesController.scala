@@ -48,8 +48,8 @@ class VehicleExpensesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData) { implicit request =>
       val expenseTypes: Set[TravelAndAccommodationExpenseType] =
         request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).getOrElse(Set.empty[TravelAndAccommodationExpenseType])
       val form: Form[BigDecimal] = formProvider(request.user.userType)
@@ -58,10 +58,10 @@ class VehicleExpensesController @Inject() (
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, mode, request.userType, taxYear, businessId, expenseTypes, index))
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
       request.userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
         case Some(expenseTypes) if expenseTypes.contains(LeasedVehicles) || expenseTypes.contains(MyOwnVehicle) =>
           val form: Form[BigDecimal] = formProvider(request.user.userType)
@@ -78,5 +78,5 @@ class VehicleExpensesController @Inject() (
         case _ =>
           Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
       }
-  }
+    }
 }
