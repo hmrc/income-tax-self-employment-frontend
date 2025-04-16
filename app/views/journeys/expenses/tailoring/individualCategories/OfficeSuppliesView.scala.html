@@ -36,11 +36,11 @@
 
     @heading("journeys.expenses-office-supplies")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">
             @messages(s"site.canInclude.$userType")
         </p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages("officeSupplies.l1")</li>
             <li>@messages("officeSupplies.l2")</li>
             <li>@messages("officeSupplies.l3")</li>
@@ -50,10 +50,10 @@
                 <li>@messages("officeSupplies.l6")</li>
             }
         </ul>
-        <p>
+        <p class="govuk-body">
             @messages(s"site.cannotInclude.$userType")
         </p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <ul class="govuk-list govuk-list--bullet">
             @if(accountingType == AccountingType.Cash) {
                 <li>@messages("expenses.listItem.anyAmount")</li>
             } else {

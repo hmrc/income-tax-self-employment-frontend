@@ -63,15 +63,15 @@
             <span class="govuk-details__summary-text"> @messages("otherExpensesAmount.understandingOtherExpenses")</span>
         </summary>
         <div class="govuk-details__text">
-            <p>@messages(s"site.canInclude.$user")</p>
-            <ul class="govuk-body govuk-list--bullet">
+            <p class="govuk-body">@messages(s"site.canInclude.$user")</p>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>@messages("otherExpenses.l1")</li>
                 <li>@messages("otherExpenses.l2")</li>
             </ul>
             @tailoringAnswer match {
                 case YesAllowable => {
-                    <p>@messages(s"site.cannotInclude.$user")</p>
-                    <ul class="govuk-body govuk-list--bullet">
+                    <p class="govuk-body">@messages(s"site.cannotInclude.$user")</p>
+                    <ul class="govuk-list govuk-list--bullet">
                         <li>@messages("otherExpenses.l3")</li>
                         <li>@messages("otherExpenses.l4")</li>
                         <li>@messages("otherExpenses.l5")</li>

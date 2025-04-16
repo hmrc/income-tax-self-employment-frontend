@@ -42,25 +42,24 @@
         @singleAmountContent(form) {
             @heading("businessPremisesAmount.title")
 
-            <div class="govuk-body govuk-!-margin-top-6">
-                <p>
+            <div class="govuk-form-group">
+                <p class="govuk-body">
                 @messages(s"businessPremisesAmount.claim.$userType")
                 </p>
 
-            <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-            <li>@messages("businessPremisesAmount.rent")</li>
-            <li>@messages("businessPremisesAmount.businessAndWater")</li>
-            <li>@messages("businessPremisesAmount.lighting")</li>
-            <li>@messages("common.workplaceRunning.heating")</li>
-            <li>@messages("businessPremisesAmount.power")</li>
-            <li>@messages("businessPremisesAmount.insurance")</li>
-            <li>@messages("businessPremisesAmount.security")</li>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("businessPremisesAmount.rent")</li>
+                    <li>@messages("businessPremisesAmount.businessAndWater")</li>
+                    <li>@messages("businessPremisesAmount.lighting")</li>
+                    <li>@messages("common.workplaceRunning.heating")</li>
+                    <li>@messages("businessPremisesAmount.power")</li>
+                    <li>@messages("businessPremisesAmount.insurance")</li>
+                    <li>@messages("businessPremisesAmount.security")</li>
+                </ul>
 
-            </ul>
-
-          <P class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
-             @messages(s"businessPremisesAmount.amount.$userType")
-            </P>
+                <P class="govuk-body">
+                 @messages(s"businessPremisesAmount.amount.$userType")
+                </P>
 
             </div>
 

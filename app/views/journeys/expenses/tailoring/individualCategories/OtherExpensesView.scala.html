@@ -36,18 +36,18 @@
 
     @heading("otherExpenses.title")
 
-    <div class="govuk-body govuk-!-margin-top-6">
-        <p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">
             @messages(s"site.canInclude.$userType")
         </p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages("otherExpenses.l1")</li>
             <li>@messages("otherExpenses.l2")</li>
         </ul>
-        <p>
+        <p class="govuk-body">
             @messages(s"site.cannotInclude.$userType")
         </p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages("otherExpenses.l3")</li>
             <li>@messages("otherExpenses.l4")</li>
             <li>@messages("otherExpenses.l5")</li>

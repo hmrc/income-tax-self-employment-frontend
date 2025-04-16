@@ -57,8 +57,8 @@
 
     @heading(s"peopleLivingAtBusinessPremises.title.$userType")
 
-    <div class="govuk-body">
-        <p>@messages(s"peopleLivingAtBusinessPremises.p1.$userType")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages(s"peopleLivingAtBusinessPremises.p1.$userType")</p>
     </div>
 
     @formHelper(action = routes.PeopleLivingAtBusinessPremisesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
@@ -66,9 +66,9 @@
         <fieldset class="govuk-fieldset">
             <div class=@{ if (wholeFormError) "govuk-form-group--error" else "" }>
 
-                <label class="govuk-label govuk-label--m">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     @{messages(s"peopleLivingAtBusinessPremises.subHeading.$userType")}
-                </label>
+                </legend>
                 <div class="govuk-hint">
                     @{messages(s"peopleLivingAtBusinessPremises.hint.$userType", maxMonths)}
                 </div>

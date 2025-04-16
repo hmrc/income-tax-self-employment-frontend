@@ -38,9 +38,9 @@
 
         @heading(s"whichYearIsLossReported.title.$userType")
 
-        <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-            <p>@messages(s"whichYearIsLossReported.p1.loss.$userType")<p>
-            <p>@messages(s"whichYearIsLossReported.p2.loss.$userType")<p>
+        <div class="govuk-form-group">
+            <p class="govuk-body">@messages(s"whichYearIsLossReported.p1.loss.$userType")</p>
+            <p class="govuk-body">@messages(s"whichYearIsLossReported.p2.loss.$userType")</p>
         </div>
 
         @govukRadios(
