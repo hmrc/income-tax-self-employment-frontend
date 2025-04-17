@@ -79,12 +79,11 @@ class VehicleFlatRateChoiceController @Inject() (
                   Future.successful(BadRequest(view(formWithErrors, vehicleName, request.userType, taxYear, businessId, index, mode))),
                 value =>
                   for {
-                    oldAnswers <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
                       data = updateData(
                         value,
-                        oldAnswers
+                        optVehicleDetails
                           .getOrElse(VehicleDetailsDb())
                           .copy(calculateFlatRate = Some(value))),
                       Some(index)
@@ -98,9 +97,6 @@ class VehicleFlatRateChoiceController @Inject() (
     }
 
   private def updateData(flatRateChoice: Boolean, vehicleDetails: VehicleDetailsDb): VehicleDetailsDb =
-    if (!flatRateChoice) {
-      vehicleDetails.copy(workMileage = None, costsOutsideFlatRate = None, expenseMethod = None)
-    } else {
-      vehicleDetails
-    }
+    if (flatRateChoice) vehicleDetails
+    else vehicleDetails.copy(workMileage = None, costsOutsideFlatRate = None, expenseMethod = None)
 }

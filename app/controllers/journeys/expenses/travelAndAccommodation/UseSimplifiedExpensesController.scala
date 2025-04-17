@@ -21,8 +21,6 @@ import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
 import models.{Index, NormalMode}
-import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.UseSimplifiedExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
@@ -36,8 +34,6 @@ class UseSimplifiedExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    navigator: TravelAndAccommodationNavigator,
     answersService: AnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: UseSimplifiedExpensesView
@@ -46,17 +42,19 @@ class UseSimplifiedExpensesController @Inject() (
     with I18nSupport {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index): Action[AnyContent] =
-    (identify andThen getData andThen requireData).async { implicit request =>
+    (identify andThen getData).async { implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
 
       answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map {
-        case optVehicleDetails @ Some(vehicleDetails) =>
-          getVehicleNameAndLoadPage(optVehicleDetails) { vehicleName =>
-            val redirectRoute =
-              navigator.nextIndexPage(UseSimplifiedExpensesPage, NormalMode, vehicleDetails, taxYear, businessId, index).url
-            Ok(view(request.userType, vehicleName, redirectRoute))
-          }
-        case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        _.flatMap(_.description) match {
+          case Some(name) =>
+            val redirectRoute = routes.TravelForWorkYourMileageController
+              .onPageLoad(taxYear, businessId, index, NormalMode)
+              .url
+            Ok(view(request.userType, name, redirectRoute))
+          case None =>
+            Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        }
       }
     }
 }

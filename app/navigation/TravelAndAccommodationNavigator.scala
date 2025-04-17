@@ -181,12 +181,6 @@ class TravelAndAccommodationNavigator @Inject() {
       _ => (taxYear, businessId, index) => Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode))
     case VehicleTypePage =>
       _ => (taxYear, businessId, index) => Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, NormalMode))
-    case UseSimplifiedExpensesPage =>
-      _ =>
-        (taxYear, businessId, index) =>
-          Some(
-            routes.TravelForWorkYourMileageController
-              .onPageLoad(taxYear, businessId, index, NormalMode))
 
     case SimplifiedExpensesPage =>
       data => (taxYear, businessId, index) => handleSimplifiedExpenses(data, taxYear, businessId, index, NormalMode)

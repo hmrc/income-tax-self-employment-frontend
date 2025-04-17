@@ -79,10 +79,9 @@ class TravelForWorkYourMileageController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, vehicle, index))),
                 value =>
                   for {
-                    oldAnswers <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
-                      data = oldAnswers
+                      data = optVehicleDetails
                         .getOrElse(VehicleDetailsDb())
                         .copy(workMileage = Some(value)),
                       Some(index)

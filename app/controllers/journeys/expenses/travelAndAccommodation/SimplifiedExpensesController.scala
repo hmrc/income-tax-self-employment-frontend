@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.clearDependentPages
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}
@@ -41,7 +40,6 @@ class SimplifiedExpensesController @Inject() (
     navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
     formProvider: SimplifiedExpenseFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SimplifiedExpensesView
@@ -52,7 +50,7 @@ class SimplifiedExpensesController @Inject() (
   private val page = SimplifiedExpensesPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData).async { implicit request =>
+    (identify andThen getData).async { implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
       answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map { optVehicleDetails =>
         getVehicleNameAndLoadPage(optVehicleDetails) { name =>
@@ -66,7 +64,7 @@ class SimplifiedExpensesController @Inject() (
     }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData).async { implicit request =>
+    (identify andThen getData).async { implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
       answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).flatMap { optVehicleDetails =>
         optVehicleDetails.flatMap(_.description) match {
@@ -78,15 +76,11 @@ class SimplifiedExpensesController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, index, mode, vehicle))),
                 value =>
                   for {
-
-                    // clearedAnswers <- clearDependentPages(page, value, request.userAnswers, businessId) TODO check the page mappings
-
-                    oldAnswers <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
+                    updatedAnswers <- Future.successful(clearDependentPageData(value, optVehicleDetails))
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
-                      data = oldAnswers
-                        .getOrElse(VehicleDetailsDb())
-                        .copy(usedSimplifiedExpenses = Some(value)),
+                      data = updatedAnswers
+                        .getOrElse(VehicleDetailsDb()),
                       Some(index)
                     )
                   } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
@@ -95,6 +89,17 @@ class SimplifiedExpensesController @Inject() (
             Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
         }
       }
+    }
+
+  private def clearDependentPageData(value: Boolean, oldAnswers: Option[VehicleDetailsDb]): Option[VehicleDetailsDb] =
+    oldAnswers.map { answers =>
+      val needsClear = !answers.usedSimplifiedExpenses.contains(value)
+      answers.copy(
+        calculateFlatRate = if (needsClear) None else answers.calculateFlatRate,
+        expenseMethod = if (needsClear) None else answers.expenseMethod,
+        vehicleExpenses = if (needsClear) None else answers.vehicleExpenses,
+        usedSimplifiedExpenses = Some(value)
+      )
     }
 
 }
