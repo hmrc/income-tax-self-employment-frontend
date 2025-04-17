@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.common.Journey.ExpensesTravelForWork
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationJourneyAnswers
@@ -54,14 +54,14 @@ class TravelAndAccommodationExpensesCYAController @Inject() (
       val summaryList = SummaryListCYA.summaryListOpt(
         rows = List(
           VehicleExpenseTypeSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-          VehicleNameSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-          VehicleTypeSummary.row(request.userAnswers, taxYear, businessId),
-          SimplifiedExpensesSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-          VehicleFlatRateChoiceSummary.row(taxYear, businessId, request.userAnswers, request.userType),
-          TravelForWorkYourMileageSummary.row(taxYear, businessId, request.userAnswers, request.userType),
+          VehicleNameSummary.row(request.userAnswers, taxYear, businessId, request.userType, Index(1)),        // TODO index changes
+          VehicleTypeSummary.row(request.userAnswers, taxYear, businessId, Index(1)),                          // TODO index changes
+          SimplifiedExpensesSummary.row(request.userAnswers, taxYear, businessId, request.userType, Index(1)), // TODO index changes
+          VehicleFlatRateChoiceSummary.row(taxYear, businessId, request.userAnswers, request.userType, Index(1)),
+          TravelForWorkYourMileageSummary.row(taxYear, businessId, request.userAnswers, request.userType, Index(1)),
           YourFlatRateForVehicleExpensesSummary.row(taxYear, businessId, request.userAnswers, request.userType),
           CostsNotCoveredSummary.row(request.userAnswers, taxYear, businessId, request.userType),
-          VehicleExpensesSummary.row(taxYear, businessId, request.userAnswers, request.userType)
+          VehicleExpensesSummary.row(taxYear, businessId, request.userAnswers, request.userType, Index(1))
         )
       )
 

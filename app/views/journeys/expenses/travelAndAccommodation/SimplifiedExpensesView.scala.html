@@ -16,6 +16,7 @@
 
 @import controllers.journeys.expenses.travelAndAccommodation.routes
 @import models.common._
+@import models.Index
 
 @this(
     layout: templates.Layout,
@@ -25,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, mode: Mode, vehicle: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode, vehicle: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("simplifiedExpenses.title.common"))) {
 
-    @formHelper(action = routes.SimplifiedExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SimplifiedExpensesController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value")))

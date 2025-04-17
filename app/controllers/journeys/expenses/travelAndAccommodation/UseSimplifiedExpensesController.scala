@@ -17,33 +17,44 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import models.NormalMode
+import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}
-import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.UseSimplifiedExpensesPage
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class UseSimplifiedExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    navigator: TravelAndAccommodationNavigator,
+    answersService: AnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: UseSimplifiedExpensesView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
-    (identify andThen getData andThen requireData) { implicit request =>
-      val redirectRoute = navigator.nextPage(UseSimplifiedExpensesPage, NormalMode, request.userAnswers, taxYear, businessId).url
-      getVehicleNameAndLoadPage(businessId) { vehicleName =>
-        Ok(view(request.userType, vehicleName, redirectRoute))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index): Action[AnyContent] =
+    (identify andThen getData).async { implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
+
+      answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map {
+        _.flatMap(_.description) match {
+          case Some(name) =>
+            val redirectRoute = routes.TravelForWorkYourMileageController
+              .onPageLoad(taxYear, businessId, index, NormalMode)
+              .url
+            Ok(view(request.userType, name, redirectRoute))
+          case None =>
+            Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        }
       }
     }
 }

@@ -19,10 +19,13 @@ package base
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import helpers.SessionCookieHelper
 import integrationData.TimeData
+import models.Index
 import models.common._
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
+import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
+import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, YourFlatRateForVehicleExpenses}
 import org.mockito.Mockito.when
 import org.mongodb.scala.bson.Document
 import org.mongodb.scala.bson.conversions.Bson
@@ -56,6 +59,17 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
   protected val nino: Nino             = Nino("AA123123A")
   protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
   protected val taxYear: TaxYear       = TaxYear(mockTimeMachine.now.getYear)
+  protected val index: Index           = Index(1)
+  val testVehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
+    description = Some("Car"),
+    vehicleType = Some(CarOrGoodsVehicle),
+    usedSimplifiedExpenses = Some(true),
+    calculateFlatRate = Some(true),
+    workMileage = Some(100000),
+    expenseMethod = Some(YourFlatRateForVehicleExpenses.Flatrate),
+    costsOutsideFlatRate = Some(BigDecimal("100.00")),
+    vehicleExpenses = Some(BigDecimal("300.00"))
+  )
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(
     timeout = Span(sys.env.get("INTEGRATION_TEST_PATIENCE_TIMEOUT_SEC").fold(2)(x => Integer.parseInt(x)), Seconds),
@@ -104,6 +118,9 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
       val userAnswers = testAnswers.copy(data = Json.toJson(answers).as[JsObject])
       await(mongo.collection.insertOne(userAnswers).toFuture())
     }
+
+    def insertUserAnswers(answers: UserAnswers): Unit =
+      await(mongo.collection.insertOne(answers).toFuture())
 
     def insertEmpty(): Unit =
       await(mongo.collection.insertOne(testAnswers).toFuture())

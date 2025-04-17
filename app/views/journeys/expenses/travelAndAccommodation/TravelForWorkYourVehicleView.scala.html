@@ -18,6 +18,7 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components._
 @import viewmodels.LabelSize.Medium
+@import models.Index
 
 @this(
     layout: templates.Layout,
@@ -28,11 +29,11 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode , userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode , userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"travelForWorkYourVehicle.heading.$userType"))) {
 
-    @formHelper(action = controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, mode)) {
+    @formHelper(action = controllers.journeys.expenses.travelAndAccommodation.routes.TravelForWorkYourVehicleController.onSubmit(taxYear, businessId, index, mode)) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))

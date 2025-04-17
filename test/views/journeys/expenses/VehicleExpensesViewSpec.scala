@@ -47,7 +47,7 @@ class VehicleExpensesViewSpec extends SpecBase with MockitoSugar with BeforeAndA
                  taxYear: TaxYear,
                  businessId: BusinessId,
                  expenseType: Set[TravelAndAccommodationExpenseType])(implicit request: Request[_]): Html =
-    view(form, mode, userType, taxYear, businessId, expenseType)(request, messages)
+    view(form, mode, userType, taxYear, businessId, expenseType, index)(request, messages)
 
   "VehicleExpensesView" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
@@ -64,7 +64,7 @@ class VehicleExpensesViewSpec extends SpecBase with MockitoSugar with BeforeAndA
           val request = FakeRequest(GET, "/")
           val result  = createView(form, NormalMode, userType, taxYear, businessId, ua)(request)
 
-          contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, ua)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, ua, index)(request, messages(application)).toString
         }
       }
     }

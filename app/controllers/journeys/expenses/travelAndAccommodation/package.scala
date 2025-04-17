@@ -17,15 +17,24 @@
 package controllers.journeys.expenses
 
 import models.common.BusinessId
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
 import models.requests.DataRequest
 import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.Results.Redirect
 
 package object travelAndAccommodation {
 
   def getVehicleNameAndLoadPage(businessId: BusinessId)(view: String => Result)(implicit request: DataRequest[AnyContent]): Result =
     request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
+      case Some(vehicle) =>
+        view(vehicle)
+      case None =>
+        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+    }
+
+  def getVehicleNameAndLoadPage(vehicleDetails: Option[VehicleDetailsDb])(view: String => Result): Result =
+    vehicleDetails.flatMap(_.description) match {
       case Some(vehicle) =>
         view(vehicle)
       case None =>

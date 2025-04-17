@@ -19,6 +19,7 @@
 @import models.common.{TaxYear, BusinessId, UserType}
 @import views.html.components._
 @import viewmodels.LabelSize.Medium
+@import models.Index
 
 @this(
     layout: templates.Layout,
@@ -29,11 +30,11 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, vehicle: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, vehicle: String, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"travelForWorkYourMileage.title.$userType", vehicle))) {
 
-    @formHelper(action = routes.TravelForWorkYourMileageController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TravelForWorkYourMileageController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
 
         @if(form.errors.nonEmpty) {

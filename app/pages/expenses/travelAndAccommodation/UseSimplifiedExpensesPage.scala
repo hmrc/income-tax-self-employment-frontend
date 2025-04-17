@@ -16,13 +16,13 @@
 
 package pages.expenses.travelAndAccommodation
 
-import models.Mode
+import models.Index
 import models.common.{BusinessId, TaxYear}
 import pages.Page
 import play.api.mvc.Call
 
 case object UseSimplifiedExpensesPage extends Page {
-  def route(mode: Mode, taxYear: TaxYear, businessId: BusinessId): Call =
-    controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId)
+  def route(taxYear: TaxYear, businessId: BusinessId, index: Index): Call =
+    controllers.journeys.expenses.travelAndAccommodation.routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId, index)
 
 }

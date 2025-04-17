@@ -21,8 +21,6 @@ import queries.Settable
 
 case object SimplifiedExpensesPage extends OneQuestionPage[Boolean] {
 
-  override val dependentPagesWhenYes: List[Settable[_]] = List(YourFlatRateForVehicleExpensesPage, VehicleFlatRateChoicePage, VehicleExpensesPage)
-
   override def toString: String = "simplifiedExpenses"
 
 }
