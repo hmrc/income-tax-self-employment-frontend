@@ -109,7 +109,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         }
 
         "navigate to YourFlatRateForVehicleExpensesPage from TravelForWorkYourMileagePage when option selected is 'false'" in {
-          val expectedResult = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          val expectedResult = routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, models.Index(1), NormalMode)
           val vd             = vehicleDetails.copy(workMileage = Some(BigDecimal(200)))
 
           navigator.nextIndexPage(TravelForWorkYourMileagePage, mode, vd, taxYear, businessId, index) shouldBe expectedResult

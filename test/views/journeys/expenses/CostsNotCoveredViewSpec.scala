@@ -18,7 +18,7 @@ package views.journeys.expenses
 
 import base.SpecBase
 import forms.standard.CurrencyFormProvider
-import models.{Mode, NormalMode}
+import models.{Index, Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -42,7 +42,7 @@ class CostsNotCoveredViewSpec extends SpecBase with MockitoSugar with BeforeAndA
   val view: CostsNotCoveredView = application.injector.instanceOf[CostsNotCoveredView]
 
   def createView(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_]): Html =
-    view(form, mode, userType, taxYear, businessId)(request, messages)
+    view(form, mode, userType, taxYear, businessId, Index(-1))(request, messages)
 
   "CostsNotCoveredView" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
@@ -61,7 +61,7 @@ class CostsNotCoveredViewSpec extends SpecBase with MockitoSugar with BeforeAndA
           val request = FakeRequest(GET, "/")
           val result  = createView(form, NormalMode, userType, taxYear, businessId)(request)
 
-          contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, Index(-1))(request, messages(application)).toString
         }
       }
     }

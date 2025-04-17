@@ -20,6 +20,7 @@ import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.{CheckMode, Index}
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.VehicleType
 import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,18 +28,15 @@ import viewmodels.checkAnswers.buildRowString
 
 object VehicleTypeSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(VehicleTypePage, businessId)
-      .map { answer =>
-        val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
-
-        buildRowString(
-          answer = messages(s"vehicleType.$answer"),
-          callLink = routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, CheckMode),
-          keyMessage = messages("vehicleType.heading", vehicleName),
-          changeMessage = messages("vehicleType.change.hidden", vehicleName),
-          rightTextAlign = true
-        )
-      }
+  def row(vehicleName: String, vehicleType: VehicleType, taxYear: TaxYear, businessId: BusinessId, index: Index)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    Option(
+      buildRowString(
+        answer = messages(s"vehicleType.$vehicleType"),
+        callLink = routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, CheckMode),
+        keyMessage = messages("vehicleType.heading", vehicleName),
+        changeMessage = messages("vehicleType.change.hidden", vehicleName),
+        rightTextAlign = true
+      )
+    )
 }

@@ -27,18 +27,19 @@ import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 
 object VehicleFlatRateChoiceSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    if (answers.get(SimplifiedExpensesPage, businessId).contains(false)) {
-      answers.get(VehicleFlatRateChoicePage, businessId).map { answer =>
+  def row(usedSimplifiedExpenses: Boolean, calculateFlatRate: Boolean, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(
+      implicit messages: Messages): Option[SummaryListRow] =
+    if (!usedSimplifiedExpenses) {
+      Option(
         buildRowString(
-          formatAnswer(answer.toString),
+          formatAnswer(calculateFlatRate.toString),
           callLink = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, index, CheckMode),
           keyMessage = messages(s"vehicleFlatRateChoice.legend.$userType"),
           changeMessage = messages(s"vehicleFlatRateChoice.change.hidden.$userType"),
           rightTextAlign = true
         )
-      }
-    } else None
-
+      )
+    } else {
+      None
+    }
 }

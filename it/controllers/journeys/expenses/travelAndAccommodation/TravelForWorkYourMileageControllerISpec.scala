@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.IntegrationBaseSpec
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.JourneyAnswersContext
 import org.jsoup.Jsoup
@@ -109,7 +109,7 @@ class TravelForWorkYourMileageControllerISpec extends WiremockSpec with Integrat
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(
-          routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url)
+          routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, Index(1), NormalMode).url)
       }
     }
 

@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.common.UserType
 import models.database.UserAnswers
 import org.mockito.ArgumentMatchers.any
@@ -51,7 +51,7 @@ class CostsNotCoveredControllerSpec extends SpecBase with MockitoSugar {
     nonNumericError = s"costsNotCovered.error.nonNumeric.$userType"
   )
 
-  lazy val costsNotCoveredControllerRoute: String = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, NormalMode).url
+  lazy val costsNotCoveredControllerRoute: String = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, Index(-1), NormalMode).url
 
   "CostsNotCoveredController" - {
     Seq(UserType.Individual, UserType.Agent).foreach { userType =>
@@ -72,7 +72,9 @@ class CostsNotCoveredControllerSpec extends SpecBase with MockitoSugar {
             val view = application.injector.instanceOf[CostsNotCoveredView]
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId)(request, messages(application)).toString
+            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, Index(-1))(
+              request,
+              messages(application)).toString
           }
         }
 
@@ -95,7 +97,7 @@ class CostsNotCoveredControllerSpec extends SpecBase with MockitoSugar {
             val result = route(application, request).value
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId)(
+            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, Index(-1))(
               request,
               messages(application)
             ).toString

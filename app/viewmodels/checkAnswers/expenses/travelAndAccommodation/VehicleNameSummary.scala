@@ -27,17 +27,14 @@ import viewmodels.checkAnswers.buildRowString
 
 object VehicleNameSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(TravelForWorkYourVehiclePage, businessId)
-      .map { answer =>
-        buildRowString(
-          answer,
-          callLink = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode),
-          keyMessage = messages(s"travelForWorkYourVehicle.formLabel.$userType"),
-          changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
-          rightTextAlign = true
-        )
-      }
+  def row(vehicleName: String, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(implicit
+      messages: Messages): Option[SummaryListRow] = Option {
+    buildRowString(
+      vehicleName,
+      callLink = routes.TravelForWorkYourVehicleController.onPageLoad(taxYear, businessId, index, CheckMode),
+      keyMessage = messages(s"travelForWorkYourVehicle.formLabel.$userType"),
+      changeMessage = s"travelForWorkYourVehicle.change.hidden.$userType",
+      rightTextAlign = true
+    )
+  }
 }

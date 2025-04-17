@@ -35,8 +35,12 @@ object YourFlatRateForVehicleExpenses extends Enumerable.Implicits {
   )
 
   def options(totalExpenses: String)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    val key = value match {
+      case Flatrate   => "expenses.flatRate"
+      case Actualcost => "expenses.actualCosts"
+    }
     RadioItem(
-      content = Text(messages(s"expenses.${value.toString}", totalExpenses)),
+      content = Text(messages(key, totalExpenses)),
       value = Some(value.toString),
       id = Some(s"value_$index")
     )

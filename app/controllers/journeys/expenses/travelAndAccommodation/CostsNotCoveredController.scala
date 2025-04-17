@@ -18,13 +18,15 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.standard.CurrencyFormProvider
-import models.Mode
+import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear, UserType}
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
+import models.{Index, Mode}
 import navigation.TravelAndAccommodationNavigator
 import pages.CostsNotCoveredPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.CostsNotCoveredView
 
@@ -33,13 +35,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CostsNotCoveredController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: CurrencyFormProvider,
     val controllerComponents: MessagesControllerComponents,
+    answersService: AnswersService,
     view: CostsNotCoveredView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -54,27 +56,42 @@ class CostsNotCoveredController @Inject() (
       nonNumericError = s"costsNotCovered.error.nonNumeric.$userType"
     )
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(CostsNotCoveredPage, businessId) match {
-        case None        => form(request.userType)
-        case Some(value) => form(request.userType).fill(value)
-      }
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
+      answersService
+        .getAnswers[VehicleDetailsDb](ctx, Some(index))
+        .map {
+          case Some(VehicleDetailsDb(_, _, _, _, _, _, Some(costsOutsideFlatRate), _)) =>
+            form(request.userType).fill(costsOutsideFlatRate)
+          case _ =>
+            form(request.userType)
+        }
+        .map { preparedForm =>
+          Ok(view(preparedForm, mode, request.userType, taxYear, businessId, index))
+        }
+    }
 
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-  }
-
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
       form(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, index))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CostsNotCoveredPage, value, Some(businessId)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(CostsNotCoveredPage, mode, updatedAnswers, taxYear, businessId))
+            answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).flatMap {
+              case Some(preValue) =>
+                for {
+                  newData <- answersService.replaceAnswers(
+                    ctx,
+                    data = preValue.copy(costsOutsideFlatRate = Option(value)),
+                    Some(index)
+                  )
+                } yield Redirect(navigator.nextIndexPage(CostsNotCoveredPage, mode, newData, taxYear, businessId, index))
+              case _ =>
+                Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+            }
         )
-  }
+    }
 }

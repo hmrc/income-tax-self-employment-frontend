@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
+import models.{CheckMode, Index}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.CostsNotCoveredPage
@@ -28,14 +28,15 @@ import viewmodels.checkAnswers.buildRowString
 
 object CostsNotCoveredSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CostsNotCoveredPage, businessId).map { answer =>
+  def row(costsOutsideFlatRate: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
+      messages: Messages): Option[SummaryListRow] =
+    Option(
       buildRowString(
-        s"£${formatDecimals(answer)}",
-        callLink = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, CheckMode),
+        s"£${formatDecimals(costsOutsideFlatRate)}",
+        callLink = routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, Index(-1), CheckMode),
         keyMessage = messages(s"costsNotCovered.subheading.$userType"),
         changeMessage = messages(s"costsNotCovered.change.hidden.$userType"),
         rightTextAlign = true
       )
-    }
+    )
 }

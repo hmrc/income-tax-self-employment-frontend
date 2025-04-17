@@ -39,7 +39,7 @@ class TravelAndAccommodationNavigator @Inject() {
   private val normalRoutes: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
 
     case TravelAndAccommodationExpenseTypePage =>
-      userAnswers => (taxYear, businessId) => handleTravelAndAccomodationExpenses(userAnswers, taxYear, businessId)
+      userAnswers => (taxYear, businessId) => handleTravelAndAccomodationExpenses(userAnswers, taxYear, businessId, index = Index(1))
 
     case PublicTransportAndAccommodationExpensesPage =>
       ua => (taxYear, businessId) => handlePublicTransportAndAccom(ua, taxYear, businessId, NormalMode)
@@ -50,16 +50,21 @@ class TravelAndAccommodationNavigator @Inject() {
           Option(
             routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
           )
+    case VehicleExpensesPage =>
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId, Index(1)))
 
     case AddAnotherVehiclePage =>
-      ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
+      ua =>
+        (taxYear, businessId) =>
+          Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
 
+      // TODO Do We need this here
     case CostsNotCoveredPage =>
       _ =>
         (taxYear, businessId) =>
           Some(
             routes.TravelAndAccommodationExpensesCYAController
-              .onPageLoad(taxYear, businessId))
+              .onPageLoad(taxYear, businessId, Index(1)))
 
     case TravelAndAccommodationCYAPage =>
       _ => (taxYear, businessId) => Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
@@ -75,7 +80,7 @@ class TravelAndAccommodationNavigator @Inject() {
         routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
     }
 
-  private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Option[Call] =
+  private def handleTravelAndAccomodationExpenses(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, index: Index): Option[Call] =
     userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId).map(_.toSeq) match {
       case Some(Seq(PublicTransportAndOtherAccommodation)) =>
         Option(
@@ -84,7 +89,7 @@ class TravelAndAccommodationNavigator @Inject() {
       case _ =>
         Some(
           routes.TravelForWorkYourVehicleController
-            .onPageLoad(taxYear, businessId, Index(1), NormalMode)
+            .onPageLoad(taxYear, businessId, index, NormalMode)
         )
     }
 
@@ -101,10 +106,10 @@ class TravelAndAccommodationNavigator @Inject() {
                                                       index: Index,
                                                       mode: Mode): Option[Call] =
     vehicleDetails.usedSimplifiedExpenses flatMap {
-      case true => Some(routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode))
+      case true => Some(routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, index, mode))
       case false =>
         vehicleDetails.expenseMethod map {
-          case YourFlatRateForVehicleExpenses.Flatrate   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, mode)
+          case YourFlatRateForVehicleExpenses.Flatrate   => routes.CostsNotCoveredController.onPageLoad(taxYear, businessId, index, mode)
           case YourFlatRateForVehicleExpenses.Actualcost => routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, mode)
         }
     }
@@ -135,33 +140,33 @@ class TravelAndAccommodationNavigator @Inject() {
       case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId) => Option[Call] = {
+  private val checkRouteMap: Page => UserAnswers => (TaxYear, BusinessId, Index) => Option[Call] = {
 
     case TravelAndAccommodationExpenseTypePage =>
       _ =>
-        (taxYear, businessId) =>
+        (taxYear, businessId, index) =>
           Some(
             routes.TravelAndAccommodationExpensesCYAController
-              .onPageLoad(taxYear, businessId))
+              .onPageLoad(taxYear, businessId, index))
 
     case CostsNotCoveredPage =>
       _ =>
-        (taxYear, businessId) =>
+        (taxYear, businessId, index) =>
           Some(
             routes.TravelAndAccommodationExpensesCYAController
-              .onPageLoad(taxYear, businessId))
+              .onPageLoad(taxYear, businessId, index))
 
     case RemoveVehiclePage =>
-      ua => (taxYear, businessId) => handleRemoveVehicle(ua, taxYear, businessId)
+      ua => (taxYear, businessId, index) => handleRemoveVehicle(ua, taxYear, businessId, index)
 
     case AddAnotherVehiclePage =>
-      ua => (taxYear, businessId) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
+      ua => (taxYear, businessId, index) => Some(handleAddAnotherVehicle(ua, taxYear, businessId, NormalMode))
 
     case _ =>
-      _ => (_, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+      _ => (_, _, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }
 
-  private def handleRemoveVehicle(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId): Option[Call] =
+  private def handleRemoveVehicle(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, index: Index): Option[Call] =
     userAnswers.get(RemoveVehiclePage, businessId) map {
       case true => routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, CheckMode)
       case false =>
@@ -173,7 +178,7 @@ class TravelAndAccommodationNavigator @Inject() {
       case NormalMode =>
         normalRoutes(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
-        checkRouteMap(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        checkRouteMap(page)(userAnswers)(taxYear, businessId, Index(1)).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 
   private def normalIndexRoutes: Page => VehicleDetailsDb => (TaxYear, BusinessId, Index) => Option[Call] = {
@@ -189,23 +194,34 @@ class TravelAndAccommodationNavigator @Inject() {
       data => (taxYear, businessId, index) => handleFlatRateChoice(data, taxYear, businessId, index, NormalMode)
 
     case TravelForWorkYourMileagePage =>
-      _ => (taxYear, businessId, index) => Some(routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode))
-
+      _ =>
+        (taxYear, businessId, index) =>
+          Some(
+            routes.YourFlatRateForVehicleExpensesController
+              .onPageLoad(taxYear, businessId, index, NormalMode))
     case VehicleExpensesPage =>
-      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
+      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId, index))
 
     case YourFlatRateForVehicleExpensesPage =>
       data => (taxYear, businessId, index) => handleYourVehicleExpensesFlatRateChoice(data, taxYear, businessId, index, NormalMode)
+    case CostsNotCoveredPage =>
+      _ =>
+        (taxYear, businessId, index) =>
+          Some(
+            routes.TravelAndAccommodationExpensesCYAController
+              .onPageLoad(taxYear, businessId, index)
+          )
+
     case _ => _ => (_, _, _) => None
   }
 
   private def checkIndexRouteMap: Page => VehicleDetailsDb => (TaxYear, BusinessId, Index) => Option[Call] = {
 
     case TravelForWorkYourVehiclePage =>
-      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
+      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId, index))
 
     case VehicleTypePage =>
-      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
+      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId, index))
 
     case SimplifiedExpensesPage =>
       data => (taxYear, businessId, index) => handleSimplifiedExpenses(data, taxYear, businessId, index, NormalMode)
@@ -218,10 +234,10 @@ class TravelAndAccommodationNavigator @Inject() {
         (taxYear, businessId, index) =>
           Some(
             routes.YourFlatRateForVehicleExpensesController
-              .onPageLoad(taxYear, businessId, NormalMode))
+              .onPageLoad(taxYear, businessId, Index(1), NormalMode))
 
     case VehicleExpensesPage =>
-      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId))
+      _ => (taxYear, businessId, index) => Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId, index))
 
     case YourFlatRateForVehicleExpensesPage =>
       data => (taxYear, businessId, index) => handleYourVehicleExpensesFlatRateChoice(data, taxYear, businessId, index, NormalMode)

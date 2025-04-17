@@ -28,16 +28,15 @@ import viewmodels.checkAnswers.buildRowString
 
 object TravelForWorkYourMileageSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit
+  def row(vehicleName: String, workMileage: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(implicit
       messages: Messages): Option[SummaryListRow] =
-    for {
-      mileageAnswer <- answers.get(TravelForWorkYourMileagePage, businessId)
-      vehicleName   <- answers.get(TravelForWorkYourVehiclePage, businessId)
-    } yield buildRowString(
-      formatDecimals(mileageAnswer),
-      callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, index, CheckMode),
-      keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
-      changeMessage = messages(s"travelForWorkYourMileage.change.hidden.$userType", vehicleName),
-      rightTextAlign = true
+    Option(
+      buildRowString(
+        formatDecimals(workMileage),
+        callLink = routes.TravelForWorkYourMileageController.onPageLoad(taxYear, businessId, index, CheckMode),
+        keyMessage = messages(s"travelForWorkYourMileage.formLabel.$userType", vehicleName),
+        changeMessage = messages(s"travelForWorkYourMileage.change.hidden.$userType", vehicleName),
+        rightTextAlign = true
+      )
     )
 }

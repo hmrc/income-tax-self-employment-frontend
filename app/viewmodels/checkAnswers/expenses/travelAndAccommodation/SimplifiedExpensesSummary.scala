@@ -27,19 +27,15 @@ import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 
 object SimplifiedExpensesSummary {
 
-  def row(answers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(implicit
+  def row(vehicleName: String, usedSimplifiedExpenses: Boolean, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(implicit
       messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(SimplifiedExpensesPage, businessId)
-      .map { answer =>
-        val vehicleName = answers.get(TravelForWorkYourVehiclePage, businessId).get
-
-        buildRowString(
-          formatAnswer(answer.toString),
-          callLink = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, CheckMode),
-          keyMessage = messages(s"simplifiedExpenses.subheading.$userType", vehicleName),
-          changeMessage = messages(s"simplifiedExpenses.change.hidden.$userType"),
-          rightTextAlign = true
-        )
-      }
+    Option(
+      buildRowString(
+        formatAnswer(usedSimplifiedExpenses.toString),
+        callLink = routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, CheckMode),
+        keyMessage = messages(s"simplifiedExpenses.subheading.$userType", vehicleName),
+        changeMessage = messages(s"simplifiedExpenses.change.hidden.$userType"),
+        rightTextAlign = true
+      )
+    )
 }

@@ -46,7 +46,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
   def onwardRoute: Call = Call("GET", "/foo")
 
   lazy val yourFlatRateForVehicleExpensesRoute: String =
-    routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
+    routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, models.Index(1), NormalMode).url
   val workMileage: String   = "90"
   val mileage: BigDecimal   = BigDecimal(workMileage)
   val totalFlatRate: String = formatMoney(TravelMileageSummaryViewModel.totalFlatRateExpense(mileage))
@@ -83,6 +83,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               form,
               taxYear,
               businessId,
+              models.Index(1),
               userType,
               workMileage,
               totalFlatRate,
@@ -140,6 +141,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               form.fill(YourFlatRateForVehicleExpenses.values.head),
               taxYear,
               businessId,
+              models.Index(1),
               userType,
               workMileage,
               totalFlatRate,
@@ -228,6 +230,7 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               boundForm,
               taxYear,
               businessId,
+              models.Index(1),
               userType,
               workMileage,
               totalFlatRate,

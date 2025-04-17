@@ -28,21 +28,17 @@ import viewmodels.checkAnswers.buildRowString
 
 object VehicleExpensesSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit
-      messages: Messages): Option[SummaryListRow] =
-    answers
-      .get(VehicleExpensesPage, businessId)
-      .flatMap { answer =>
-        val amount = s"£${formatDecimals(answer)}"
-        Some(
-          buildRowString(
-            amount,
-            callLink = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, CheckMode),
-            keyMessage = messages(s"vehicleExpenses.subheading.$userType"),
-            changeMessage = s"vehicleExpenses.change.hidden.$userType",
-            rightTextAlign = true
-          )
-        )
-      }
-
+  def row(vehicleExpenses: BigDecimal, taxYear: TaxYear, businessId: BusinessId, userType: UserType, index: Index)(implicit
+      messages: Messages): Option[SummaryListRow] = {
+    val amount = s"£${formatDecimals(vehicleExpenses)}"
+    Option(
+      buildRowString(
+        amount,
+        callLink = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, CheckMode),
+        keyMessage = messages(s"vehicleExpenses.subheading.$userType"),
+        changeMessage = s"vehicleExpenses.change.hidden.$userType",
+        rightTextAlign = true
+      )
+    )
+  }
 }
