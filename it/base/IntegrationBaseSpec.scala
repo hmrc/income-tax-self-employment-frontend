@@ -67,7 +67,8 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
     calculateFlatRate = Some(true),
     workMileage = Some(100000),
     expenseMethod = Some(YourFlatRateForVehicleExpenses.Flatrate),
-    costsOutsideFlatRate = Some(BigDecimal("100.00"))
+    costsOutsideFlatRate = Some(BigDecimal("100.00")),
+    vehicleExpenses = Some(BigDecimal("300.00"))
   )
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(
@@ -117,6 +118,9 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
       val userAnswers = testAnswers.copy(data = Json.toJson(answers).as[JsObject])
       await(mongo.collection.insertOne(userAnswers).toFuture())
     }
+
+    def insertUserAnswers(answers: UserAnswers): Unit =
+      await(mongo.collection.insertOne(answers).toFuture())
 
     def insertEmpty(): Unit =
       await(mongo.collection.insertOne(testAnswers).toFuture())

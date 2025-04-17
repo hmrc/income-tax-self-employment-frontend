@@ -1,5 +1,4 @@
 /*
-/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,24 +21,33 @@ import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.JourneyAnswersContext
+import models.database.UserAnswers
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import org.jsoup.Jsoup
+import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec  {
+class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
   val url: String                        = routes.VehicleExpensesController.onPageLoad(taxYear, businessId, index, NormalMode).url
   val submitUrl: String                  = routes.VehicleExpensesController.onSubmit(taxYear, businessId, index, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesVehicleDetails)
+  val userAnswers: UserAnswers = UserAnswers(internalId)
+    .set(TravelAndAccommodationExpenseTypePage, Set[TravelAndAccommodationExpenseType](MyOwnVehicle, LeasedVehicles), Some(businessId))
+    .toOption
+    .value
 
   "GET /:taxYear/:businessId/expenses/travel/:index/vehicle-expenses " when {
     "the user is an agent" must {
       "return OK with the correct view" in {
+
         AuthStub.agentAuthorised()
-        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(workMileage = None))))
-        DbHelper.insertEmpty()
+        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(vehicleExpenses = None))))
+        DbHelper.insertUserAnswers(userAnswers)
 
         val result = await(buildClient(url, isAgent = true).get())
 
@@ -53,17 +61,16 @@ class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSp
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url, isAgent = true).get())
-
         result.header(HeaderNames.LOCATION) mustBe None
         result.status mustBe OK
-        Jsoup.parse(result.body).select("input[id=value]").first().`val`() mustBe "100000"
+        Jsoup.parse(result.body).select("input[id=value]").first().`val`() mustBe "300"
       }
     }
 
     "the user is an individual" must {
       "return OK with the correct view" in {
         AuthStub.authorised()
-        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(workMileage = None))))
+        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(vehicleExpenses = None))))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url).get())
@@ -102,22 +109,22 @@ class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSp
       "redirect to the next page" in {
 
         AuthStub.authorised()
-        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(workMileage = None))))
+        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(vehicleExpenses = None))))
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
-        DbHelper.insertEmpty()
+        DbHelper.insertUserAnswers(userAnswers)
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("100.00"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.YourFlatRateForVehicleExpensesController.onPageLoad(taxYear, businessId, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId).url)
       }
     }
 
     "the user submits without entering a vehicle expenses" must {
       "return BAD REQUEST" in {
         AuthStub.authorised()
-        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(workMileage = None))))
-        DbHelper.insertEmpty()
+        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(vehicleExpenses = None))))
+        DbHelper.insertUserAnswers(userAnswers)
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
 
@@ -126,4 +133,3 @@ class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSp
     }
   }
 }
- */

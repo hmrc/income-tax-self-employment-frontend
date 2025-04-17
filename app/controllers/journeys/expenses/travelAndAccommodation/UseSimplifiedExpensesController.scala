@@ -47,13 +47,16 @@ class UseSimplifiedExpensesController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index): Action[AnyContent] =
     (identify andThen getData andThen requireData).async { implicit request =>
-      val redirectRoute = navigator.nextPage(UseSimplifiedExpensesPage, NormalMode, request.userAnswers, taxYear, businessId).url
-
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
-      answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map { optVehicleDetails =>
-        getVehicleNameAndLoadPage(optVehicleDetails) { vehicleName =>
-          Ok(view(request.userType, vehicleName, redirectRoute))
-        }
+
+      answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map {
+        case optVehicleDetails @ Some(vehicleDetails) =>
+          getVehicleNameAndLoadPage(optVehicleDetails) { vehicleName =>
+            val redirectRoute =
+              navigator.nextIndexPage(UseSimplifiedExpensesPage, NormalMode, vehicleDetails, taxYear, businessId, index).url
+            Ok(view(request.userType, vehicleName, redirectRoute))
+          }
+        case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       }
     }
 }

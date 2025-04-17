@@ -24,7 +24,8 @@ case class VehicleDetailsDb(description: Option[String] = None,
                             calculateFlatRate: Option[Boolean] = None,
                             workMileage: Option[BigDecimal] = None,
                             expenseMethod: Option[YourFlatRateForVehicleExpenses] = None,
-                            costsOutsideFlatRate: Option[BigDecimal] = None)
+                            costsOutsideFlatRate: Option[BigDecimal] = None,
+                            vehicleExpenses: Option[BigDecimal] = None)
 
 object VehicleDetailsDb {
   implicit val format: Format[VehicleDetailsDb] = Json.format[VehicleDetailsDb]

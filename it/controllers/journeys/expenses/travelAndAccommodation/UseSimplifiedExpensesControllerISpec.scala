@@ -57,6 +57,19 @@ class UseSimplifiedExpensesControllerISpec extends WiremockSpec with Integration
       }
     }
 
+    "the user is an individual" must {
+      "redirect to 'there is a problem page' when VehicleDetailsDB data is 'None'" in {
+        AuthStub.authorised()
+        AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.obj()))
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(url).get())
+
+        result.header(HeaderNames.LOCATION) mustBe Some("/update-and-submit-income-tax-return/self-employment/there-is-a-problem")
+        result.status mustBe SEE_OTHER
+      }
+    }
+
     "the user is unauthorized" must {
       "redirect to the login page" in {
         AuthStub.unauthorisedOtherEnrolment()
