@@ -16,8 +16,8 @@
 
 package forms.expenses.travelAndAccommodation
 
-import forms.{LessThanZeroError, NonNumericError, OverMaxError}
 import forms.mappings.Mappings
+import forms.{LessThanZeroError, NonNumericError, OverMaxError}
 import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 

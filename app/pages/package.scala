@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import controllers.standard
 import models.common.BusinessId
 import models.database.UserAnswers
 import play.api.libs.json.Reads
 import play.api.mvc.Call
 import queries.Gettable
-import controllers.standard
 
 package object pages {
   def standardPage: Call =

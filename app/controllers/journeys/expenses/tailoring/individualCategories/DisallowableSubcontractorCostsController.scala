@@ -19,10 +19,9 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.BooleanFormProvider
-import models.{CheckMode, Mode}
-import models.common.{BusinessId, TaxYear}
-import models.common.Journey
 import models.common.Journey.ExpensesConstruction
+import models.common.{BusinessId, Journey, TaxYear}
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DisallowableSubcontractorCostsPage
 import play.api.i18n.{I18nSupport, MessagesApi}

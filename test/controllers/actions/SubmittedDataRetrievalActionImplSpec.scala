@@ -21,11 +21,10 @@ import cats.data.EitherT
 import cats.implicits._
 import connectors.SelfEmploymentConnector
 import controllers.actions.AuthenticatedIdentifierAction.User
-import models.common.JourneyAnswersContext
+import models.common.{Journey, JourneyAnswersContext}
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.common.Journey
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchersSugar._
 import org.mockito.IdiomaticMockito.StubbingOps

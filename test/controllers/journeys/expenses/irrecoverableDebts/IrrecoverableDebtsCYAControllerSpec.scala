@@ -17,9 +17,8 @@
 package controllers.journeys.expenses.irrecoverableDebts
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
-import models.common.Journey
 import pages.expenses.irrecoverableDebts.IrrecoverableDebtsCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

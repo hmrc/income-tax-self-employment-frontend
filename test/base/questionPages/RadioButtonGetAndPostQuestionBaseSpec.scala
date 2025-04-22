@@ -79,75 +79,70 @@ abstract case class RadioButtonGetAndPostQuestionBaseSpec[A: Enumerable](control
 
       "Loading page" - {
         "Redirect to Journey Recover for a GET if prerequisite data is not found" in new TestScenario(userType, None) {
-          running(application) {
-            val result = route(application, getRequest).value
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
-          }
+          val result = route(application, getRequest).value
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "Return OK for a GET if an empty page" in new TestScenario(userType, Some(baseAnswers)) {
-          running(application) {
-            val result = route(application, getRequest).value
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual expectedView(form, this)(getRequest, messages(application), application)
-          }
+          val result = route(application, getRequest).value
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual expectedView(form, this)(getRequest, messages(application), application)
+          application.stop()
+
         }
 
         "Return OK for a GET if an answer to the previous question exists, with the view populated with the previous answer" in new TestScenario(
           userType,
           Some(filledUserAnswers)) {
-          running(application) {
-            val result = route(application, getRequest).value
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
-          }
+          val result = route(application, getRequest).value
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual expectedView(form.fill(validAnswer), this)(getRequest, messages(application), application)
+          application.stop()
         }
       }
 
       "Submitting page" - {
         "Redirect to Journey Recovery for POST if no prerequisite data is found" in new TestScenario(userType, None) {
-          running(application) {
-            val result = route(application, getRequest).value
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
-          }
+          val result = route(application, getRequest).value
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual genRoutes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "Return a Bad Request when invalid data is submitted" in new TestScenario(userType, Some(filledUserAnswers)) {
-          running(application) {
-            val request           = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-            val boundForm         = createForm(this.userType).bind(Map("value" -> "invalid value"))
-            val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
-            mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
-            mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
-              *[DataRequest[_]],
-              *[FormBinding],
-              *[Writes[Any]]
-            ) returns BadRequest(expectedErrorView).asFuture
+          val request           = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
+          val boundForm         = createForm(this.userType).bind(Map("value" -> "invalid value"))
+          val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
+          mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
+          mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
+            *[DataRequest[_]],
+            *[FormBinding],
+            *[Writes[Any]]
+          ) returns BadRequest(expectedErrorView).asFuture
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual expectedView(boundForm, this)(request, messages(application), application)
-          }
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual expectedView(boundForm, this)(request, messages(application), application)
+          application.stop()
         }
 
         "Redirect to the next page on submit" in new TestScenario(userType, Some(filledUserAnswers)) {
-          running(application) {
-            mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
-            mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
-              *[DataRequest[_]],
-              *[FormBinding],
-              *[Writes[Any]]
-            ) returns SeeOther(onwardRoute.url).asFuture
+          mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
+          mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
+            *[DataRequest[_]],
+            *[FormBinding],
+            *[Writes[Any]]
+          ) returns SeeOther(onwardRoute.url).asFuture
 
-            val result = route(application, postRequest).value
+          val result = route(application, postRequest).value
 
-            val redirectMatchesOnwardRoute = onwardRoute.url.endsWith(redirectLocation(result).value)
-            status(result) mustEqual SEE_OTHER
-            assert(redirectMatchesOnwardRoute)
-          }
+          val redirectMatchesOnwardRoute = onwardRoute.url.endsWith(redirectLocation(result).value)
+          status(result) mustEqual SEE_OTHER
+          assert(redirectMatchesOnwardRoute)
+          application.stop()
         }
 
       }

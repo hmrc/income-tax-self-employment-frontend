@@ -18,10 +18,9 @@ package controllers.journeys.expenses.financialCharges
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.financialCharges.routes._
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import models.common.Journey
 import models.common.Journey.ExpensesFinancialCharges
+import models.common.{BusinessId, Journey, TaxYear, UserType}
+import models.database.UserAnswers
 import pages.expenses.financialCharges.FinancialChargesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

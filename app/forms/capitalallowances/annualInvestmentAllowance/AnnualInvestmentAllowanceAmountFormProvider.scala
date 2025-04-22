@@ -16,8 +16,8 @@
 
 package forms.capitalallowances.annualInvestmentAllowance
 
-import forms.mappings.Mappings
 import forms.OverMaxError
+import forms.mappings.Mappings
 import models.common.{MoneyBounds, UserType}
 import play.api.data.Form
 

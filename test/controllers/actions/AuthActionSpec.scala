@@ -24,7 +24,7 @@ import controllers.standard.routes
 import mocks.MockErrorHandler.{mockErrorHandler, mockInternalServerError}
 import play.api.Application
 import play.api.mvc.Results.InternalServerError
-import play.api.mvc.{Action, AnyContent, BodyParsers, Result, Results}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._

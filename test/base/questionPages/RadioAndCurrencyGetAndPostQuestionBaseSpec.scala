@@ -62,33 +62,30 @@ abstract case class RadioAndCurrencyGetAndPostQuestionBaseSpec[A, B](controller:
       "on page load" - {
         "answers exist for the page" - {
           "return Ok and the view with the existing answer" in new TestScenario(user, answers = pageAnswers.some, service = stubbedService) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result = route(application, getRequest).value
 
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form.fill(validFormModel), this)(getRequest, messages(application), application)
-            }
+            status(result) shouldBe OK
+            contentAsString(result) shouldBe expectedView(form.fill(validFormModel), this)(getRequest, messages(application), application)
+            application.stop()
           }
         }
         "the page has no existing answers" - {
           "return Ok" in new TestScenario(user, answers = baseAnswers.some, service = stubbedService) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result = route(application, getRequest).value
 
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form, this)(getRequest, messages(application), application)
-            }
+            status(result) shouldBe OK
+            contentAsString(result) shouldBe expectedView(form, this)(getRequest, messages(application), application)
+            application.stop()
           }
         }
         // Below test for checking `requireData` is invoked.
         "no answers exist in the session" - {
           "redirect to the journey recovery controller" in new TestScenario(user, answers = None, service = stubbedService) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result = route(application, getRequest).value
 
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-            }
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+            application.stop()
           }
         }
       }
@@ -96,34 +93,31 @@ abstract case class RadioAndCurrencyGetAndPostQuestionBaseSpec[A, B](controller:
       "on page submission" - {
         "valid data is submitted" - {
           "redirect to the next page" in new TestScenario(user, answers = pageAnswers.some, service = stubbedService) {
-            running(application) {
-              val result = route(application, postRequest).value
+            val result = route(application, postRequest).value
 
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe onwardRoute.url
-            }
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result).value shouldBe onwardRoute.url
+            application.stop()
           }
         }
         "invalid data is submitted" - {
           "return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some, service = stubbedService) {
-            running(application) {
-              val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-              val result    = route(application, request).value
-              val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
+            val request   = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
+            val result    = route(application, request).value
+            val boundForm = createForm(userType).bind(Map("value" -> "invalid value"))
 
-              status(result) shouldBe BAD_REQUEST
-              contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)
-            }
+            status(result) shouldBe BAD_REQUEST
+            contentAsString(result) shouldBe expectedView(boundForm, this)(request, messages(application), application)
+            application.stop()
           }
         }
         "no answers exist in the session" - {
           "Redirect to the journey recovery page" in new TestScenario(user, answers = None, service = stubbedService) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result = route(application, getRequest).value
 
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-            }
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+            application.stop()
           }
         }
       }

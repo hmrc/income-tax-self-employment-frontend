@@ -16,7 +16,7 @@
 
 package models.journeys.expenses.travelAndAccommodation
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 case class TravelAndAccommodationJourneyAnswers(
     expenseType: TravelAndAccommodationExpenseType,

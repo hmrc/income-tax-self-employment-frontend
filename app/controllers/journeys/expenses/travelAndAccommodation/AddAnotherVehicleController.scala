@@ -18,9 +18,9 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
-import models.{CheckMode, Index, Mode}
 import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
+import models.{CheckMode, Mode}
 import navigation.TravelAndAccommodationNavigator
 import pages.AddAnotherVehiclePage
 import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage

@@ -19,9 +19,8 @@ package controllers.journeys.expenses.tailoring
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import builders.ExpensesTailoringJsonBuilder._
 import controllers.journeys.expenses.tailoring
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
-import models.common.Journey
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import pages.expenses.tailoring._
 import play.api.Application

@@ -95,19 +95,18 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
             val form        = formProvider(page, userScenario.userType)
 
-            running(application) {
-              val request = FakeRequest(GET, workFromBusinessPremisesRoute)
+            val request = FakeRequest(GET, workFromBusinessPremisesRoute)
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
+            val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
-              val expectedResult =
-                view(form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -121,21 +120,21 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
             val form        = formProvider(page, userScenario.userType)
 
-            running(application) {
-              val request = FakeRequest(GET, workFromBusinessPremisesRoute)
+            val request = FakeRequest(GET, workFromBusinessPremisesRoute)
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
+            val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
-              val expectedResult =
-                view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+            val expectedResult =
+              view(form.fill(WorkFromBusinessPremises.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
+                request,
+                messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
+
           }
         }
       }
@@ -144,14 +143,13 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, workFromBusinessPremisesRoute)
+        val request = FakeRequest(GET, workFromBusinessPremisesRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -171,16 +169,15 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             )
             .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, workFromBusinessPremisesRoute)
-              .withFormUrlEncodedBody(("value", WorkFromBusinessPremises.values.head.toString))
+        val request =
+          FakeRequest(POST, workFromBusinessPremisesRoute)
+            .withFormUrlEncodedBody(("value", WorkFromBusinessPremises.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -190,23 +187,22 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
             val form        = formProvider(page, userScenario.userType)
 
-            running(application) {
-              val request =
-                FakeRequest(POST, workFromBusinessPremisesRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val request =
+              FakeRequest(POST, workFromBusinessPremisesRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = form.bind(Map("value" -> ""))
+            val boundForm = form.bind(Map("value" -> ""))
 
-              val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
+            val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
@@ -214,23 +210,22 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
             val form        = formProvider(page, userScenario.userType)
 
-            running(application) {
-              val request =
-                FakeRequest(POST, workFromBusinessPremisesRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val request =
+              FakeRequest(POST, workFromBusinessPremisesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = form.bind(Map("value" -> "invalid value"))
+            val boundForm = form.bind(Map("value" -> "invalid value"))
 
-              val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
+            val view = application.injector.instanceOf[WorkFromBusinessPremisesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -244,27 +239,26 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
                 )
                 .build()
 
-            running(application) {
-              when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-              when(
-                mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesWorkplaceRunningCosts))(
-                  any,
-                  HeaderCarrier(any))) thenReturn EitherT.rightT(())
+            when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+            when(
+              mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesWorkplaceRunningCosts))(
+                any,
+                HeaderCarrier(any))) thenReturn EitherT.rightT(())
 
-              val premisesRoute: String = routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode).url
+            val premisesRoute: String = routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode).url
 
-              val request =
-                FakeRequest(POST, premisesRoute)
-                  .withFormUrlEncodedBody(("value", WorkFromBusinessPremises.YesAllowable.toString))
+            val request =
+              FakeRequest(POST, premisesRoute)
+                .withFormUrlEncodedBody(("value", WorkFromBusinessPremises.YesAllowable.toString))
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual onwardRoute.url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual onwardRoute.url
 
-              verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesWorkplaceRunningCosts))(any, HeaderCarrier(any))
-              verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-            }
+            verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesWorkplaceRunningCosts))(any, HeaderCarrier(any))
+            verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+            application.stop()
           }
         }
       }
@@ -273,17 +267,16 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, workFromBusinessPremisesRoute)
-              .withFormUrlEncodedBody(("value", WorkFromBusinessPremises.values.head.toString))
+        val request =
+          FakeRequest(POST, workFromBusinessPremisesRoute)
+            .withFormUrlEncodedBody(("value", WorkFromBusinessPremises.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }

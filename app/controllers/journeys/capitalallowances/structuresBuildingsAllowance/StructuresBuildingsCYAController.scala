@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.structuresBuildingsAllowance
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.structuresBuildingsAllowance
-import models.common._
 import models.common.Journey.CapitalAllowancesStructuresBuildings
+import models.common._
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructuresBuildingsAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
