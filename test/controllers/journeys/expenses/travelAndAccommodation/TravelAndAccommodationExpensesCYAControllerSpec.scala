@@ -166,8 +166,8 @@ class TravelAndAccommodationExpensesCYAControllerSpec extends CYAOnPageLoadContr
       .trim shouldBe "Actual costs"
   }
 
-  //TODO These tests will be addressed in the it tests using VehicleDetailsDb model
-/*  "clear YourFlatRateForVehicleExpensesPage, VehicleFlatRateChoicePage and VehicleExpensesPage when changing simplified expenses answer to Yes" in {
+  // TODO These tests will be addressed in the it tests using VehicleDetailsDb model
+  /*  "clear YourFlatRateForVehicleExpensesPage, VehicleFlatRateChoicePage and VehicleExpensesPage when changing simplified expenses answer to Yes" in {
     val initialAnswers = userAnswers.set(SimplifiedExpensesPage, false, Some(businessId)).success.value
     val updatedAnswers = clearDependentPages(SimplifiedExpensesPage, true, initialAnswers, businessId).futureValue
 
