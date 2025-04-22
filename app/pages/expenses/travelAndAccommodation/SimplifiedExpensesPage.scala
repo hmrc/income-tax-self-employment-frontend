@@ -27,9 +27,9 @@ case object SimplifiedExpensesPage extends OneQuestionPage[Boolean] {
     val needsClear = !oldAnswers.usedSimplifiedExpenses.contains(value)
 
     oldAnswers.copy(
-      calculateFlatRate     = if (needsClear) None else oldAnswers.calculateFlatRate,
-      expenseMethod         = if (needsClear) None else oldAnswers.expenseMethod,
-      vehicleExpenses       = if (needsClear) None else oldAnswers.vehicleExpenses,
+      calculateFlatRate = if (needsClear) None else oldAnswers.calculateFlatRate,
+      expenseMethod = if (needsClear) None else oldAnswers.expenseMethod,
+      vehicleExpenses = if (needsClear) None else oldAnswers.vehicleExpenses,
       usedSimplifiedExpenses = Some(value)
     )
   }

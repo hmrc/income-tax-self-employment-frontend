@@ -54,7 +54,15 @@ class SimplifiedExpensesPageSpec extends PlaySpec with MockitoSugar {
       }
 
       "when the value selected is 'false'" in {
-        SimplifiedExpensesPage.clearDependentPageDataAndUpdate(value = false, testVehicleDetails) mustBe VehicleDetailsDb(Some("Car"), Some(CarOrGoodsVehicle), Some(false), None, Some(100000), None, Some(100.00), None)
+        SimplifiedExpensesPage.clearDependentPageDataAndUpdate(value = false, testVehicleDetails) mustBe VehicleDetailsDb(
+          Some("Car"),
+          Some(CarOrGoodsVehicle),
+          Some(false),
+          None,
+          Some(100000),
+          None,
+          Some(100.00),
+          None)
       }
 
     }

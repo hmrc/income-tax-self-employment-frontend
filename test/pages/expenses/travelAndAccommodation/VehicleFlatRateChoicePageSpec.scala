@@ -31,7 +31,15 @@ class VehicleFlatRateChoicePageSpec extends PlaySpec with MockitoSugar {
     }
 
     "clearPageData when the flag is false" in {
-      VehicleFlatRateChoicePage.clearDependentPageDataAndUpdate(flatRateChoice = false, testVehicleDetails) mustBe VehicleDetailsDb(Some("Car"), Some(CarOrGoodsVehicle), Some(true), Some(true), None, None, None, Some(300.00))
+      VehicleFlatRateChoicePage.clearDependentPageDataAndUpdate(flatRateChoice = false, testVehicleDetails) mustBe VehicleDetailsDb(
+        Some("Car"),
+        Some(CarOrGoodsVehicle),
+        Some(true),
+        Some(true),
+        None,
+        None,
+        None,
+        Some(300.00))
     }
 
     "do not clearPageData when the flag is true" in {
