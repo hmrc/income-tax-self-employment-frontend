@@ -76,11 +76,9 @@ class SimplifiedExpensesController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, index, mode, vehicle))),
                 value =>
                   for {
-                    updatedAnswers <- Future.successful(clearDependentPageData(value, optVehicleDetails))
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
-                      data = updatedAnswers
-                        .getOrElse(VehicleDetailsDb()),
+                      data = page.clearDependentPageDataAndUpdate(value, optVehicleDetails.getOrElse(VehicleDetailsDb())),
                       Some(index)
                     )
                   } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
@@ -90,16 +88,4 @@ class SimplifiedExpensesController @Inject() (
         }
       }
     }
-
-  private def clearDependentPageData(value: Boolean, oldAnswers: Option[VehicleDetailsDb]): Option[VehicleDetailsDb] =
-    oldAnswers.map { answers =>
-      val needsClear = !answers.usedSimplifiedExpenses.contains(value)
-      answers.copy(
-        calculateFlatRate = if (needsClear) None else answers.calculateFlatRate,
-        expenseMethod = if (needsClear) None else answers.expenseMethod,
-        vehicleExpenses = if (needsClear) None else answers.vehicleExpenses,
-        usedSimplifiedExpenses = Some(value)
-      )
-    }
-
 }

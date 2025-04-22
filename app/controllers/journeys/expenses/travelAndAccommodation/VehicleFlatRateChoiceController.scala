@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
-import models.common.Journey.ExpensesVehicleDetails
+import models.common.Journey.{ExpensesVehicleDetails, values}
 import models.common.{BusinessId, TaxYear}
 import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
 import models.{Index, Mode}
@@ -80,11 +80,7 @@ class VehicleFlatRateChoiceController @Inject() (
                   for {
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
-                      data = updateData(
-                        value,
-                        optVehicleDetails
-                          .getOrElse(VehicleDetailsDb())
-                          .copy(calculateFlatRate = Some(value))),
+                      data = page.clearDependentPageDataAndUpdate(value, optVehicleDetails.getOrElse(VehicleDetailsDb())),
                       Some(index)
                     )
                   } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
@@ -95,7 +91,4 @@ class VehicleFlatRateChoiceController @Inject() (
       }
     }
 
-  private def updateData(flatRateChoice: Boolean, vehicleDetails: VehicleDetailsDb): VehicleDetailsDb =
-    if (flatRateChoice) vehicleDetails
-    else vehicleDetails.copy(workMileage = None, costsOutsideFlatRate = None, expenseMethod = None)
 }

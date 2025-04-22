@@ -16,11 +16,22 @@
 
 package pages.expenses.travelAndAccommodation
 
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
 import pages.OneQuestionPage
-import queries.Settable
 
 case object SimplifiedExpensesPage extends OneQuestionPage[Boolean] {
 
   override def toString: String = "simplifiedExpenses"
+
+  def clearDependentPageDataAndUpdate(value: Boolean, oldAnswers: VehicleDetailsDb): VehicleDetailsDb = {
+    val needsClear = !oldAnswers.usedSimplifiedExpenses.contains(value)
+
+    oldAnswers.copy(
+      calculateFlatRate     = if (needsClear) None else oldAnswers.calculateFlatRate,
+      expenseMethod         = if (needsClear) None else oldAnswers.expenseMethod,
+      vehicleExpenses       = if (needsClear) None else oldAnswers.vehicleExpenses,
+      usedSimplifiedExpenses = Some(value)
+    )
+  }
 
 }

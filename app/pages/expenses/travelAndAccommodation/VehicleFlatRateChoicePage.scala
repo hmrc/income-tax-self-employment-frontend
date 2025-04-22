@@ -16,12 +16,16 @@
 
 package pages.expenses.travelAndAccommodation
 
-import pages.{CostsNotCoveredPage, OneQuestionPage}
-import queries.Settable
+import models.journeys.expenses.travelAndAccommodation.VehicleDetailsDb
+import pages.OneQuestionPage
 
 case object VehicleFlatRateChoicePage extends OneQuestionPage[Boolean] {
 
-  override val dependentPagesWhenNo: List[Settable[_]] = List(TravelForWorkYourMileagePage, CostsNotCoveredPage)
+  def clearDependentPageDataAndUpdate(flatRateChoice: Boolean, vehicleDetails: VehicleDetailsDb): VehicleDetailsDb = {
+    val updated = vehicleDetails.copy(calculateFlatRate = Some(flatRateChoice))
+    if (flatRateChoice) updated
+    else updated.copy(workMileage = None, costsOutsideFlatRate = None, expenseMethod = None)
+  }
 
   override def toString: String = "vehicleFlatRateChoice"
 }

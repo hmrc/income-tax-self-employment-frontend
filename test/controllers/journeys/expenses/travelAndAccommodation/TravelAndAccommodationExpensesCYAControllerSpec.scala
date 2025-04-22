@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.cyaPages.CYAOnPageLoadControllerBaseSpec
 import common.TestApp.buildAppFromUserType
 import controllers.journeys.clearDependentPages
-import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.NormalMode
 import models.common.Journey.ExpensesTravelForWork
 import models.common.UserType.Individual
@@ -32,7 +31,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.CostsNotCoveredPage
 import pages.expenses.travelAndAccommodation._
 import play.api.i18n.Messages
-import play.api.libs.json.Format.{GenericFormat, invariantFunctorFormat}
+import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Call, Result}
 import play.api.test.FakeRequest
