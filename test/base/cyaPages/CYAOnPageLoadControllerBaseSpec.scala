@@ -66,6 +66,7 @@ trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
 
             status(result) mustBe OK
             assertEqualWithDiff(contentAsString(result), expectedResult)
+            application.stop()
           }
         }
       }
@@ -78,6 +79,7 @@ trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }

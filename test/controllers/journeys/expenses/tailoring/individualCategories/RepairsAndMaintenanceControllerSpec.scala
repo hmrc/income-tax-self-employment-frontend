@@ -99,22 +99,20 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
-              val request = FakeRequest(GET, repairsAndMaintenanceRoute)
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val view = application.injector.instanceOf[RepairsAndMaintenanceView]
 
-              val view = application.injector.instanceOf[RepairsAndMaintenanceView]
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -126,27 +124,25 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
-              val request = FakeRequest(GET, repairsAndMaintenanceRoute)
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val view = application.injector.instanceOf[RepairsAndMaintenanceView]
 
-              val view = application.injector.instanceOf[RepairsAndMaintenanceView]
+            val expectedResult =
+              view(
+                userScenario.form.fill(RepairsAndMaintenance.values.head),
+                NormalMode,
+                userScenario.userType,
+                taxYear,
+                businessId,
+                userScenario.accountingType
+              )(request, messages(application)).toString
 
-              val expectedResult =
-                view(
-                  userScenario.form.fill(RepairsAndMaintenance.values.head),
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType
-                )(request, messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -155,14 +151,13 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, repairsAndMaintenanceRoute)
+        val request = FakeRequest(GET, repairsAndMaintenanceRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -178,18 +173,18 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
             )
             .build()
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
-          val request =
-            FakeRequest(POST, repairsAndMaintenanceRoute)
-              .withFormUrlEncodedBody(("value", RepairsAndMaintenance.values.head.toString))
+        val request =
+          FakeRequest(POST, repairsAndMaintenanceRoute)
+            .withFormUrlEncodedBody(("value", RepairsAndMaintenance.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
+
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -203,26 +198,24 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
             )
             .build()
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(
-            mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))) thenReturn EitherT
-            .rightT(())
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))) thenReturn EitherT
+          .rightT(())
 
-          val repairsAndMaintenanceRoute: String = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, CheckMode).url
+        val repairsAndMaintenanceRoute: String = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, CheckMode).url
 
-          val request =
-            FakeRequest(POST, repairsAndMaintenanceRoute)
-              .withFormUrlEncodedBody(("value", RepairsAndMaintenance.YesAllowable.toString))
+        val request =
+          FakeRequest(POST, repairsAndMaintenanceRoute)
+            .withFormUrlEncodedBody(("value", RepairsAndMaintenance.YesAllowable.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-        }
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -233,26 +226,24 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, repairsAndMaintenanceRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val request =
-                FakeRequest(POST, repairsAndMaintenanceRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val view = application.injector.instanceOf[RepairsAndMaintenanceView]
 
-              val view = application.injector.instanceOf[RepairsAndMaintenanceView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
@@ -261,26 +252,24 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, repairsAndMaintenanceRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val request =
-                FakeRequest(POST, repairsAndMaintenanceRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val view = application.injector.instanceOf[RepairsAndMaintenanceView]
 
-              val view = application.injector.instanceOf[RepairsAndMaintenanceView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -289,17 +278,16 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, repairsAndMaintenanceRoute)
-              .withFormUrlEncodedBody(("value", RepairsAndMaintenance.values.head.toString))
+        val request =
+          FakeRequest(POST, repairsAndMaintenanceRoute)
+            .withFormUrlEncodedBody(("value", RepairsAndMaintenance.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 

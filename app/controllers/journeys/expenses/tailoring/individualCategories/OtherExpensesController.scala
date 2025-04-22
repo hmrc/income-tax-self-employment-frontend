@@ -19,12 +19,11 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import controllers.actions._
 import controllers.journeys.{clearDependentPages, fillForm}
 import forms.standard.EnumerableFormProvider
-import models.{CheckMode, Mode}
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
 import models.common.Journey.ExpensesOtherExpenses
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.OtherExpenses
 import models.journeys.expenses.individualCategories.OtherExpenses.enumerable
+import models.{CheckMode, Mode}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.OtherExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}

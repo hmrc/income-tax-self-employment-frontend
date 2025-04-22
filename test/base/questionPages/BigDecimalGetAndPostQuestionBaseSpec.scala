@@ -70,36 +70,34 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
     "on page load" - {
       "answers exist for the page" - {
         "return Ok and the view with the existing answer" in new TestScenario(answers = pageAnswers.some) {
-          running(application) {
-            val result = route(application, getRequest).value
 
-            status(result) shouldBe OK
+          val result = route(application, getRequest).value
 
-            contentAsString(result) shouldBe expectedView(form().fill(amount), this)(getRequest, messages(application), application)
-          }
+          status(result) shouldBe OK
+
+          contentAsString(result) shouldBe expectedView(form().fill(amount), this)(getRequest, messages(application), application)
+          application.stop()
         }
       }
       "the page has no existing answers" - {
         forAll(userTypeCases) { user =>
           s"when user is $user, return Ok" in new TestScenario(user, answers = baseAnswers.some) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result = route(application, getRequest).value
 
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
-            }
+            status(result) shouldBe OK
+            contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
+            application.stop()
           }
         }
       }
       // Below test for checking `requireData` is invoked.
       "no answers exist in the session" - {
         "redirect to the journey recovery controller" in new TestScenario(answers = None) {
-          running(application) {
-            val result = route(application, getRequest).value
+          val result = route(application, getRequest).value
 
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }
@@ -114,13 +112,12 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
             *[Writes[BigDecimal]]
           ) returns Redirect(onwardRoute).asFuture
 
-          running(application) {
-            val result                     = route(application, postRequest).value
-            val redirectMatchesOnwardRoute = redirectLocation(result).value.endsWith(onwardRoute.url)
+          val result                     = route(application, postRequest).value
+          val redirectMatchesOnwardRoute = redirectLocation(result).value.endsWith(onwardRoute.url)
 
-            status(result) shouldBe SEE_OTHER
-            assert(redirectMatchesOnwardRoute)
-          }
+          status(result) shouldBe SEE_OTHER
+          assert(redirectMatchesOnwardRoute)
+          application.stop()
         }
       }
       "invalid data is submitted" - {
@@ -137,23 +134,21 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
               *[Writes[BigDecimal]]
             ) returns BadRequest(expectedErrorView).asFuture
 
-            running(application) {
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) shouldBe BAD_REQUEST
-              contentAsString(result) shouldBe expectedErrorView
-            }
+            status(result) shouldBe BAD_REQUEST
+            contentAsString(result) shouldBe expectedErrorView
+            application.stop()
           }
         }
       }
       "no answers exist in the session" - {
         "Redirect to the journey recovery page" in new TestScenario(answers = None) {
-          running(application) {
-            val result = route(application, postRequest).value
+          val result = route(application, postRequest).value
 
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }

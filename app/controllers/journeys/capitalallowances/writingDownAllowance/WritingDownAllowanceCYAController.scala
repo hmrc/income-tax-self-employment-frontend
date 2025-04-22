@@ -18,8 +18,8 @@ package controllers.journeys.capitalallowances.writingDownAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
-import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.common.Journey.CapitalAllowancesWritingDownAllowance
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.capitalallowances.writingDownAllowance.WritingDownAllowanceAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -18,9 +18,9 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
+import models.NormalMode
 import models.common.UserType
 import models.database.UserAnswers
-import models.NormalMode
 import models.journeys.expenses.travelAndAccommodation.VehicleType
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.Mockito.when
@@ -60,16 +60,15 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, vehicleTypeRoute)
+          val request = FakeRequest(GET, vehicleTypeRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[VehicleTypeView]
+          val view = application.injector.instanceOf[VehicleTypeView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
+          application.stop()
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -84,18 +83,17 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, vehicleTypeRoute)
+          val request = FakeRequest(GET, vehicleTypeRoute)
 
-            val view = application.injector.instanceOf[VehicleTypeView]
+          val view = application.injector.instanceOf[VehicleTypeView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), vehicleName, taxYear, businessId, NormalMode)(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(VehicleType.values.head), vehicleName, taxYear, businessId, NormalMode)(
+            request,
+            messages(application)).toString
+          application.stop()
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -115,17 +113,15 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
               )
               .build()
 
-          running(application) {
+          val request =
+            FakeRequest(POST, vehicleTypeRoute)
+              .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
 
-            val request =
-              FakeRequest(POST, vehicleTypeRoute)
-                .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
+          val result = route(application, request).value
 
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          application.stop()
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -136,20 +132,19 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, vehicleTypeRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
+          val request =
+            FakeRequest(POST, vehicleTypeRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> "invalid value"))
+          val boundForm = form.bind(Map("value" -> "invalid value"))
 
-            val view = application.injector.instanceOf[VehicleTypeView]
+          val view = application.injector.instanceOf[VehicleTypeView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
-          }
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, vehicleName, taxYear, businessId, NormalMode)(request, messages(application)).toString
+          application.stop()
         }
       }
     }
@@ -158,31 +153,29 @@ class VehicleTypeControllerSpec extends SpecBase with MacroBasedMatchers {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, vehicleTypeRoute)
+      val request = FakeRequest(GET, vehicleTypeRoute)
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
 
     "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, vehicleTypeRoute)
-            .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
+      val request =
+        FakeRequest(POST, vehicleTypeRoute)
+          .withFormUrlEncodedBody(("value", VehicleType.values.head.toString))
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
   }
 }

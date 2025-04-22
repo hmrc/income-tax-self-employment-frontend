@@ -18,10 +18,9 @@ package controllers.journeys.expenses.construction
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.construction
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import models.common.Journey
 import models.common.Journey.ExpensesConstruction
+import models.common.{BusinessId, Journey, TaxYear, UserType}
+import models.database.UserAnswers
 import pages.expenses.construction.ConstructionIndustryCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

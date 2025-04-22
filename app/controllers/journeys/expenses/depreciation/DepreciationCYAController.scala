@@ -18,8 +18,8 @@ package controllers.journeys.expenses.depreciation
 
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
-import models.common._
 import models.common.Journey.ExpensesDepreciation
+import models.common._
 import models.journeys.expenses.depreciation.DepreciationJourneyAnswers
 import pages.expenses.depreciation.DepreciationCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

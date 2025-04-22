@@ -71,25 +71,24 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
           val summaryList: SummaryList = TravelMileageSummaryViewModel.buildSummaryList(mileage)(messages(application))
 
-          running(application) {
-            val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
+          val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
+          val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(
-              form,
-              taxYear,
-              businessId,
-              userType,
-              workMileage,
-              totalFlatRate,
-              summaryList,
-              showSelection = false,
-              NormalMode)(request, messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(
+            form,
+            taxYear,
+            businessId,
+            userType,
+            workMileage,
+            totalFlatRate,
+            summaryList,
+            showSelection = false,
+            NormalMode)(request, messages(application)).toString
+          application.stop()
         }
 
         "redirect to Journey Recovery for a GET if no existing data is found for TravelForWorkYourMileagePage" in {
@@ -101,14 +100,13 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
+          val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -128,26 +126,26 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           val summaryList: SummaryList = TravelMileageSummaryViewModel.buildSummaryList(mileage)(messages(application))
-          running(application) {
-            val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
-            val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
+          val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
-            val result = route(application, request).value
+          val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(
-              form.fill(YourFlatRateForVehicleExpenses.values.head),
-              taxYear,
-              businessId,
-              userType,
-              workMileage,
-              totalFlatRate,
-              summaryList,
-              showSelection = false,
-              NormalMode
-            )(request, messages(application)).toString
-          }
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(
+            form.fill(YourFlatRateForVehicleExpenses.values.head),
+            taxYear,
+            businessId,
+            userType,
+            workMileage,
+            totalFlatRate,
+            summaryList,
+            showSelection = false,
+            NormalMode
+          )(request, messages(application)).toString
+          application.stop()
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -172,30 +170,28 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
               )
               .build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
-                .withFormUrlEncodedBody(("value", YourFlatRateForVehicleExpenses.values.head.toString))
+          val request =
+            FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+              .withFormUrlEncodedBody(("value", YourFlatRateForVehicleExpenses.values.head.toString))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          application.stop()
         }
 
         "redirect to Journey Recovery for a POST if no existing data is found for TravelForWorkYourMileagePage" in {
 
           val application = applicationBuilder(userAnswers = None, userType).build()
 
-          running(application) {
-            val request = FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+          val request = FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -212,29 +208,29 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
           val summaryList: SummaryList = TravelMileageSummaryViewModel.buildSummaryList(mileage)(messages(application))
-          running(application) {
-            val request =
-              FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> "invalid value"))
+          val request =
+            FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
+          val boundForm = form.bind(Map("value" -> "invalid value"))
 
-            val result = route(application, request).value
+          val view = application.injector.instanceOf[YourFlatRateForVehicleExpensesView]
 
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(
-              boundForm,
-              taxYear,
-              businessId,
-              userType,
-              workMileage,
-              totalFlatRate,
-              summaryList,
-              showSelection = true,
-              NormalMode)(request, messages(application)).toString
-          }
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(
+            boundForm,
+            taxYear,
+            businessId,
+            userType,
+            workMileage,
+            totalFlatRate,
+            summaryList,
+            showSelection = true,
+            NormalMode)(request, messages(application)).toString
+          application.stop()
         }
       }
     }
@@ -243,31 +239,29 @@ class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBa
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
+      val request = FakeRequest(GET, yourFlatRateForVehicleExpensesRoute)
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
 
     "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
-            .withFormUrlEncodedBody(("value", YourFlatRateForVehicleExpenses.values.head.toString))
+      val request =
+        FakeRequest(POST, yourFlatRateForVehicleExpensesRoute)
+          .withFormUrlEncodedBody(("value", YourFlatRateForVehicleExpenses.values.head.toString))
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
   }
 }

@@ -18,10 +18,9 @@ package controllers.journeys.expenses.workplaceRunningCosts
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import models.common.Journey
 import models.common.Journey.ExpensesWorkplaceRunningCosts
+import models.common.{BusinessId, Journey, TaxYear, UserType}
+import models.database.UserAnswers
 import pages.expenses.workplaceRunningCosts.WorkplaceRunningCostsCYAPage
 import play.api.Application
 import play.api.i18n.Messages

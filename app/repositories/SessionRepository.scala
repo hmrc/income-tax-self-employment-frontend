@@ -16,8 +16,10 @@
 
 package repositories
 
+import cats.implicits._
 import config.FrontendAppConfig
 import models.database.UserAnswers
+import org.bson.Document
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
@@ -29,8 +31,6 @@ import java.time.{Clock, Instant}
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import org.bson.Document
-import cats.implicits._
 
 trait SessionRepositoryBase {
 

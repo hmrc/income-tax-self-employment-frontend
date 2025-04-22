@@ -67,33 +67,30 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType)
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
-              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
+            val view = application.injector.instanceOf[TravelAndAccommodationExpenseTypeView]
 
-              val view = application.injector.instanceOf[TravelAndAccommodationExpenseTypeView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must redirect to Journey Recovery for a GET if no existing data is found" in {
             val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
+            val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+            application.stop()
           }
         }
       }
@@ -115,53 +112,49 @@ class TravelAndAccommodationExpenseTypeControllerSpec extends SpecBase with Mock
                 )
                 .build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
+                .withFormUrlEncodedBody(("value[0]", TravelAndAccommodationExpenseType.values.head.toString))
 
-              val request =
-                FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
-                  .withFormUrlEncodedBody(("value[0]", TravelAndAccommodationExpenseType.values.head.toString))
+            val result = route(application, request).value
 
-              val result = route(application, request).value
-
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual onwardRoute.url
-            }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual onwardRoute.url
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
-                  .withFormUrlEncodedBody(("value[0]", "invalid value"))
+            val request =
+              FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
+                .withFormUrlEncodedBody(("value[0]", "invalid value"))
 
-              val boundForm = formProvider(userScenario.userType).bind(Map("value[0]" -> "invalid value"))
+            val boundForm = formProvider(userScenario.userType).bind(Map("value[0]" -> "invalid value"))
 
-              val view = application.injector.instanceOf[TravelAndAccommodationExpenseTypeView]
+            val view = application.injector.instanceOf[TravelAndAccommodationExpenseTypeView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, mode, userScenario.userType, taxYear, businessId)(
-                request,
-                messages(application)).toString
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual view(boundForm, mode, userScenario.userType, taxYear, businessId)(
+              request,
+              messages(application)).toString
+            application.stop()
           }
 
           "must redirect to Journey Recovery for a POST if no existing data is found" in {
             val application = applicationBuilder(userAnswers = None).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
-                  .withFormUrlEncodedBody(("value", TravelAndAccommodationExpenseType.values.head.toString))
+            val request =
+              FakeRequest(POST, onSubmitRoute(taxYear, businessId, mode))
+                .withFormUrlEncodedBody(("value", TravelAndAccommodationExpenseType.values.head.toString))
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-            }
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+            application.stop()
           }
         }
       }

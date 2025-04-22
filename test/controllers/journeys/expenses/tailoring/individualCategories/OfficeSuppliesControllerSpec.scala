@@ -41,7 +41,7 @@ import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Results.SeeOther
 import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, Request}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{POST, await, redirectLocation, route, running, status, writeableOf_AnyContentAsFormUrlEncoded}
+import play.api.test.Helpers.{POST, await, redirectLocation, route, status, writeableOf_AnyContentAsFormUrlEncoded}
 import views.html.journeys.expenses.tailoring.individualCategories.OfficeSuppliesView
 
 import scala.concurrent.Future
@@ -93,28 +93,27 @@ class OfficeSuppliesControllerSpec
 
         def expectedUrl: Call = controllers.journeys.expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
-        running(application) {
-          mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
-          mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
-            *[DataRequest[_]],
-            *[FormBinding],
-            *[Writes[Any]]
-          ) returns SeeOther(onwardRoute.url).asFuture
+        mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
+        mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
+          *[DataRequest[_]],
+          *[FormBinding],
+          *[Writes[Any]]
+        ) returns SeeOther(onwardRoute.url).asFuture
 
-          val userAnswers                               = buildUserAnswers(OfficeSuppliesPage, newAnswer)
-          implicit val request: DataRequest[AnyContent] = fakeDataRequest(userAnswers)
+        val userAnswers                               = buildUserAnswers(OfficeSuppliesPage, newAnswer)
+        implicit val request: DataRequest[AnyContent] = fakeDataRequest(userAnswers)
 
-          mockService
-            .clearExpensesData(taxYear, businessId, ExpensesOfficeSupplies)
-            .returns(EitherT.rightT[Future, ServiceError](()))
+        mockService
+          .clearExpensesData(taxYear, businessId, ExpensesOfficeSupplies)
+          .returns(EitherT.rightT[Future, ServiceError](()))
 
-          val result = route(application, postRequest).value
+        val result = route(application, postRequest).value
 
-          val redirectMatchesExpectedUrl = expectedUrl.url.endsWith(redirectLocation(result).value)
-          status(result) mustEqual SEE_OTHER
-          await(result)
-          assert(redirectMatchesExpectedUrl)
-        }
+        val redirectMatchesExpectedUrl = expectedUrl.url.endsWith(redirectLocation(result).value)
+        status(result) mustEqual SEE_OTHER
+        await(result)
+        assert(redirectMatchesExpectedUrl)
+        application.stop()
       }
     }
   }
