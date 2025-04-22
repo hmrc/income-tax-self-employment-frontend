@@ -29,38 +29,37 @@ import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoice
 
 class VehicleFlatRateChoiceViewSpec extends ViewBaseSpec {
 
-  val application: Application = new GuiceApplicationBuilder().build()
+  val application: Application        = new GuiceApplicationBuilder().build()
   val view: VehicleFlatRateChoiceView = application.injector.instanceOf[VehicleFlatRateChoiceView]
 
-  private val formProvider = app.injector.instanceOf[VehicleFlatRateChoiceFormProvider]
-  private val index: Index = Index(1)
+  private val formProvider    = app.injector.instanceOf[VehicleFlatRateChoiceFormProvider]
+  private val index: Index    = Index(1)
   private val vehicle: String = "Car"
 
   def form(userType: UserType): Form[Boolean] = formProvider(vehicle, userType)
 
-  def view(userType: UserType, mode: Mode, form: Form[Boolean]): Document = {
+  def view(userType: UserType, mode: Mode, form: Form[Boolean]): Document =
     Jsoup.parse(
       view(form, vehicle, userType, taxYear, businessId, index, mode)(fakeRequest, messages).body
     )
-  }
 
   object Expected {
-    val heading = "You can choose how to claim your expenses for Car"
-    val p1  = "If you know your mileage, we can help you calculate a flat rate for your vehicle expenses."
-    val p2 = "You can then decide if you want to go ahead with the flat rate or claim actual expenses."
-    val p3 = "If you have records of your actual expenses, you may choose to skip this step."
+    val heading    = "You can choose how to claim your expenses for Car"
+    val p1         = "If you know your mileage, we can help you calculate a flat rate for your vehicle expenses."
+    val p2         = "You can then decide if you want to go ahead with the flat rate or claim actual expenses."
+    val p3         = "If you have records of your actual expenses, you may choose to skip this step."
     val subHeading = "Do you want to calculate a flat rate?"
-    val error  = "Select yes if you want to calculate a flat rate"
-    val button  = "Continue"
+    val error      = "Select yes if you want to calculate a flat rate"
+    val button     = "Continue"
   }
 
   object ExpectedAgent {
-    val heading = "Your client can choose how to claim their expenses for Car"
-    val p1  = "If you know your client’s mileage, we can help you calculate a flat rate for their vehicle expenses."
-    val p2  = "Your client can then decide if they want to go ahead with the flat rate or claim actual expenses."
-    val p3  = "If you have records of your client’s actual expenses, you may choose to skip this step."
+    val heading    = "Your client can choose how to claim their expenses for Car"
+    val p1         = "If you know your client’s mileage, we can help you calculate a flat rate for their vehicle expenses."
+    val p2         = "Your client can then decide if they want to go ahead with the flat rate or claim actual expenses."
+    val p3         = "If you have records of your client’s actual expenses, you may choose to skip this step."
     val subHeading = "Does your client want to calculate a flat rate?"
-    val error   = "Select yes if your client wants to calculate a flat rate"
+    val error      = "Select yes if your client wants to calculate a flat rate"
   }
 
   "The VehicleFlatRateChoiceViewSpec" when {

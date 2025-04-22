@@ -29,36 +29,36 @@ import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesVie
 
 class SimplifiedExpensesViewSpec extends ViewBaseSpec {
 
-  val application: Application = new GuiceApplicationBuilder().build()
+  val application: Application     = new GuiceApplicationBuilder().build()
   val view: SimplifiedExpensesView = application.injector.instanceOf[SimplifiedExpensesView]
 
-  private val formProvider = app.injector.instanceOf[SimplifiedExpenseFormProvider]
-  private val index: Index = Index(1)
+  private val formProvider    = app.injector.instanceOf[SimplifiedExpenseFormProvider]
+  private val index: Index    = Index(1)
   private val vehicle: String = "Car"
 
   def form(userType: UserType): Form[Boolean] = formProvider(userType, vehicle)
 
-  def view(userType: UserType, mode: Mode, form: Form[Boolean]): Document = {
+  def view(userType: UserType, mode: Mode, form: Form[Boolean]): Document =
     Jsoup.parse(
       view(form, userType, taxYear, businessId, index, mode, vehicle)(fakeRequest, messages).body
     )
-  }
 
   object Expected {
     val heading = "Simplified expenses for vehicles"
-    val p1  = "Simplified expenses are a way of calculating some of your expenses on a pence-per-mile basis instead of working out your actual costs."
+    val p1 = "Simplified expenses are a way of calculating some of your expenses on a pence-per-mile basis instead of working out your actual costs."
     val p2 = "If you’ve used Car in previous tax years, you may have already used simplified expenses."
     val subHeading = "Have you used simplified expenses for Car before?"
-    val error  = "Select yes if you’ve used simplified expenses for Car before"
-    val button  = "Continue"
+    val error      = "Select yes if you’ve used simplified expenses for Car before"
+    val button     = "Continue"
   }
 
   object ExpectedAgent {
     val heading = "Simplified expenses for vehicles"
-    val p1  = "Simplified expenses are a way of calculating some of your client’s expenses on a pence-per-mile basis instead of working out your actual costs."
-    val p2  = "If your client has used Car in previous tax years, they may have already used simplified expenses."
+    val p1 =
+      "Simplified expenses are a way of calculating some of your client’s expenses on a pence-per-mile basis instead of working out your actual costs."
+    val p2         = "If your client has used Car in previous tax years, they may have already used simplified expenses."
     val subHeading = "Has your client used simplified expenses for Car before?"
-    val error   = "Select yes if your client has used simplified expenses for Car before"
+    val error      = "Select yes if your client has used simplified expenses for Car before"
   }
 
   "The SimplifiedExpensesViewSpec" when {

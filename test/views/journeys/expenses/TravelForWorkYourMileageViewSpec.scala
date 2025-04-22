@@ -30,7 +30,7 @@ class TravelForWorkYourMileageViewSpec extends ViewBaseSpec {
   private val view         = app.injector.instanceOf[TravelForWorkYourMileageView]
   private val formProvider = app.injector.instanceOf[TravelForWorkYourMileageFormProvider]
   private val index        = Index(1)
-  private val vehicleName = "Car"
+  private val vehicleName  = "Car"
 
   def form(userType: UserType): Form[BigDecimal] = formProvider(userType, vehicleName)
 
@@ -48,9 +48,9 @@ class TravelForWorkYourMileageViewSpec extends ViewBaseSpec {
 
   object ExpectedAgent {
     val heading = "Your client’s work mileage"
-    val p1      = "Tell us how many miles your client travelled in Car during the tax year and we’ll work out the flat rate amount your client can claim."
-    val label   = "How many miles did your client travel in Car?"
-    val error   = "Enter the number of work miles your client travelled in Car"
+    val p1 = "Tell us how many miles your client travelled in Car during the tax year and we’ll work out the flat rate amount your client can claim."
+    val label = "How many miles did your client travel in Car?"
+    val error = "Enter the number of work miles your client travelled in Car"
   }
 
   "The TravelForWorkYourMileageViewSpec" when {

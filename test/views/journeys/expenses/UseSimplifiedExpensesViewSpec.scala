@@ -26,26 +26,25 @@ import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpenses
 
 class UseSimplifiedExpensesViewSpec extends ViewBaseSpec {
 
-  val application: Application = new GuiceApplicationBuilder().build()
+  val application: Application        = new GuiceApplicationBuilder().build()
   val view: UseSimplifiedExpensesView = application.injector.instanceOf[UseSimplifiedExpensesView]
 
   private val vehicle: String = "Car"
 
-  def view(userType: UserType): Document = {
+  def view(userType: UserType): Document =
     Jsoup.parse(
       view(userType, vehicle, "")(fakeRequest, messages).body
     )
-  }
 
   object Expected {
     val heading = "You have to use simplified expenses for Car"
-    val info = "This is because you’ve already used simplified expenses for this vehicle."
+    val info    = "This is because you’ve already used simplified expenses for this vehicle."
     val button  = "Continue"
   }
 
   object ExpectedAgent {
     val heading = "Your client has to use simplified expenses for Car"
-    val info = "This is because your client has already used simplified expenses for this vehicle."
+    val info    = "This is because your client has already used simplified expenses for this vehicle."
   }
 
   "The UseSimplifiedExpensesViewSpec" when {

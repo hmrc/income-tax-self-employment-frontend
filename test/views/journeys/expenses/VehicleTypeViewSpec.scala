@@ -30,23 +30,22 @@ import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 class VehicleTypeViewSpec extends ViewBaseSpec {
 
   val application: Application = new GuiceApplicationBuilder().build()
-  val view: VehicleTypeView = application.injector.instanceOf[VehicleTypeView]
+  val view: VehicleTypeView    = application.injector.instanceOf[VehicleTypeView]
 
-  private val formProvider = app.injector.instanceOf[VehicleTypeFormProvider]
-  private val index: Index = Index(1)
+  private val formProvider    = app.injector.instanceOf[VehicleTypeFormProvider]
+  private val index: Index    = Index(1)
   private val vehicle: String = "Car"
 
   def form: Form[VehicleType] = formProvider(vehicle)
 
-  def view(mode: Mode, form: Form[VehicleType]): Document = {
+  def view(mode: Mode, form: Form[VehicleType]): Document =
     Jsoup.parse(
       view(form, vehicle, taxYear, businessId, index, mode)(fakeRequest, messages).body
     )
-  }
 
   object Expected {
     val heading = "What kind of vehicle is Car?"
-    val error  = "Select what kind of vehicle Car is"
+    val error   = "Select what kind of vehicle Car is"
     val button  = "Continue"
   }
 

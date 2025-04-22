@@ -44,8 +44,8 @@ trait ViewBaseSpec extends PlaySpec with BeforeAndAfterAll with GuiceOneAppPerSu
     super.afterAll()
 
   implicit def messages: Messages = SpecBase.messages(app)
-  val taxYear: TaxYear = TaxYear(2025)
-  val businessId: BusinessId = BusinessId("XAIS123456789012")
+  val taxYear: TaxYear            = TaxYear(2025)
+  val businessId: BusinessId      = BusinessId("XAIS123456789012")
 
   def debugDoc(html: Html): Document = {
     writeHtmlToTempFile(html)
