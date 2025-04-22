@@ -17,6 +17,7 @@
 package navigation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
+import models.common.Journey.ExpensesTravelForWork
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
@@ -78,7 +79,7 @@ class TravelAndAccommodationNavigator @Inject() {
     case DisallowableTransportAndAccommodationPage =>
       _ =>
         (taxYear, businessId) =>
-          Option(
+          Some(
             routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId)
           )
 
@@ -94,6 +95,11 @@ class TravelAndAccommodationNavigator @Inject() {
 
     case TravelAndAccommodationCYAPage =>
       _ => (taxYear, businessId) => Some(routes.AddAnotherVehicleController.onPageLoad(taxYear, businessId, NormalMode))
+
+    case PublicTransportAndAccommodationExpensesCYAPage =>
+      _ =>
+        (taxYear, businessId) =>
+          Some(controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTravelForWork, NormalMode))
 
     case _ => _ => (_, _) => None
   }
@@ -152,8 +158,7 @@ class TravelAndAccommodationNavigator @Inject() {
           case Some(expenseTypes) if expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
             routes.PublicTransportAndAccommodationExpensesController.onPageLoad(taxYear, businessId, mode)
           case Some(expenseTypes) if !expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
-            // TODO false and does not PublicTransportAndOtherAccommodation == have you finished page(last page)
-            routes.VehicleExpensesController.onPageLoad(taxYear, businessId, mode)
+            controllers.journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, ExpensesTravelForWork, mode)
         }
       case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
     }

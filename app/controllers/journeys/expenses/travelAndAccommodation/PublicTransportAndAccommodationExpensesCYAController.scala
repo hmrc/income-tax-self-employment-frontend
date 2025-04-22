@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
-import models.common.Journey.ExpensesPublicTransportAndAccommodation
+import models.common.Journey.ExpensesTravelForWork
 import models.common._
 import models.journeys.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesJourneyAnswers
 import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesCYAPage
@@ -48,7 +48,7 @@ class PublicTransportAndAccommodationExpensesCYAController @Inject() (override v
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] =
     (identify andThen getUserAnswers andThen getJourneyAnswers[PublicTransportAndAccommodationExpensesJourneyAnswers](req =>
-      req.mkJourneyNinoContext(taxYear, businessId, ExpensesPublicTransportAndAccommodation)) andThen requireData) { implicit request =>
+      req.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)) andThen requireData) { implicit request =>
       Ok(
         view(
           PublicTransportAndAccommodationExpensesCYAPage.toString,
@@ -63,7 +63,7 @@ class PublicTransportAndAccommodationExpensesCYAController @Inject() (override v
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getUserAnswers andThen requireData) async {
     implicit request =>
       val context =
-        JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesPublicTransportAndAccommodation)
+        JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, ExpensesTravelForWork)
       val result = service.submitAnswers[PublicTransportAndAccommodationExpensesJourneyAnswers](context, request.userAnswers)
 
       handleSubmitAnswersResult(context, result)

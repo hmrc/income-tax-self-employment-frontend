@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
-import models.common.Journey.ExpensesPublicTransportAndAccommodation
+import models.common.Journey.ExpensesTravelForWork
 import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesCYAPage
@@ -30,7 +30,7 @@ class PublicTransportAndAccommodationExpensesCYAControllerSpec extends CYAOnPage
 
   override val pageHeading: String = PublicTransportAndAccommodationExpensesCYAPage.toString
 
-  override val journey: Journey = ExpensesPublicTransportAndAccommodation
+  override val journey: Journey = ExpensesTravelForWork
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.PublicTransportAndAccommodationExpensesCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.PublicTransportAndAccommodationExpensesCYAController.onSubmit
@@ -39,7 +39,7 @@ class PublicTransportAndAccommodationExpensesCYAControllerSpec extends CYAOnPage
       messages: Messages): SummaryList =
     PublicTransportAndAccommodationExpensesSummary(userAnswers, taxYear, businessId, userType)
 
-  val data =
+  val data: String =
     s"""
        |{
        |    "SJPR05893938001": {
@@ -47,12 +47,13 @@ class PublicTransportAndAccommodationExpensesCYAControllerSpec extends CYAOnPage
        |        "travelAndAccommodationExpenseType": [
        |            "publicTransportAndOtherAccommodation"
        |        ],
-       |         "publicTransportAndAccommodationExpenses": 198.75,
+       |        "publicTransportAndAccommodationExpenses": 198.75,
        |        "disallowableTransportAndAccommodation": 15.45
        |    }
        |}
        |""".stripMargin
-  override val submissionData                = Json.parse(data).asInstanceOf[JsObject]
+
+  override val submissionData: JsObject      = Json.parse(data).asInstanceOf[JsObject]
   override val testDataCases: List[JsObject] = List(submissionData)
 
 }
