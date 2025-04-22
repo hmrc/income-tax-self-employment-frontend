@@ -46,22 +46,12 @@ import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAm
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
-import pages.expenses.travelAndAccommodation.{
-  SimplifiedExpensesPage,
-  TravelAndAccommodationExpenseTypePage,
-  TravelForWorkYourMileagePage,
-  TravelForWorkYourVehiclePage,
-  VehicleExpensesPage,
-  VehicleFlatRateChoicePage,
-  VehicleTypePage,
-  YourFlatRateForVehicleExpensesPage,
-  PublicTransportAndAccommodationExpensesPage
-}
+import pages.expenses.travelAndAccommodation._
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
 import pages.nics._
-import pages.{CostsNotCoveredPage, Page, QuestionPage, DisallowableTransportAndAccommodationPage}
+import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage, Page, QuestionPage}
 import play.api.mvc.PathBindable
 import queries.Settable
 

@@ -24,10 +24,10 @@ import controllers.journeys.routes
 import controllers.standard.routes._
 import models.NormalMode
 import models.common.BusinessId
+import models.common.Journey.BusinessDetailsPrepop
 import models.common.UserType.Individual
 import models.domain.BusinessData
 import models.errors.ServiceError.NotFoundError
-import models.common.Journey.BusinessDetailsPrepop
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

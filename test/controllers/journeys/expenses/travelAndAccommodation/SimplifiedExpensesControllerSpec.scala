@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
 import models.NormalMode
 import models.common.UserType
-import play.api.inject.bind
 import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.VehicleType
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
@@ -30,6 +29,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, TravelForWorkYourVehiclePage, VehicleTypePage}
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -70,18 +70,15 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
 
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, onPageLoadRoute)
+          val request = FakeRequest(GET, onPageLoadRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[SimplifiedExpensesView]
+          val view = application.injector.instanceOf[SimplifiedExpensesView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, userType, taxYear, businessId, NormalMode, "CarName")(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, userType, taxYear, businessId, NormalMode, "CarName")(request, messages(application)).toString
+          application.stop()
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -99,18 +96,17 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, onPageLoadRoute)
+          val request = FakeRequest(GET, onPageLoadRoute)
 
-            val view = application.injector.instanceOf[SimplifiedExpensesView]
+          val view = application.injector.instanceOf[SimplifiedExpensesView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(true), userType, taxYear, businessId, NormalMode, "CarName")(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(true), userType, taxYear, businessId, NormalMode, "CarName")(
+            request,
+            messages(application)).toString
+          application.stop()
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -131,17 +127,15 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
               )
               .build()
 
-          running(application) {
+          val request =
+            FakeRequest(POST, onPageLoadRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-            val request =
-              FakeRequest(POST, onPageLoadRoute)
-                .withFormUrlEncodedBody(("value", "true"))
+          val result = route(application, request).value
 
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          application.stop()
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -152,22 +146,21 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
 
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, onPageLoadRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
+          val request =
+            FakeRequest(POST, onPageLoadRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form.bind(Map("value" -> "invalid value"))
+          val boundForm = form.bind(Map("value" -> "invalid value"))
 
-            val view = application.injector.instanceOf[SimplifiedExpensesView]
+          val view = application.injector.instanceOf[SimplifiedExpensesView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, userType, taxYear, businessId, NormalMode, "CarName")(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, userType, taxYear, businessId, NormalMode, "CarName")(
+            request,
+            messages(application)).toString
+          application.stop()
         }
       }
     }
@@ -176,31 +169,29 @@ class SimplifiedExpensesControllerSpec extends SpecBase with MockitoSugar with B
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, onPageLoadRoute)
+      val request = FakeRequest(GET, onPageLoadRoute)
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
 
     "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, onPageLoadRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+      val request =
+        FakeRequest(POST, onPageLoadRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
   }
 }

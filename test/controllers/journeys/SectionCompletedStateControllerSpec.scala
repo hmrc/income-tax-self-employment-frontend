@@ -19,10 +19,9 @@ package controllers.journeys
 import base.SpecBase
 import forms.standard.BooleanFormProvider
 import models.NormalMode
-import models.common.JourneyStatus
+import models.common.{Journey, JourneyStatus}
 import models.common.UserType.Individual
 import models.errors.ServiceError
-import models.common.Journey
 import org.scalatest.prop.TableDrivenPropertyChecks
 import pages.SectionCompletedStatePage
 import play.api.data.Form

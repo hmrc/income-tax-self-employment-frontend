@@ -18,10 +18,9 @@ package controllers.journeys.expenses.professionalFees
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import controllers.journeys.expenses.professionalFees
-import models.common.{BusinessId, TaxYear, UserType}
-import models.database.UserAnswers
-import models.common.Journey
 import models.common.Journey.ExpensesProfessionalFees
+import models.common.{BusinessId, Journey, TaxYear, UserType}
+import models.database.UserAnswers
 import pages.expenses.professionalFees.ProfessionalFeesCYAPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}

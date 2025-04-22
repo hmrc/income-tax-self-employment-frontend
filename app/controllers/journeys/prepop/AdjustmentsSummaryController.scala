@@ -17,8 +17,8 @@
 package controllers.journeys.prepop
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import models.common._
 import models.common.Journey.AdjustmentsPrepop
+import models.common._
 import models.journeys.adjustments.AdjustmentsPrepopAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

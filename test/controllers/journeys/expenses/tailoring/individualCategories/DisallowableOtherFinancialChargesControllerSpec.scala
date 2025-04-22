@@ -93,19 +93,18 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, disallowableOtherFinancialChargesRoute)
+            val request = FakeRequest(GET, disallowableOtherFinancialChargesRoute)
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
+            val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -118,19 +117,18 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, disallowableOtherFinancialChargesRoute)
+            val request = FakeRequest(GET, disallowableOtherFinancialChargesRoute)
 
-              val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
+            val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -139,14 +137,13 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, disallowableOtherFinancialChargesRoute)
+        val request = FakeRequest(GET, disallowableOtherFinancialChargesRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -166,16 +163,15 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
             )
             .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableOtherFinancialChargesRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableOtherFinancialChargesRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -195,22 +191,21 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
             .onPageLoad(taxYear, businessId, CheckMode)
             .url
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
 
-          val request =
-            FakeRequest(POST, professionalServiceExpensesRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+        val request =
+          FakeRequest(POST, professionalServiceExpensesRoute)
+            .withFormUrlEncodedBody(("value", "true"))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)
-        }
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -219,46 +214,44 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableOtherFinancialChargesRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val request =
+              FakeRequest(POST, disallowableOtherFinancialChargesRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
+            val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableOtherFinancialChargesRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val request =
+              FakeRequest(POST, disallowableOtherFinancialChargesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
+            val view = application.injector.instanceOf[DisallowableOtherFinancialChargesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -267,17 +260,16 @@ class DisallowableOtherFinancialChargesControllerSpec extends SpecBase with Mock
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableOtherFinancialChargesRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableOtherFinancialChargesRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 

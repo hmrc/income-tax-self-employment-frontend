@@ -105,22 +105,20 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, financialExpensesRoute)
 
-              val request = FakeRequest(GET, financialExpensesRoute)
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val view = application.injector.instanceOf[FinancialExpensesView]
 
-              val view = application.injector.instanceOf[FinancialExpensesView]
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -132,27 +130,25 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, financialExpensesRoute)
 
-              val request = FakeRequest(GET, financialExpensesRoute)
+            val view = application.injector.instanceOf[FinancialExpensesView]
 
-              val view = application.injector.instanceOf[FinancialExpensesView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(
+                userScenario.form.fill(FinancialExpenses.values.toSet),
+                NormalMode,
+                userScenario.userType,
+                taxYear,
+                businessId,
+                userScenario.accountingType
+              )(request, messages(application)).toString
 
-              val expectedResult =
-                view(
-                  userScenario.form.fill(FinancialExpenses.values.toSet),
-                  NormalMode,
-                  userScenario.userType,
-                  taxYear,
-                  businessId,
-                  userScenario.accountingType
-                )(request, messages(application)).toString
-
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -161,14 +157,13 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, financialExpensesRoute)
+        val request = FakeRequest(GET, financialExpensesRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -184,18 +179,17 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
             )
             .build()
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
-          val request =
-            FakeRequest(POST, financialExpensesRoute)
-              .withFormUrlEncodedBody(("value[0]", FinancialExpenses.values.head.toString))
+        val request =
+          FakeRequest(POST, financialExpensesRoute)
+            .withFormUrlEncodedBody(("value[0]", FinancialExpenses.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -212,24 +206,23 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
           controllers.journeys.expenses.tailoring.individualCategories.routes.FinancialExpensesController
             .onPageLoad(taxYear, businessId, CheckMode)
             .url
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
 
-          val request =
-            FakeRequest(POST, financialExpensesRoute)
-              .withFormUrlEncodedBody(("value[0]", FinancialExpenses.NoFinancialExpenses.toString))
-          val result = route(application, request).value
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+        val request =
+          FakeRequest(POST, financialExpensesRoute)
+            .withFormUrlEncodedBody(("value[0]", FinancialExpenses.NoFinancialExpenses.toString))
+        val result = route(application, request).value
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)
-        }
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -240,26 +233,25 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, financialExpensesRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val request =
-                FakeRequest(POST, financialExpensesRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val view = application.injector.instanceOf[FinancialExpensesView]
 
-              val view = application.injector.instanceOf[FinancialExpensesView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
@@ -268,26 +260,24 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, financialExpensesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val request =
-                FakeRequest(POST, financialExpensesRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val view = application.injector.instanceOf[FinancialExpensesView]
 
-              val view = application.injector.instanceOf[FinancialExpensesView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -296,16 +286,16 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, financialExpensesRoute)
-              .withFormUrlEncodedBody(("value[0]", FinancialExpenses.values.head.toString))
+        val request =
+          FakeRequest(POST, financialExpensesRoute)
+            .withFormUrlEncodedBody(("value[0]", FinancialExpenses.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
+
       }
     }
   }

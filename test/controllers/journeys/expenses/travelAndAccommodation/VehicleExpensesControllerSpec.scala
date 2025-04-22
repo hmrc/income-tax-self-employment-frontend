@@ -60,18 +60,17 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+          val request = FakeRequest(GET, vehicleExpensesControllerRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[VehicleExpensesView]
+          val view = application.injector.instanceOf[VehicleExpensesView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
+            request,
+            messages(application)).toString
+          application.stop()
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -97,20 +96,19 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+          val request = FakeRequest(GET, vehicleExpensesControllerRoute)
 
-            val view = application.injector.instanceOf[VehicleExpensesView]
+          val view = application.injector.instanceOf[VehicleExpensesView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
-              request,
-              messages(application)
-            ).toString
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(25), NormalMode, userType, taxYear, businessId, travelExpenseAnswer)(
+            request,
+            messages(application)
+          ).toString
 
-          }
+          application.stop()
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -136,16 +134,15 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
               )
               .build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, vehicleExpensesControllerRoute)
-                .withFormUrlEncodedBody(("value", "12"))
+          val request =
+            FakeRequest(POST, vehicleExpensesControllerRoute)
+              .withFormUrlEncodedBody(("value", "12"))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          application.stop()
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -162,46 +159,43 @@ class VehicleExpensesControllerSpec extends SpecBase with MockitoSugar {
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, vehicleExpensesControllerRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
+          val request =
+            FakeRequest(POST, vehicleExpensesControllerRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
+          status(result) mustEqual BAD_REQUEST
 
-          }
+          application.stop()
         }
 
         "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          running(application) {
-            val request = FakeRequest(GET, vehicleExpensesControllerRoute)
+          val request = FakeRequest(GET, vehicleExpensesControllerRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, vehicleExpensesControllerRoute)
-                .withFormUrlEncodedBody(("value", "answer"))
+          val request =
+            FakeRequest(POST, vehicleExpensesControllerRoute)
+              .withFormUrlEncodedBody(("value", "answer"))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }

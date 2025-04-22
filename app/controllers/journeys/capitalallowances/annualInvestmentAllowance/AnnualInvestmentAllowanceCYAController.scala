@@ -18,8 +18,8 @@ package controllers.journeys.capitalallowances.annualInvestmentAllowance
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
-import models.common._
 import models.common.Journey.CapitalAllowancesAnnualInvestmentAllowance
+import models.common._
 import models.journeys.capitalallowances.annualInvestmentAllowance.AnnualInvestmentAllowanceAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

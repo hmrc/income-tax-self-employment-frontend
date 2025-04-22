@@ -30,8 +30,8 @@ import pages.capitalallowances.tailoring.SelectCapitalAllowancesPage
 import pages.income.TradingAllowancePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
 import viewmodels.journeys._
+import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel.buildSummaryRow
 
 object CapitalAllowancesTasklist {
 

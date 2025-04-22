@@ -23,11 +23,11 @@ import cats.implicits._
 import controllers.TaskListControllerSpec._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
+import models.common.Journey.TradeDetails
 import models.common.JourneyStatus
 import models.common.TaxYear.dateNow
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import models.common.Journey.TradeDetails
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec

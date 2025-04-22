@@ -19,9 +19,8 @@ package controllers.journeys.abroad
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.abroad
-import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
-import models.common.Journey
 import models.common.Journey.Abroad
+import models.common.{BusinessId, Journey, JourneyContextWithNino, TaxYear}
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

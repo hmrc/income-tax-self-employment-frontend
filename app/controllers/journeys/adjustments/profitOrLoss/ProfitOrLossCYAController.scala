@@ -17,14 +17,13 @@
 package controllers.journeys.adjustments.profitOrLoss
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
-import pages.Page
 import controllers.handleResultT
 import models.CheckMode
 import models.common.Journey.ProfitOrLoss
+import models.common.{AccountingType, BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.adjustments.ProfitOrLossJourneyAnswers
+import pages.Page
 import pages.adjustments.profitOrLoss._
-import pages.adjustments.profitOrLoss.{GoodsAndServicesAmountPage, GoodsAndServicesForYourOwnUsePage, PreviousUnusedLossesPage, UnusedLossAmountPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService

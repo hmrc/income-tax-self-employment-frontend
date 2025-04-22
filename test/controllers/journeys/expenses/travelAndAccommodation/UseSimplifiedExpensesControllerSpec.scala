@@ -40,35 +40,33 @@ class UseSimplifiedExpensesControllerSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId).url)
+          val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId).url)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[UseSimplifiedExpensesView]
+          val view = application.injector.instanceOf[UseSimplifiedExpensesView]
 
-            val expectedUrl = application.injector
-              .instanceOf[TravelAndAccommodationNavigator]
-              .nextPage(UseSimplifiedExpensesPage, NormalMode, ua, taxYear, businessId)
-              .url
+          val expectedUrl = application.injector
+            .instanceOf[TravelAndAccommodationNavigator]
+            .nextPage(UseSimplifiedExpensesPage, NormalMode, ua, taxYear, businessId)
+            .url
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(userType, "CarName", expectedUrl)(request, messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(userType, "CarName", expectedUrl)(request, messages(application)).toString
+          application.stop()
         }
 
         "must redirect to 'there is a problem' page when TravelForWorkYourVehiclePage data is missing" in {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-          running(application) {
-            val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId).url)
+          val request = FakeRequest(GET, routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId).url)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }

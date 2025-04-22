@@ -33,9 +33,11 @@ import play.api.data.{Form, FormBinding}
 import play.api.i18n.Messages
 import play.api.libs.json.Writes
 import play.api.mvc.Results.{BadRequest, Redirect}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, page: OneQuestionPage[Boolean]) extends ControllerSpec {
 
@@ -74,35 +76,32 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
       if (checkForExistingAnswers) {
         "answers exist for the page" - {
           "return Ok and the view with the existing answer" in new TestScenario(answers = pageAnswers.some) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result: Future[Result] = route(application, getRequest).value
 
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form().fill(validAnswer), this)(getRequest, messages(application), application)
-            }
+            status(result) shouldBe OK
+            contentAsString(result) shouldBe expectedView(form().fill(validAnswer), this)(getRequest, messages(application), application)
+            application.stop()
           }
         }
       }
       "the page has no existing answers" - {
         forAll(userTypeCases) { user =>
           s"when user is $user, return Ok" in new TestScenario(user, answers = baseAnswers.some) {
-            running(application) {
-              val result = route(application, getRequest).value
+            val result: Future[Result] = route(application, getRequest).value
 
-              status(result) shouldBe OK
-              contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
-            }
+            status(result) shouldBe OK
+            contentAsString(result) shouldBe expectedView(form(user), this)(getRequest, messages(application), application)
+            application.stop()
           }
         }
       }
       "no answers exist in the session" - {
         "redirect to the journey recovery controller" in new TestScenario(answers = None) {
-          running(application) {
-            val result = route(application, getRequest).value
+          val result: Future[Result] = route(application, getRequest).value
 
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }
@@ -117,21 +116,20 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
             *[Writes[Boolean]]
           ) returns Redirect(onwardRoute).asFuture
 
-          running(application) {
-            val result                     = route(application, postRequest).value
-            val redirectMatchesOnwardRoute = onwardRoute.url.endsWith(redirectLocation(result).value)
+          val result: Future[Result]              = route(application, postRequest).value
+          val redirectMatchesOnwardRoute: Boolean = onwardRoute.url.endsWith(redirectLocation(result).value)
 
-            status(result) shouldBe SEE_OTHER
-            assert(redirectMatchesOnwardRoute)
-          }
+          status(result) shouldBe SEE_OTHER
+          assert(redirectMatchesOnwardRoute)
+          application.stop()
         }
       }
       "invalid data is submitted" - {
         forAll(userTypeCases) { user =>
           s"when user is $user, return a 400 and pass the errors to the view" in new TestScenario(user, answers = baseAnswers.some) {
-            val request           = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
-            val boundForm         = createForm(userType).bind(Map("value" -> "invalid value"))
-            val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
+            val request: FakeRequest[AnyContentAsFormUrlEncoded] = postRequest.withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm                                        = createForm(userType).bind(Map("value" -> "invalid value"))
+            val expectedErrorView                                = expectedView(boundForm, this)(request, messages(application), application)
 
             mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
             mockService.defaultHandleForm(*[Form[Boolean]], *[OneQuestionPage[Boolean]], *[BusinessId], *[TaxYear], *[Mode], *)(
@@ -140,23 +138,21 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
               *[Writes[Boolean]]
             ) returns BadRequest(expectedErrorView).asFuture
 
-            running(application) {
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) shouldBe BAD_REQUEST
-              contentAsString(result) shouldBe expectedErrorView
-            }
+            status(result) shouldBe BAD_REQUEST
+            contentAsString(result) shouldBe expectedErrorView
+            application.stop()
           }
         }
       }
       "no answers exist in the session" - {
         "Redirect to the journey recovery page" in new TestScenario(answers = None) {
-          running(application) {
-            val result = route(application, getRequest).value
+          val result = route(application, getRequest).value
 
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe genRoutes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }

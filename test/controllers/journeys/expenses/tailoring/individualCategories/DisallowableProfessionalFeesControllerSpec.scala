@@ -20,7 +20,6 @@ import base.SpecBase
 import cats.data.EitherT
 import forms.standard.BooleanFormProvider
 import models.common.Journey.ExpensesProfessionalFees
-import models.{CheckMode, NormalMode}
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
@@ -28,6 +27,7 @@ import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
 import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses.ProfessionalFees
 import models.journeys.expenses.individualCategories._
+import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -100,19 +100,18 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
+            val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
+            val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -124,19 +123,18 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
+            val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
 
-              val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
+            val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -145,14 +143,13 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
+        val request = FakeRequest(GET, disallowableProfessionalFeesRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -172,16 +169,15 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
             )
             .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableProfessionalFeesRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableProfessionalFeesRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -204,18 +200,17 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
             .onPageLoad(taxYear, businessId, CheckMode)
             .url
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, HeaderCarrier(any))
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, HeaderCarrier(any))
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -224,45 +219,43 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableProfessionalFeesRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val request =
+              FakeRequest(POST, disallowableProfessionalFeesRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
+            val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableProfessionalFeesRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val request =
+              FakeRequest(POST, disallowableProfessionalFeesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
+            val view = application.injector.instanceOf[DisallowableProfessionalFeesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(
-                request,
-                messages(application)).toString
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(
+              request,
+              messages(application)).toString
+            application.stop()
           }
         }
       }
@@ -271,17 +264,16 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableProfessionalFeesRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableProfessionalFeesRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }
