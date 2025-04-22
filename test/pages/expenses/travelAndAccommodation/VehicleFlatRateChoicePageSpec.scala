@@ -35,7 +35,7 @@ class VehicleFlatRateChoicePageSpec extends PlaySpec with MockitoSugar {
         Some("Car"),
         Some(CarOrGoodsVehicle),
         Some(true),
-        Some(true),
+        Some(false),
         None,
         None,
         None,

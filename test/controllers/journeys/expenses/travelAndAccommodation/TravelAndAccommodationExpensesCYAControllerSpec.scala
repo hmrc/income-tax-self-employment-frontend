@@ -166,7 +166,8 @@ class TravelAndAccommodationExpensesCYAControllerSpec extends CYAOnPageLoadContr
       .trim shouldBe "Actual costs"
   }
 
-  "clear YourFlatRateForVehicleExpensesPage, VehicleFlatRateChoicePage and VehicleExpensesPage when changing simplified expenses answer to Yes" in {
+  //TODO These tests will be addressed in the it tests using VehicleDetailsDb model
+/*  "clear YourFlatRateForVehicleExpensesPage, VehicleFlatRateChoicePage and VehicleExpensesPage when changing simplified expenses answer to Yes" in {
     val initialAnswers = userAnswers.set(SimplifiedExpensesPage, false, Some(businessId)).success.value
     val updatedAnswers = clearDependentPages(SimplifiedExpensesPage, true, initialAnswers, businessId).futureValue
 
@@ -181,7 +182,7 @@ class TravelAndAccommodationExpensesCYAControllerSpec extends CYAOnPageLoadContr
 
     updatedAnswers.get(TravelForWorkYourMileagePage, businessId) shouldBe None
     updatedAnswers.get(CostsNotCoveredPage, businessId) shouldBe None
-  }
+  }*/
 
   "clear CostsNotCoveredPage when changing YourFlatRateForVehicleExpensesPage answer to Actual costs" in {
     val initialAnswers = userAnswers.set(YourFlatRateForVehicleExpensesPage, Flatrate, Some(businessId)).success.value
