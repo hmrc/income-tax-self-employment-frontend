@@ -16,7 +16,7 @@
 
 package views.journeys.expenses
 
-import forms.expenses.travelAndAccommodation.SimplifiedExpenseFormProvider
+import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.common.UserType
 import models.{Index, Mode, NormalMode}
 import org.jsoup.Jsoup
@@ -25,43 +25,45 @@ import play.api.Application
 import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
 import views.ViewBaseSpec
-import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesView
+import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
 
-class SimplifiedExpensesViewSpec extends ViewBaseSpec {
+class VehicleFlatRateChoiceViewSpec extends ViewBaseSpec {
 
   val application: Application = new GuiceApplicationBuilder().build()
-  val view: SimplifiedExpensesView = application.injector.instanceOf[SimplifiedExpensesView]
+  val view: VehicleFlatRateChoiceView = application.injector.instanceOf[VehicleFlatRateChoiceView]
 
-  private val formProvider = app.injector.instanceOf[SimplifiedExpenseFormProvider]
+  private val formProvider = app.injector.instanceOf[VehicleFlatRateChoiceFormProvider]
   private val index: Index = Index(1)
   private val vehicle: String = "Car"
 
-  def form(userType: UserType): Form[Boolean] = formProvider(userType, vehicle)
+  def form(userType: UserType): Form[Boolean] = formProvider(vehicle, userType)
 
   def view(userType: UserType, mode: Mode, form: Form[Boolean]): Document = {
     Jsoup.parse(
-      view(form, userType, taxYear, businessId, index, mode, vehicle)(fakeRequest, messages).body
+      view(form, vehicle, userType, taxYear, businessId, index, mode)(fakeRequest, messages).body
     )
   }
 
   object Expected {
-    val heading = "Simplified expenses for vehicles"
-    val p1  = "Simplified expenses are a way of calculating some of your expenses on a pence-per-mile basis instead of working out your actual costs."
-    val p2 = "If you’ve used Car in previous tax years, you may have already used simplified expenses."
-    val subHeading = "Have you used simplified expenses for Car before?"
-    val error  = "Select yes if you’ve used simplified expenses for Car before"
+    val heading = "You can choose how to claim your expenses for Car"
+    val p1  = "If you know your mileage, we can help you calculate a flat rate for your vehicle expenses."
+    val p2 = "You can then decide if you want to go ahead with the flat rate or claim actual expenses."
+    val p3 = "If you have records of your actual expenses, you may choose to skip this step."
+    val subHeading = "Do you want to calculate a flat rate?"
+    val error  = "Select yes if you want to calculate a flat rate"
     val button  = "Continue"
   }
 
   object ExpectedAgent {
-    val heading = "Simplified expenses for vehicles"
-    val p1  = "Simplified expenses are a way of calculating some of your client’s expenses on a pence-per-mile basis instead of working out your actual costs."
-    val p2  = "If your client has used Car in previous tax years, they may have already used simplified expenses."
-    val subHeading = "Has your client used simplified expenses for Car before?"
-    val error   = "Select yes if your client has used simplified expenses for Car before"
+    val heading = "Your client can choose how to claim their expenses for Car"
+    val p1  = "If you know your client’s mileage, we can help you calculate a flat rate for their vehicle expenses."
+    val p2  = "Your client can then decide if they want to go ahead with the flat rate or claim actual expenses."
+    val p3  = "If you have records of your client’s actual expenses, you may choose to skip this step."
+    val subHeading = "Does your client want to calculate a flat rate?"
+    val error   = "Select yes if your client wants to calculate a flat rate"
   }
 
-  "The SimplifiedExpensesViewSpec" when {
+  "The VehicleFlatRateChoiceViewSpec" when {
     "the user is an Individual" must {
       val individualPage = view(UserType.Individual, NormalMode, form(UserType.Individual))
 
@@ -79,6 +81,10 @@ class SimplifiedExpensesViewSpec extends ViewBaseSpec {
 
       "have the correct message for paragraph 2" in {
         individualPage.para(2) mustBe Some(Expected.p2)
+      }
+
+      "have the correct message for paragraph 3" in {
+        individualPage.para(3) mustBe Some(Expected.p3)
       }
 
       "display correct boolean label" in {
@@ -125,6 +131,10 @@ class SimplifiedExpensesViewSpec extends ViewBaseSpec {
 
       "have a correct sub-heading" in {
         agentPage.legend(1) mustBe Some(ExpectedAgent.subHeading)
+      }
+
+      "have the correct message for paragraph 3" in {
+        agentPage.para(3) mustBe Some(ExpectedAgent.p3)
       }
 
       "show the mandatory field error and error summary when the form is blank" in {

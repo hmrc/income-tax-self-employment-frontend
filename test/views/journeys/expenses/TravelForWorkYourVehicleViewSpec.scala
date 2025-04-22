@@ -31,9 +31,6 @@ class TravelForWorkYourVehicleViewSpec extends ViewBaseSpec {
   private val formProvider = app.injector.instanceOf[TravelForWorkYourVehicleFormProvider]
   private val index        = Index(1)
 
-  val taxYear    = TaxYear(2025)
-  val businessId = BusinessId("XAIS123456789012")
-
   def form(userType: UserType): Form[String] = formProvider(userType)
 
   def view(userType: UserType, mode: Mode, form: Form[String]): Document = Jsoup.parse(

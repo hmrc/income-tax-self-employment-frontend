@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.clearDependentPages
 import forms.expenses.travelAndAccommodation.VehicleFlatRateChoiceFormProvider
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}

@@ -18,6 +18,7 @@ package views
 
 import base.SpecBase
 import base.SpecBase._
+import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -43,6 +44,8 @@ trait ViewBaseSpec extends PlaySpec with BeforeAndAfterAll with GuiceOneAppPerSu
     super.afterAll()
 
   implicit def messages: Messages = SpecBase.messages(app)
+  val taxYear: TaxYear = TaxYear(2025)
+  val businessId: BusinessId = BusinessId("XAIS123456789012")
 
   def debugDoc(html: Html): Document = {
     writeHtmlToTempFile(html)

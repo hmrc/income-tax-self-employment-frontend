@@ -77,10 +77,9 @@ class VehicleTypeController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, index, mode))),
                 value =>
                   for {
-                    oldAnswers <- answersService.getAnswers[VehicleDetailsDb](ctx, Some(index))
                     newData <- answersService.replaceAnswers(
                       ctx = ctx,
-                      data = oldAnswers
+                      data = optVehicleDetails
                         .getOrElse(VehicleDetailsDb())
                         .copy(vehicleType = Some(value)),
                       Some(index)
