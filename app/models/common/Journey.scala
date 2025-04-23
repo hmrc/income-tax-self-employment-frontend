@@ -186,14 +186,6 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
     override val pageKeys: List[PageName] = List(AdvertisingOrMarketingAmountPage.pageName, AdvertisingOrMarketingDisallowableAmountPage.pageName)
   }
 
-//  case object ExpensesPublicTransportAndAccommodation extends Journey("expenses-public-transport-amount") {
-//    override val pageKeys: List[PageName] =
-//      List(
-//        PublicTransportAndAccommodationExpensesPage.pageName,
-//        DisallowableTransportAndAccommodationPage.pageName
-//      )
-//  }
-
   case object ExpensesOfficeSupplies extends Journey("expenses-office-supplies") {
     override val pageKeys: List[PageName] = List(OfficeSuppliesAmountPage.pageName, OfficeSuppliesDisallowableAmountPage.pageName)
   }
