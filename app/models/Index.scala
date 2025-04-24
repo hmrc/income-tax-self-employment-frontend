@@ -19,11 +19,7 @@ package models
 import play.api.libs.json.{Format, Json}
 import play.api.mvc.PathBindable
 
-case class Index(value: Int) {
-
-  // def position: Int = display - 1
-
-}
+case class Index(value: Int)
 
 object Index {
 
