@@ -33,9 +33,9 @@ import views.html.journeys.capitalallowances.structuresBuildingsAllowance.Struct
 
 class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
 
-  val formProvider = new StructuresBuildingsNewClaimAmountFormProvider()
-  val index: Int   = 0
-  val mode: Mode   = NormalMode
+  val formProvider  = new StructuresBuildingsNewClaimAmountFormProvider()
+  val intIndex: Int = 0
+  val mode: Mode    = NormalMode
 
   val application: Application = new GuiceApplicationBuilder().build()
 
@@ -52,25 +52,25 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
     "render correctly for Individual user type" in {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Individual)
-      val result  = createView(form, mode, UserType.Individual, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Individual, taxYear, businessId, intIndex)(request)
 
-      contentAsString(result) mustEqual view(form, mode, UserType.Individual, taxYear, businessId, index)(request, messages(application)).toString
+      contentAsString(result) mustEqual view(form, mode, UserType.Individual, taxYear, businessId, intIndex)(request, messages(application)).toString
 
     }
 
     "render correctly for Agent user type" in {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Agent)
-      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, intIndex)(request)
 
-      contentAsString(result) mustEqual view(form, mode, UserType.Agent, taxYear, businessId, index)(request, messages(application)).toString
+      contentAsString(result) mustEqual view(form, mode, UserType.Agent, taxYear, businessId, intIndex)(request, messages(application)).toString
 
     }
 
     "render error message for required field for Individual user type" in {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Individual).bind(Map("value" -> ""))
-      val result  = createView(form, mode, UserType.Individual, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Individual, taxYear, businessId, intIndex)(request)
 
       contentAsString(result) must include(messages("structuresBuildingsNewClaimAmount.error.required.individual"))
     }
@@ -78,7 +78,7 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
     "render error message for required field for Agent user type" ignore {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Agent).bind(Map("value" -> ""))
-      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, intIndex)(request)
 
       contentAsString(result) must include(messages("structuresBuildingsNewClaimAmount.error.required.agent"))
     }
@@ -86,7 +86,7 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
     "render error message for non-numeric input for Individual user type" ignore {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Individual).bind(Map("value" -> "abc"))
-      val result  = createView(form, mode, UserType.Individual, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Individual, taxYear, businessId, intIndex)(request)
 
       contentAsString(result) must include(messages("error.nonNumeric.individual"))
     }
@@ -94,7 +94,7 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
     "render error message for non-numeric input for Agent user type" ignore {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Agent).bind(Map("value" -> "abc"))
-      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, intIndex)(request)
 
       contentAsString(result) must include(messages("error.nonNumeric.agent"))
     }
@@ -102,7 +102,7 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
     "render error message for value less than zero for Agent user type" in {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Agent).bind(Map("value" -> "-1"))
-      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, intIndex)(request)
 
       contentAsString(result) must include(messages("error.lessThanZero"))
     }
@@ -110,7 +110,7 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
     "render error message for value over maximum for Agent user type" in {
       val request = FakeRequest(GET, "/")
       val form    = formProvider(UserType.Agent).bind(Map("value" -> "100000000000.01"))
-      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, index)(request)
+      val result  = createView(form, mode, UserType.Agent, taxYear, businessId, intIndex)(request)
 
       contentAsString(result) must include(messages("error.overMax"))
     }

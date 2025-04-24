@@ -15,12 +15,12 @@ The service manager profile for this service is:
 Run the following command to start the remaining services locally:
 
     sudo mongod (If not already running)
-    sm --start INCOME_TAX_SUBMISSION_ALL -r
+    sm --start INCOME_TAX_SUBMISSION_ALL
 
 To run the service locally:
 
     sudo mongod (If not already running)
-    sm --start INCOME_TAX_SUBMISSION_ALL -r
+    sm --start INCOME_TAX_SUBMISSION_ALL
     sm --stop INCOME_TAX_SELF_EMPLOYMENT_FRONTEND
     ./run.sh **OR** sbt -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes run
 

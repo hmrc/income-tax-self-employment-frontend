@@ -16,12 +16,25 @@
 
 package pages.expenses
 
-import pages.expenses.travelAndAccommodation.SimplifiedExpensesPage
+import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
+import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, YourFlatRateForVehicleExpenses}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import pages.expenses.travelAndAccommodation.SimplifiedExpensesPage
 import play.api.libs.json.JsPath
 
 class SimplifiedExpensesPageSpec extends PlaySpec with MockitoSugar {
+
+  val testVehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
+    description = Some("Car"),
+    vehicleType = Some(CarOrGoodsVehicle),
+    usedSimplifiedExpenses = Some(true),
+    calculateFlatRate = Some(true),
+    workMileage = Some(100000),
+    expenseMethod = Some(YourFlatRateForVehicleExpenses.Flatrate),
+    costsOutsideFlatRate = Some(BigDecimal("100.00")),
+    vehicleExpenses = Some(BigDecimal("300.00"))
+  )
 
   "SimplifiedExpensesPage" should {
 
@@ -32,6 +45,26 @@ class SimplifiedExpensesPageSpec extends PlaySpec with MockitoSugar {
     "return the correct path" in {
       val expectedPath = JsPath \ "simplifiedExpenses"
       SimplifiedExpensesPage.path(None) mustBe expectedPath
+    }
+
+    "clearDependentPageDataAndUpdate" when {
+
+      "when the value selected is 'true'" in {
+        SimplifiedExpensesPage.clearDependentPageDataAndUpdate(value = true, testVehicleDetails) mustBe testVehicleDetails
+      }
+
+      "when the value selected is 'false'" in {
+        SimplifiedExpensesPage.clearDependentPageDataAndUpdate(value = false, testVehicleDetails) mustBe VehicleDetailsDb(
+          Some("Car"),
+          Some(CarOrGoodsVehicle),
+          Some(false),
+          None,
+          Some(100000),
+          None,
+          Some(100.00),
+          None)
+      }
+
     }
 
   }

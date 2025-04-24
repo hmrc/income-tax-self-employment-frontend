@@ -17,6 +17,7 @@
 @import controllers.journeys.expenses.travelAndAccommodation.routes
 @import models.journeys.expenses.travelAndAccommodation.VehicleType
 @import models.common.{AccountingType, BusinessId, TaxYear, UserType}
+@import models.Index
 
 @this(
     layout: templates.Layout,
@@ -26,11 +27,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], vehicleName: String, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], vehicleName: String, taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("vehicleType.heading", vehicleName))) {
 
-    @formHelper(action = routes.VehicleTypeController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.VehicleTypeController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

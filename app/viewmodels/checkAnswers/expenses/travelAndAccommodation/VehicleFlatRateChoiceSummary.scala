@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
+import models.{CheckMode, Index}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import pages.expenses.travelAndAccommodation.{SimplifiedExpensesPage, VehicleFlatRateChoicePage}
@@ -27,12 +27,13 @@ import viewmodels.checkAnswers.{buildRowString, formatAnswer}
 
 object VehicleFlatRateChoiceSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers, userType: UserType, index: Index)(implicit
+      messages: Messages): Option[SummaryListRow] =
     if (answers.get(SimplifiedExpensesPage, businessId).contains(false)) {
       answers.get(VehicleFlatRateChoicePage, businessId).map { answer =>
         buildRowString(
           formatAnswer(answer.toString),
-          callLink = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, CheckMode),
+          callLink = routes.VehicleFlatRateChoiceController.onPageLoad(taxYear, businessId, index, CheckMode),
           keyMessage = messages(s"vehicleFlatRateChoice.legend.$userType"),
           changeMessage = messages(s"vehicleFlatRateChoice.change.hidden.$userType"),
           rightTextAlign = true

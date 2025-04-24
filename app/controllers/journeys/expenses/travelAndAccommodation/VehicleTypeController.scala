@@ -17,17 +17,17 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys.fillForm
 import forms.expenses.travelAndAccommodation.VehicleTypeFormProvider
-import models.Mode
+import models.common.Journey.ExpensesVehicleDetails
 import models.common.{BusinessId, TaxYear}
-import models.journeys.expenses.travelAndAccommodation.VehicleType
+import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, VehicleType}
+import models.{Index, Mode}
 import navigation.TravelAndAccommodationNavigator
-import pages.expenses.travelAndAccommodation.{TravelForWorkYourVehiclePage, VehicleTypePage}
+import pages.expenses.travelAndAccommodation.VehicleTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 
@@ -36,12 +36,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleTypeController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: VehicleTypeFormProvider,
+    answersService: AnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: VehicleTypeView
 )(implicit ec: ExecutionContext)
@@ -50,33 +50,46 @@ class VehicleTypeController @Inject() (
 
   private val page = VehicleTypePage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      getVehicleNameAndLoadPage(businessId) { name =>
-        val form: Form[VehicleType] = formProvider(name)
-        val preparedForm            = fillForm(page, businessId, form)
-        Ok(view(preparedForm, name, taxYear, businessId, mode))
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
+      answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).map { optVehicleDetails =>
+        getVehicleNameAndLoadPage(optVehicleDetails) { name =>
+          val form: Form[VehicleType] = formProvider(name)
+          val preparedForm = optVehicleDetails
+            .flatMap(_.vehicleType)
+            .fold(form)(form.fill)
+          Ok(view(preparedForm, name, taxYear, businessId, index, mode))
+        }
       }
-  }
+    }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(TravelForWorkYourVehiclePage, businessId) match {
-        case Some(vehicle) =>
-          val form: Form[VehicleType] = formProvider(vehicle)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, mode))),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value, Some(businessId)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(page, mode, updatedAnswers, taxYear, businessId))
-            )
-        case None =>
-          Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData).async { implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
+      answersService.getAnswers[VehicleDetailsDb](ctx, Some(index)).flatMap { optVehicleDetails =>
+        optVehicleDetails.flatMap(_.description) match {
+          case Some(vehicle) =>
+            val form: Form[VehicleType] = formProvider(vehicle)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, vehicle, taxYear, businessId, index, mode))),
+                value =>
+                  for {
+                    newData <- answersService.replaceAnswers(
+                      ctx = ctx,
+                      data = optVehicleDetails
+                        .getOrElse(VehicleDetailsDb())
+                        .copy(vehicleType = Some(value)),
+                      Some(index)
+                    )
+                  } yield Redirect(navigator.nextIndexPage(page, mode, newData, taxYear, businessId, index))
+              )
+          case None =>
+            Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+        }
       }
-  }
+    }
 
 }
