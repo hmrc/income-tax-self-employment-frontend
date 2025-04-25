@@ -26,8 +26,8 @@ sealed trait YourFlatRateForVehicleExpenses
 
 object YourFlatRateForVehicleExpenses extends Enumerable.Implicits {
 
-  case object Flatrate   extends WithName("flatRate") with YourFlatRateForVehicleExpenses
-  case object Actualcost extends WithName("actualCosts") with YourFlatRateForVehicleExpenses
+  case object Flatrate   extends WithName("FlatRate") with YourFlatRateForVehicleExpenses
+  case object Actualcost extends WithName("ActualCosts") with YourFlatRateForVehicleExpenses
 
   val values: Seq[YourFlatRateForVehicleExpenses] = Seq(
     Flatrate,

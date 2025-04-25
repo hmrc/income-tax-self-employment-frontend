@@ -19,6 +19,7 @@ package connectors.answers
 import config.FrontendAppConfig
 import connectors.answers.AnswersApiConnector.{invalidResponseMessage, parseValuesAsList, unexpectedErrorMessage, valuesKey}
 import jakarta.inject.{Inject, Singleton}
+import models.Index
 import models.common._
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{Format, JsValue, Json}
@@ -32,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AnswersApiConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends Logging {
 
-  def getAnswers[T](ctx: JourneyContext, index: Option[Int] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[Option[T]] = {
+  def getAnswers[T](ctx: JourneyContext, index: Option[Index] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[Option[T]] = {
     implicit object GetSectionHttpReads extends HttpReads[Option[T]] {
       override def read(method: String, url: String, response: HttpResponse): Option[T] =
         response.status match {
@@ -64,7 +65,7 @@ class AnswersApiConnector @Inject() (httpClientV2: HttpClientV2, appConfig: Fron
       .execute
   }
 
-  def replaceAnswers[T](ctx: JourneyContext, data: T, index: Option[Int] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[T] = {
+  def replaceAnswers[T](ctx: JourneyContext, data: T, index: Option[Index] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[T] = {
     implicit object ReplaceSectionHttpReads extends HttpReads[T] {
       override def read(method: String, url: String, response: HttpResponse): T =
         response.status match {
@@ -100,7 +101,7 @@ class AnswersApiConnector @Inject() (httpClientV2: HttpClientV2, appConfig: Fron
       .execute
   }
 
-  def deleteAnswers(ctx: JourneyContext, index: Option[Int] = None)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def deleteAnswers(ctx: JourneyContext, index: Option[Index] = None)(implicit hc: HeaderCarrier): Future[Boolean] = {
     implicit object DeleteSectionHttpReads extends HttpReads[Boolean] {
       override def read(method: String, url: String, response: HttpResponse): Boolean =
         response.status match {
@@ -115,8 +116,8 @@ class AnswersApiConnector @Inject() (httpClientV2: HttpClientV2, appConfig: Fron
       .execute
   }
 
-  private def buildUrl(ctx: JourneyContext, index: Option[Int] = None): URL = {
-    val url = index.map(idx => s"${appConfig.answersApiUrl(ctx)}/$idx").getOrElse(s"${appConfig.answersApiUrl(ctx)}")
+  private def buildUrl(ctx: JourneyContext, index: Option[Index] = None): URL = {
+    val url = index.map(idx => s"${appConfig.answersApiUrl(ctx)}/${idx.value}").getOrElse(s"${appConfig.answersApiUrl(ctx)}")
     url"$url"
   }
 
@@ -130,13 +131,13 @@ class AnswersApiConnector @Inject() (httpClientV2: HttpClientV2, appConfig: Fron
 object AnswersApiConnector {
   private val valuesKey: String = "values"
 
-  private def unexpectedErrorMessage(ctx: JourneyContext, index: Option[Int] = None): String =
+  private def unexpectedErrorMessage(ctx: JourneyContext, index: Option[Index] = None): String =
     s"Unexpected error from answers API ${messageSuffix(ctx, index)}"
 
-  private def invalidResponseMessage(ctx: JourneyContext, index: Option[Int] = None): String =
+  private def invalidResponseMessage(ctx: JourneyContext, index: Option[Index] = None): String =
     s"Failed to parse answers ${messageSuffix(ctx, index)}"
 
-  private def messageSuffix(ctx: JourneyContext, index: Option[Int]) = {
+  private def messageSuffix(ctx: JourneyContext, index: Option[Index]) = {
     val indexPrefix = index.map(idx => s"for index '$idx").getOrElse("")
     s"$indexPrefix for journey ${ctx.journey.entryName} for business '${ctx.businessId}' for tax year '${ctx.taxYear}'"
   }

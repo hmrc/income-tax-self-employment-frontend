@@ -24,6 +24,7 @@
 @import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import models.Index
 
 @this(
     layout: templates.Layout,
@@ -34,11 +35,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, expenseType: Set[TravelAndAccommodationExpenseType])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, expenseType: Set[TravelAndAccommodationExpenseType], index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"vehicleExpenses.title.$userType"))) {
 
-    @formHelper(action = routes.VehicleExpensesController.onSubmit(taxYear, businessId, mode)) {
+    @formHelper(action = routes.VehicleExpensesController.onSubmit(taxYear, businessId, index, mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))

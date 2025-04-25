@@ -20,6 +20,7 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import forms.expenses.workplaceRunningCosts.workingFromBusinessPremises.BusinessPremisesDisallowableAmountFormProvider
 import models.NormalMode
 import models.common.UserType
+import models.database.UserAnswers
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.{BusinessPremisesAmountPage, BusinessPremisesDisallowableAmountPage}
 import play.api.Application
@@ -42,7 +43,7 @@ class BusinessPremisesDisallowableAmountControllerSpec
   override def onwardRoute: Call = routes.BusinessPremisesDisallowableAmountController.onPageLoad(taxYear, businessId, NormalMode)
   // TODO change to workplace running costs cya
 
-  override def baseAnswers = emptyUserAnswers.set(BusinessPremisesAmountPage, amount, Some(businessId)).success.value
+  override def baseAnswers: UserAnswers = emptyUserAnswers.set(BusinessPremisesAmountPage, amount, Some(businessId)).success.value
 
   override val bindings: List[Binding[_]] = List(
     bind[WorkplaceRunningCostsNavigator].toInstance(new FakeWorkplaceRunningCostsNavigator(onwardRoute))
