@@ -22,6 +22,8 @@ import integrationData.TimeData
 import models.Index
 import models.common._
 import models.database.UserAnswers
+import models.domain.BusinessData
+import models.domain.BusinessData.{AccountingPeriod, LatencyDetails}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
@@ -60,6 +62,7 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
   protected val mtditid: Mtditid       = IntegrationBaseSpec.mtditid
   protected val taxYear: TaxYear       = TaxYear(mockTimeMachine.now.getYear)
   protected val index: Index           = Index(1)
+
   val testVehicleDetails: VehicleDetailsDb = VehicleDetailsDb(
     description = Some("Car"),
     vehicleType = Some(CarOrGoodsVehicle),
@@ -70,6 +73,27 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
     costsOutsideFlatRate = Some(BigDecimal("100.00")),
     vehicleExpenses = Some(BigDecimal("300.00"))
   )
+
+  val businessData: BusinessData =
+    BusinessData(
+      businessId = "businessId-1",
+      typeOfBusiness = "self-employment",
+      tradingName = Some("Trade one"),
+      yearOfMigration = Some("2022"),
+      accountingPeriods = Seq(AccountingPeriod("2023-0x2-29", "2024-0x2-29")),
+      firstAccountingPeriodStartDate = Some("2019-09-30"),
+      firstAccountingPeriodEndDate = Some("2020-02-29"),
+      latencyDetails = Some(LatencyDetails("2020-02-27", "2019", "A", "2020", "A")),
+      accountingType = Some("ACCRUAL"),
+      commencementDate = Some("2023-04-06"),
+      cessationDate = Some("2024-04-05"),
+      businessAddressLineOne = "Business Address",
+      businessAddressLineTwo = Some("Business Address 2"),
+      businessAddressLineThree = Some("Business Address 3"),
+      businessAddressLineFour = Some("Business Address 4"),
+      businessAddressPostcode = Some("Business Address 5"),
+      businessAddressCountryCode = "GB"
+    )
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(
     timeout = Span(sys.env.get("INTEGRATION_TEST_PATIENCE_TIMEOUT_SEC").fold(2)(x => Integer.parseInt(x)), Seconds),

@@ -1,7 +1,6 @@
 package controllers.journeys.tradeDetails
 
 import base.IntegrationBaseSpec
-import builders.BusinessDataBuilder
 import controllers.standard.routes._
 import helpers.{AuthStub, SelfEmploymentApiStub, WiremockSpec}
 import org.jsoup.Jsoup
@@ -13,8 +12,7 @@ import play.api.libs.json.Json
 
 class CheckYourSelfEmploymentDetailsControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  private val url: String  = routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
-  private val businessData = BusinessDataBuilder.aBusinessData
+  private val url: String = routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
 
   case class SummaryListRow(key: String, expectedValue: String)
 
