@@ -13,8 +13,6 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.filters.csrf.{CSRF, CSRFFilter}
-import play.api.test.CSRFTokenHelper._
 import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
 
 class TravelForWorkYourVehicleControllerISpec extends WiremockSpec with IntegrationBaseSpec {
