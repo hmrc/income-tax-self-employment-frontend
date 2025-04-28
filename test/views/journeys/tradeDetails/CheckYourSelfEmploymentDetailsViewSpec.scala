@@ -26,24 +26,24 @@ import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
 
 class CheckYourSelfEmploymentDetailsViewSpec extends ViewBaseSpec {
 
-  private val view = app.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
+  private val view      = app.injector.instanceOf[CheckYourSelfEmploymentDetailsView]
   private val nextRoute = "/foo"
 
   object ExpectedIndividual {
-    val title = "Check your self-employment details"
-    val heading = "Check your self-employment details"
+    val title    = "Check your self-employment details"
+    val heading  = "Check your self-employment details"
     val continue = "Continue"
 
-    val row1Key = "What name did you use for your self-employment"
+    val row1Key   = "What name did you use for your self-employment"
     val row1Value = "Trade one"
-    val row2Key = "What did you do for your self-employment"
+    val row2Key   = "What did you do for your self-employment"
     val row2Value = "self-employment"
-    val row3Key = "When did your self-employment start"
+    val row3Key   = "When did your self-employment start"
     val row3Value = "6 April 2023"
   }
 
   object ExpectedAgent {
-    val title = "Check your client’s self-employment details"
+    val title   = "Check your client’s self-employment details"
     val heading = "Check your client’s self-employment details"
 
     val row1Key = "What name did your client use for their self-employment"
