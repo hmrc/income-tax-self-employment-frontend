@@ -83,17 +83,16 @@ class CheckYourSelfEmploymentDetailsViewSpec extends ViewBaseSpec {
       }
 
       "display all summary list rows" in {
-        val rows = individualPage.select(".govuk-summary-list__row")
-        rows.size() mustBe 3
 
-        rows.get(0).select(".govuk-summary-list__key").text() mustBe ExpectedIndividual.row1Key
-        rows.get(0).select(".govuk-summary-list__value").text() mustBe ExpectedIndividual.row1Value
-
-        rows.get(1).select(".govuk-summary-list__key").text() mustBe ExpectedIndividual.row2Key
-        rows.get(1).select(".govuk-summary-list__value").text() mustBe ExpectedIndividual.row2Value
-
-        rows.get(2).select(".govuk-summary-list__key").text() mustBe ExpectedIndividual.row3Key
-        rows.get(2).select(".govuk-summary-list__value").text() mustBe ExpectedIndividual.row3Value
+        individualPage.summaryRow(1) mustBe Some(
+          SummaryRow(ExpectedIndividual.row1Key, ExpectedIndividual.row1Value, Seq.empty)
+        )
+        individualPage.summaryRow(2) mustBe Some(
+          SummaryRow(ExpectedIndividual.row2Key, ExpectedIndividual.row2Value, Seq.empty)
+        )
+        individualPage.summaryRow(3) mustBe Some(
+          SummaryRow(ExpectedIndividual.row3Key, ExpectedIndividual.row3Value, Seq.empty)
+        )
       }
 
       "have a continue button with the correct text and link" in {
@@ -115,12 +114,15 @@ class CheckYourSelfEmploymentDetailsViewSpec extends ViewBaseSpec {
       }
 
       "display summary list rows with agent-specific keys" in {
-        val rows = agentPage.select(".govuk-summary-list__row")
-        rows.size() mustBe 3
-
-        rows.get(0).select(".govuk-summary-list__key").text() mustBe ExpectedAgent.row1Key
-        rows.get(1).select(".govuk-summary-list__key").text() mustBe ExpectedAgent.row2Key
-        rows.get(2).select(".govuk-summary-list__key").text() mustBe ExpectedAgent.row3Key
+        agentPage.summaryRow(1) mustBe Some(
+          SummaryRow(ExpectedAgent.row1Key, ExpectedIndividual.row1Value, Seq.empty)
+        )
+        agentPage.summaryRow(2) mustBe Some(
+          SummaryRow(ExpectedAgent.row2Key, ExpectedIndividual.row2Value, Seq.empty)
+        )
+        agentPage.summaryRow(3) mustBe Some(
+          SummaryRow(ExpectedAgent.row3Key, ExpectedIndividual.row3Value, Seq.empty)
+        )
       }
     }
   }

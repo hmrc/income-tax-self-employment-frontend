@@ -53,6 +53,7 @@ trait JsoupHelper {
   val saveProgressButton        = ".govuk-button--secondary"
   val detailsSummary            = ".govuk-details__summary-text"
   val detailsContent            = ".govuk-details__text"
+  val summaryListRow            = ".govuk-summary-list__row"
   val summaryListKey            = ".govuk-summary-list__key"
   val summaryListValue          = ".govuk-summary-list__value"
   val summaryListActions        = ".govuk-summary-list__actions"
@@ -96,22 +97,17 @@ trait JsoupHelper {
     def hasErrorSummary: Boolean = errorSummary.isDefined
 
     def summaryRow(n: Int): Option[SummaryRow] = {
-      val key   = selectText(summaryListKey).lift(n - 1)
-      val value = selectText(summaryListValue).lift(n - 1)
-      val actions = doc
-        .select(summaryListActions)
-        .toList
-        .lift(n)
-        .map(
-          _.select("a").toList
-            .map(l => Link(l.text, l.attr("href")))
-        )
+      val row = doc.select(summaryListRow).toList.lift(n - 1)
 
-      for {
-        keyValue    <- key
-        answerValue <- value
-        actionsSeq  <- actions
-      } yield SummaryRow(keyValue, answerValue, actionsSeq)
+      row.flatMap { r =>
+        val key   = r.select(summaryListKey).text()
+        val value = r.select(summaryListValue).text()
+        val actions = r.select(summaryListActions).toList.map { a =>
+          Link(a.text(), a.attr("href"))
+        }
+
+        Some(SummaryRow(key, value, actions))
+      }
     }
 
     def hintWithMultiple(n: Int): Option[String] = doc.select(hint).toList.map(_.text).lift(n - 1)
