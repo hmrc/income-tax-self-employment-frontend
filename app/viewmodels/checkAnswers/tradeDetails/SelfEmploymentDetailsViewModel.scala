@@ -34,12 +34,7 @@ object SelfEmploymentDetailsViewModel {
       List(
         row("tradingName", business.tradingName.getOrElse(""), Some(userType)),
         row("typeOfBusiness", business.typeOfBusiness, Some(userType)),
-        row("accountingType", business.accountingType.getOrElse("")),
-        row("startDate", handleDateString(business.commencementDate), Some(userType)),
-        row("linkedToConstructionIndustryScheme", "No"),
-        row("fosterCare", "No", Some(userType)),
-        row("farmerOrMarketGardener", "No", Some(userType)),
-        row("profitFromLiteraryOrCreativeWorks", "No", Some(userType))
+        row("startDate", handleDateString(business.commencementDate), Some(userType))
       )
     )
 
