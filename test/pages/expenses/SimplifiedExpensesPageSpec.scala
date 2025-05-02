@@ -47,7 +47,7 @@ class SimplifiedExpensesPageSpec extends PlaySpec with MockitoSugar {
       SimplifiedExpensesPage.path(None) mustBe expectedPath
     }
 
-    "clearDependentPageDataAndUpdate" when {
+    "clearPageDataAndUpdate" when {
 
       "when the value selected is 'true'" in {
         SimplifiedExpensesPage.clearDependentPageDataAndUpdate(value = true, testVehicleDetails) mustBe testVehicleDetails

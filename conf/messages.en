@@ -173,8 +173,6 @@ checkYourSelfEmploymentDetails.startDate.agent = When did your client’s self-e
 checkYourSelfEmploymentDetails.linkedToConstructionIndustryScheme = Was this self-employment linked to the Construction Industry Scheme?
 checkYourSelfEmploymentDetails.fosterCare.individual = Were you a foster carer or shared lives carer?
 checkYourSelfEmploymentDetails.fosterCare.agent = Was your client a foster carer or shared lives carer?
-checkYourSelfEmploymentDetails.farmerOrMarketGardener.individual = Were you a farmer or market gardener?
-checkYourSelfEmploymentDetails.farmerOrMarketGardener.agent = Was your client a farmer or market gardener?
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.individual = Did you get over half of your profit from literary or creative works?
 checkYourSelfEmploymentDetails.profitFromLiteraryOrCreativeWorks.agent = Did your client get over half of their profit from literary or creative works?
 checkYourSelfEmploymentDetails.removeSelfEmployment = Remove self-employment
@@ -2516,3 +2514,8 @@ publicTransportAndAccommodationExpensesCya.title.individual                     
 publicTransportAndAccommodationExpensesCya.title.agent                              = Check your client’s public transport, hotel room costs and meals on overnight trip expenses
 publicTransportAndAccommodationExpensesCya.inset.agent                               = We will only save the total amount. Other information will not be saved
 publicTransportAndAccommodationExpensesCya.inset.individual                          = We will only save the total amount. Other information will not be saved
+
+farmerOrMarketGardener.heading.individual = Were you a farmer or market gardener?
+farmerOrMarketGardener.heading.agent = Was your client a farmer or market gardener?
+farmerOrMarketGardener.error.required.individual = Select yes if you worked as a farmer or market gardener
+farmerOrMarketGardener.error.required.agent = Select yes if your client worked as a farmer or market gardener

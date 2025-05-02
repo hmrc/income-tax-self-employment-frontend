@@ -47,6 +47,7 @@ import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import pages.expenses.travelAndAccommodation.{
+  PublicTransportAndAccommodationExpensesPage,
   SimplifiedExpensesPage,
   TravelAndAccommodationExpenseTypePage,
   TravelForWorkYourMileagePage,
@@ -54,14 +55,13 @@ import pages.expenses.travelAndAccommodation.{
   VehicleExpensesPage,
   VehicleFlatRateChoicePage,
   VehicleTypePage,
-  YourFlatRateForVehicleExpensesPage,
-  PublicTransportAndAccommodationExpensesPage
+  YourFlatRateForVehicleExpensesPage
 }
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
 import pages.nics._
-import pages.{CostsNotCoveredPage, Page, QuestionPage, DisallowableTransportAndAccommodationPage}
+import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage, FarmerOrMarketGardenerPage, Page, QuestionPage}
 import play.api.mvc.PathBindable
 import queries.Settable
 
@@ -361,6 +361,16 @@ object Journey extends Enum[Journey] with utils.PlayJsonEnum[Journey] {
   case object NationalInsuranceContributions extends NationalInsuranceBaseJourney("national-insurance-contributions") {
     override val pageKeys: List[PageName] =
       List(Class2NICsPage, Class4NICsPage, Class4ExemptionReasonPage, Class4DivingExemptPage, Class4NonDivingExemptPage).map(_.pageName)
+  }
+
+  sealed abstract class IndustrySectorsBaseJourney(override val entryName: String) extends Journey(entryName) {
+    override def toString: String = entryName
+  }
+
+  case object IndustrySectors extends IndustrySectorsBaseJourney("industry-sectors") {
+    override val pageKeys: List[PageName] = List(
+      FarmerOrMarketGardenerPage
+    ).map(_.pageName)
   }
 
   sealed abstract class AdjustmentsBaseJourney(override val entryName: String) extends Journey(entryName) {
