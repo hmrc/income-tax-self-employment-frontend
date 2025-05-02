@@ -75,7 +75,8 @@ class FarmerOrMarketGardenerController @Inject() (
                   .getOrElse(IndustrySectorsDb())
                   .copy(isFarmerOrMarketGardener = Some(value))
               )
-            } yield Redirect(navigator.nextPage(FarmerOrMarketGardenerPage, mode, newData, taxYear, businessId))
+            } yield NotImplemented
+          // Redirect(navigator.nextPage(FarmerOrMarketGardenerPage, mode, newData, taxYear, businessId)) // TODO: replace NotImplemented once implemented
         )
     }
 }
