@@ -34,7 +34,7 @@ POST        /:taxYear/:businessId/:journey/details/change-completed-section     
 
 GET         /:taxYear/:businessId/details/check                                     controllers.journeys.tradeDetails.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
-GET         /:taxYear/self-employment-summary                                       controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: TaxYear)
+GET         /:taxYear/self-employment-summary                                       controllers.journeys.tradeDetails.SelfEmploymentSummaryController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 
 ########## Prepop ##########
 

@@ -19,6 +19,7 @@
 @import templates.Layout
 @import viewmodels.journeys.taskList.PrepopTradeJourneyStatusesViewModel
 @import models.common.TaxYear
+@import models.common.BusinessId
 @import views.html.components._
 
 @this(
@@ -30,10 +31,6 @@
 
 
 @(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[PrepopTradeJourneyStatusesViewModel])(implicit request: Request[_], messages: Messages)
-
-@selfEmploymentSummaryLink = {
-    @controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url
-}
 
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 

@@ -27,27 +27,11 @@
 
 @(taxYear: TaxYear, user: User, status: JourneyStatus, selfEmploymentList: Seq[TradeJourneyStatusesViewModel], nationalInsuranceSummaryList: SummaryList)(implicit request: Request[_], messages: Messages)
 
-@selfEmploymentSummaryLink = {@controllers.journeys.tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url}
-
 @layout(pageTitle = titleNoForm(messages("journeys.selfEmployment"))) {
 
     <div class="task-list">
 
         <h1 class="govuk-heading-l">@messages("journeys.selfEmployment")</h1>
-
-        <ul class="app-task-list__items govuk-!-padding-left-0">
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a class ="govuk-link" href=@selfEmploymentSummaryLink>
-                        @messages("taskList.reviewLink")
-                    </a>
-                </span>
-                <a href=@selfEmploymentSummaryLink>
-                    <strong class="govuk-tag tag-float app-task-list__tag govuk-tag--@status">@messages(s"status.$status")</strong>
-                </a>
-            </li>
-        </ul>
-
 
         @for((selfEmployment, index) <- selfEmploymentList.zipWithIndex){
             <h2 class="app-task-list__section">

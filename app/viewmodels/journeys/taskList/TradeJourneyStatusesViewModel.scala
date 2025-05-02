@@ -43,7 +43,9 @@ object TradeJourneyStatusesViewModel {
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
     implicit val impUserAnswers: Option[UserAnswers]       = userAnswers
 
-    val abroadRow = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = true)
+    val reviewSelfEmployment   = buildRow(TradeDetails, dependentJourneyIsFinishedForClickableLink = true)
+    val isReviewSelfEmployment = tradesJourneyStatuses.getStatusOrNotStarted(TradeDetails).isCompleted
+    val abroadRow              = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment)
 
     val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
     val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
@@ -60,7 +62,7 @@ object TradeJourneyStatusesViewModel {
       buildRow(ProfitOrLoss, dependentJourneyIsFinishedForClickableLink = isIncomeAnswered && capitalAllowanceAllCompleted && expensesAllCompleted)
 
     val rows: List[SummaryListRow] =
-      List(abroadRow, incomeRow) ++
+      List(reviewSelfEmployment, abroadRow, incomeRow) ++
         expensesRows ++
         capitalAllowanceRows ++
         List(adjustmentsRow)
@@ -79,6 +81,7 @@ object TradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
+      case TradeDetails => controllers.journeys.tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
       case Abroad       => getAbroadUrl(status, businessId, taxYear)
       case Income       => getIncomeUrl(status, businessId, taxYear)
       case ProfitOrLoss => getAdjustmentsUrl(status, businessId, taxYear)

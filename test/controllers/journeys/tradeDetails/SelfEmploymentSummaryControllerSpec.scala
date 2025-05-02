@@ -52,7 +52,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
         running(application) {
 
-          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear, businessId).url)
 
           val result = route(application, request).value
 
@@ -72,7 +72,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
         running(application) {
 
-          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear, businessId).url)
 
           val result = route(application, request).value
 
@@ -92,7 +92,7 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
         running(application) {
 
-          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear).url)
+          val request = FakeRequest(GET, tradeDetails.routes.SelfEmploymentSummaryController.onPageLoad(taxYear, businessId).url)
 
           val result = route(application, request).value
 
