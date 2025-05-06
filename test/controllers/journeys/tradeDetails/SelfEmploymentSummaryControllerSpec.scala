@@ -38,13 +38,12 @@ class SelfEmploymentSummaryControllerSpec extends SpecBase with SummaryListFluen
 
   val stubService = SelfEmploymentServiceStub()
   val userAnswers = UserAnswers("1345566")
-  val businessID  = BusinessId("trade-details")
 
   "SelfEmploymentSummary Controller" - {
 
     "onPageLoad" - {
 
-      def nextRoute = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessID, TradeDetails, NormalMode).url
+      def nextRoute = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails, NormalMode).url
 
       "must return OK and the correct view when there are no self-employments" in {
 

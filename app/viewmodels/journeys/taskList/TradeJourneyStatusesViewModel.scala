@@ -16,7 +16,7 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{abroad, adjustments, income}
+import controllers.journeys.{abroad, adjustments, income, tradeDetails}
 import models._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
@@ -81,7 +81,7 @@ object TradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case TradeDetails => controllers.journeys.tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
+      case TradeDetails => tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
       case Abroad       => getAbroadUrl(status, businessId, taxYear)
       case Income       => getIncomeUrl(status, businessId, taxYear)
       case ProfitOrLoss => getAdjustmentsUrl(status, businessId, taxYear)
@@ -115,11 +115,13 @@ object TradeJourneyStatusesViewModel {
       abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
       abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
+
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
       income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url,
       income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
+
   private def getAdjustmentsUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
       adjustments.profitOrLoss.routes.GoodsAndServicesForYourOwnUseController.onPageLoad(taxYear, businessId, NormalMode).url,
