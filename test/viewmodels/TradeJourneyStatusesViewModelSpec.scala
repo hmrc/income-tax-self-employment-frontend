@@ -71,7 +71,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     )
   )
 
-  private val reviewSEDetailsUrl    = controllers.journeys.tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
+  private val reviewSEDetailsUrl =
+    controllers.journeys.tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
   private val abroadUrl    = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   private val abroadCyaUrl = abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
   private val incomeUrl    = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
