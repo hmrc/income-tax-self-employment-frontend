@@ -58,7 +58,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
       updatedRequest     = taskListWithRequest.request
       messages           = messagesApi.preferred(updatedRequest)
       tradeDetailsStatus = getTradeDetailsStatus(taskListWithRequest)
-      completedTrades    = getTradesIfDetailsAreCompleted(taskListWithRequest.taskList)
+      completedTrades    = taskListWithRequest.taskList.businesses
       businessSummaryList      <- saveAndGetBusinessSummaries(completedTrades, updatedRequest, taxYear, messages)
       nationalInsuranceSummary <- getNationalInsuranceSummary(taskListWithRequest, completedTrades, taxYear, messages)
     } yield Ok(view(taxYear, updatedRequest.user, tradeDetailsStatus, businessSummaryList, nationalInsuranceSummary)(updatedRequest, messages))

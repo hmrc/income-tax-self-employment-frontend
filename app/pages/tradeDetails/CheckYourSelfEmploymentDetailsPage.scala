@@ -16,8 +16,10 @@
 
 package pages.tradeDetails
 
-import controllers.journeys.tradeDetails.routes
-import models.common.TaxYear
+import controllers.journeys.routes
+import models.NormalMode
+import models.common.Journey.TradeDetails
+import models.common.{BusinessId, TaxYear}
 import pages.Page
 import play.api.mvc.Call
 
@@ -25,5 +27,6 @@ case object CheckYourSelfEmploymentDetailsPage extends Page {
 
   override def toString: String = "checkYourSelfEmploymentDetails"
 
-  def nextPage(taxYear: TaxYear): Call = routes.SelfEmploymentSummaryController.onPageLoad(taxYear)
+  def nextPage(taxYear: TaxYear, businessId: BusinessId): Call =
+    routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, TradeDetails, NormalMode)
 }

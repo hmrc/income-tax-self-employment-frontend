@@ -45,10 +45,10 @@ class SelfEmploymentSummaryController @Inject() (override val messagesApi: Messa
     with I18nSupport
     with Logging {
 
-  def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getData) async { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
       val viewModel = generateRowList(taxYear, businesses.map(bd => (bd.tradingName.getOrElse(""), BusinessId(bd.businessId))))
-      val nextRoute = SelfEmploymentSummaryPage.nextPage(taxYear, BusinessId.tradeDetailsId).url
+      val nextRoute = SelfEmploymentSummaryPage.nextPage(taxYear, businessId).url
       Ok(view(viewModel, nextRoute))
     }
     handleResultT(result)

@@ -21,7 +21,6 @@ import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation
-import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, YourFlatRateForVehicleExpenses}
 import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleDetailsDb, YourFlatRateForVehicleExpenses}
 import models.{NormalMode, _}
 import pages._

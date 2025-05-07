@@ -71,6 +71,8 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     )
   )
 
+  private val reviewSEDetailsUrl =
+    controllers.journeys.tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
   private val abroadUrl    = abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   private val abroadCyaUrl = abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
   private val incomeUrl    = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
@@ -104,27 +106,31 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       Nil,
       Nil,
       List(
-        expectedRow(abroadUrl, Abroad, NotStarted),
+        expectedRow(reviewSEDetailsUrl, TradeDetails, NotStarted),
+        expectedRow("#", Abroad, CannotStartYet),
         expectedRow("#", Income, CannotStartYet),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
     // Just one route: Abroad in progress
     (
-      List(JourneyNameAndStatus(Abroad, InProgress)),
+      List(JourneyNameAndStatus(TradeDetails, InProgress)),
       Nil,
       List(
-        expectedRow(abroadCyaUrl, Abroad, InProgress),
+        expectedRow(reviewSEDetailsUrl, TradeDetails, InProgress),
+        expectedRow("#", Abroad, CannotStartYet),
         expectedRow("#", Income, CannotStartYet),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
     // Abroad, Income and CapAllowances there, but income without answers so no expenses or cap-allowances tailoring rendered
     (
       List(
+        JourneyNameAndStatus(TradeDetails, Completed),
         JourneyNameAndStatus(Abroad, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed)
       ),
       Nil,
       List(
+        expectedRow(reviewSEDetailsUrl, TradeDetails, Completed),
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
@@ -132,6 +138,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     // Expense Tailoring there, with some sub journeys
     (
       List(
+        JourneyNameAndStatus(TradeDetails, Completed),
         JourneyNameAndStatus(Abroad, Completed),
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed),
@@ -139,6 +146,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       ),
       categoriesExpenses,
       List(
+        expectedRow(reviewSEDetailsUrl, TradeDetails, Completed),
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeCyaUrl, Income, Completed),
         expectedRow(expensesTailoringCyaUrl, ExpensesTailoring, Completed),
@@ -152,6 +160,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     // Capital Allowances Tailoring completed, with some sub journeys
     (
       List(
+        JourneyNameAndStatus(TradeDetails, Completed),
         JourneyNameAndStatus(Abroad, Completed),
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
@@ -161,6 +170,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       ),
       capitalAllowances,
       List(
+        expectedRow(reviewSEDetailsUrl, TradeDetails, Completed),
         expectedRow(abroadCyaUrl, Abroad, Completed),
         expectedRow(incomeCyaUrl, Income, Completed),
         expectedRow(expensesTailoringUrl, ExpensesTailoring, NotStarted),

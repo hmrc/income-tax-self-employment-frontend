@@ -46,7 +46,7 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
       val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
-      val nextRoute             = CheckYourSelfEmploymentDetailsPage.nextPage(taxYear).url
+      val nextRoute             = CheckYourSelfEmploymentDetailsPage.nextPage(taxYear, businessId).url
       Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))
     }
     handleResultT(result)
