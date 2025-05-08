@@ -24,7 +24,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.ViewBaseSpec
-import views.html.journeys.abroad.FarmerOrMarketGardenerView
+import views.html.journeys.industrysectors.FarmerOrMarketGardenerView
 
 class FarmerOrMarketGardenerViewSpec extends ViewBaseSpec {
 

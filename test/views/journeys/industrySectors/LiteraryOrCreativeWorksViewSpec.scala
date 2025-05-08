@@ -24,7 +24,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.ViewBaseSpec
-import views.html.journeys.abroad.LiteraryOrCreativeWorksView
+import views.html.journeys.industrysectors.LiteraryOrCreativeWorksView
 
 class LiteraryOrCreativeWorksViewSpec extends ViewBaseSpec {
 
@@ -41,9 +41,9 @@ class LiteraryOrCreativeWorksViewSpec extends ViewBaseSpec {
   }
 
   object ExpectedAgent {
-    val title   = "Did your client get over half of their profit from literary or creative works?"
-    val heading = "Did your client get over half of their profit from literary or creative works?"
-    val error   = "Select yes if your client got over half of their profit from literary or creative works"
+    val title   = "Did your client get over half their profit from literary or creative works?"
+    val heading = "Did your client get over half their profit from literary or creative works?"
+    val error   = "Select yes if your client got over half their profit from literary or creative works"
   }
 
   def individualView(userType: UserType): Document = Jsoup.parse(

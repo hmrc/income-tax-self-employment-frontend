@@ -42,7 +42,7 @@
         @govukRadios(
             RadiosViewModel.yesNoVertical(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"literaryOrCreativeWorks.p"))
+                legend = LegendViewModel(messages(s"literaryOrCreativeWorks.p.$userType"))
             )
         )
 
