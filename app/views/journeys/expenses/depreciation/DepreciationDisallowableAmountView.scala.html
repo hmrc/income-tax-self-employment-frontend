@@ -42,10 +42,12 @@
                 label = LabelViewModel(HtmlContent(
                         s"""
                         <div>
-                            <label class="govuk-label govuk-label--l">
-                                ${messages(s"depreciationDisallowableAmount.title.$userType")}
-                            </label>
-                            <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+                            <h1 class="govuk-label-wrapper">
+                                <label class="govuk-label govuk-label--l">
+                                    ${messages(s"depreciationDisallowableAmount.title.$userType")}
+                                </label>
+                            </h1>
+                            <details class="govuk-details" data-module="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
                                         ${messages("depreciationDisallowableAmount.d1.heading")}
@@ -59,14 +61,12 @@
                                     </ul>
                                 </div>
                             </details>
-                            <div class="govuk-hint">
-                                ${messages("expenses.hint.disallowableExpenses")}
-                            </div>
                         </div>
                         """
                         ))
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("expenses.hint.disallowableExpenses")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

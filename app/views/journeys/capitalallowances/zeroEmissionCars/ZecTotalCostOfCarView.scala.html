@@ -17,6 +17,7 @@
 @import controllers.journeys.capitalallowances.zeroEmissionCars.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
+@import viewmodels.LabelSize
 @import views.html.components._
 
 @this(
@@ -38,20 +39,11 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(
-                    s"""
-                    <div>
-                        <label class="govuk-label govuk-label--l">
-                            ${messages("zecTotalCostOfCar.title")}
-                        </label>
-                        <div class="govuk-hint">
-                            ${messages(s"zecTotalCostOfCar.hint.$userType")}
-                        </div>
-                    </div>
-                    """
-                ))
+                label = LabelViewModel(messages(s"zecTotalCostOfCar.title"))
+                .asPageHeading(size = LabelSize.Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages(s"zecTotalCostOfCar.hint.$userType")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

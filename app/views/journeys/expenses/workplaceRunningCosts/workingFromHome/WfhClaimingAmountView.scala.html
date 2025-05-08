@@ -57,10 +57,9 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"wfhClaimingAmount.subHeading.$userType"))
-                .asPageHeading(size = Medium)
-                .withCssClass("govuk-!-margin-bottom-4")
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

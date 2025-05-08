@@ -43,6 +43,7 @@
                 .asPageHeading(size = LabelSize.Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

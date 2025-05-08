@@ -42,9 +42,9 @@
                 field = form("value"),
                 label = LabelViewModel(messages(s"businessPremisesDisallowableAmount.title.$userType", allowableAmount))
                 .asPageHeading(size = Large)
-                .withCssClass("govuk-!-margin-bottom-4")
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

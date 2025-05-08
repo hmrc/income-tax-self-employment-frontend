@@ -41,12 +41,12 @@
 
         @govukInput(
             InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages(s"financialChargesDisallowableAmount.title.$userType", amount))
-                            .asPageHeading(size = LabelSize.Large)
-                            .withCssClass("govuk-!-margin-bottom-3")
+                    field = form("value"),
+                    label = LabelViewModel(messages(s"financialChargesDisallowableAmount.title.$userType", amount))
+                    .asPageHeading(size = LabelSize.Large)
                 )
                 .asNumeric()
+                .withHint(HintViewModel(messages("site.hint.amount")))
                 .withWidth(Fixed10)
                 .withPrefix(PrefixOrSuffix(content = Text("£")))
             )

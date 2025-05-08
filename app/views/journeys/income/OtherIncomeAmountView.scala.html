@@ -41,9 +41,9 @@
                 field = form("value"),
                 label = LabelViewModel(messages(s"otherIncomeAmount.title.$userType"))
                 .asPageHeading(size = Large)
-                .withCssClass("govuk-!-margin-bottom-6")
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
