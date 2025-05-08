@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms.abroad
 
-case object DisallowableTransportAndAccommodationPage extends OneQuestionPage[BigDecimal] {
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
 
-  override def toString: String = "disallowableTransportAndAccommodation"
+import javax.inject.Inject
+
+class LiteraryOrCreativeWorksFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"literaryOrCreativeWorks.error.required.$userType")
+    )
 }

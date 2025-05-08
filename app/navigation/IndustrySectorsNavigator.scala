@@ -16,25 +16,40 @@
 
 package navigation
 
+import controllers.journeys.abroad.routes
+import controllers.standard.{routes => standardRoutes}
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
-import models.{Mode, NormalMode}
-import pages.{FarmerOrMarketGardenerPage, Page}
+import models.{CheckMode, Mode, NormalMode}
+import pages.Page
+import pages.abroad.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
 
 class IndustrySectorsNavigator @Inject() {
 
-  private val normalRoutes: Page => IndustrySectorsDb => (TaxYear, BusinessId) => Call = { case FarmerOrMarketGardenerPage =>
-    _ => (taxYear, businessId) => ??? // TODO: Route to literary/creative works page
+  private val normalRoutes: Page => IndustrySectorsDb => (TaxYear, BusinessId) => Call = {
+    case FarmerOrMarketGardenerPage =>
+      _ => (taxYear, businessId) => routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode)
+    case LiteraryOrCreativeWorksPage =>
+      _ => (taxYear, businessId) => routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode)
+    case SelfEmploymentAbroadPage =>
+      _ => (taxYear, businessId) => routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 
+    case _ => _ => (_, _) => standardRoutes.JourneyRecoveryController.onPageLoad()
+  }
+
+  private val checkRouteMap: Page => IndustrySectorsDb => (TaxYear, BusinessId) => Call = { case _ =>
+    _ => (taxYear, businessId) => routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, model: IndustrySectorsDb, taxYear: TaxYear, businessId: BusinessId): Call =
     mode match {
       case NormalMode =>
         normalRoutes(page)(model)(taxYear, businessId)
+      case CheckMode =>
+        checkRouteMap(page)(model)(taxYear, businessId)
     }
 
 }

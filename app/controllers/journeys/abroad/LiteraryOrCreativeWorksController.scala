@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,55 +17,55 @@
 package controllers.journeys.abroad
 
 import controllers.actions._
-import forms.standard.BooleanFormProvider
+import forms.abroad.LiteraryOrCreativeWorksFormProvider
 import models.Mode
 import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
 import navigation.IndustrySectorsNavigator
-import pages.abroad.{LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
+import pages.abroad.LiteraryOrCreativeWorksPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.abroad.SelfEmploymentAbroadView
+import views.html.journeys.abroad.LiteraryOrCreativeWorksView
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class SelfEmploymentAbroadController @Inject() (override val messagesApi: MessagesApi,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                navigator: IndustrySectorsNavigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: BooleanFormProvider,
-                                                answersService: AnswersService,
-                                                view: SelfEmploymentAbroadView)(implicit ec: ExecutionContext)
+class LiteraryOrCreativeWorksController @Inject() (
+    override val messagesApi: MessagesApi,
+    answersService: AnswersService,
+    navigator: IndustrySectorsNavigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: LiteraryOrCreativeWorksFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: LiteraryOrCreativeWorksView
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
-
-  private val page = SelfEmploymentAbroadPage
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
       answersService.getAnswers[IndustrySectorsDb](ctx).map { optIndustrySectorDetails =>
-        val form: Form[Boolean] = formProvider(page, request.userType)
-        val preparedForm        = optIndustrySectorDetails.flatMap(_.isAllSelfEmploymentAbroad).fold(form)(form.fill)
-        Ok(view(preparedForm, taxYear, businessId, request.userType, mode))
+        val form: Form[Boolean] = formProvider(request.userType)
+        val preparedForm        = optIndustrySectorDetails.flatMap(_.hasProfitFromCreativeWorks).fold(form)(form.fill)
+        Ok(view(preparedForm, request.userType, taxYear, businessId, mode))
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
-      formProvider(page, request.userType)
+
+      formProvider(request.userType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userType, taxYear, businessId, mode))),
           value =>
             for {
               oldAnswers <- answersService.getAnswers[IndustrySectorsDb](ctx)
@@ -73,11 +73,9 @@ class SelfEmploymentAbroadController @Inject() (override val messagesApi: Messag
                 ctx = ctx,
                 data = oldAnswers
                   .getOrElse(IndustrySectorsDb())
-                  .copy(isAllSelfEmploymentAbroad = Some(value))
+                  .copy(hasProfitFromCreativeWorks = Some(value))
               )
-            } yield Redirect(navigator.nextPage(page, mode, newData, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(LiteraryOrCreativeWorksPage, mode, newData, taxYear, businessId))
         )
-
   }
-
 }

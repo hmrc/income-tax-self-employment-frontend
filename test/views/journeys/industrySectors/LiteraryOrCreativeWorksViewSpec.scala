@@ -16,7 +16,7 @@
 
 package views.journeys.industrySectors
 
-import forms.abroad.FarmerOrMarketGardenerFormProvider
+import forms.abroad.LiteraryOrCreativeWorksFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.Individual
@@ -24,27 +24,26 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.ViewBaseSpec
-import views.html.journeys.abroad.FarmerOrMarketGardenerView
+import views.html.journeys.abroad.LiteraryOrCreativeWorksView
 
-class FarmerOrMarketGardenerViewSpec extends ViewBaseSpec {
+class LiteraryOrCreativeWorksViewSpec extends ViewBaseSpec {
 
-  private val view      = app.injector.instanceOf[FarmerOrMarketGardenerView]
-  val formProvider      = new FarmerOrMarketGardenerFormProvider()
-  val individualForm    = formProvider(UserType.Individual)
-  val agentForm         = formProvider(UserType.Agent)
-  private val nextRoute = "/foo"
+  private val view                  = app.injector.instanceOf[LiteraryOrCreativeWorksView]
+  val formProvider                  = new LiteraryOrCreativeWorksFormProvider()
+  val individualForm: Form[Boolean] = formProvider(UserType.Individual)
+  val agentForm: Form[Boolean]      = formProvider(UserType.Agent)
 
   object ExpectedIndividual {
-    val title    = "Were you a farmer or market gardener?"
-    val heading  = "Were you a farmer or market gardener?"
+    val title    = "Did you get over half of your profit from literary or creative works?"
+    val heading  = "Did you get over half of your profit from literary or creative works?"
     val continue = "Continue"
-    val error    = "Select yes if you worked as a farmer or market gardener"
+    val error    = "Select yes if you got over half of your profit from literary or creative works"
   }
 
   object ExpectedAgent {
-    val title   = "Was your client a farmer or market gardener?"
-    val heading = "Was your client a farmer or market gardener?"
-    val error   = "Select yes if your client worked as a farmer or market gardener"
+    val title   = "Did your client get over half of their profit from literary or creative works?"
+    val heading = "Did your client get over half of their profit from literary or creative works?"
+    val error   = "Select yes if your client got over half of their profit from literary or creative works"
   }
 
   def individualView(userType: UserType): Document = Jsoup.parse(
@@ -59,7 +58,7 @@ class FarmerOrMarketGardenerViewSpec extends ViewBaseSpec {
     view(form.bind(Map("value" -> "")), userType, taxYear, businessId, NormalMode)(fakeRequest, messages).body
   )
 
-  "The FarmerOrMarketGardenerViewSpec" when {
+  "LiteraryOrCreativeWorksViewSpec" when {
     "the user is an Individual" must {
       val individualPage = individualView(Individual)
 

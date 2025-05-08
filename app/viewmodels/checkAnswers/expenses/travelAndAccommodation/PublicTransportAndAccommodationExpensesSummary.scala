@@ -20,9 +20,12 @@ import models.NormalMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
-import pages.DisallowableTransportAndAccommodationPage
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
-import pages.expenses.travelAndAccommodation.{PublicTransportAndAccommodationExpensesPage, TravelAndAccommodationExpenseTypePage}
+import pages.expenses.travelAndAccommodation.{
+  DisallowableTransportAndAccommodationPage,
+  PublicTransportAndAccommodationExpensesPage,
+  TravelAndAccommodationExpenseTypePage
+}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

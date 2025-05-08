@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package pages.abroad
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import pages.OneQuestionPage
 
-class FarmerOrMarketGardenerFormProvider @Inject() extends Mappings {
-
-  def apply(userType: UserType): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"farmerOrMarketGardener.error.required.$userType")
-    )
+case object LiteraryOrCreativeWorksPage extends OneQuestionPage[String] {
+  override def toString: String = "literaryOrCreativeWorks"
 }
