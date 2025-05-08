@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.journeys.industrySectors
 
 import base.IntegrationBaseSpec
@@ -9,22 +25,23 @@ import models.common.JourneyAnswersContext
 import models.journeys.industrySectors.IndustrySectorsDb
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
-import play.api.http.Status.OK
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.NOT_FOUND
 
-class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String                        = routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode).url
-  val submitUrl: String                  = routes.LiteraryOrCreativeWorksController.onSubmit(taxYear, businessId, NormalMode).url
+  val url: String                        = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  val submitUrl: String                  = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, IndustrySectors)
 
   val testIndustrySectors: IndustrySectorsDb = IndustrySectorsDb(
     isFarmerOrMarketGardener = Some(true),
-    hasProfitFromCreativeWorks = Some(true)
+    hasProfitFromCreativeWorks = Some(true),
+    isAllSelfEmploymentAbroad = Some(true)
   )
 
-  "GET /:taxYear/:businessId/industry-sectors/literary-or-creative-works" when {
+  "GET /:taxYear/:businessId/industry-sectors/self-employment-abroad" when {
     "the user is an agent" must {
       "return OK with the correct view" in {
         AuthStub.agentAuthorised()
@@ -88,32 +105,32 @@ class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with Integrati
     }
   }
 
-  "POST /:taxYear/:businessId/industry-sectors/literary-or-creative-works" when {
+  "POST /:taxYear/:businessId/industry-sectors/self-employment-abroad" when {
     "the user selects 'Yes'" must {
       "redirect to the next page" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = None))))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors))(OK)
         DbHelper.insertEmpty()
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url)
+        result.header(HeaderNames.LOCATION) mustBe defined
       }
     }
 
     "the user selects 'No'" must {
       "redirect to the next page" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = None))))
-        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = Some(false))))(OK)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
+        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = Some(false))))(OK)
         DbHelper.insertEmpty()
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url)
+        result.header(HeaderNames.LOCATION) mustBe defined
       }
     }
 

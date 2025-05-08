@@ -33,8 +33,6 @@ class IndustrySectorsNavigator @Inject() {
     case FarmerOrMarketGardenerPage =>
       _ => (taxYear, businessId) => routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode)
     case LiteraryOrCreativeWorksPage =>
-      _ => (taxYear, businessId) => routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode)
-    case SelfEmploymentAbroadPage =>
       _ => (taxYear, businessId) => routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => (_, _) => standardRoutes.JourneyRecoveryController.onPageLoad()

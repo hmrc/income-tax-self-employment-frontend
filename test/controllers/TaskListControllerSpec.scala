@@ -77,12 +77,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(
-        taxYear,
-        fakeUser,
-        JourneyStatus.Completed,
-        selfEmploymentList,
-        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, fakeUser, selfEmploymentList, nationalInsuranceEmptySummary(messages(application)))(
+        fakeOptionalRequest,
+        messages(application)).toString
     }
 
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
@@ -97,7 +94,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.Completed, Nil, nationalInsuranceEmptySummary(messages(application)))(
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, Nil, nationalInsuranceEmptySummary(messages(application)))(
         fakeOptionalRequest,
         messages(application)).toString
     }
@@ -114,12 +111,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(
-        taxYear,
-        aNoddyUser,
-        JourneyStatus.InProgress,
-        Nil,
-        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, Nil, nationalInsuranceEmptySummary(messages(application)))(
+        fakeOptionalRequest,
+        messages(application)).toString
     }
 
     "must return OK and display no Self-employments when the review of trade details has not been started" in {
@@ -134,12 +128,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(
-        taxYear,
-        aNoddyUser,
-        JourneyStatus.CheckOurRecords,
-        Nil,
-        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, Nil, nationalInsuranceEmptySummary(messages(application)))(
+        fakeOptionalRequest,
+        messages(application)).toString
     }
   }
 

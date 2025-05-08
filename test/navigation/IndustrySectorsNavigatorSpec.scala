@@ -7,7 +7,7 @@ import models.NormalMode
 import models.journeys.industrySectors.IndustrySectorsDb
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
-import pages.abroad.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
+import pages.abroad.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage}
 
 class IndustrySectorsNavigatorSpec extends SpecBase {
 
@@ -47,18 +47,11 @@ class IndustrySectorsNavigatorSpec extends SpecBase {
           navigator.nextPage(FarmerOrMarketGardenerPage, mode, vd, taxYear, businessId) shouldBe expectedResult
         }
 
-        "navigate to LiteraryOrCreativeWorksPage from SelfEmploymentAbroadPage" in {
-          val expectedResult = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode)
+        "navigate to SelfEmploymentAbroadCYAPage from LiteraryOrCreativeWorksPage" in {
+          val expectedResult = routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
           val vd             = industrySectorsDb.copy(isFarmerOrMarketGardener = Some(false))
 
           navigator.nextPage(LiteraryOrCreativeWorksPage, mode, vd, taxYear, businessId) shouldBe expectedResult
-        }
-
-        "navigate to SelfEmploymentAbroadCYAPage from SelfEmploymentAbroadPage" in {
-          val expectedResult = routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
-          val vd             = industrySectorsDb.copy(isAllSelfEmploymentAbroad = Some(false))
-
-          navigator.nextPage(SelfEmploymentAbroadPage, mode, vd, taxYear, businessId) shouldBe expectedResult
         }
       }
     }
