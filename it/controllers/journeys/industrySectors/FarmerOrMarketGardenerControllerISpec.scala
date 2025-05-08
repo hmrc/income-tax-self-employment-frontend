@@ -17,7 +17,7 @@
 package controllers.journeys.industrySectors
 
 import base.IntegrationBaseSpec
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.IndustrySectors

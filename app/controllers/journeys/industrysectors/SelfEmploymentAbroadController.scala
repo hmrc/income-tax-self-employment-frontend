@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.journeys.abroad
+package controllers.journeys.industrysectors
 
 import controllers.actions._
 import forms.standard.BooleanFormProvider
@@ -23,13 +23,13 @@ import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
 import navigation.IndustrySectorsNavigator
-import pages.abroad.{LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
+import pages.industrysectors.SelfEmploymentAbroadPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.abroad.SelfEmploymentAbroadView
+import views.html.journeys.industrysectors.SelfEmploymentAbroadView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

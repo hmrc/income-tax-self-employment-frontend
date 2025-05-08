@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.abroad
+package pages.industrysectors
 
 import models.common.BusinessId
 import pages.QuestionPage

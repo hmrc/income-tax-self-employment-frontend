@@ -1,13 +1,13 @@
 package navigation
 
 import base.SpecBase
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import controllers.standard
 import models.NormalMode
 import models.journeys.industrySectors.IndustrySectorsDb
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages.Page
-import pages.abroad.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage}
+import pages.industrysectors.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage}
 
 class IndustrySectorsNavigatorSpec extends SpecBase {
 

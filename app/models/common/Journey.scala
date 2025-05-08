@@ -19,7 +19,7 @@ package models.common
 import controllers.journeys.expenses
 import enumeratum._
 import models.NormalMode
-import pages.abroad.{FarmerOrMarketGardenerPage, SelfEmploymentAbroadPage}
+import pages.industrysectors.{FarmerOrMarketGardenerPage, SelfEmploymentAbroadPage}
 import pages.adjustments.profitOrLoss._
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}

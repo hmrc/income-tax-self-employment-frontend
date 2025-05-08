@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.abroad
+package viewmodels.checkAnswers.industrysectors
 
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.abroad
+package viewmodels.checkAnswers.industrysectors
 
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.abroad.SelfEmploymentAbroadPage
+import pages.industrysectors.SelfEmploymentAbroadPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean

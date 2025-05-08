@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.journeys.abroad
+package controllers.journeys.industrysectors
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
 import models.common.{BusinessId, TaxYear, UserType}
@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
+import viewmodels.checkAnswers.industrysectors.SelfEmploymentAbroadSummary
 import viewmodels.journeys.SummaryListCYA
 
 class SelfEmploymentAbroadCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {

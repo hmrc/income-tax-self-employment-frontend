@@ -14,52 +14,52 @@
  * limitations under the License.
  */
 
-package controllers.journeys.abroad
+package controllers.journeys.industrysectors
 
 import controllers.actions._
-import forms.abroad.FarmerOrMarketGardenerFormProvider
+import forms.abroad.LiteraryOrCreativeWorksFormProvider
 import models.Mode
 import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
 import navigation.IndustrySectorsNavigator
-import pages.abroad.FarmerOrMarketGardenerPage
+import pages.industrysectors.LiteraryOrCreativeWorksPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.abroad.FarmerOrMarketGardenerView
+import views.html.journeys.industrysectors.LiteraryOrCreativeWorksView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FarmerOrMarketGardenerController @Inject() (
+class LiteraryOrCreativeWorksController @Inject() (
     override val messagesApi: MessagesApi,
     answersService: AnswersService,
     navigator: IndustrySectorsNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: FarmerOrMarketGardenerFormProvider,
+    formProvider: LiteraryOrCreativeWorksFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: FarmerOrMarketGardenerView
+    view: LiteraryOrCreativeWorksView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
       answersService.getAnswers[IndustrySectorsDb](ctx).map { optIndustrySectorDetails =>
         val form: Form[Boolean] = formProvider(request.userType)
-        val preparedForm        = optIndustrySectorDetails.flatMap(_.isFarmerOrMarketGardener).fold(form)(form.fill)
+        val preparedForm        = optIndustrySectorDetails.flatMap(_.hasProfitFromCreativeWorks).fold(form)(form.fill)
         Ok(view(preparedForm, request.userType, taxYear, businessId, mode))
       }
-    }
+  }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
 
       formProvider(request.userType)
@@ -73,9 +73,9 @@ class FarmerOrMarketGardenerController @Inject() (
                 ctx = ctx,
                 data = oldAnswers
                   .getOrElse(IndustrySectorsDb())
-                  .copy(isFarmerOrMarketGardener = Some(value))
+                  .copy(hasProfitFromCreativeWorks = Some(value))
               )
-            } yield Redirect(navigator.nextPage(FarmerOrMarketGardenerPage, mode, newData, taxYear, businessId))
+            } yield Redirect(navigator.nextPage(LiteraryOrCreativeWorksPage, mode, newData, taxYear, businessId))
         )
-    }
+  }
 }

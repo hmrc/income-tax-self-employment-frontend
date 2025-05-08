@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.abroad
+package viewmodels.checkAnswers.industrysectors
 
 import base.summaries.SummaryBaseSpec
 import models.common.UserType

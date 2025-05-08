@@ -16,13 +16,13 @@
 
 package navigation
 
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import controllers.standard.{routes => standardRoutes}
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
-import pages.abroad.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
+import pages.industrysectors.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
 import play.api.mvc.Call
 
 import javax.inject.Inject
