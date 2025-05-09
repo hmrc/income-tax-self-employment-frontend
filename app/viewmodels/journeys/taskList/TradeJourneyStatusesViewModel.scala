@@ -16,7 +16,7 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{abroad, adjustments, income, tradeDetails}
+import controllers.journeys.{industrysectors, adjustments, income, tradeDetails}
 import models._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
@@ -112,8 +112,8 @@ object TradeJourneyStatusesViewModel {
 
   private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
-      abroad.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
-      abroad.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+      industrysectors.routes.FarmerOrMarketGardenerController.onPageLoad(taxYear, businessId, NormalMode).url,
+      industrysectors.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
 
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =

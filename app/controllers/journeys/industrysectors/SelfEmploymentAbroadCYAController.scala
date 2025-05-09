@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.journeys.abroad
+package controllers.journeys.industrysectors
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
-import controllers.journeys.abroad
+import controllers.journeys.industrysectors
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.common.Journey
 import models.common.Journey.Abroad
@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.abroad.SelfEmploymentAbroadSummary
+import viewmodels.checkAnswers.industrysectors.SelfEmploymentAbroadSummary
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -64,7 +64,7 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
         taxYear,
         request.userType,
         summaryList,
-        abroad.routes.SelfEmploymentAbroadCYAController.onSubmit(taxYear, businessId)
+        industrysectors.routes.SelfEmploymentAbroadCYAController.onSubmit(taxYear, businessId)
       )
     )
   }

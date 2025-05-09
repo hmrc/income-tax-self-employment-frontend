@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages.abroad
+package pages.industrysectors
 
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.OneQuestionPage

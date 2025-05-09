@@ -22,8 +22,7 @@ import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
 import navigation.TravelAndAccommodationNavigator
-import pages.DisallowableTransportAndAccommodationPage
-import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
+import pages.expenses.travelAndAccommodation.{DisallowableTransportAndAccommodationPage, PublicTransportAndAccommodationExpensesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

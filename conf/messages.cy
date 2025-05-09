@@ -2167,3 +2167,12 @@ disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Mes
 
 removeVehicle.title.common = *********Missing Welsh Message *********
 removeVehicle.error.required.common = *********Missing Welsh Message *********
+
+literaryOrCreativeWorks.heading.individual = *********Missing Welsh Message *********
+literaryOrCreativeWorks.heading.agent = *********Missing Welsh Message *********
+literaryOrCreativeWorks.p.individual = *********Missing Welsh Message *********
+literaryOrCreativeWorks.p.agent = *********Missing Welsh Message *********
+literaryOrCreativeWorks.checkYourAnswersLabel = *********Missing Welsh Message *********
+literaryOrCreativeWorks.error.required.individual = *********Missing Welsh Message *********
+literaryOrCreativeWorks.error.required.agent = *********Missing Welsh Message *********
+literaryOrCreativeWorks.change.hidden = *********Missing Welsh Message *********

@@ -16,29 +16,33 @@
 
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.LegendSize.Large
+@import controllers.journeys.industrysectors.routes
+@import views.html.components._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    heading: Heading
 )
 
 @(form: Form[_], userType: UserType, taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"farmerOrMarketGardener.heading.$userType"))) {
+@layout(pageTitle = title(form, messages(s"literaryOrCreativeWorks.heading.$userType"))) {
 
-    @formHelper(action = routes.FarmerOrMarketGardenerController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+    @heading(s"literaryOrCreativeWorks.heading.$userType")
+    @formHelper(action = routes.LiteraryOrCreativeWorksController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoVertical(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"farmerOrMarketGardener.heading.$userType")).asPageHeading(Large)
+                legend = LegendViewModel(messages(s"literaryOrCreativeWorks.p.$userType"))
             )
         )
 

@@ -25,8 +25,7 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DisallowableTransportAndAccommodationPage
-import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
+import pages.expenses.travelAndAccommodation.{DisallowableTransportAndAccommodationPage, PublicTransportAndAccommodationExpensesPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
