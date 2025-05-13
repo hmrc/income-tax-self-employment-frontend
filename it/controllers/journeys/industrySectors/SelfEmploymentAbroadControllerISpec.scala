@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,23 @@ import models.common.JourneyAnswersContext
 import models.journeys.industrySectors.IndustrySectorsDb
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
-import play.api.http.Status.OK
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.NOT_FOUND
 
-class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String                        = routes.FarmerOrMarketGardenerController.onPageLoad(taxYear, businessId, NormalMode).url
-  val submitUrl: String                  = routes.FarmerOrMarketGardenerController.onSubmit(taxYear, businessId, NormalMode).url
+  val url: String                        = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  val submitUrl: String                  = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, IndustrySectors)
 
   val testIndustrySectors: IndustrySectorsDb = IndustrySectorsDb(
-    isFarmerOrMarketGardener = Some(true)
+    isFarmerOrMarketGardener = Some(true),
+    hasProfitFromCreativeWorks = Some(true),
+    isAllSelfEmploymentAbroad = Some(true)
   )
 
-  "GET /:taxYear/:businessId/industry-sectors/farmer-or-market-gardener" when {
+  "GET /:taxYear/:businessId/industry-sectors/self-employment-abroad" when {
     "the user is an agent" must {
       "return OK with the correct view" in {
         AuthStub.agentAuthorised()
@@ -103,11 +105,11 @@ class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with Integratio
     }
   }
 
-  "POST /:taxYear/:businessId/industry-sectors/farmer-or-market-gardener" when {
+  "POST /:taxYear/:businessId/industry-sectors/self-employment-abroad" when {
     "the user selects 'Yes'" must {
       "redirect to the next page" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isFarmerOrMarketGardener = None))))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors))(OK)
         DbHelper.insertEmpty()
 
@@ -121,14 +123,14 @@ class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with Integratio
     "the user selects 'No'" must {
       "redirect to the next page" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isFarmerOrMarketGardener = None))))
-        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(isFarmerOrMarketGardener = Some(false))))(OK)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
+        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = Some(false))))(OK)
         DbHelper.insertEmpty()
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe defined
       }
     }
 

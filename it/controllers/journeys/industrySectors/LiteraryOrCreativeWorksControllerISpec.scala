@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package controllers.journeys.industrySectors
 
 import base.IntegrationBaseSpec
@@ -29,17 +13,18 @@ import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String                        = routes.FarmerOrMarketGardenerController.onPageLoad(taxYear, businessId, NormalMode).url
-  val submitUrl: String                  = routes.FarmerOrMarketGardenerController.onSubmit(taxYear, businessId, NormalMode).url
+  val url: String                        = routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode).url
+  val submitUrl: String                  = routes.LiteraryOrCreativeWorksController.onSubmit(taxYear, businessId, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, IndustrySectors)
 
   val testIndustrySectors: IndustrySectorsDb = IndustrySectorsDb(
-    isFarmerOrMarketGardener = Some(true)
+    isFarmerOrMarketGardener = Some(true),
+    hasProfitFromCreativeWorks = Some(true)
   )
 
-  "GET /:taxYear/:businessId/industry-sectors/farmer-or-market-gardener" when {
+  "GET /:taxYear/:businessId/industry-sectors/literary-or-creative-works" when {
     "the user is an agent" must {
       "return OK with the correct view" in {
         AuthStub.agentAuthorised()
@@ -103,32 +88,32 @@ class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with Integratio
     }
   }
 
-  "POST /:taxYear/:businessId/industry-sectors/farmer-or-market-gardener" when {
+  "POST /:taxYear/:businessId/industry-sectors/literary-or-creative-works" when {
     "the user selects 'Yes'" must {
       "redirect to the next page" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isFarmerOrMarketGardener = None))))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = None))))
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors))(OK)
         DbHelper.insertEmpty()
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe defined
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url)
       }
     }
 
     "the user selects 'No'" must {
       "redirect to the next page" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isFarmerOrMarketGardener = None))))
-        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(isFarmerOrMarketGardener = Some(false))))(OK)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = None))))
+        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = Some(false))))(OK)
         DbHelper.insertEmpty()
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url)
       }
     }
 

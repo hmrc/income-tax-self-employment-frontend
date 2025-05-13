@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.industrysectors
 
-case object DisallowableTransportAndAccommodationPage extends OneQuestionPage[BigDecimal] {
+import pages.OneQuestionPage
 
-  override def toString: String = "disallowableTransportAndAccommodation"
+case object LiteraryOrCreativeWorksPage extends OneQuestionPage[String] {
+  override def toString: String = "literaryOrCreativeWorks"
 }

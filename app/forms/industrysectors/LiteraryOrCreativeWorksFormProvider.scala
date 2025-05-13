@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package pages.abroad
+package forms.industrysectors
 
-import pages.Page
+import forms.mappings.Mappings
+import models.common.UserType
+import play.api.data.Form
 
-object SelfEmploymentAbroadCYAPage extends Page {
-  override def toString: String = "selfEmploymentAbroadCYA"
+import javax.inject.Inject
+
+class LiteraryOrCreativeWorksFormProvider @Inject() extends Mappings {
+
+  def apply(userType: UserType): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"literaryOrCreativeWorks.error.required.$userType")
+    )
 }

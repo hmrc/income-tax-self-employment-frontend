@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package forms
+package pages.expenses.travelAndAccommodation
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.common.UserType
-import play.api.data.Form
+import pages.OneQuestionPage
 
-class FarmerOrMarketGardenerFormProvider @Inject() extends Mappings {
+case object DisallowableTransportAndAccommodationPage extends OneQuestionPage[BigDecimal] {
 
-  def apply(userType: UserType): Form[Boolean] =
-    Form(
-      "value" -> boolean(s"farmerOrMarketGardener.error.required.$userType")
-    )
+  override def toString: String = "disallowableTransportAndAccommodation"
 }
