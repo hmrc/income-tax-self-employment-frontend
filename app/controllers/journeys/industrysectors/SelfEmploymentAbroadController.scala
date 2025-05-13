@@ -17,67 +17,45 @@
 package controllers.journeys.industrysectors
 
 import controllers.actions._
+import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
-import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}
-import models.journeys.industrySectors.IndustrySectorsDb
-import navigation.IndustrySectorsNavigator
 import pages.industrysectors.SelfEmploymentAbroadPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.answers.AnswersService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.journeys.industrysectors.SelfEmploymentAbroadView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SelfEmploymentAbroadController @Inject() (override val messagesApi: MessagesApi,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                navigator: IndustrySectorsNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: BooleanFormProvider,
-                                                answersService: AnswersService,
-                                                view: SelfEmploymentAbroadView)(implicit ec: ExecutionContext)
+                                                service: SelfEmploymentService,
+                                                view: SelfEmploymentAbroadView)
     extends FrontendBaseController
     with I18nSupport {
 
   private val page = SelfEmploymentAbroadPage
 
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
-      answersService.getAnswers[IndustrySectorsDb](ctx).map { optIndustrySectorDetails =>
-        val form: Form[Boolean] = formProvider(page, request.userType)
-        val preparedForm        = optIndustrySectorDetails.flatMap(_.isAllSelfEmploymentAbroad).fold(form)(form.fill)
-        Ok(view(preparedForm, taxYear, businessId, request.userType, mode))
-      }
+      val form = fillForm(page, businessId, formProvider(page, request.userType))
+      Ok(view(form, taxYear, businessId, request.userType, mode))
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
-      formProvider(page, request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))),
-          value =>
-            for {
-              oldAnswers <- answersService.getAnswers[IndustrySectorsDb](ctx)
-              newData <- answersService.replaceAnswers(
-                ctx = ctx,
-                data = oldAnswers
-                  .getOrElse(IndustrySectorsDb())
-                  .copy(isAllSelfEmploymentAbroad = Some(value))
-              )
-            } yield Redirect(navigator.nextPage(page, mode, newData, taxYear, businessId))
-        )
+      def handleError(formWithErrors: Form[_]): Result = BadRequest(view(formWithErrors, taxYear, businessId, request.userType, mode))
 
+      service.defaultHandleForm(formProvider(page, request.userType), page, businessId, taxYear, mode, handleError)
   }
 
 }

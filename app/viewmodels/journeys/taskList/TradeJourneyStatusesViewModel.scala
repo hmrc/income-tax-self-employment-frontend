@@ -112,7 +112,7 @@ object TradeJourneyStatusesViewModel {
 
   private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
-      industrysectors.routes.FarmerOrMarketGardenerController.onPageLoad(taxYear, businessId, NormalMode).url,
+      industrysectors.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
       industrysectors.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
 
