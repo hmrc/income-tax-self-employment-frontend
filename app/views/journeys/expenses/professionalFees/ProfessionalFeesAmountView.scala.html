@@ -41,8 +41,10 @@
                     field = form("value"),
                     label = LabelViewModel(HtmlContent(
                         s"""
-                <label class="govuk-label govuk-label--l"> ${messages(s"professionalFeesAmount.title.$userType")} </label>
-                   <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--l"> ${messages(s"professionalFeesAmount.title.$userType")} </label>
+                </h1>
+                   <details class="govuk-details" data-module="govuk-details">
                        <summary class="govuk-details__summary">
                            <span class="govuk-details__summary-text">
                                ${messages("professionalServiceExpenses.d3.heading")} </span>
@@ -71,6 +73,7 @@
                     ))
                 )
                 .asNumeric()
+                .withHint(HintViewModel(messages("site.hint.amount")))
                 .withWidth(Fixed10)
                 .withPrefix(PrefixOrSuffix(content = Text("£")))
             )

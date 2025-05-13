@@ -41,7 +41,8 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses)).asPageHeading(LabelSize.Large)
+                label = LabelViewModel(messages(s"disallowableTransportAndAccommodation.heading.$userType", expenses))
+                .asPageHeading(LabelSize.Large)
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))

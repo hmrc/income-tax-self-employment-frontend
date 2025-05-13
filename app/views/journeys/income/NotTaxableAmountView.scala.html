@@ -17,6 +17,7 @@
 @import controllers.journeys.income.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
+@import viewmodels.LabelSize
 @import views.html.components._
 
 @this(
@@ -34,16 +35,16 @@
 
     @errorSummarySection(form)
 
-    @heading(s"notTaxableAmount.title.$userType")
-
     @formHelper(action = routes.NotTaxableAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("site.hint.amount")).withCssClass("govuk-hint")
+                label = LabelViewModel(messages(s"notTaxableAmount.title.$userType"))
+                .asPageHeading(size = LabelSize.Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

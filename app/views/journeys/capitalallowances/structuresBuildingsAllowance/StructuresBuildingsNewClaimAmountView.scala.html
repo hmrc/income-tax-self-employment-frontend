@@ -59,9 +59,10 @@
         @govukInput(
                 InputViewModel(
                     field = form("value"),
-                    label = LabelViewModel(messages(s"structuresBuildingsNewClaimAmount.subHeading.$userType")).asPageHeading(size = Medium)
+                    label = LabelViewModel(messages(s"structuresBuildingsNewClaimAmount.subHeading.$userType"))
                 )
                 .asNumeric()
+                .withHint(HintViewModel(messages("site.hint.large.amount")))
                 .withWidth(Fixed10)
                 .withPrefix(PrefixOrSuffix(content = Text("£")))
             )

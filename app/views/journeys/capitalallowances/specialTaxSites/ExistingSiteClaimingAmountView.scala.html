@@ -53,9 +53,9 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"existingSiteClaimingAmount.subHeading.$userType"))
-                .asPageHeading(size = LabelSize.Medium)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

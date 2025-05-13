@@ -18,6 +18,7 @@
 @import models.common.{BusinessId, TaxYear, UserType}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import viewmodels.InputWidth._
+@import viewmodels.LabelSize
 @import views.html.components._
 
 @this(
@@ -39,20 +40,11 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(
-                        s"""
-                        <div>
-                            <label class="govuk-label govuk-label--l">
-                                ${messages(s"entertainment.title.$userType")}
-                            </label>
-                            <div class="govuk-hint">
-                                ${messages("expenses.hint.disallowableExpenses")}
-                            </div>
-                        </div>
-                        """
-                        ))
+                label = LabelViewModel(messages(s"entertainment.title.$userType"))
+                .asPageHeading(size = LabelSize.Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("expenses.hint.disallowableExpenses")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
