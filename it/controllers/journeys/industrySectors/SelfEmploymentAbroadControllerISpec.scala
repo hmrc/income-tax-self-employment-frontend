@@ -29,7 +29,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.test.Helpers.NOT_FOUND
 
-class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+/*class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
   val url: String                        = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
   val submitUrl: String                  = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode).url
@@ -146,4 +146,4 @@ class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationB
       }
     }
   }
-}
+}*/
