@@ -17,6 +17,7 @@
 @import controllers.journeys.expenses.workplaceRunningCosts.workingFromBusinessPremises.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import viewmodels.InputWidth._
+@import viewmodels.LabelSize
 @import views.html.components._
 
 @this(
@@ -38,19 +39,11 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <label class="govuk-label govuk-label--l">
-                                ${messages(s"wfbpClaimingAmount.title.$userType")}
-                            </label>
-                            <div class="govuk-hint">
-                                ${messages("wfbpClaimingAmount.hint")}
-                            </div>
-                        </div>
-                        """))
+                label = LabelViewModel(messages(s"wfbpClaimingAmount.title.$userType"))
+                .asPageHeading(size = LabelSize.Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("wfbpClaimingAmount.hint")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

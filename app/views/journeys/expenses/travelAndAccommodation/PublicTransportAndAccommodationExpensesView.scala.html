@@ -39,7 +39,8 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value")))
         }
 
-        @heading(s"publicTransportAndAccommodationExpenses.heading.$userType")
+            @heading(s"publicTransportAndAccommodationExpenses.heading.$userType")
+
             <p class="govuk-body">@{messages(s"publicTransportAndAccommodationExpenses.can.claim.$userType")}</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>@{messages(s"publicTransportAndAccommodationExpenses.can.claim.train-bus-air-taxi")}</li>

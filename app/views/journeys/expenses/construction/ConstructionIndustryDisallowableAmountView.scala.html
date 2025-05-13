@@ -40,9 +40,10 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"constructionIndustryDisallowableAmount.title.$userType", amount))
-                        .asPageHeading(size = Large)
+                .asPageHeading(size = Large)
             )
             .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
             .withWidth(Fixed10)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )

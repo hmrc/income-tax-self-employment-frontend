@@ -53,7 +53,7 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"costsNotCovered.subheading.$userType"))
-                .withCssClass("govuk-label--m"),
+                .withCssClass("govuk-label--m")
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))
