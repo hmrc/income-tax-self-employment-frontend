@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.abroad
+package forms.industrysectors
 
 import forms.mappings.Mappings
 import models.common.UserType

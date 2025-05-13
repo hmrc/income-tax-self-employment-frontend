@@ -1,6 +1,7 @@
 package forms.abroad
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.industrysectors.LiteraryOrCreativeWorksFormProvider
 import models.common.UserType.{Agent, Individual}
 import play.api.data.FormError
 

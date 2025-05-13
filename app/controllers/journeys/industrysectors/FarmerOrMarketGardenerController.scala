@@ -17,7 +17,7 @@
 package controllers.journeys.industrysectors
 
 import controllers.actions._
-import forms.abroad.FarmerOrMarketGardenerFormProvider
+import forms.industrysectors.FarmerOrMarketGardenerFormProvider
 import models.Mode
 import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}

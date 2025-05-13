@@ -17,6 +17,7 @@
 package forms.abroad
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.industrysectors.FarmerOrMarketGardenerFormProvider
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
 import play.api.data.{Form, FormError}

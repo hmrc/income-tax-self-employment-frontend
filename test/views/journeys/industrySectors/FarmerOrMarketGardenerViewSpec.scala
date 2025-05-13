@@ -16,7 +16,7 @@
 
 package views.journeys.industrySectors
 
-import forms.abroad.FarmerOrMarketGardenerFormProvider
+import forms.industrysectors.FarmerOrMarketGardenerFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.Individual

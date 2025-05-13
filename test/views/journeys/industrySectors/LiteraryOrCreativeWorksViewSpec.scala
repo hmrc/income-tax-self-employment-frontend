@@ -16,7 +16,7 @@
 
 package views.journeys.industrySectors
 
-import forms.abroad.LiteraryOrCreativeWorksFormProvider
+import forms.industrysectors.LiteraryOrCreativeWorksFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.Individual

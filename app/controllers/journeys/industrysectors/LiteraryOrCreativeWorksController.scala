@@ -17,7 +17,7 @@
 package controllers.journeys.industrysectors
 
 import controllers.actions._
-import forms.abroad.LiteraryOrCreativeWorksFormProvider
+import forms.industrysectors.LiteraryOrCreativeWorksFormProvider
 import models.Mode
 import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}
