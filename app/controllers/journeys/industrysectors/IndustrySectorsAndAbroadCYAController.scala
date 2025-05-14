@@ -17,16 +17,14 @@
 package controllers.journeys.industrysectors
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import controllers.handleSubmitAnswersResult
-import controllers.journeys.industrysectors
-import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
-import models.common.Journey
-import models.common.Journey.Abroad
+import controllers.journeys
+import models.NormalMode
+import models.common.Journey.IndustrySectors
+import models.common.{BusinessId, Journey, TaxYear}
 import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.industrysectors.SelfEmploymentAbroadSummary
@@ -34,17 +32,16 @@ import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   identify: IdentifierAction,
-                                                   getAnswers: DataRetrievalAction,
-                                                   getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
-                                                   requireData: DataRequiredAction,
-                                                   service: SelfEmploymentService,
-                                                   view: CheckYourAnswersView)(implicit ec: ExecutionContext)
+class IndustrySectorsAndAbroadCYAController @Inject() (override val messagesApi: MessagesApi,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       identify: IdentifierAction,
+                                                       getAnswers: DataRetrievalAction,
+                                                       getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
+                                                       requireData: DataRequiredAction,
+                                                       view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -64,17 +61,13 @@ class SelfEmploymentAbroadCYAController @Inject() (override val messagesApi: Mes
         taxYear,
         request.userType,
         summaryList,
-        industrysectors.routes.SelfEmploymentAbroadCYAController.onSubmit(taxYear, businessId)
+        routes.IndustrySectorsAndAbroadCYAController.onSubmit(taxYear, businessId)
       )
     )
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData).async {
-    implicit request =>
-      val context = JourneyContextWithNino(taxYear, request.nino, businessId, request.mtditid, Abroad)
-      val result  = service.submitAnswers[SelfEmploymentAbroadAnswers](context, request.userAnswers)
-
-      handleSubmitAnswersResult(context, result)
+    Future.successful(Redirect(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, IndustrySectors, NormalMode)))
   }
 
 }

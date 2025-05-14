@@ -73,8 +73,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
 
   private val reviewSEDetailsUrl =
     controllers.journeys.tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
-  private val abroadUrl    = industrysectors.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  private val abroadCyaUrl = industrysectors.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+  private val abroadCyaUrl = industrysectors.routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url
   private val incomeUrl    = income.routes.IncomeNotCountedAsTurnoverController.onPageLoad(taxYear, businessId, NormalMode).url
   private val incomeCyaUrl = income.routes.IncomeCYAController.onPageLoad(taxYear, businessId).url
   private val capitalAllowancesTailoringUrl =
@@ -107,7 +106,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       Nil,
       List(
         expectedRow(reviewSEDetailsUrl, TradeDetails, NotStarted),
-        expectedRow("#", Abroad, CannotStartYet),
+        expectedRow("#", IndustrySectors, CannotStartYet),
         expectedRow("#", Income, CannotStartYet),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
@@ -117,7 +116,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       Nil,
       List(
         expectedRow(reviewSEDetailsUrl, TradeDetails, InProgress),
-        expectedRow("#", Abroad, CannotStartYet),
+        expectedRow("#", IndustrySectors, CannotStartYet),
         expectedRow("#", Income, CannotStartYet),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
@@ -125,13 +124,13 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     (
       List(
         JourneyNameAndStatus(TradeDetails, Completed),
-        JourneyNameAndStatus(Abroad, Completed),
+        JourneyNameAndStatus(IndustrySectors, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed)
       ),
       Nil,
       List(
         expectedRow(reviewSEDetailsUrl, TradeDetails, Completed),
-        expectedRow(abroadCyaUrl, Abroad, Completed),
+        expectedRow(abroadCyaUrl, IndustrySectors, Completed),
         expectedRow(incomeUrl, Income, NotStarted),
         expectedRow("#", ProfitOrLoss, CannotStartYet)
       )),
@@ -139,7 +138,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     (
       List(
         JourneyNameAndStatus(TradeDetails, Completed),
-        JourneyNameAndStatus(Abroad, Completed),
+        JourneyNameAndStatus(IndustrySectors, Completed),
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(ExpensesTailoring, Completed),
         JourneyNameAndStatus(ExpensesGoodsToSellOrUse, InProgress)
@@ -147,7 +146,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       categoriesExpenses,
       List(
         expectedRow(reviewSEDetailsUrl, TradeDetails, Completed),
-        expectedRow(abroadCyaUrl, Abroad, Completed),
+        expectedRow(abroadCyaUrl, IndustrySectors, Completed),
         expectedRow(incomeCyaUrl, Income, Completed),
         expectedRow(expensesTailoringCyaUrl, ExpensesTailoring, Completed),
         expectedRow(officeSuppliesUrl, ExpensesOfficeSupplies, NotStarted),
@@ -161,7 +160,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
     (
       List(
         JourneyNameAndStatus(TradeDetails, Completed),
-        JourneyNameAndStatus(Abroad, Completed),
+        JourneyNameAndStatus(IndustrySectors, Completed),
         JourneyNameAndStatus(Income, Completed),
         JourneyNameAndStatus(CapitalAllowancesTailoring, Completed),
         JourneyNameAndStatus(CapitalAllowancesZeroEmissionCars, InProgress),
@@ -171,7 +170,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
       capitalAllowances,
       List(
         expectedRow(reviewSEDetailsUrl, TradeDetails, Completed),
-        expectedRow(abroadCyaUrl, Abroad, Completed),
+        expectedRow(abroadCyaUrl, IndustrySectors, Completed),
         expectedRow(incomeCyaUrl, Income, Completed),
         expectedRow(expensesTailoringUrl, ExpensesTailoring, NotStarted),
         expectedRow(capitalAllowancesTailoringCyaUrl, CapitalAllowancesTailoring, Completed),

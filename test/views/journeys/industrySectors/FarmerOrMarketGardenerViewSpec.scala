@@ -28,11 +28,10 @@ import views.html.journeys.industrysectors.FarmerOrMarketGardenerView
 
 class FarmerOrMarketGardenerViewSpec extends ViewBaseSpec {
 
-  private val view      = app.injector.instanceOf[FarmerOrMarketGardenerView]
-  val formProvider      = new FarmerOrMarketGardenerFormProvider()
-  val individualForm    = formProvider(UserType.Individual)
-  val agentForm         = formProvider(UserType.Agent)
-  private val nextRoute = "/foo"
+  private val view   = app.injector.instanceOf[FarmerOrMarketGardenerView]
+  val formProvider   = new FarmerOrMarketGardenerFormProvider()
+  val individualForm = formProvider(UserType.Individual)
+  val agentForm      = formProvider(UserType.Agent)
 
   object ExpectedIndividual {
     val title    = "Were you a farmer or market gardener?"

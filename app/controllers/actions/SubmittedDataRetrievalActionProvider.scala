@@ -22,13 +22,13 @@ import models.common.{BusinessId, Journey, JourneyContext, TaxYear}
 import models.domain.ApiResultT
 import models.errors.ServiceError
 import models.journeys.TaskListWithRequest
-import models.journeys.abroad.SelfEmploymentAbroadAnswers
 import models.journeys.adjustments.ProfitOrLossJourneyAnswers
 import models.journeys.capitalallowances.balancingCharge.BalancingChargeAnswers
 import models.journeys.capitalallowances.tailoring.CapitalAllowancesTailoringAnswers
 import models.journeys.expenses.ExpensesTailoringAnswers
 import models.journeys.expenses.goodsToSellOrUse.GoodsToSellOrUseJourneyAnswers
 import models.journeys.income.IncomeJourneyAnswers
+import models.journeys.industrySectors.IndustrySectorsDb
 import models.journeys.nics.NICsJourneyAnswers
 import models.requests.{OptionalDataRequest, TradesJourneyStatuses}
 import play.api.libs.json.Format
@@ -68,10 +68,10 @@ class SubmittedDataRetrievalActionProviderImpl @Inject() (connector: SelfEmploym
     for {
       taskList <- connector.getTaskList(nino, taxYear, mtditid)
       businesses = taskList.businesses
-      abroadUpdated   <- loadAnswers[SelfEmploymentAbroadAnswers](taxYear, businesses, request, Journey.Abroad)
-      incomeUpdated   <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, abroadUpdated, Journey.Income)
-      expensesUpdated <- loadAnswers[ExpensesTailoringAnswers](taxYear, businesses, incomeUpdated, Journey.ExpensesTailoring)
-      gtsouUpdated    <- loadAnswers[GoodsToSellOrUseJourneyAnswers](taxYear, businesses, expensesUpdated, Journey.ExpensesGoodsToSellOrUse)
+      industrySectorsUpdated <- loadAnswers[IndustrySectorsDb](taxYear, businesses, request, Journey.Abroad)
+      incomeUpdated          <- loadAnswers[IncomeJourneyAnswers](taxYear, businesses, industrySectorsUpdated, Journey.Income)
+      expensesUpdated        <- loadAnswers[ExpensesTailoringAnswers](taxYear, businesses, incomeUpdated, Journey.ExpensesTailoring)
+      gtsouUpdated           <- loadAnswers[GoodsToSellOrUseJourneyAnswers](taxYear, businesses, expensesUpdated, Journey.ExpensesGoodsToSellOrUse)
       capitalAllowancesUpdated <- loadAnswers[CapitalAllowancesTailoringAnswers](
         taxYear,
         businesses,
