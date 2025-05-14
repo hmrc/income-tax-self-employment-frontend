@@ -16,7 +16,6 @@
 
 package models.common
 
-import models.common.Journey
 import models.requests.{DataRequest, NinoDataRequest}
 import play.api.mvc.AnyContent
 

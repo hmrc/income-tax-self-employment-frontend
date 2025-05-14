@@ -45,7 +45,7 @@ object TradeJourneyStatusesViewModel {
 
     val reviewSelfEmployment   = buildRow(TradeDetails, dependentJourneyIsFinishedForClickableLink = true)
     val isReviewSelfEmployment = tradesJourneyStatuses.getStatusOrNotStarted(TradeDetails).isCompleted
-    // val abroadRow = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment) // TODO based on the policy outcome
+    val abroadRow = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment) // TODO based on the policy outcome
     val industrySectorsRow =
       buildRow(IndustrySectors, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment) // TODO replace abroadRow with industrySectorsRow
 
