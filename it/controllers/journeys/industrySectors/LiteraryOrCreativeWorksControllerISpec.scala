@@ -99,7 +99,7 @@ class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with Integrati
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url)
       }
     }
 
@@ -113,7 +113,7 @@ class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with Integrati
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url)
       }
     }
 

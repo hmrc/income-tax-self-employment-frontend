@@ -17,9 +17,8 @@
 package controllers.journeys.industrysectors
 
 import base.cyaPages.{CYAOnPageLoadControllerBaseSpec, CYAOnSubmitControllerBaseSpec}
-import models.common.{BusinessId, TaxYear, UserType}
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
-import models.common.Journey
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -27,14 +26,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.industrysectors.SelfEmploymentAbroadSummary
 import viewmodels.journeys.SummaryListCYA
 
-class SelfEmploymentAbroadCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOnSubmitControllerBaseSpec {
-  val pageHeading: String           = "common.checkYourDetails"
-  val journey: Journey              = Journey.Abroad
-  val submissionData: JsObject      = Json.obj("selfEmploymentAbroad" -> true)
+class IndustrySectorsAndAbroadCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
+  val pageHeading: String      = "common.checkYourDetails"
+  val journey: Journey         = Journey.IndustrySectors
+  val submissionData: JsObject = Json.obj("selfEmploymentAbroad" -> true, "isFarmerOrMarketGardener" -> true, "hasProfitFromCreativeWorks" -> true)
   val testDataCases: List[JsObject] = List(submissionData)
 
-  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.SelfEmploymentAbroadCYAController.onPageLoad
-  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.SelfEmploymentAbroadCYAController.onSubmit
+  def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.IndustrySectorsAndAbroadCYAController.onPageLoad
+  def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.IndustrySectorsAndAbroadCYAController.onSubmit
 
   def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =

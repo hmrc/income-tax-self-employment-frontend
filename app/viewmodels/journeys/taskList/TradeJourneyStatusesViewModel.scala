@@ -16,13 +16,12 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{industrysectors, adjustments, income, tradeDetails}
+import controllers.journeys.{adjustments, income, industrysectors, tradeDetails}
 import models._
+import models.common.Journey._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
 import models.database.UserAnswers
-import models.common.Journey
-import models.common.Journey._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -45,10 +44,11 @@ object TradeJourneyStatusesViewModel {
 
     val reviewSelfEmployment   = buildRow(TradeDetails, dependentJourneyIsFinishedForClickableLink = true)
     val isReviewSelfEmployment = tradesJourneyStatuses.getStatusOrNotStarted(TradeDetails).isCompleted
-    val abroadRow              = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment)
+    val industrySectorsRow =
+      buildRow(IndustrySectors, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment) // TODO replace abroadRow with industrySectorsRow
 
-    val isAbroadAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
-    val incomeRow        = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isAbroadAnswered)
+    val isIndustrySectorsAnswered = tradesJourneyStatuses.getStatusOrNotStarted(IndustrySectors).isCompleted
+    val incomeRow                 = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isIndustrySectorsAnswered)
 
     val isIncomeAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Income).isCompleted
 
@@ -62,7 +62,7 @@ object TradeJourneyStatusesViewModel {
       buildRow(ProfitOrLoss, dependentJourneyIsFinishedForClickableLink = isIncomeAnswered && capitalAllowanceAllCompleted && expensesAllCompleted)
 
     val rows: List[SummaryListRow] =
-      List(reviewSelfEmployment, abroadRow, incomeRow) ++
+      List(reviewSelfEmployment, industrySectorsRow, incomeRow) ++
         expensesRows ++
         capitalAllowanceRows ++
         List(adjustmentsRow)
@@ -81,11 +81,12 @@ object TradeJourneyStatusesViewModel {
     val status: JourneyStatus = getJourneyStatus(journey, dependentJourneyIsFinishedForClickableLink)(journeyStatuses.journeyStatuses)
     val keyString             = messages(s"journeys.$journey")
     val href = journey match {
-      case TradeDetails => tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
-      case Abroad       => getAbroadUrl(status, businessId, taxYear)
-      case Income       => getIncomeUrl(status, businessId, taxYear)
-      case ProfitOrLoss => getAdjustmentsUrl(status, businessId, taxYear)
-      case _            => "#"
+      case TradeDetails    => tradeDetails.routes.CheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url
+      case Abroad          => getAbroadUrl(status, businessId, taxYear)
+      case IndustrySectors => getIndustrySectorsUrl(status, businessId, taxYear)
+      case Income          => getIncomeUrl(status, businessId, taxYear)
+      case ProfitOrLoss    => getAdjustmentsUrl(status, businessId, taxYear)
+      case _               => "#"
     }
 
     buildSummaryRow(href, keyString, status)
@@ -110,10 +111,16 @@ object TradeJourneyStatusesViewModel {
     ).withCssClass("app-task-list__item no-wrap no-after-content")
   }
 
+  private def getIndustrySectorsUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
+    determineJourneyStartOrCyaUrl(
+      industrysectors.routes.FarmerOrMarketGardenerController.onPageLoad(taxYear, businessId, NormalMode).url,
+      industrysectors.routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url
+    )(journeyStatus)
+
   private def getAbroadUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
     determineJourneyStartOrCyaUrl(
       industrysectors.routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url,
-      industrysectors.routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId).url
+      industrysectors.routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url
     )(journeyStatus)
 
   private def getIncomeUrl(journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String =
