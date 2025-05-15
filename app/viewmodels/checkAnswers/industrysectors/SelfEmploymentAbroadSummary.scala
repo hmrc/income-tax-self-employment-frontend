@@ -20,15 +20,15 @@ import controllers.journeys.industrysectors.routes
 import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.industrysectors.SelfEmploymentAbroadPage
+import pages.industrysectors.FarmerOrMarketGardenerPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.buildRowBoolean
 
 object SelfEmploymentAbroadSummary {
 
-  def row(taxYear: TaxYear, userType: UserType, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SelfEmploymentAbroadPage, Some(businessId)).map { answer =>
+  def row(answers: UserAnswers, taxYear: TaxYear, userType: UserType, businessId: BusinessId)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(FarmerOrMarketGardenerPage, Some(businessId)).map { answer =>
       buildRowBoolean(
         answer,
         routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, CheckMode),

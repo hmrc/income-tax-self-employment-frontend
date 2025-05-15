@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.industrysectors
 
 import controllers.journeys.industrysectors.routes
 import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.industrySectors.IndustrySectorsDb
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,18 +27,19 @@ import viewmodels.implicits._
 
 object FarmerOrMarketGardenerSummary {
 
-  def row(taxYear: TaxYear, businessId: BusinessId, model: IndustrySectorsDb)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: TaxYear, businessId: BusinessId, userType: UserType, model: IndustrySectorsDb)(implicit
+      messages: Messages): Option[SummaryListRow] =
     model.isFarmerOrMarketGardener.map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
-        key = "literaryOrCreativeWorks.checkYourAnswersLabel",
+        key = s"farmerOrMarketGardener.heading.$userType",
         value = ValueViewModel(value),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
             routes.FarmerOrMarketGardenerController.onPageLoad(taxYear, businessId = businessId, mode = CheckMode).url)
-            .withVisuallyHiddenText(messages("literaryOrCreativeWorks.change.hidden"))
+            .withVisuallyHiddenText(messages("farmerOrMarketGardener.change.hidden"))
         )
       )
     }

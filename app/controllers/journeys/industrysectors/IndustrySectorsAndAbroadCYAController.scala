@@ -16,18 +16,20 @@
 
 package controllers.journeys.industrysectors
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.journeys
+import controllers.journeys.industrysectors
 import models.NormalMode
 import models.common.Journey.IndustrySectors
-import models.common.{BusinessId, Journey, TaxYear}
-import models.journeys.abroad.SelfEmploymentAbroadAnswers
+import models.common.{BusinessId, TaxYear}
+import models.journeys.industrySectors.IndustrySectorsDb
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
-import viewmodels.checkAnswers.industrysectors.SelfEmploymentAbroadSummary
+import viewmodels.checkAnswers.industrysectors.{FarmerOrMarketGardenerSummary, LiteraryOrCreativeWorksSummary}
 import viewmodels.journeys.SummaryListCYA
 import views.html.standard.CheckYourAnswersView
 
@@ -39,7 +41,7 @@ class IndustrySectorsAndAbroadCYAController @Inject() (override val messagesApi:
                                                        val controllerComponents: MessagesControllerComponents,
                                                        identify: IdentifierAction,
                                                        getAnswers: DataRetrievalAction,
-                                                       getJourneyAnswersIfAny: SubmittedDataRetrievalActionProvider,
+                                                       answersService: AnswersService,
                                                        requireData: DataRequiredAction,
                                                        view: CheckYourAnswersView)(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -47,23 +49,29 @@ class IndustrySectorsAndAbroadCYAController @Inject() (override val messagesApi:
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen
-    getJourneyAnswersIfAny[SelfEmploymentAbroadAnswers](request =>
-      request.mkJourneyNinoContext(taxYear, businessId, Journey.Abroad)) andThen requireData) { implicit request =>
-    val summaryList = SummaryListCYA.summaryListOpt(
-      List(
-        SelfEmploymentAbroadSummary.row(taxYear, request.user.userType, businessId, request.userAnswers)
-      )
-    )
+    requireData).async { implicit request =>
+    val ctx = request.mkJourneyNinoContext(taxYear, businessId, IndustrySectors)
+    answersService.getAnswers[IndustrySectorsDb](ctx).map {
+      case Some(model) =>
+        val summaryList = SummaryListCYA.summaryListOpt(
+          List(
+            FarmerOrMarketGardenerSummary.row(taxYear, businessId, request.userType, model),
+            LiteraryOrCreativeWorksSummary.row(taxYear, businessId, request.userType, model)
+          )
+        )
 
-    Ok(
-      view(
-        Page.cyaCheckYourDetailsHeading,
-        taxYear,
-        request.userType,
-        summaryList,
-        routes.IndustrySectorsAndAbroadCYAController.onSubmit(taxYear, businessId)
-      )
-    )
+        Ok(
+          view(
+            Page.cyaCheckYourDetailsHeading,
+            taxYear,
+            request.userType,
+            summaryList,
+            industrysectors.routes.IndustrySectorsAndAbroadCYAController.onSubmit(taxYear, businessId)
+          )
+        )
+      case None =>
+        Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+    }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getAnswers andThen requireData).async {

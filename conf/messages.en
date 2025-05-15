@@ -2521,6 +2521,7 @@ farmerOrMarketGardener.heading.individual = Were you a farmer or market gardener
 farmerOrMarketGardener.heading.agent = Was your client a farmer or market gardener?
 farmerOrMarketGardener.error.required.individual = Select yes if you worked as a farmer or market gardener
 farmerOrMarketGardener.error.required.agent = Select yes if your client worked as a farmer or market gardener
+farmerOrMarketGardener.change.hidden = Change if you worked as a farmer or market gardener
 
 literaryOrCreativeWorks.heading.individual = Did you get over half of your profit from literary or creative works?
 literaryOrCreativeWorks.heading.agent = Did your client get over half their profit from literary or creative works?
@@ -2529,4 +2530,4 @@ literaryOrCreativeWorks.p.agent = This includes literary, dramatic, musical or a
 literaryOrCreativeWorks.checkYourAnswersLabel = literaryOrCreativeWorksLabel
 literaryOrCreativeWorks.error.required.individual = Select yes if you got over half of your profit from literary or creative works
 literaryOrCreativeWorks.error.required.agent = Select yes if your client got over half their profit from literary or creative works
-literaryOrCreativeWorks.change.hidden = LiteraryOrCreativeWorks
+literaryOrCreativeWorks.change.hidden = Change if you got over half of your profit from literary or creative works
