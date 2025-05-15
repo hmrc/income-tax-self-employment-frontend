@@ -16,13 +16,12 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{industrysectors, adjustments, income, tradeDetails}
+import controllers.journeys.{adjustments, income, industrysectors, tradeDetails}
 import models._
+import models.common.Journey._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
 import models.database.UserAnswers
-import models.common.Journey
-import models.common.Journey._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -45,11 +44,9 @@ object TradeJourneyStatusesViewModel {
 
     val reviewSelfEmployment   = buildRow(TradeDetails, dependentJourneyIsFinishedForClickableLink = true)
     val isReviewSelfEmployment = tradesJourneyStatuses.getStatusOrNotStarted(TradeDetails).isCompleted
-    val abroadRow = buildRow(Abroad, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment) // TODO based on the policy outcome
     val industrySectorsRow =
       buildRow(IndustrySectors, dependentJourneyIsFinishedForClickableLink = isReviewSelfEmployment) // TODO replace abroadRow with industrySectorsRow
 
-    // val isAbroadAnswered          = tradesJourneyStatuses.getStatusOrNotStarted(Abroad).isCompleted
     val isIndustrySectorsAnswered = tradesJourneyStatuses.getStatusOrNotStarted(IndustrySectors).isCompleted
     val incomeRow                 = buildRow(Income, dependentJourneyIsFinishedForClickableLink = isIndustrySectorsAnswered)
 
