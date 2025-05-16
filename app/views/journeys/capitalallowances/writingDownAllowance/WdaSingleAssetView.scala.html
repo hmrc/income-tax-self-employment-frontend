@@ -35,7 +35,6 @@
     @errorSummary(form)
     @heading("wdaSingleAsset.heading")
 
-    <div class="govuk-form-group">
         <p class="govuk-body">@messages(s"wdaSingleAsset.p1.$userType")</p>
 
         <ul class="govuk-list govuk-list--bullet">
@@ -47,5 +46,4 @@
             @twoRadios(form, "wdaSingleAsset", userType, taxYear, description)
             @submitButton()
         }
-    </div>
 }
