@@ -32,13 +32,14 @@
 
 @layout(pageTitle = title(form, messages(s"literaryOrCreativeWorks.heading.$userType"))) {
 
-    @heading(s"literaryOrCreativeWorks.heading.$userType")
+
     @formHelper(action = routes.LiteraryOrCreativeWorksController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @heading(s"literaryOrCreativeWorks.heading.$userType")
         @govukRadios(
             RadiosViewModel.yesNoVertical(
                 field = form("value"),
