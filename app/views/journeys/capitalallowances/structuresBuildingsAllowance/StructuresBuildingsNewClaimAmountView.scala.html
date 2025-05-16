@@ -37,7 +37,6 @@
 
     @heading("structuresBuildingsClaimedAmount.title")
 
-    <div class="govuk-form-group">
         <p class="govuk-body">@messages(s"structuresBuildingsNewClaimAmount.p1.$userType")</p>
         <p class="govuk-body">@messages(s"structuresBuildingsNewClaimAmount.p.$userType")</p>
         <p class="govuk-body">@messages(s"structuresBuildingsNewClaimAmount.p2")</p>
@@ -50,8 +49,6 @@
     <p class="govuk-body">@messages(s"structuresBuildingsClaimedAmount.p4")
         <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsClaimedAmount.href") >@messages("structuresBuildingsClaimedAmount.link")</a>
     </p>
-    </div>
-
     </div>
 
     @formHelper(action = routes.StructuresBuildingsNewClaimAmountController.onSubmit(taxYear, businessId, index, mode), Symbol("autoComplete") -> "off") {

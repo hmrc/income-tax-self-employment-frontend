@@ -34,7 +34,6 @@
     @errorSummary(form)
     @heading("wdaSpecialRateClaimAmount.heading")
 
-    <div class="govuk-form-group">
         <p class="govuk-body">@messages("wdaSpecialRateClaimAmount.p1")</p>
 
         @foldableDetails(messages(s"wdaSpecialRateClaimAmount.details.$userType"), "govuk-!-margin-bottom-3") {
@@ -64,5 +63,4 @@
              }
              @submitButton()
         }
-    </div>
 }
