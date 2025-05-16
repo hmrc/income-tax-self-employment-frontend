@@ -64,7 +64,7 @@ class IndustrySectorsNavigatorSpec extends SpecBase {
         }
 
         "navigate to SelfEmploymentAbroadCYAPage from LiteraryOrCreativeWorksPage" in {
-          val expectedResult = routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
+          val expectedResult = routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId)
           val vd             = industrySectorsDb.copy(isFarmerOrMarketGardener = Some(false))
 
           navigator.nextPage(LiteraryOrCreativeWorksPage, mode, vd, taxYear, businessId) shouldBe expectedResult

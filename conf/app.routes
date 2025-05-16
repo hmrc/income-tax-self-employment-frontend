@@ -50,8 +50,8 @@ POST        /:taxYear/:businessId/about-trade/self-employment-abroad            
 GET         /:taxYear/:businessId/about-trade/change-self-employment-abroad             controllers.journeys.industrysectors.SelfEmploymentAbroadController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST        /:taxYear/:businessId/about-trade/change-self-employment-abroad             controllers.journeys.industrysectors.SelfEmploymentAbroadController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET         /:taxYear/:businessId/about-trade/self-employment-abroad/check              controllers.journeys.industrysectors.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
-POST        /:taxYear/:businessId/about-trade/self-employment-abroad/check              controllers.journeys.industrysectors.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+GET         /:taxYear/:businessId/about-trade/check                                     controllers.journeys.industrysectors.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/about-trade/check                                     controllers.journeys.industrysectors.IndustrySectorsAndAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
 GET         /:taxYear/:businessId/about-trade/farmer-market-gardener                     controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
 POST        /:taxYear/:businessId/about-trade/farmer-market-gardener                     controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)

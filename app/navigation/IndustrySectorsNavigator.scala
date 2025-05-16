@@ -33,13 +33,13 @@ class IndustrySectorsNavigator @Inject() {
     case FarmerOrMarketGardenerPage =>
       _ => (taxYear, businessId) => routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode)
     case LiteraryOrCreativeWorksPage =>
-      _ => (taxYear, businessId) => routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
+      _ => (taxYear, businessId) => routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId)
 
     case _ => _ => (_, _) => standardRoutes.JourneyRecoveryController.onPageLoad()
   }
 
   private val checkRouteMap: Page => IndustrySectorsDb => (TaxYear, BusinessId) => Call = { case _ =>
-    _ => (taxYear, businessId) => routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
+    _ => (taxYear, businessId) => routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId)
   }
 
   def nextPage(page: Page, mode: Mode, model: IndustrySectorsDb, taxYear: TaxYear, businessId: BusinessId): Call =

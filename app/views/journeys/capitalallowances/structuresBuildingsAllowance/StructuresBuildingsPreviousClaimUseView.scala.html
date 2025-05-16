@@ -45,6 +45,7 @@
             @messages(s"structuresBuildingsPreviousClaimUse.p4")
         </p>
         <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsPreviousClaimUse.href") >@messages("structuresBuildingsPreviousClaimUse.link")</a>
+    </div>
 
     @formHelper(action = routes.StructuresBuildingsPreviousClaimUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -68,6 +69,5 @@
         )
 
         @submitButton()
-    </div>
     }
 }
