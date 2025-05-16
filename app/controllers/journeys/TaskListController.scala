@@ -19,6 +19,7 @@ package controllers.journeys
 import cats.data.EitherT
 import cats.implicits._
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleResultT
 import models.common.{TaxYear, TradingName}
@@ -45,6 +46,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
                                     answerLoader: SubmittedDataRetrievalActionProvider,
+                                    appConfig: FrontendAppConfig,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TaskListView)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
@@ -70,7 +72,7 @@ class TaskListController @Inject() (override val messagesApi: MessagesApi,
     val matchIdsWithAccountingType = completedTrades.map(t => (t.tradingName.getOrElse(TradingName.empty), t.accountingType, t.businessId))
 
     EitherT.right[ServiceError](service.setAccountingTypeForIds(request.answers, matchIdsWithAccountingType)).map { updatedUserAnswers =>
-      completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedUserAnswers.some)(messages))
+      completedTrades.map(TradesJourneyStatuses.toViewModel(_, taxYear, updatedUserAnswers.some, appConfig)(messages))
     }
   }
 

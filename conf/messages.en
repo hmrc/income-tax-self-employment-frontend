@@ -2529,3 +2529,16 @@ literaryOrCreativeWorks.checkYourAnswersLabel = literaryOrCreativeWorksLabel
 literaryOrCreativeWorks.error.required.individual = Select yes if you got over half of your profit from literary or creative works
 literaryOrCreativeWorks.error.required.agent = Select yes if your client got over half their profit from literary or creative works
 literaryOrCreativeWorks.change.hidden = LiteraryOrCreativeWorks
+
+
+travelAndAccommodationTotalExpenses.heading.individual = How much did you spend on travel and accommodation for work?
+travelAndAccommodationTotalExpenses.heading.agent = How much did your client spend on travel and accommodation for work?
+travelAndAccommodationTotalExpenses.checkYourAnswersLabel = Total amount spent on travel and accommodation
+travelAndAccommodationTotalExpenses.error.nonNumeric = Enter your travelAndAccommodationTotalExpenses using numbers
+travelAndAccommodationTotalExpenses.error.required.individual = Enter your total travel and accommodation expenses
+travelAndAccommodationTotalExpenses.error.required.agent = Enter your client’s total travel and accommodation expenses
+travelAndAccommodationTotalExpenses.error.lessThanZero.individual = Enter an amount more than 0
+travelAndAccommodationTotalExpenses.error.lessThanZero.agent = Enter an amount more than 0
+travelAndAccommodationTotalExpenses.error.overMax.individual = Enter an amount less than 999999999999
+travelAndAccommodationTotalExpenses.error.overMax.agent = Enter an amount less than 999999999999
+travelAndAccommodationTotalExpenses.change.hidden = Change total amount spent on travel and accommodation

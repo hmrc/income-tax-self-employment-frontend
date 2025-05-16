@@ -53,15 +53,15 @@ POST        /:taxYear/:businessId/about-trade/change-self-employment-abroad     
 GET         /:taxYear/:businessId/about-trade/self-employment-abroad/check              controllers.journeys.industrysectors.SelfEmploymentAbroadCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/about-trade/self-employment-abroad/check              controllers.journeys.industrysectors.SelfEmploymentAbroadCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
-GET        /:taxYear/:businessId/about-trade/farmer-market-gardener                     controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/about-trade/farmer-market-gardener                     controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/about-trade/change-farmer-market-gardener              controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/about-trade/change-farmer-market-gardener              controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/about-trade/farmer-market-gardener                     controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/about-trade/farmer-market-gardener                     controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/about-trade/change-farmer-market-gardener              controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/about-trade/change-farmer-market-gardener              controllers.journeys.industrysectors.FarmerOrMarketGardenerController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
-GET        /:taxYear/:businessId/about-trade/literary-or-creative-works                 controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-POST       /:taxYear/:businessId/about-trade/literary-or-creative-works                 controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
-GET        /:taxYear/:businessId/about-trade/change-literary-or-creative-works          controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
-POST       /:taxYear/:businessId/about-trade/change-literary-or-creative-works          controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+GET         /:taxYear/:businessId/about-trade/literary-or-creative-works                 controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST        /:taxYear/:businessId/about-trade/literary-or-creative-works                 controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET         /:taxYear/:businessId/about-trade/change-literary-or-creative-works          controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST        /:taxYear/:businessId/about-trade/change-literary-or-creative-works          controllers.journeys.industrysectors.LiteraryOrCreativeWorksController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 ########## Income Journey ##########
 

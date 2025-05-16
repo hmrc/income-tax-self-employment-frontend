@@ -16,13 +16,13 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{industrysectors, adjustments, income, tradeDetails}
+import config.FrontendAppConfig
+import controllers.journeys.{adjustments, income, industrysectors, tradeDetails}
 import models._
+import models.common.Journey._
 import models.common.JourneyStatus.CannotStartYet
 import models.common._
 import models.database.UserAnswers
-import models.common.Journey
-import models.common.Journey._
 import models.requests.TradesJourneyStatuses
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -36,8 +36,10 @@ case class TradeJourneyStatusesViewModel(tradingName: TradingName, typeOfBusines
 
 object TradeJourneyStatusesViewModel {
 
-  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
-      messages: Messages): SummaryList = {
+  def buildSummaryList(tradesJourneyStatuses: TradesJourneyStatuses,
+                       taxYear: TaxYear,
+                       userAnswers: Option[UserAnswers],
+                       appConfig: FrontendAppConfig)(implicit messages: Messages): SummaryList = {
     implicit val impTaxYear: TaxYear                       = taxYear
     implicit val businessId: BusinessId                    = tradesJourneyStatuses.businessId
     implicit val impJourneyStatuses: TradesJourneyStatuses = tradesJourneyStatuses
@@ -52,7 +54,7 @@ object TradeJourneyStatusesViewModel {
 
     val isIncomeAnswered = tradesJourneyStatuses.getStatusOrNotStarted(Income).isCompleted
 
-    val expensesRows: Seq[SummaryListRow] = buildExpensesCategories
+    val expensesRows: Seq[SummaryListRow] = buildExpensesCategories(appConfig)
     val expensesAllCompleted: Boolean     = expensesRows.forall(checkIfRowIsCompleted)
 
     val capitalAllowanceRows: Seq[SummaryListRow] = buildCapitalAllowances(tradesJourneyStatuses, taxYear)

@@ -18,6 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import cats.implicits._
+import config.FrontendAppConfig
 import controllers.journeys._
 import models._
 import models.common.AccountingType.Accrual
@@ -191,7 +192,7 @@ class TradeJourneyStatusesViewModelSpec extends SpecBase with TableDrivenPropert
         val userAnswers = buildAnswers(answers)
         val tradesJourneyStatuses =
           TradesJourneyStatuses(businessId, Some(TradingName("tradingName")), TypeOfBusiness("typeOfBusiness"), Accrual, journeyCompletedStates)
-        val result = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers))
+        val result = TradeJourneyStatusesViewModel.buildSummaryList(tradesJourneyStatuses, taxYear, Some(userAnswers), appConfig)
 
         withClue(s"""
             |${result.rows.mkString("\n")}
