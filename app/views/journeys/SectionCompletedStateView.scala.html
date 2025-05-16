@@ -32,7 +32,7 @@
 
     @formHelper(action = controllers.journeys.routes.SectionCompletedStateController.onSubmit(taxYear, businessId, journey, mode), Symbol("autoComplete") -> "off") {
 
-        @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
+        @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value"))
 
         @yesNoWithHeadingAndHint(form,
             messages("sectionCompletedState.title"),
