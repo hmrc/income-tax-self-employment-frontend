@@ -20,10 +20,9 @@ import controllers.actions._
 import controllers.journeys
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.Journey.{ExpensesTravelForWork, IndustrySectors}
+import models.common.Journey.{ExpensesTravelForWork, ExpensesVehicleDetails}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
-import navigation.TravelAndAccommodationNavigator
 import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class TravelAndAccommodationTotalExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     answersService: AnswersService,
-    navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -53,7 +51,7 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
       answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData =>
         val preparedForm = optTravelExpensesData.flatMap(_.totalTravelExpenses).fold(form(request.userType))(form(request.userType).fill)
         Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
@@ -76,10 +74,7 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
                   .getOrElse(TravelExpensesDb())
                   .copy(totalTravelExpenses = Some(value))
               )
-            } yield {
-              println("=======================")
-              Redirect(journeys.routes.TaskListController.onPageLoad(taxYear))
-            }
+            } yield NotImplemented
         )
   }
 }

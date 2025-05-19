@@ -98,7 +98,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
     }
   }
 
-  "POST /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses " when {
+  "POST /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses" when {
     "the user enters valid travel and accommodation expenses" must {
       "redirect to the next page" in {
 
@@ -107,10 +107,9 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("100.00"))))
+        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("500.00"))))
 
-        result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe journeys.routes.TaskListController.onPageLoad(taxYear) // TODO: Replace once implemented
+        result.status mustBe NOT_IMPLEMENTED
       }
     }
 
