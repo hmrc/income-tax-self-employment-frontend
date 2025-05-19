@@ -16,6 +16,8 @@
 
 package viewmodels.journeys.taskList
 
+import config.FrontendAppConfig
+import controllers.journeys
 import controllers.journeys.expenses
 import models.NormalMode
 import models.common.Journey._
@@ -35,7 +37,7 @@ import viewmodels.journeys.taskList.TradeJourneyStatusesViewModel._
 
 object ExpensesTasklist {
 
-  def buildExpensesCategories(implicit
+  def buildExpensesCategories(appConfig: FrontendAppConfig)(implicit
       tradesJourneyStatuses: TradesJourneyStatuses,
       taxYear: TaxYear,
       businessId: BusinessId,
@@ -52,10 +54,12 @@ object ExpensesTasklist {
     val expensesOfficeSuppliesRow = buildRow(ExpensesOfficeSupplies, isExpensesTailoringIsAnswered && hasOfficeSupplies)
 
     val hasGoodsToSellOrUse = conditionPassedForViewableLink(GoodsToSellOrUsePage, GoodsToSellOrUse.values.filterNot(_ == GoodsToSellOrUse.No))
-    val expensesGoodsToSellOrUseRow = buildRow(ExpensesGoodsToSellOrUse, isExpensesTailoringIsAnswered && hasGoodsToSellOrUse)
+    val expensesGoodsToSellOrUseRow: Option[SummaryListRow] = buildRow(ExpensesGoodsToSellOrUse, isExpensesTailoringIsAnswered && hasGoodsToSellOrUse)
 
-    val hasTravelForWork         = conditionPassedForViewableLink(TravelForWorkPage, TravelForWork.values.filterNot(_ == TravelForWork.No))
-    val expensesTravelForWorkRow = buildRow(ExpensesTravelForWork, isExpensesTailoringIsAnswered && hasTravelForWork)
+    val hasTravelForWork = conditionPassedForViewableLink(TravelForWorkPage, TravelForWork.values.filterNot(_ == TravelForWork.No))
+    val expensesTravelForWorkRow: Option[SummaryListRow] = if (appConfig.travelExpensesShortJourneyEnabled) {
+      buildRow(ExpensesTravelForWork, isExpensesTailoringIsAnswered && hasTravelForWork)
+    } else None
 
     val hasRepairsAndMaintenance =
       conditionPassedForViewableLink(RepairsAndMaintenancePage, RepairsAndMaintenance.values.filterNot(_ == RepairsAndMaintenance.No))
@@ -163,6 +167,7 @@ object ExpensesTasklist {
     returnRowIfConditionPassed(row, conditionPassedForViewableLink)
   }
 
+  // noinspection ScalaStyle
   private def getExpensesUrl(journey: Journey, journeyStatus: JourneyStatus, businessId: BusinessId, taxYear: TaxYear): String = {
     implicit val status: JourneyStatus = journeyStatus
     journey match {
@@ -183,10 +188,12 @@ object ExpensesTasklist {
         )
       case ExpensesTravelForWork =>
         determineJourneyStartOrCyaUrl(
-          expenses.travelAndAccommodation.routes.TravelAndAccommodationExpenseTypeController.onPageLoad(taxYear, businessId, NormalMode).url,
-          // TODO Attach travelAndAccommodation CYA journey here
-          expenses.goodsToSellOrUse.routes.GoodsToSellOrUseCYAController.onPageLoad(taxYear, businessId).url
+          expenses.travelAndAccommodation.routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, NormalMode).url,
+          expenses.travelAndAccommodation.routes.TravelAndAccommodationTotalExpensesController
+            .onPageLoad(taxYear, businessId, NormalMode)
+            .url // TODO: Replace with CYA page once built
         )
+
       case ExpensesRepairsAndMaintenance =>
         determineJourneyStartOrCyaUrl(
           expenses.repairsandmaintenance.routes.RepairsAndMaintenanceAmountController.onPageLoad(taxYear, businessId, NormalMode).url,

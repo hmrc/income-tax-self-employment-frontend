@@ -29,6 +29,7 @@ import models.errors.HttpErrorBody.SingleErrorBody
 import models.common.Journey
 import models.requests.{DataRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -66,6 +67,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val zeroValue: BigDecimal          = 0
   val maxAmountValue: BigDecimal     = 100000000000.00
   val index                          = Index(1)
+
+  val appConfig = mock[FrontendAppConfig]
 
   val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
   val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)

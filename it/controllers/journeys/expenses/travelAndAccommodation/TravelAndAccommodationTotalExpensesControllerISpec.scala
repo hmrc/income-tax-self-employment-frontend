@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.journeys.industrySectors
+package controllers.journeys.expenses.travelAndAccommodation
 
 import base.IntegrationBaseSpec
-import controllers.journeys.industrysectors.routes
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
-import models.common.Journey.IndustrySectors
+import models.common.Journey.ExpensesTravelForWork
 import models.common.JourneyAnswersContext
-import models.journeys.industrySectors.IndustrySectorsDb
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status.OK
 import play.api.libs.json.Json
-import play.api.test.Helpers.NOT_FOUND
+import play.api.test.Helpers._
 
-/*class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String                        = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
-  val submitUrl: String                  = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode).url
-  val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, IndustrySectors)
+  val url: String                        = routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
+  val submitUrl: String                  = routes.TravelAndAccommodationTotalExpensesController.onSubmit(taxYear, businessId, NormalMode).url
+  val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesTravelForWork)
 
-  val testIndustrySectors: IndustrySectorsDb = IndustrySectorsDb(
-    isFarmerOrMarketGardener = Some(true),
-    hasProfitFromCreativeWorks = Some(true),
-    isAllSelfEmploymentAbroad = Some(true)
-  )
-
-  "GET /:taxYear/:businessId/industry-sectors/self-employment-abroad" when {
+  "GET /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses " when {
     "the user is an agent" must {
       "return OK with the correct view" in {
+
         AuthStub.agentAuthorised()
-        AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url, isAgent = true).get())
@@ -56,14 +49,13 @@ import play.api.test.Helpers.NOT_FOUND
 
       "return OK and pre-populate the field when the user has data" in {
         AuthStub.agentAuthorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors)))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData)))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url, isAgent = true).get())
-
         result.header(HeaderNames.LOCATION) mustBe None
         result.status mustBe OK
-        Jsoup.parse(result.body).select("input[id=value][checked]").isEmpty mustBe false
+        Jsoup.parse(result.body).select("input[id=value]").`val`() mustBe "500"
       }
     }
 
@@ -81,14 +73,14 @@ import play.api.test.Helpers.NOT_FOUND
 
       "return OK and pre-populate the field when the user has data" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors)))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData)))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url).get())
 
         result.header(HeaderNames.LOCATION) mustBe None
         result.status mustBe OK
-        Jsoup.parse(result.body).select("input[id=value][checked]").isEmpty mustBe false
+        Jsoup.parse(result.body).select("input[id=value]").isEmpty mustBe false
       }
     }
 
@@ -105,36 +97,22 @@ import play.api.test.Helpers.NOT_FOUND
     }
   }
 
-  "POST /:taxYear/:businessId/industry-sectors/self-employment-abroad" when {
-    "the user selects 'Yes'" must {
+  "POST /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses" when {
+    "the user enters valid travel and accommodation expenses" must {
       "redirect to the next page" in {
+
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
-        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors))(OK)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
+        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
+        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("500.00"))))
 
-        result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe defined
+        result.status mustBe NOT_IMPLEMENTED
       }
     }
 
-    "the user selects 'No'" must {
-      "redirect to the next page" in {
-        AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
-        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = Some(false))))(OK)
-        DbHelper.insertEmpty()
-
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
-
-        result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe defined
-      }
-    }
-
-    "the user submits without selecting an option" must {
+    "the user submits without entering a vehicle expenses" must {
       "return BAD REQUEST" in {
         AuthStub.authorised()
         AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
@@ -146,4 +124,4 @@ import play.api.test.Helpers.NOT_FOUND
       }
     }
   }
-}*/
+}
