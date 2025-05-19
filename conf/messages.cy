@@ -2177,3 +2177,15 @@ literaryOrCreativeWorks.checkYourAnswersLabel = *********Missing Welsh Message *
 literaryOrCreativeWorks.error.required.individual = *********Missing Welsh Message *********
 literaryOrCreativeWorks.error.required.agent = *********Missing Welsh Message *********
 literaryOrCreativeWorks.change.hidden = *********Missing Welsh Message *********
+
+travelAndAccommodationTotalExpenses.heading.individual = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.heading.agent = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.checkYourAnswersLabel = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.nonNumeric = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.required.individual = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.required.agent = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.lessThanZero.individual = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.lessThanZero.agent = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.overMax.individual = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.error.overMax.agent = *********Missing Welsh Message *********
+travelAndAccommodationTotalExpenses.change.hidden = *********Missing Welsh Message *********

@@ -44,8 +44,6 @@ lazy val microservice = Project(appName, file("."))
       "-Ywarn-unused:patvars",
       "-Ywarn-unused:privates",
       "-Ywarn-value-discard",
-      "-rootdir",
-      baseDirectory.value.getCanonicalPath,
       "-Wconf:src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
     ) ++ additionalScalacOptions,
     retrieveManaged := true,

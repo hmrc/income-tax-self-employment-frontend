@@ -190,14 +190,13 @@ class TravelAndAccommodationNavigator @Inject() {
       _ => (_, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }
 
-  def nextTravelExpensesPage(page: Page, mode: Mode, model: TravelExpensesDb, taxYear: TaxYear, businessId: BusinessId): Call = {
+  def nextTravelExpensesPage(page: Page, mode: Mode, model: TravelExpensesDb, taxYear: TaxYear, businessId: BusinessId): Call =
     mode match {
       case NormalMode =>
         normalTravelExpensesRoutes(page)(model)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
         checkTravelExpensesRouteMap(page)(model)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
-  }
 
   private def normalIndexRoutes: Page => VehicleDetailsDb => (TaxYear, BusinessId, Index) => Option[Call] = {
     case TravelForWorkYourVehiclePage =>
