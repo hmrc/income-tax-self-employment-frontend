@@ -191,7 +191,6 @@ class TravelAndAccommodationNavigator @Inject() {
   }
 
   def nextTravelExpensesPage(page: Page, mode: Mode, model: TravelExpensesDb, taxYear: TaxYear, businessId: BusinessId): Call = {
-    println("++++++++++++++++++++++++" + page + "/////" + mode + "/////" + model)
     mode match {
       case NormalMode =>
         normalTravelExpensesRoutes(page)(model)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
