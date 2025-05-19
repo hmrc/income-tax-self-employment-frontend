@@ -17,10 +17,9 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import controllers.journeys
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.Journey.{ExpensesTravelForWork, ExpensesVehicleDetails}
+import models.common.Journey.ExpensesTravelForWork
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
 import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
@@ -51,7 +50,7 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesVehicleDetails)
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
       answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData =>
         val preparedForm = optTravelExpensesData.flatMap(_.totalTravelExpenses).fold(form(request.userType))(form(request.userType).fill)
         Ok(view(preparedForm, mode, request.userType, taxYear, businessId))

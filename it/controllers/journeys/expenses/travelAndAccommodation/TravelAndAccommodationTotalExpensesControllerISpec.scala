@@ -17,7 +17,6 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import base.IntegrationBaseSpec
-import controllers.journeys
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.ExpensesTravelForWork
