@@ -17,6 +17,7 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
+import forms.OverMaxError
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.Journey.ExpensesTravelForWork
@@ -46,7 +47,10 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
     with I18nSupport {
 
   private val form = (userType: UserType) =>
-    formProvider(TravelAndAccommodationTotalExpensesPage, userType, prefix = Some("travelAndAccommodationTotalExpenses"))
+    formProvider(
+      TravelAndAccommodationTotalExpensesPage,
+      userType,
+      prefix = Some("travelAndAccommodationTotalExpenses"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
