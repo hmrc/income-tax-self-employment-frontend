@@ -47,10 +47,7 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
     with I18nSupport {
 
   private val form = (userType: UserType) =>
-    formProvider(
-      TravelAndAccommodationTotalExpensesPage,
-      userType,
-      prefix = Some("travelAndAccommodationTotalExpenses"))
+    formProvider(TravelAndAccommodationTotalExpensesPage, userType, prefix = Some("travelAndAccommodationTotalExpenses"))
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>

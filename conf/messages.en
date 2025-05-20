@@ -2545,3 +2545,12 @@ travelAndAccommodationTotalExpenses.error.lessThanZero.agent = The total amount 
 travelAndAccommodationTotalExpenses.error.overMax.individual = The total amount you spent on travel and accommodation expenses must be less than 999999999999
 travelAndAccommodationTotalExpenses.error.overMax.agent = The total amount your client spent on travel and accommodation expenses must be less than 999999999999
 travelAndAccommodationTotalExpenses.change.hidden = Change total amount spent on travel and accommodation
+
+travelAndAccommodationDisallowableExpenses.title = TravelAndAccommodationDisallowableExpenses
+travelAndAccommodationDisallowableExpenses.heading = TravelAndAccommodationDisallowableExpenses
+travelAndAccommodationDisallowableExpenses.checkYourAnswersLabel = TravelAndAccommodationDisallowableExpenses
+travelAndAccommodationDisallowableExpenses.error.nonNumeric = Enter your travelAndAccommodationDisallowableExpenses using numbers
+travelAndAccommodationDisallowableExpenses.error.required = Enter your travelAndAccommodationDisallowableExpenses
+travelAndAccommodationDisallowableExpenses.error.wholeNumber = Enter your travelAndAccommodationDisallowableExpenses using whole numbers
+travelAndAccommodationDisallowableExpenses.error.outOfRange = TravelAndAccommodationDisallowableExpenses must be between {0} and {1}
+travelAndAccommodationDisallowableExpenses.change.hidden = TravelAndAccommodationDisallowableExpenses
