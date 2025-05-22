@@ -123,9 +123,3 @@ POST        /:taxYear/:businessId/income/expenses-warning                       
 
 GET         /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/income/check-your-income                          controllers.journeys.income.IncomeCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
-
-
-GET        /travelAndAccommodationDisallowableExpenses                  controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onPageLoad(mode: Mode = NormalMode)
-POST       /travelAndAccommodationDisallowableExpenses                  controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onSubmit(mode: Mode = NormalMode)
-GET        /changeTravelAndAccommodationDisallowableExpenses                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeTravelAndAccommodationDisallowableExpenses                        controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onSubmit(mode: Mode = CheckMode)

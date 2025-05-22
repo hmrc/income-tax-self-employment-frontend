@@ -16,7 +16,7 @@
 
 @import viewmodels.InputWidth._
 @import models.common.{BusinessId, TaxYear, UserType}
-@import controllers.journeys.expenses.routes
+@import controllers.journeys.expenses.travelAndAccommodation.routes
 
 @this(
     layout: templates.Layout,
@@ -30,12 +30,11 @@
 
 @layout(pageTitle = title(form, messages("travelAndAccommodationDisallowableExpenses.title"))) {
 
-    @formHelper(action = routes.TravelAndAccommodationDisallowableExpensesController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TravelAndAccommodationDisallowableExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
-
 
         @govukInput(
             InputViewModel(

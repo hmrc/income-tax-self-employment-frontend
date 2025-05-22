@@ -28,21 +28,21 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.TravelAndAccommodationDisallowableExpensesView
+import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TravelAndAccommodationDisallowableExpensesController @Inject() (
-                                                                       override val messagesApi: MessagesApi,
-                                                                       answersService: AnswersService,
-                                                                       navigator: TravelAndAccommodationNavigator,
-                                                                       identify: IdentifierAction,
-                                                                       getData: DataRetrievalAction,
-                                                                       requireData: DataRequiredAction,
-                                                                       formProvider: CurrencyFormProvider,
-                                                                       val controllerComponents: MessagesControllerComponents,
-                                                                       view: TravelAndAccommodationDisallowableExpensesView
+    override val messagesApi: MessagesApi,
+    answersService: AnswersService,
+    navigator: TravelAndAccommodationNavigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: CurrencyFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: TravelAndAccommodationDisallowableExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -50,33 +50,32 @@ class TravelAndAccommodationDisallowableExpensesController @Inject() (
   private val form = (userType: UserType) =>
     formProvider(TravelAndAccommodationDisallowableExpensesPage, userType, prefix = Some("travelAndAccommodationDisallowableExpenses"))
 
-
-  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-
-    val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
-    answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData =>
-      val preparedForm = optTravelExpensesData.flatMap(_.disallowableTravelExpenses).fold(form(request.userType))(form(request.userType).fill)
-      Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
-    }
-
+  def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
+      answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData =>
+        val preparedForm = optTravelExpensesData.flatMap(_.disallowableTravelExpenses).fold(form(request.userType))(form(request.userType).fill)
+        Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+      }
   }
 
-  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
-    form(request.userType)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-        value =>
-          for {
-            oldAnswers <- answersService.getAnswers[TravelExpensesDb](ctx)
-            newData <- answersService.replaceAnswers(
-              ctx = ctx,
-              data = oldAnswers
-                .getOrElse(TravelExpensesDb())
-                .copy(disallowableTravelExpenses = Some(value))
-            )
-          } yield NotImplemented
-      )
+  def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+      val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
+      form(request.userType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
+          value =>
+            for {
+              oldAnswers <- answersService.getAnswers[TravelExpensesDb](ctx)
+              newData <- answersService.replaceAnswers(
+                ctx = ctx,
+                data = oldAnswers
+                  .getOrElse(TravelExpensesDb())
+                  .copy(disallowableTravelExpenses = Some(value))
+              )
+            } yield Redirect(navigator.nextTravelExpensesPage(TravelAndAccommodationDisallowableExpensesPage, mode, newData, taxYear, businessId))
+        )
   }
 }

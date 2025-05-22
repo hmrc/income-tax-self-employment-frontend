@@ -23,17 +23,13 @@ import models._
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
-import models.journeys.expenses.travelAndAccommodation.{
-  FlatRate,
-  TravelAndAccommodationExpenseType,
-  VehicleDetailsDb,
-  VehicleType,
-  YourFlatRateForVehicleExpenses
-}
+import models.journeys.expenses.travelAndAccommodation._
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
+import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import pages.expenses.travelAndAccommodation._
+import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
 
 class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
@@ -167,6 +163,45 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
             navigator.nextPage(RemoveVehiclePage, mode, ua, taxYear, businessId) shouldBe expectedResult
           }
+        }
+      }
+    }
+
+    "navigating to the next  short journey page" - {
+      "in NormalMode " - {
+        val mode = NormalMode
+
+        val travelExpensesDb: TravelExpensesDb = TravelExpensesDb(
+          totalTravelExpenses = Some(200),
+          disallowableTravelExpenses = Some(450)
+        )
+
+        "page does not exist" - {
+          "navigate to the JourneyRecoveryController" in {
+            val expectedResult = standard.routes.JourneyRecoveryController.onPageLoad()
+
+            navigator.nextTravelExpensesPage(UnknownPage, mode, travelExpensesDb, taxYear, businessId) shouldBe expectedResult
+          }
+        }
+
+        "navigate to TravelAndAccommodationDisallowableExpensesPage from TravelAndAccommodationTotalExpensesPage" in {
+          val expectedResult = routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+          navigator.nextTravelExpensesPage(
+            TravelAndAccommodationTotalExpensesPage,
+            mode,
+            travelExpensesDb,
+            taxYear,
+            businessId) shouldBe expectedResult
+        }
+
+        "navigate to TravelAndAccommodationCYAage from TravelAndAccommodationDisallowableExpensesPage" in { // TODO navigate to CYA page
+          val expectedResult = controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+          navigator.nextTravelExpensesPage(
+            TravelAndAccommodationDisallowableExpensesPage,
+            mode,
+            travelExpensesDb,
+            taxYear,
+            businessId) shouldBe expectedResult
         }
       }
     }

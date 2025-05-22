@@ -17,7 +17,6 @@
 package viewmodels.journeys.taskList
 
 import config.FrontendAppConfig
-import controllers.journeys
 import controllers.journeys.expenses
 import models.NormalMode
 import models.common.Journey._

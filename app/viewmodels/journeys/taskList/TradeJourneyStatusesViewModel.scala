@@ -16,7 +16,6 @@
 
 package viewmodels.journeys.taskList
 
-import controllers.journeys.{adjustments, income, industrysectors, tradeDetails}
 import config.FrontendAppConfig
 import controllers.journeys.{adjustments, income, industrysectors, tradeDetails}
 import models._

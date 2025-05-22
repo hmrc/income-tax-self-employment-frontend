@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.expenses
+package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
-import controllers.journeys.expenses.routes
-import models.database.UserAnswers
+import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.CheckMode
+import models.common.{BusinessId, TaxYear}
+import models.database.UserAnswers
 import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,13 +28,15 @@ import viewmodels.implicits._
 
 object TravelAndAccommodationDisallowableExpensesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TravelAndAccommodationDisallowableExpensesPage).map { answer =>
       SummaryListRowViewModel(
         key = "travelAndAccommodationDisallowableExpenses.checkYourAnswersLabel",
         value = ValueViewModel(answer.toString),
         actions = Seq(
-          ActionItemViewModel("site.change", routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(CheckMode).url)
+          ActionItemViewModel(
+            "site.change",
+            routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId = businessId, mode = CheckMode).url)
             .withVisuallyHiddenText(messages("travelAndAccommodationDisallowableExpenses.change.hidden"))
         )
       )

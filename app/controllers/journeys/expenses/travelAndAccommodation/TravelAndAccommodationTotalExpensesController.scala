@@ -17,12 +17,12 @@
 package controllers.journeys.expenses.travelAndAccommodation
 
 import controllers.actions._
-import forms.OverMaxError
 import forms.standard.CurrencyFormProvider
 import models.Mode
 import models.common.Journey.ExpensesTravelForWork
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
+import navigation.TravelAndAccommodationNavigator
 import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TravelAndAccommodationTotalExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     answersService: AnswersService,
+    navigator: TravelAndAccommodationNavigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -74,7 +75,7 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
                   .getOrElse(TravelExpensesDb())
                   .copy(totalTravelExpenses = Some(value))
               )
-            } yield NotImplemented
+            } yield Redirect(navigator.nextTravelExpensesPage(TravelAndAccommodationTotalExpensesPage, mode, newData, taxYear, businessId))
         )
   }
 }

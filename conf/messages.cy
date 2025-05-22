@@ -2190,3 +2190,15 @@ travelAndAccommodationTotalExpenses.error.lessThanZero.agent = *********Missing 
 travelAndAccommodationTotalExpenses.error.overMax.individual = *********Missing Welsh Message *********
 travelAndAccommodationTotalExpenses.error.overMax.agent = *********Missing Welsh Message *********
 travelAndAccommodationTotalExpenses.change.hidden = *********Missing Welsh Message *********
+
+travelAndAccommodationDisallowableExpenses.heading = *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.checkYourAnswersLabel = *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.change.hidden = *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.required.individual =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.required.agent =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.nonNumeric.individual =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.nonNumeric.agent =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.lessThanZero.individual =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.lessThanZero.agent =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.overMax.individual =  *********Missing Welsh Message *********
+travelAndAccommodationDisallowableExpenses.error.overMax.agent =  *********Missing Welsh Message *********

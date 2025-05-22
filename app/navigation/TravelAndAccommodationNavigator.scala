@@ -30,6 +30,7 @@ import models.journeys.expenses.travelAndAccommodation.{
 }
 import models.{NormalMode, _}
 import pages._
+import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import pages.expenses.travelAndAccommodation._
 import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
@@ -184,8 +185,9 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private val normalTravelExpensesRoutes: Page => TravelExpensesDb => (TaxYear, BusinessId) => Option[Call] = {
     case TravelAndAccommodationTotalExpensesPage =>
+      _ => (taxYear, businessId) => Some(routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode))
+    case TravelAndAccommodationDisallowableExpensesPage =>
       _ => (taxYear, businessId) => Some(journeys.routes.TaskListController.onPageLoad(taxYear))
-
     case _ =>
       _ => (_, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }

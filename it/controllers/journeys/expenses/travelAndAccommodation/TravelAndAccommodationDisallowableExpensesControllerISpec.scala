@@ -27,18 +27,18 @@ import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+class TravelAndAccommodationDisallowableExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 
-  val url: String                        = routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
-  val submitUrl: String                  = routes.TravelAndAccommodationTotalExpensesController.onSubmit(taxYear, businessId, NormalMode).url
+  val url: String                        = routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
+  val submitUrl: String                  = routes.TravelAndAccommodationDisallowableExpensesController.onSubmit(taxYear, businessId, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesTravelForWork)
 
-  "GET /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses " when {
+  "GET /:taxYear/:businessId/expenses/travel/travel-accommodation-disallowable-expenses " when {
     "the user is an agent" must {
       "return OK with the correct view" in {
 
         AuthStub.agentAuthorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(disallowableTravelExpenses = None))))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url, isAgent = true).get())
@@ -55,7 +55,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
         val result = await(buildClient(url, isAgent = true).get())
         result.header(HeaderNames.LOCATION) mustBe None
         result.status mustBe OK
-        Jsoup.parse(result.body).select("input[id=value]").`val`() mustBe "500"
+        Jsoup.parse(result.body).select("input[id=value]").`val`() mustBe "400"
       }
     }
 
@@ -97,20 +97,19 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
     }
   }
 
-  "POST /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses" when {
+  "POST /:taxYear/:businessId/expenses/travel/travel-accommodation-disallowable-expenses" when {
     "the user enters valid travel and accommodation expenses" must {
       "redirect to the next page" in {
 
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(disallowableTravelExpenses = None))))
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("500.00"))))
+        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("400.00"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(
-          routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode).url)
+        result.header(HeaderNames.LOCATION) mustBe Some(controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url)
       }
     }
 
