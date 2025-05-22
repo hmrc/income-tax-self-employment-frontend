@@ -53,6 +53,7 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
         status(result) shouldBe 303
 
         redirectLocation(result).value shouldBe onwardRoute
+        application.stop()
       }
     }
 
@@ -64,6 +65,7 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
 
         status(result) shouldBe 303
         redirectLocation(result).value shouldBe standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }

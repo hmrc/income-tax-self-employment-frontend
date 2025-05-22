@@ -125,19 +125,18 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, disallowableSubcontractorCostsRoute)
+            val request = FakeRequest(GET, disallowableSubcontractorCostsRoute)
 
-              val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
+            val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form.fill(true), NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -146,14 +145,13 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, disallowableSubcontractorCostsRoute)
+        val request = FakeRequest(GET, disallowableSubcontractorCostsRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -170,16 +168,15 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
             )
             .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableSubcontractorCostsRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableSubcontractorCostsRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -201,17 +198,16 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
             .onPageLoad(taxYear, businessId, CheckMode)
             .url
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableSubcontractorCostsRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
-          val result = route(application, request).value
+        val request =
+          FakeRequest(POST, disallowableSubcontractorCostsRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, HeaderCarrier(any))
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, HeaderCarrier(any))
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -220,45 +216,43 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableSubcontractorCostsRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val request =
+              FakeRequest(POST, disallowableSubcontractorCostsRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
+            val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, disallowableSubcontractorCostsRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val request =
+              FakeRequest(POST, disallowableSubcontractorCostsRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
+            val view = application.injector.instanceOf[DisallowableSubcontractorCostsView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(
-                request,
-                messages(application)).toString
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(
+              request,
+              messages(application)).toString
+            application.stop()
           }
         }
       }
@@ -267,17 +261,16 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, disallowableSubcontractorCostsRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, disallowableSubcontractorCostsRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }

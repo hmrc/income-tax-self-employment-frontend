@@ -54,6 +54,7 @@ trait CYAOnSubmitControllerStubbedBaseSpec extends CYAControllerBaseSpec {
         redirectLocation(result).value shouldBe journeys.routes.SectionCompletedStateController
           .onPageLoad(taxYear, businessId, journey, NormalMode)
           .url
+        application.stop()
       }
     }
 
@@ -63,6 +64,7 @@ trait CYAOnSubmitControllerStubbedBaseSpec extends CYAControllerBaseSpec {
 
         status(result) shouldBe 303
         redirectLocation(result).value shouldBe standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }

@@ -87,12 +87,11 @@ class LiveAtBusinessPremisesControllerSpec extends BooleanGetAndPostQuestionBase
 
       s"when previous answer was $prevAnswer, submitted answer is $currAnswer and submission mode was $submissionMode" in
         new TestScenario(Individual, answers = answers.some) {
-          running(application) {
-            val request = FakeRequest(POST, submissionCall(submissionMode).url).withFormUrlEncodedBody(("value", currAnswer.toString))
-            val result  = route(application, request).value
+          val request = FakeRequest(POST, submissionCall(submissionMode).url).withFormUrlEncodedBody(("value", currAnswer.toString))
+          val result  = route(application, request).value
 
-            redirectLocation(result).value shouldBe expectedRedirectCall(expectedRedirectMode).url
-          }
+          redirectLocation(result).value shouldBe expectedRedirectCall(expectedRedirectMode).url
+          application.stop()
         }
     }
   }

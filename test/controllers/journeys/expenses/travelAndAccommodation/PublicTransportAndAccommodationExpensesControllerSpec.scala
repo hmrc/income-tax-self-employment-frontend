@@ -60,13 +60,12 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
           val application = applicationBuilder(userAnswers = Some(ua), userType = userType).build()
           val request     = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
-          running(application) {
-            val result = route(application, request).value
-            val view   = application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
+          val result = route(application, request).value
+          val view   = application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form, mode, userType, taxYear, businessId)(request, messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, mode, userType, taxYear, businessId)(request, messages(application)).toString
+          application.stop()
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,18 +77,15 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
-            val view =
-              application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
+          val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
+          val view =
+            application.injector.instanceOf[PublicTransportAndAccommodationExpensesView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form.fill(validAnswer), mode, userType, taxYear, businessId)(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(validAnswer), mode, userType, taxYear, businessId)(request, messages(application)).toString
+          application.stop()
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -106,16 +102,15 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
               )
               .build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
-                .withFormUrlEncodedBody(("value", validAnswer.toString))
+          val request =
+            FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
+              .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          application.stop()
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -126,44 +121,41 @@ class PublicTransportAndAccommodationExpensesControllerSpec extends SpecBase wit
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType = userType).build()
 
-          running(application) {
-            val request = FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
+          val request = FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
-          }
+          status(result) mustEqual BAD_REQUEST
+          application.stop()
         }
 
         "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          running(application) {
-            val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
+          val request = FakeRequest(GET, onPageLoadRoute(taxYear, businessId, mode))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
-                .withFormUrlEncodedBody(("value", validAnswer.toString))
+          val request =
+            FakeRequest(POST, onPageLoadRoute(taxYear, businessId, mode))
+              .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
       }
     }

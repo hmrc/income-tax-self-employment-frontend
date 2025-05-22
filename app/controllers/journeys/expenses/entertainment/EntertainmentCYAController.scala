@@ -18,8 +18,8 @@ package controllers.journeys.expenses.entertainment
 
 import controllers.actions._
 import controllers.handleSubmitAnswersResult
-import models.common._
 import models.common.Journey.ExpensesEntertainment
+import models.common._
 import models.journeys.expenses.entertainment.EntertainmentJourneyAnswers
 import pages.expenses.entertainment.EntertainmentCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

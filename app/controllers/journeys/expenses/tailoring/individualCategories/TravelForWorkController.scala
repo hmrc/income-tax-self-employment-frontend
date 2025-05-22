@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.EnumerableFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.individualCategories.TravelForWork.enumerable
 import navigation.ExpensesTailoringNavigator
