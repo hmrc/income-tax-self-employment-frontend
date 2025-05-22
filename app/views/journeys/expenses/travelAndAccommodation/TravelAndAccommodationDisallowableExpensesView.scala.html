@@ -17,6 +17,7 @@
 @import viewmodels.InputWidth._
 @import models.common.{BusinessId, TaxYear, UserType}
 @import controllers.journeys.expenses.travelAndAccommodation.routes
+@import viewmodels.LabelSize.Large
 
 @this(
     layout: templates.Layout,
@@ -26,9 +27,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, totalExpenses: BigDecimal)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("travelAndAccommodationDisallowableExpenses.title"))) {
+@layout(pageTitle = title(form, messages(s"travelAndAccommodationDisallowableExpenses.heading.$userType", totalExpenses))) {
 
     @formHelper(action = routes.TravelAndAccommodationDisallowableExpensesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
@@ -39,7 +40,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("travelAndAccommodationDisallowableExpenses.heading")).asPageHeading()
+                label = LabelViewModel(messages(s"travelAndAccommodationDisallowableExpenses.heading.$userType", totalExpenses)).asPageHeading(Large)
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))

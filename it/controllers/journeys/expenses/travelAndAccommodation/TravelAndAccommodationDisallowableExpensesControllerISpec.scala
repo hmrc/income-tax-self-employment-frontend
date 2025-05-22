@@ -47,6 +47,17 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
         result.status mustBe OK
       }
 
+      "redirect to 'technical difficulties' page when missing total Expenses data" in {
+        AuthStub.agentAuthorised()
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(url, isAgent = true).get())
+
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
+      }
+
       "return OK and pre-populate the field when the user has data" in {
         AuthStub.agentAuthorised()
         AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData)))
@@ -62,7 +73,7 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
     "the user is an individual" must {
       "return OK with the correct view" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(disallowablePublicTransportExpenses = None))))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(url).get())
@@ -113,10 +124,22 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
       }
     }
 
+    "redirect to 'technical difficulties' page when missing total Expenses data" in {
+      AuthStub.authorised()
+      AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
+      AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
+      DbHelper.insertEmpty()
+
+      val result = await(buildClient(submitUrl).post(Map("value" -> Seq("400.00"))))
+
+      result.status mustBe SEE_OTHER
+      result.header(HeaderNames.LOCATION) mustBe Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
+    }
+
     "the user submits without entering a vehicle expenses" must {
       "return BAD REQUEST" in {
         AuthStub.authorised()
-        AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData)))
         DbHelper.insertEmpty()
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
