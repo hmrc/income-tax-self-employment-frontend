@@ -46,7 +46,13 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
   val expenses: BigDecimal    = 50
   val strExpense: String      = formatMoney(expenses)
   val form: UserType => Form[BigDecimal] = (userType: UserType) =>
-    formProvider(DisallowableTransportAndAccommodationPage, userType, maxValue = expenses, prefix = Some("disallowableTransportAndAccommodation"), args = Seq(expenses.toString()))
+    formProvider(
+      DisallowableTransportAndAccommodationPage,
+      userType,
+      maxValue = expenses,
+      prefix = Some("disallowableTransportAndAccommodation"),
+      args = Seq(expenses.toString())
+    )
 
   lazy val disallowableTransportAndAccommodationRoute: String =
     routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode).url
