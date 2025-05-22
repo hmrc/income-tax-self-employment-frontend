@@ -19,7 +19,6 @@ package models.common
 import controllers.journeys.expenses
 import enumeratum._
 import models.NormalMode
-import pages.industrysectors.{FarmerOrMarketGardenerPage, SelfEmploymentAbroadPage}
 import pages.adjustments.profitOrLoss._
 import pages.capitalallowances.annualInvestmentAllowance.{AnnualInvestmentAllowanceAmountPage, AnnualInvestmentAllowancePage}
 import pages.capitalallowances.balancingAllowance.{BalancingAllowanceAmountPage, BalancingAllowancePage}
@@ -46,23 +45,12 @@ import pages.expenses.staffCosts.{StaffCostsAmountPage, StaffCostsDisallowableAm
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
-import pages.expenses.travelAndAccommodation.{
-  DisallowableTransportAndAccommodationPage,
-  PublicTransportAndAccommodationExpensesPage,
-  SimplifiedExpensesPage,
-  TravelAndAccommodationExpenseTypePage,
-  TravelForWorkYourMileagePage,
-  TravelForWorkYourVehiclePage,
-  VehicleExpensesPage,
-  VehicleFlatRateChoicePage,
-  VehicleTypePage,
-  YourFlatRateForVehicleExpensesPage
-}
+import pages.expenses.travelAndAccommodation._
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._
 import pages.expenses.workplaceRunningCosts.workingFromHome._
 import pages.income._
+import pages.industrysectors.{FarmerOrMarketGardenerPage, SelfEmploymentAbroadPage}
 import pages.nics._
-import pages.{CostsNotCoveredPage, DisallowableTransportAndAccommodationPage, Page, QuestionPage}
 import pages.{CostsNotCoveredPage, Page, QuestionPage}
 import play.api.mvc.PathBindable
 import queries.Settable
