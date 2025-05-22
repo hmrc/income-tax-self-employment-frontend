@@ -91,8 +91,8 @@ class TravelAndAccommodationDisallowableExpensesController @Inject() (
                         .getOrElse(TravelExpensesDb())
                         .copy(disallowableTravelExpenses = Some(value))
                     )
-                  } yield Redirect(
-                    navigator.nextTravelExpensesPage(TravelAndAccommodationDisallowableExpensesPage, mode, newData, taxYear, businessId))
+                  } yield Redirect(navigator
+                    .nextTravelExpensesPage(TravelAndAccommodationDisallowableExpensesPage, mode, newData, taxYear, businessId, request.userAnswers))
               )
           case _ => Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
         }

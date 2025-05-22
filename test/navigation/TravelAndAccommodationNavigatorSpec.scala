@@ -179,29 +179,76 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
         "page does not exist" - {
           "navigate to the JourneyRecoveryController" in {
             val expectedResult = standard.routes.JourneyRecoveryController.onPageLoad()
+            val ua = emptyUserAnswers
+              .set(TravelForWorkYourVehiclePage, "vehicle", Some(businessId))
+              .toOption
+              .value
+              .set(RemoveVehiclePage, true, Some(businessId))
+              .toOption
+              .value
 
-            navigator.nextTravelExpensesPage(UnknownPage, mode, travelExpensesDb, taxYear, businessId) shouldBe expectedResult
+            navigator.nextTravelExpensesPage(UnknownPage, mode, travelExpensesDb, taxYear, businessId, ua) shouldBe expectedResult
           }
         }
 
-        "navigate to TravelAndAccommodationDisallowableExpensesPage from TravelAndAccommodationTotalExpensesPage" in {
-          val expectedResult = routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)
-          navigator.nextTravelExpensesPage(
-            TravelAndAccommodationTotalExpensesPage,
-            mode,
-            travelExpensesDb,
-            taxYear,
-            businessId) shouldBe expectedResult
-        }
+        "navigate to TravelAndAccommodationDisallowableExpensesPage from TravelAndAccommodationTotalExpensesPage" +
+          " when TravelForWorkPage option selected is 'YesDisallowable'" in {
+            val expectedResult = routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+            val ua = emptyUserAnswers
+              .set(TravelForWorkPage, TravelForWork.YesDisallowable, Some(businessId))
+              .toOption
+              .value
+              .set(TravelAndAccommodationTotalExpensesPage, BigDecimal(200), Some(businessId))
+              .toOption
+              .value
+
+            navigator.nextTravelExpensesPage(
+              TravelAndAccommodationTotalExpensesPage,
+              mode,
+              travelExpensesDb,
+              taxYear,
+              businessId,
+              ua) shouldBe expectedResult
+          }
+
+        "navigate to TravelAndAccommodationCYA from TravelAndAccommodationTotalExpensesPage" +
+          "when TravelForWorkPage option selected is 'YesAllowable'" ignore { // TODO direct to new CYA page
+            val expectedResult = controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+            val ua = emptyUserAnswers
+              .set(TravelForWorkPage, TravelForWork.YesAllowable, Some(businessId))
+              .toOption
+              .value
+              .set(TravelAndAccommodationTotalExpensesPage, BigDecimal(200), Some(businessId))
+              .toOption
+              .value
+
+            navigator.nextTravelExpensesPage(
+              TravelAndAccommodationTotalExpensesPage,
+              mode,
+              travelExpensesDb,
+              taxYear,
+              businessId,
+              ua) shouldBe expectedResult
+          }
 
         "navigate to TravelAndAccommodationCYAage from TravelAndAccommodationDisallowableExpensesPage" in { // TODO navigate to CYA page
           val expectedResult = controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+
+          val ua = emptyUserAnswers
+            .set(TravelForWorkPage, TravelForWork.YesAllowable, Some(businessId))
+            .toOption
+            .value
+            .set(TravelAndAccommodationTotalExpensesPage, BigDecimal(200), Some(businessId))
+            .toOption
+            .value
+
           navigator.nextTravelExpensesPage(
             TravelAndAccommodationDisallowableExpensesPage,
             mode,
             travelExpensesDb,
             taxYear,
-            businessId) shouldBe expectedResult
+            businessId,
+            ua) shouldBe expectedResult
         }
       }
     }

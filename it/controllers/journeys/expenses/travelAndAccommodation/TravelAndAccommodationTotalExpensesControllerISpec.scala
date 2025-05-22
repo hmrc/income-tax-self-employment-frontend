@@ -21,7 +21,13 @@ import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.ExpensesTravelForWork
 import models.common.JourneyAnswersContext
+import models.database.UserAnswers
+import models.journeys.expenses.individualCategories.TravelForWork
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
+import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import org.jsoup.Jsoup
+import pages.expenses.tailoring.individualCategories.TravelForWorkPage
+import pages.expenses.travelAndAccommodation.TravelAndAccommodationExpenseTypePage
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
@@ -32,6 +38,10 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
   val url: String                        = routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, NormalMode).url
   val submitUrl: String                  = routes.TravelAndAccommodationTotalExpensesController.onSubmit(taxYear, businessId, NormalMode).url
   val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, ExpensesTravelForWork)
+  val userAnswers: UserAnswers = UserAnswers(internalId)
+    .set(TravelForWorkPage, TravelForWork.YesDisallowable, Some(businessId))
+    .toOption
+    .value
 
   "GET /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expenses " when {
     "the user is an agent" must {
@@ -104,7 +114,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
         AuthStub.authorised()
         AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData.copy(totalTravelExpenses = None))))
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
-        DbHelper.insertEmpty()
+        DbHelper.insertUserAnswers(userAnswers)
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("500.00"))))
 

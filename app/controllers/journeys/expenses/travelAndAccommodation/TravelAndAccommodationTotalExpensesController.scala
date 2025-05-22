@@ -75,7 +75,8 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
                   .getOrElse(TravelExpensesDb())
                   .copy(totalTravelExpenses = Some(value))
               )
-            } yield Redirect(navigator.nextTravelExpensesPage(TravelAndAccommodationTotalExpensesPage, mode, newData, taxYear, businessId))
+            } yield Redirect(
+              navigator.nextTravelExpensesPage(TravelAndAccommodationTotalExpensesPage, mode, newData, taxYear, businessId, request.userAnswers))
         )
   }
 }
