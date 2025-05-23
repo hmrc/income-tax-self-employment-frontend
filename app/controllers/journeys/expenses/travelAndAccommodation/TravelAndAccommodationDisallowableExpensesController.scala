@@ -23,17 +23,17 @@ import models.common.Journey.ExpensesTravelForWork
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
 import navigation.TravelAndAccommodationNavigator
-import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
+import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationTotalExpensesView
+import views.html.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TravelAndAccommodationTotalExpensesController @Inject() (
+class TravelAndAccommodationDisallowableExpensesController @Inject() (
     override val messagesApi: MessagesApi,
     answersService: AnswersService,
     navigator: TravelAndAccommodationNavigator,
@@ -42,41 +42,61 @@ class TravelAndAccommodationTotalExpensesController @Inject() (
     requireData: DataRequiredAction,
     formProvider: CurrencyFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: TravelAndAccommodationTotalExpensesView
+    view: TravelAndAccommodationDisallowableExpensesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = (userType: UserType) =>
-    formProvider(TravelAndAccommodationTotalExpensesPage, userType, prefix = Some("travelAndAccommodationTotalExpenses"))
+  private val form = (userType: UserType, totalExpenses: BigDecimal) =>
+    formProvider(
+      TravelAndAccommodationDisallowableExpensesPage,
+      userType,
+      maxValue = totalExpenses,
+      minValue = 0,
+      prefix = Some("travelAndAccommodationDisallowableExpenses"),
+      args = Seq(totalExpenses.toString())
+    )
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
       answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData =>
-        val preparedForm = optTravelExpensesData.flatMap(_.totalTravelExpenses).fold(form(request.userType))(form(request.userType).fill)
-        Ok(view(preparedForm, mode, request.userType, taxYear, businessId))
+        optTravelExpensesData.flatMap(_.totalTravelExpenses) match {
+          case Some(totalExpenses) =>
+            val preparedForm = optTravelExpensesData
+              .flatMap(_.disallowableTravelExpenses)
+              .fold(form(request.userType, totalExpenses))(form(request.userType, totalExpenses).fill)
+            Ok(view(preparedForm, mode, request.userType, taxYear, businessId, totalExpenses))
+          case _ => Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        }
       }
   }
 
   def onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
-      form(request.userType)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId))),
-          value =>
-            for {
-              oldAnswers <- answersService.getAnswers[TravelExpensesDb](ctx)
-              newData <- answersService.replaceAnswers(
-                ctx = ctx,
-                data = oldAnswers
-                  .getOrElse(TravelExpensesDb())
-                  .copy(totalTravelExpenses = Some(value))
+      answersService.getAnswers[TravelExpensesDb](ctx) flatMap { optTravelExpenses =>
+        optTravelExpenses.flatMap(_.totalTravelExpenses) match {
+          case Some(totalTravelExpenses) =>
+            form(request.userType, totalTravelExpenses)
+              .bindFromRequest()
+              .fold(
+                formWithErrors =>
+                  Future.successful(BadRequest(view(formWithErrors, mode, request.userType, taxYear, businessId, totalTravelExpenses))),
+                value =>
+                  for {
+                    newData <- answersService.replaceAnswers(
+                      ctx = ctx,
+                      data = optTravelExpenses
+                        .getOrElse(TravelExpensesDb())
+                        .copy(disallowableTravelExpenses = Some(value))
+                    )
+                  } yield Redirect(navigator
+                    .nextTravelExpensesPage(TravelAndAccommodationDisallowableExpensesPage, mode, newData, taxYear, businessId, request.userAnswers))
               )
-            } yield Redirect(
-              navigator.nextTravelExpensesPage(TravelAndAccommodationTotalExpensesPage, mode, newData, taxYear, businessId, request.userAnswers))
-        )
+          case _ => Future.successful(Redirect(controllers.standard.routes.JourneyRecoveryController.onPageLoad()))
+        }
+      }
+
   }
 }

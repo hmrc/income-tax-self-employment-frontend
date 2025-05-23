@@ -22,7 +22,7 @@ import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
 import models.{CheckMode, Mode, NormalMode}
 import pages.Page
-import pages.industrysectors.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage, SelfEmploymentAbroadPage}
+import pages.industrysectors.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage}
 import play.api.mvc.Call
 
 import javax.inject.Inject

@@ -47,7 +47,6 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=target/.*:s,src=routes/.*:s" // suppress warnings in generated routes files
     ) ++ additionalScalacOptions,
     retrieveManaged := true,
-    resolvers ++= Seq(Resolver.jcenterRepo),
     // concatenate js
     Concat.groups := Seq(
       "javascripts/application.js" ->

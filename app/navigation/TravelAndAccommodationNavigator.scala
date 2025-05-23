@@ -29,11 +29,14 @@ import models.journeys.expenses.travelAndAccommodation.{
   YourFlatRateForVehicleExpenses
 }
 import models.{NormalMode, _}
+import org.apache.commons.lang3.NotImplementedException
 import pages._
+import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import pages.expenses.travelAndAccommodation._
 import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
 import play.api.mvc.Call
+import play.api.mvc.Results.NotImplemented
 
 import javax.inject.{Inject, Singleton}
 
@@ -182,18 +185,33 @@ class TravelAndAccommodationNavigator @Inject() {
         checkRouteMap(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 
-  private val normalTravelExpensesRoutes: Page => TravelExpensesDb => (TaxYear, BusinessId) => Option[Call] = {
-    case TravelAndAccommodationTotalExpensesPage =>
-      _ => (taxYear, businessId) => Some(journeys.routes.TaskListController.onPageLoad(taxYear))
+  private def handleTravelAndAccom(ua: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
+    ua.get(TravelForWorkPage, businessId) map {
+      case TravelForWork.YesDisallowable =>
+        routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, mode)
+      case _ =>
+        ???
+    }
 
+  private val normalTravelExpensesRoutes: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
+    case TravelAndAccommodationTotalExpensesPage =>
+      _ => (taxYear, businessId, userAnswers) => handleTravelAndAccom(userAnswers, taxYear, businessId, NormalMode)
+    case TravelAndAccommodationDisallowableExpensesPage =>
+      _ => (taxYear, businessId, userAnswers) => Some(journeys.routes.TaskListController.onPageLoad(taxYear)) // TODO redirect to new CYA page
     case _ =>
-      _ => (_, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+      _ => (_, _, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }
 
-  def nextTravelExpensesPage(page: Page, mode: Mode, model: TravelExpensesDb, taxYear: TaxYear, businessId: BusinessId): Call =
+  def nextTravelExpensesPage(page: Page,
+                             mode: Mode,
+                             model: TravelExpensesDb,
+                             taxYear: TaxYear,
+                             businessId: BusinessId,
+                             userAnswers: UserAnswers): Call =
     mode match {
       case NormalMode =>
-        normalTravelExpensesRoutes(page)(model)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        normalTravelExpensesRoutes(page)(model)(taxYear, businessId, userAnswers)
+          .getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
         checkTravelExpensesRouteMap(page)(model)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }

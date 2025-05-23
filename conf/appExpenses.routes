@@ -189,6 +189,10 @@ POST       /:taxYear/:businessId/expenses/travel/travel-accommodation-total-expe
 GET        /:taxYear/:businessId/expenses/travel/change-travel-accommodation-total-expenses                                            controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 POST       /:taxYear/:businessId/expenses/travel/change-travel-accommodation-total-expenses                                            controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationTotalExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
+GET        /:taxYear/:businessId/expenses/travel-accommodation-disallowable-expenses                                                   controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+POST       /:taxYear/:businessId/expenses/travel-accommodation-disallowable-expenses                                                   controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = NormalMode)
+GET        /:taxYear/:businessId/expenses/change-travel-accommodation-disallowable-expenses                                            controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
+POST       /:taxYear/:businessId/expenses/change-travel-accommodation-disallowable-expenses                                            controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesController.onSubmit(taxYear: TaxYear, businessId: BusinessId, mode: Mode = CheckMode)
 
 ########## Expenses - Office Supplies ##########
 
