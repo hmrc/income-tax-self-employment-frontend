@@ -16,10 +16,10 @@
 
 package pages.adjustments.profitOrLoss
 
+import controllers.journeys.adjustments.profitOrLoss.routes
 import models.common.{BusinessId, TaxYear}
 import pages.OneQuestionPage
 import play.api.mvc.Call
-import controllers.journeys.adjustments.profitOrLoss.routes
 
 trait AdjustmentsBasePage[A] extends OneQuestionPage[A] {
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call = routes.ProfitOrLossCYAController.onPageLoad(taxYear, businessId)

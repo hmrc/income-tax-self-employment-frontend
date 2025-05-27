@@ -20,9 +20,9 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import controllers.{handleResultT, handleSubmitAnswersResult}
 import models.CheckMode
 import models.common.BusinessId.nationalInsuranceContributions
+import models.common.Journey.NationalInsuranceContributions
 import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.domain.BusinessData
-import models.common.Journey.NationalInsuranceContributions
 import models.journeys.nics.NICsJourneyAnswers
 import pages.Page
 import pages.nics._

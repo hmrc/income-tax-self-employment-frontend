@@ -97,19 +97,19 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, otherExpensesRoute)
+            val request = FakeRequest(GET, otherExpensesRoute)
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val view = application.injector.instanceOf[OtherExpensesView]
+            val view = application.injector.instanceOf[OtherExpensesView]
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
+
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -118,21 +118,20 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, otherExpensesRoute)
+            val request = FakeRequest(GET, otherExpensesRoute)
 
-              val view = application.injector.instanceOf[OtherExpensesView]
+            val view = application.injector.instanceOf[OtherExpensesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(userScenario.form.fill(OtherExpenses.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
-                  request,
-                  messages(application)).toString
+            val expectedResult =
+              view(userScenario.form.fill(OtherExpenses.values.head), NormalMode, userScenario.userType, taxYear, businessId)(
+                request,
+                messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -141,14 +140,13 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, otherExpensesRoute)
+        val request = FakeRequest(GET, otherExpensesRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -168,16 +166,15 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
             )
             .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, otherExpensesRoute)
-              .withFormUrlEncodedBody(("value", OtherExpenses.values.head.toString))
+        val request =
+          FakeRequest(POST, otherExpensesRoute)
+            .withFormUrlEncodedBody(("value", OtherExpenses.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+
       }
 
       userScenarios.foreach { userScenario =>
@@ -186,46 +183,44 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, otherExpensesRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val request =
+              FakeRequest(POST, otherExpensesRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val view = application.injector.instanceOf[OtherExpensesView]
+            val view = application.injector.instanceOf[OtherExpensesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request =
-                FakeRequest(POST, otherExpensesRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val request =
+              FakeRequest(POST, otherExpensesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val view = application.injector.instanceOf[OtherExpensesView]
+            val view = application.injector.instanceOf[OtherExpensesView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -234,17 +229,16 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, otherExpensesRoute)
-              .withFormUrlEncodedBody(("value", OtherExpenses.values.head.toString))
+        val request =
+          FakeRequest(POST, otherExpensesRoute)
+            .withFormUrlEncodedBody(("value", OtherExpenses.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -264,22 +258,21 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
             .onPageLoad(taxYear, businessId, CheckMode)
             .url
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)) thenReturn EitherT.rightT(())
 
-          val request =
-            FakeRequest(POST, professionalServiceExpensesRoute)
-              .withFormUrlEncodedBody(("value", OtherExpenses.No.toString))
+        val request =
+          FakeRequest(POST, professionalServiceExpensesRoute)
+            .withFormUrlEncodedBody(("value", OtherExpenses.No.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)
-        }
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)
+        application.stop()
       }
 
     }

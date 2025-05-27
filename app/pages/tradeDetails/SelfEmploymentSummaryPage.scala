@@ -18,8 +18,8 @@ package pages.tradeDetails
 
 import controllers.journeys.routes
 import models.NormalMode
-import models.common.{BusinessId, TaxYear}
 import models.common.Journey.TradeDetails
+import models.common.{BusinessId, TaxYear}
 import pages.Page
 import play.api.mvc.Call
 

@@ -19,8 +19,8 @@ package controllers.journeys.expenses.otherExpenses
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.expenses.otherExpenses.routes.OtherExpensesCYAController
-import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.common.Journey.ExpensesOtherExpenses
+import models.common.{BusinessId, JourneyContextWithNino, TaxYear}
 import models.journeys.expenses.otherExpenses.OtherExpensesJourneyAnswers
 import pages.expenses.otherExpenses.OtherExpensesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}

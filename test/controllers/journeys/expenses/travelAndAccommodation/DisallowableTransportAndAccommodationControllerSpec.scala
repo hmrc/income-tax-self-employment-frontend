@@ -68,32 +68,30 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
+          val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
+          val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form(userType), NormalMode, userType, taxYear, businessId, strExpense)(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form(userType), NormalMode, userType, taxYear, businessId, strExpense)(
+            request,
+            messages(application)).toString
+          application.stop()
         }
 
         "redirect to 'there is a problem' page when data is missing for the page 'TODO'" in {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
+          val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+          application.stop()
         }
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -108,18 +106,17 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
-          running(application) {
-            val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
+          val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
 
-            val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
+          val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual view(form(userType).fill(validAnswer), NormalMode, userType, taxYear, businessId, strExpense)(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form(userType).fill(validAnswer), NormalMode, userType, taxYear, businessId, strExpense)(
+            request,
+            messages(application)).toString
+          application.stop()
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -140,16 +137,15 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
               )
               .build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, disallowableTransportAndAccommodationRoute)
-                .withFormUrlEncodedBody(("value", validAnswer.toString))
+          val request =
+            FakeRequest(POST, disallowableTransportAndAccommodationRoute)
+              .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+          application.stop()
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -160,22 +156,21 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
           val application = applicationBuilder(userAnswers = Some(userAnswers), userType).build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, disallowableTransportAndAccommodationRoute)
-                .withFormUrlEncodedBody(("value", "invalid value"))
+          val request =
+            FakeRequest(POST, disallowableTransportAndAccommodationRoute)
+              .withFormUrlEncodedBody(("value", "invalid value"))
 
-            val boundForm = form(userType).bind(Map("value" -> "invalid value"))
+          val boundForm = form(userType).bind(Map("value" -> "invalid value"))
 
-            val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
+          val view = application.injector.instanceOf[DisallowableTransportAndAccommodationView]
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, strExpense)(
-              request,
-              messages(application)).toString
-          }
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, NormalMode, userType, taxYear, businessId, strExpense)(
+            request,
+            messages(application)).toString
+          application.stop()
         }
       }
     }
@@ -184,31 +179,29 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
+      val request = FakeRequest(GET, disallowableTransportAndAccommodationRoute)
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, disallowableTransportAndAccommodationRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
+      val request =
+        FakeRequest(POST, disallowableTransportAndAccommodationRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-        val result = route(application, request).value
+      val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-      }
+      redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+      application.stop()
     }
   }
 }

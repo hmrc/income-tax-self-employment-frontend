@@ -21,8 +21,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.CurrencyFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear, UserType}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear, UserType}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
 import play.api.i18n.{I18nSupport, MessagesApi}

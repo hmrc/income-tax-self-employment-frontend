@@ -20,12 +20,11 @@ import cats.data.EitherT
 import cats.implicits._
 import connectors.{ContentHttpReads, SelfEmploymentConnector}
 import controllers.handleApiResult
-import models.common.{BusinessId, JourneyContext, UserId}
+import models.common.Journey.NationalInsuranceContributions
+import models.common.{BusinessId, Journey, JourneyContext, UserId}
 import models.database.UserAnswers
 import models.domain.ApiResultT
 import models.errors.ServiceError
-import models.common.Journey
-import models.common.Journey.NationalInsuranceContributions
 import models.requests.OptionalDataRequest
 import play.api.libs.json.{Format, JsObject, Json}
 import play.api.mvc.{ActionTransformer, Request}

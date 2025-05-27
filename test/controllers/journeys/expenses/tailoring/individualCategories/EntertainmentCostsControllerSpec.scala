@@ -25,13 +25,7 @@ import models.common.UserType.{Agent, Individual}
 import models.database.UserAnswers
 import models.journeys.expenses.ExpensesTailoring.IndividualCategories
 import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallowable
-import models.journeys.expenses.individualCategories.{
-  AdvertisingOrMarketing,
-  GoodsToSellOrUse,
-  RepairsAndMaintenance,
-  TravelForWork,
-  WorkFromBusinessPremises
-}
+import models.journeys.expenses.individualCategories._
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -93,19 +87,18 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
             val application = applicationBuilder(userAnswers = Some(baseAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, entertainmentCostsRoute)
+            val request = FakeRequest(GET, entertainmentCostsRoute)
 
-              val view = application.injector.instanceOf[EntertainmentCostsView]
+            val view = application.injector.instanceOf[EntertainmentCostsView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -114,19 +107,18 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
             val application = applicationBuilder(userAnswers = Some(userAnswers), userScenario.userType).build()
 
-            running(application) {
-              val request = FakeRequest(GET, entertainmentCostsRoute)
+            val request = FakeRequest(GET, entertainmentCostsRoute)
 
-              val view = application.injector.instanceOf[EntertainmentCostsView]
+            val view = application.injector.instanceOf[EntertainmentCostsView]
 
-              val result = route(application, request).value
+            val result = route(application, request).value
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -135,14 +127,13 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, entertainmentCostsRoute)
+        val request = FakeRequest(GET, entertainmentCostsRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -161,16 +152,15 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
             )
             .build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, entertainmentCostsRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, entertainmentCostsRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -179,48 +169,44 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, entertainmentCostsRoute)
+                .withFormUrlEncodedBody(("value", ""))
 
-              val request =
-                FakeRequest(POST, entertainmentCostsRoute)
-                  .withFormUrlEncodedBody(("value", ""))
+            val boundForm = userScenario.form.bind(Map("value" -> ""))
 
-              val boundForm = userScenario.form.bind(Map("value" -> ""))
+            val view = application.injector.instanceOf[EntertainmentCostsView]
 
-              val view = application.injector.instanceOf[EntertainmentCostsView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
 
           "must return a Bad Request and errors when invalid data is submitted" in {
 
             val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), userScenario.userType).build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, entertainmentCostsRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val request =
-                FakeRequest(POST, entertainmentCostsRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val view = application.injector.instanceOf[EntertainmentCostsView]
 
-              val view = application.injector.instanceOf[EntertainmentCostsView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId)(request, messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -229,17 +215,15 @@ class EntertainmentCostsControllerSpec extends SpecBase with MockitoSugar {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, entertainmentCostsRoute)
-              .withFormUrlEncodedBody(("value", true.toString))
+        val request =
+          FakeRequest(POST, entertainmentCostsRoute)
+            .withFormUrlEncodedBody(("value", true.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -19,8 +19,8 @@ package controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
 import controllers.handleSubmitAnswersResult
 import controllers.journeys.capitalallowances.zeroEmissionGoodsVehicle
-import models.common._
 import models.common.Journey.CapitalAllowancesZeroEmissionGoodsVehicle
+import models.common._
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZeroEmissionGoodsVehicleAnswers
 import pages.Page
 import play.api.i18n.{I18nSupport, MessagesApi}

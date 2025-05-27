@@ -20,8 +20,7 @@ import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
-import models.common.{BusinessId, TaxYear}
-import models.common.Journey
+import models.common.{BusinessId, Journey, TaxYear}
 import navigation.ExpensesTailoringNavigator
 import pages.expenses.tailoring.individualCategories.DepreciationPage
 import play.api.i18n.{I18nSupport, MessagesApi}

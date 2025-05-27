@@ -17,9 +17,8 @@
 package services
 
 import models.audit.{AuditEventType, AuditSectionName, CYAnswersAuditEvent}
-import models.common.JourneyContext
-import models.common.Journey
 import models.common.Journey.NationalInsuranceContributions
+import models.common.{Journey, JourneyContext}
 import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

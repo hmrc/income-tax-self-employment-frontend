@@ -72,6 +72,7 @@ class StaffCostsCYAControllerSpec extends AnyWordSpecLike with Matchers with Tab
           StaffCostsDisallowableAmountSummary.row(dataRequest.userAnswers, taxYear, businessId, dataRequest.userType)
         ).flatten
         contentAsString(result) mustEqual createExpectedView(application, expectedRows)
+        application.stop()
       }
     }
   }

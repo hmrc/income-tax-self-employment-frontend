@@ -108,22 +108,21 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
-              val request = FakeRequest(GET, professionalServiceExpensesRoute)
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
-              val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+            val expectedResult =
+              view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(userScenario.form, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
           }
 
           "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -138,26 +137,25 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
-              val request = FakeRequest(GET, professionalServiceExpensesRoute)
+            val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
-              val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult = view(
+              userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
+              NormalMode,
+              userScenario.userType,
+              taxYear,
+              businessId,
+              userScenario.accountingType
+            )(request, messages(application)).toString
 
-              val expectedResult = view(
-                userScenario.form.fill(ProfessionalServiceExpenses.values.toSet),
-                NormalMode,
-                userScenario.userType,
-                taxYear,
-                businessId,
-                userScenario.accountingType
-              )(request, messages(application)).toString
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
 
-              status(result) mustEqual OK
-              contentAsString(result) mustEqual expectedResult
-            }
           }
         }
       }
@@ -166,14 +164,13 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request = FakeRequest(GET, professionalServiceExpensesRoute)
+        val request = FakeRequest(GET, professionalServiceExpensesRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
 
@@ -189,18 +186,17 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             )
             .build()
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
 
-          val request =
-            FakeRequest(POST, professionalServiceExpensesRoute)
-              .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
+        val request =
+          FakeRequest(POST, professionalServiceExpensesRoute)
+            .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        application.stop()
       }
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
@@ -220,26 +216,25 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
             .onPageLoad(taxYear, businessId, CheckMode)
             .url
 
-        running(application) {
-          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)) thenReturn EitherT.rightT(())
 
-          val request =
-            FakeRequest(POST, professionalServiceExpensesRoute)
-              .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.No.toString))
+        val request =
+          FakeRequest(POST, professionalServiceExpensesRoute)
+            .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.No.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-          verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)
-          verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)
-        }
+        verify(mockService, times(1)).persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)
+        verify(mockService, times(1)).clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)
+        application.stop()
       }
 
       userScenarios.foreach { userScenario =>
@@ -251,26 +246,24 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
               .overrides(bind[SelfEmploymentService].toInstance(mockService))
               .build()
 
-            running(application) {
+            val request =
+              FakeRequest(POST, professionalServiceExpensesRoute)
+                .withFormUrlEncodedBody(("value", "invalid value"))
 
-              val request =
-                FakeRequest(POST, professionalServiceExpensesRoute)
-                  .withFormUrlEncodedBody(("value", "invalid value"))
+            val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
 
-              val boundForm = userScenario.form.bind(Map("value" -> "invalid value"))
+            val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
 
-              val view = application.injector.instanceOf[ProfessionalServiceExpensesView]
+            val result = route(application, request).value
 
-              val result = route(application, request).value
+            val expectedResult =
+              view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
+                request,
+                messages(application)).toString
 
-              val expectedResult =
-                view(boundForm, NormalMode, userScenario.userType, taxYear, businessId, userScenario.accountingType)(
-                  request,
-                  messages(application)).toString
-
-              status(result) mustEqual BAD_REQUEST
-              contentAsString(result) mustEqual expectedResult
-            }
+            status(result) mustEqual BAD_REQUEST
+            contentAsString(result) mustEqual expectedResult
+            application.stop()
           }
         }
       }
@@ -279,16 +272,15 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        running(application) {
-          val request =
-            FakeRequest(POST, professionalServiceExpensesRoute)
-              .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
+        val request =
+          FakeRequest(POST, professionalServiceExpensesRoute)
+            .withFormUrlEncodedBody(("value[0]", ProfessionalServiceExpenses.values.head.toString))
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
-        }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.standard.routes.JourneyRecoveryController.onPageLoad().url
+        application.stop()
       }
     }
   }

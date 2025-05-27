@@ -16,8 +16,7 @@
 
 package models.audit
 
-import models.common.{JourneyStatus, Mtditid, Nino, TaxYear}
-import models.common.Journey
+import models.common._
 import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 
 sealed trait SelfEmploymentAuditEvent

@@ -17,8 +17,8 @@
 package controllers.journeys.prepop
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, SubmittedDataRetrievalActionProvider}
-import models.common._
 import models.common.Journey.IncomePrepop
+import models.common._
 import models.journeys.income.IncomePrepopAnswers
 import pages.prepop.{IncomeOtherAmount, IncomeTurnoverAmount}
 import play.api.i18n.{I18nSupport, MessagesApi}
