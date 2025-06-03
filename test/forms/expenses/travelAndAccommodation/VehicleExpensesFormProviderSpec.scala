@@ -20,7 +20,7 @@ import forms.behaviours.BigDecimalFieldBehaviours
 import models.common.UserType
 import play.api.data.FormError
 
-import scala.collection.compat.immutable.ArraySeq
+import scala.collection.immutable.ArraySeq
 
 class VehicleExpensesFormProviderSpec extends BigDecimalFieldBehaviours {
 
