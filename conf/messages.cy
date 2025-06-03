@@ -173,6 +173,20 @@ sectionCompletedState.yes = Oes
 sectionCompletedState.no = Nac ydw
 sectionCompletedState.error.required = Dewiswch ie os ydych wedi cwblhau’r adran hon
 prepopTastList.taxReturn = Eich Ffurflen Dreth Incwm
+journeys.industry-sectors = Sectorau diwydiant a gweithio dramor
+journeys.trade-details = Adolygu hunangyflogaeth
+farmerOrMarketGardener.heading.individual = A oeddech chi’n ffermwr neu’n arddwr marchnad?
+farmerOrMarketGardener.heading.agent = A oedd eich cleient yn ffermwr neu’n arddwr marchnad?
+farmerOrMarketGardener.error.required.individual = Dewiswch ‘Iawn’ os gwnaethoch weithio fel ffermwr neu arddwr marchnad
+farmerOrMarketGardener.error.required.agent = Dewiswch ‘Iawn’ os gwnaeth eich cleient weithio fel ffermwr neu arddwr marchnad
+farmerOrMarketGardener.change.hidden = os gwnaethoch weithio fel ffermwr neu arddwr marchnad
+literaryOrCreativeWorks.heading.individual = A gawsoch dros hanner eich elw o waith llenyddol neu waith creadigol?
+literaryOrCreativeWorks.heading.agent = A gafodd eich cleient dros hanner ei elw o waith llenyddol neu waith creadigol?
+literaryOrCreativeWorks.p.individual = Mae hyn yn cynnwys gweithiau llenyddol, dramatig, cerddorol neu artistig neu ddyluniadau a grëwyd gennych chi eich hun.
+literaryOrCreativeWorks.p.agent = Mae hyn yn cynnwys gweithiau llenyddol, dramatig, cerddorol neu artistig neu ddyluniadau a grëwyd gan eich cleient ei hun.
+literaryOrCreativeWorks.error.required.individual = Dewiswch ‘Iawn’ os cawsoch dros hanner eich elw o waith llenyddol neu waith creadigol
+literaryOrCreativeWorks.error.required.agent = Dewiswch ‘Iawn’ os cafodd eich cleient dros hanner ei elw o waith llenyddol neu waith creadigol
+literaryOrCreativeWorks.change.hidden = os cawsoch dros hanner eich elw o waith llenyddol neu greadigol
 prepopTastList.hint = I newid y data hwn bydd yn rhaid i chi ddefnyddio’ch meddalwedd adrodd.
 selfEmploymentAbroad.title.individual = A wnaethoch chi gyflawni eich holl hunangyflogaeth dramor?
 selfEmploymentAbroad.title.agent = A wnaeth eich cleient gyflawni ei holl hunangyflogaeth dramor?
@@ -2168,14 +2182,6 @@ disallowableTransportAndAccommodation.change.hidden = *********Missing Welsh Mes
 
 removeVehicle.title.common = *********Missing Welsh Message *********
 removeVehicle.error.required.common = *********Missing Welsh Message *********
-
-literaryOrCreativeWorks.heading.individual = *********Missing Welsh Message *********
-literaryOrCreativeWorks.heading.agent = *********Missing Welsh Message *********
-literaryOrCreativeWorks.p.individual = *********Missing Welsh Message *********
-literaryOrCreativeWorks.p.agent = *********Missing Welsh Message *********
-literaryOrCreativeWorks.error.required.individual = *********Missing Welsh Message *********
-literaryOrCreativeWorks.error.required.agent = *********Missing Welsh Message *********
-literaryOrCreativeWorks.change.hidden = *********Missing Welsh Message *********
 
 travelAndAccommodationTotalExpenses.heading.individual = *********Missing Welsh Message *********
 travelAndAccommodationTotalExpenses.heading.agent = *********Missing Welsh Message *********
