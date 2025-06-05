@@ -22,6 +22,8 @@ import models.errors.HttpErrorBody.SingleErrorBody
 import play.api.libs.json.{JsPath, JsonValidationError}
 import play.mvc.Http.Status
 
+import scala.util.control.NoStackTrace
+
 /** Our common base for all errors all over the layers. Use internalReason Right if there is no exception with the error details, or Left if there is
   * an exception.
   */
@@ -59,4 +61,6 @@ object ServiceError {
       extends ServiceError(Status.NOT_FOUND, s"Unable to find business with Id: $businessId".asRight)
 
   final case object IncomeAnswersNotSubmittedError extends ServiceError(Status.NOT_FOUND, Right("Income answers not submitted"))
+
+  final case class MissingAgentClientDetails(message: String) extends Exception(message) with NoStackTrace
 }

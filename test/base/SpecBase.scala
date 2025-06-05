@@ -28,6 +28,7 @@ import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.common.Journey
 import models.requests.{DataRequest, OptionalDataRequest}
+import models.session.SessionData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -59,14 +60,17 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   val userAnswersId                  = "id"
   val sampleUserId: UserId           = UserId("id")
   val someNino: Nino                 = Nino("someNino")
+  val sessionId                      = "sessionId1234"
   val mtditid                        = Mtditid("someId")
   val arn                            = "arnId"
+  val utr                            = "utr123"
   val businessId: BusinessId         = BusinessId("SJPR05893938418")
   val tradingName: TradingName       = TradingName("Circus Performer")
   val typeOfBusiness: TypeOfBusiness = TypeOfBusiness("Self Employed")
   val zeroValue: BigDecimal          = 0
   val maxAmountValue: BigDecimal     = 100000000000.00
   val index                          = Index(1)
+  val sessionData: SessionData       = SessionData(sessionId, mtditid.value, someNino.value, Some(utr))
 
   val appConfig = mock[FrontendAppConfig]
 
