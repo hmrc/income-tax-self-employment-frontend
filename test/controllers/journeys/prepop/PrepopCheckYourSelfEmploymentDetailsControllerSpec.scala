@@ -37,6 +37,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
 import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.play.language.LanguageUtils
 import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
 import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView
 
@@ -77,7 +78,9 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
           .overrides(bind[SelfEmploymentService].toInstance(mockService))
           .build()
 
-        val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, Individual)(messages(application))
+        val languageUtils = application.injector.instanceOf[LanguageUtils]
+        val selfEmploymentDetails =
+          PrepopSelfEmploymentDetailsViewModel.buildSummaryList(aBusinessData, Individual, languageUtils)(messages(application))
 
         running(application) {
           val nextRoute = routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, BusinessDetailsPrepop, NormalMode).url

@@ -20,21 +20,21 @@ import models.common.UserType
 import models.domain.BusinessData
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
+import uk.gov.hmrc.play.language.LanguageUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 import viewmodels.journeys.SummaryListCYA
 
 import java.time.LocalDate
-import java.time.format.{DateTimeFormatter, FormatStyle}
 
 object SelfEmploymentDetailsViewModel {
 
-  def buildSummaryList(business: BusinessData, userType: UserType)(implicit messages: Messages): SummaryList =
+  def buildSummaryList(business: BusinessData, userType: UserType, languageUtils: LanguageUtils)(implicit messages: Messages): SummaryList =
     SummaryListCYA.summaryList(
       List(
         row("tradingName", business.tradingName.getOrElse(""), Some(userType)),
         row("typeOfBusiness", business.typeOfBusiness, Some(userType)),
-        row("startDate", handleDateString(business.commencementDate), Some(userType))
+        row("startDate", handleDateString(business.commencementDate, languageUtils), Some(userType))
       )
     )
 
@@ -55,8 +55,8 @@ object SelfEmploymentDetailsViewModel {
     )
   }
 
-  private def handleDateString(date: Option[String]): String = try
-    LocalDate.parse(date.getOrElse("")).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
+  private def handleDateString(date: Option[String], languageUtils: LanguageUtils)(implicit messages: Messages): String = try
+    languageUtils.Dates.formatDate(LocalDate.parse(date.getOrElse("")))
   catch {
     case _: Throwable => ""
   }

@@ -25,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.language.LanguageUtils
 import utils.Logging
 import viewmodels.checkAnswers.tradeDetails.SelfEmploymentDetailsViewModel
 import views.html.journeys.tradeDetails.CheckYourSelfEmploymentDetailsView
@@ -38,14 +39,15 @@ class CheckYourSelfEmploymentDetailsController @Inject() (override val messagesA
                                                           getData: DataRetrievalAction,
                                                           service: SelfEmploymentService,
                                                           val controllerComponents: MessagesControllerComponents,
-                                                          view: CheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
+                                                          view: CheckYourSelfEmploymentDetailsView,
+                                                          languageUtils: LanguageUtils)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
-      val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
+      val selfEmploymentDetails = SelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType, languageUtils)
       val nextRoute             = CheckYourSelfEmploymentDetailsPage.nextPage(taxYear, businessId).url
       Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))
     }
