@@ -20,22 +20,22 @@ import models.common.UserType
 import models.domain.BusinessData
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
+import uk.gov.hmrc.play.language.LanguageUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 import java.time.LocalDate
-import java.time.format.{DateTimeFormatter, FormatStyle}
 import scala.util.Try
 
 object PrepopSelfEmploymentDetailsViewModel {
 
-  def buildSummaryList(business: BusinessData, userType: UserType)(implicit messages: Messages): SummaryList =
+  def buildSummaryList(business: BusinessData, userType: UserType, languageUtils: LanguageUtils)(implicit messages: Messages): SummaryList =
     SummaryList(
       List(
         row("tradingName", business.tradingName.getOrElse(""), Some(userType)),
         row("typeOfBusiness", business.typeOfBusiness, Some(userType)),
         row("accountingType", business.accountingType.getOrElse("")),
-        row("startDate", handleDateString(business.commencementDate), Some(userType))
+        row("startDate", handleDateString(business.commencementDate, languageUtils), Some(userType))
       ),
       classes = "govuk-!-margin-bottom-7"
     )
@@ -57,9 +57,9 @@ object PrepopSelfEmploymentDetailsViewModel {
     )
   }
 
-  private def handleDateString(date: Option[String]): String =
+  private def handleDateString(date: Option[String], languageUtils: LanguageUtils)(implicit messages: Messages): String =
     date
       .flatMap(d => Try(LocalDate.parse(d)).toOption)
-      .map(_.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)))
+      .map(localDate => languageUtils.Dates.formatDate(localDate))
       .getOrElse("")
 }
