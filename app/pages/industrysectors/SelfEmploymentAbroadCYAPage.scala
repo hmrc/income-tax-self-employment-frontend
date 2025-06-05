@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.industrysectors
 
-case object DisallowableTransportAndAccommodationPage extends OneQuestionPage[BigDecimal] {
+import pages.Page
 
-  override def toString: String = "disallowableTransportAndAccommodation"
+object SelfEmploymentAbroadCYAPage extends Page {
+  override def toString: String = "selfEmploymentAbroadCYA"
 }

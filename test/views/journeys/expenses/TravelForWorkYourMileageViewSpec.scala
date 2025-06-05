@@ -16,14 +16,14 @@
 
 package views.journeys.expenses
 
-import forms.expenses.travelAndAccommodation.{TravelForWorkYourMileageFormProvider, TravelForWorkYourVehicleFormProvider}
+import forms.expenses.travelAndAccommodation.TravelForWorkYourMileageFormProvider
 import models.common.UserType
 import models.{Index, Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.ViewBaseSpec
-import views.html.journeys.expenses.travelAndAccommodation.{TravelForWorkYourMileageView, TravelForWorkYourVehicleView}
+import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourMileageView
 
 class TravelForWorkYourMileageViewSpec extends ViewBaseSpec {
 

@@ -20,6 +20,7 @@ import base.SpecBase._
 import builders.TradesJourneyStatusesBuilder.{aSequenceTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import builders.UserBuilder.aNoddyUser
 import cats.implicits._
+import _root_.config.FrontendAppConfig
 import controllers.TaskListControllerSpec._
 import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
@@ -43,8 +44,9 @@ import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
 import views.html.journeys.TaskListView
 
 class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
-  val nino       = "AA370343B"
-  val user: User = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
+  val appConfig: FrontendAppConfig = mock[FrontendAppConfig]
+  val nino                         = "AA370343B"
+  val user: User                   = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   private val stubActionProvider = StubSubmittedDataRetrievalActionProvider()
   private val stubService        = SelfEmploymentServiceStub()
@@ -69,7 +71,8 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       )
 
       val selfEmploymentList =
-        aSequenceTadesJourneyStatusesModel.map(TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswersAccrual))(messages(application)))
+        aSequenceTadesJourneyStatusesModel.map(
+          TradesJourneyStatuses.toViewModel(_, taxYear, Some(emptyUserAnswersAccrual), appConfig)(messages(application)))
 
       val request = FakeRequest(GET, routes.TaskListController.onPageLoad(taxYear).url)
       val result  = route(application, request).value
@@ -77,12 +80,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(
-        taxYear,
-        fakeUser,
-        JourneyStatus.Completed,
-        selfEmploymentList,
-        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, fakeUser, selfEmploymentList, nationalInsuranceEmptySummary(messages(application)))(
+        fakeOptionalRequest,
+        messages(application)).toString
     }
 
     "must return OK and display no Self-employments when an empty sequence of employments is returned from the backend" in {
@@ -97,7 +97,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(taxYear, aNoddyUser, JourneyStatus.Completed, Nil, nationalInsuranceEmptySummary(messages(application)))(
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, Nil, nationalInsuranceEmptySummary(messages(application)))(
         fakeOptionalRequest,
         messages(application)).toString
     }
@@ -114,12 +114,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(
-        taxYear,
-        aNoddyUser,
-        JourneyStatus.InProgress,
-        Nil,
-        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, Nil, nationalInsuranceEmptySummary(messages(application)))(
+        fakeOptionalRequest,
+        messages(application)).toString
     }
 
     "must return OK and display no Self-employments when the review of trade details has not been started" in {
@@ -134,12 +131,9 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
       val view    = application.injector.instanceOf[TaskListView]
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(
-        taxYear,
-        aNoddyUser,
-        JourneyStatus.CheckOurRecords,
-        Nil,
-        nationalInsuranceEmptySummary(messages(application)))(fakeOptionalRequest, messages(application)).toString
+      contentAsString(result) mustEqual view(taxYear, aNoddyUser, Nil, nationalInsuranceEmptySummary(messages(application)))(
+        fakeOptionalRequest,
+        messages(application)).toString
     }
   }
 

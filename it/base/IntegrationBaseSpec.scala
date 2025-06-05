@@ -27,7 +27,13 @@ import models.domain.BusinessData.{AccountingPeriod, LatencyDetails}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
-import models.journeys.expenses.travelAndAccommodation.{VehicleDetailsDb, YourFlatRateForVehicleExpenses}
+import models.journeys.expenses.travelAndAccommodation.{
+  LeasedVehicles,
+  OwnVehicles,
+  TravelExpensesDb,
+  VehicleDetailsDb,
+  YourFlatRateForVehicleExpenses
+}
 import org.mockito.Mockito.when
 import org.mongodb.scala.bson.Document
 import org.mongodb.scala.bson.conversions.Bson
@@ -72,6 +78,14 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
     expenseMethod = Some(YourFlatRateForVehicleExpenses.Flatrate),
     costsOutsideFlatRate = Some(BigDecimal("100.00")),
     vehicleExpenses = Some(BigDecimal("300.00"))
+  )
+
+  val testTravelAndAccommodationData: TravelExpensesDb = TravelExpensesDb(
+    expensesToClaim = Some(Seq(OwnVehicles, LeasedVehicles)),
+    allowablePublicTransportExpenses = Some(1000.00),
+    disallowablePublicTransportExpenses = Some(100.00),
+    totalTravelExpenses = Some(500.00),
+    disallowableTravelExpenses = Some(400.00)
   )
 
   val businessData: BusinessData =

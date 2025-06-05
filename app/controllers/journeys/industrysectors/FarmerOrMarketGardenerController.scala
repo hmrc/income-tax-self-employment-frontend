@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.journeys.industrysectors
 
 import controllers.actions._
-import forms.FarmerOrMarketGardenerFormProvider
+import forms.industrysectors.FarmerOrMarketGardenerFormProvider
 import models.Mode
 import models.common.Journey.IndustrySectors
 import models.common.{BusinessId, TaxYear}
 import models.journeys.industrySectors.IndustrySectorsDb
 import navigation.IndustrySectorsNavigator
-import pages.FarmerOrMarketGardenerPage
+import pages.industrysectors.FarmerOrMarketGardenerPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.answers.AnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.FarmerOrMarketGardenerView
+import views.html.journeys.industrysectors.FarmerOrMarketGardenerView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -75,8 +75,7 @@ class FarmerOrMarketGardenerController @Inject() (
                   .getOrElse(IndustrySectorsDb())
                   .copy(isFarmerOrMarketGardener = Some(value))
               )
-            } yield NotImplemented
-          // Redirect(navigator.nextPage(FarmerOrMarketGardenerPage, mode, newData, taxYear, businessId)) // TODO: replace NotImplemented once implemented
+            } yield Redirect(navigator.nextPage(FarmerOrMarketGardenerPage, mode, newData, taxYear, businessId))
         )
     }
 }

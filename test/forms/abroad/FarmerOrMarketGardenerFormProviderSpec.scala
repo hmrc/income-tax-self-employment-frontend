@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package forms.abroad
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.industrysectors.FarmerOrMarketGardenerFormProvider
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 
 class FarmerOrMarketGardenerFormProviderSpec extends BooleanFieldBehaviours {
 
   private val formProvider = new FarmerOrMarketGardenerFormProvider()
 
-  private def form(userType: UserType) = formProvider(userType)
+  private def form(userType: UserType): Form[Boolean] = formProvider(userType)
 
   ".apply" - {
 
