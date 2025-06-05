@@ -37,11 +37,11 @@
 
     @heading("financialExpenses.title")
 
-    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+    <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                @messages("expenses.understanding.interest")
-                            </span>
+            <span class="govuk-details__summary-text">
+                @messages("expenses.understanding.interest")
+            </span>
         </summary>
         <div class="govuk-details__text">
             <p class="govuk-body">
@@ -62,11 +62,11 @@
         </div>
     </details>
 
-    <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+    <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                @messages("financialExpenses.d2.heading")
-                            </span>
+            <span class="govuk-details__summary-text">
+                @messages("financialExpenses.d2.heading")
+            </span>
         </summary>
         <div class="govuk-details__text">
             <p class="govuk-body">
@@ -91,9 +91,9 @@
     @if(accountingType == AccountingType.Accrual){
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    @messages("financialExpenses.d3.heading")
-                                </span>
+                <span class="govuk-details__summary-text">
+                    @messages("financialExpenses.d3.heading")
+                </span>
             </summary>
             <div class="govuk-details__text">
                 <p class="govuk-body">
@@ -121,19 +121,9 @@
                 form   = form,
                 name   = "value",
                 items  = FinancialExpenses.checkboxItems(userType, accountingType),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                    <div>
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            ${messages(s"financialExpenses.subHeading.$userType")}
-                        </legend>
-                        <div class="govuk-hint">
-                            ${messages("site.selectAllThatApply")}
-                        </div>
-                    </div>
-                    """
-                )).withCssClass("no-margin-bottom")
-            )
+                legend = LegendViewModel(messages(s"financialExpenses.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend--m")
+            ).withHint(Some(HintViewModel(messages("site.selectAllThatApply"))))
         )
 
         @submitButton()

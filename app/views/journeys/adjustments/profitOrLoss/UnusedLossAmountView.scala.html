@@ -16,15 +16,16 @@
 
 @import controllers.journeys.adjustments.profitOrLoss.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.InputWidth._
+@import viewmodels.LabelSize
 @import views.html.components._
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        singleAmountContent: SingleAmountContent,
-        submitButton: SubmitButton,
-        heading: Heading
+        govukInput: GovukInput,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -35,9 +36,17 @@
 
     @formHelper(action = routes.UnusedLossAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @singleAmountContent(form) {
-            @heading("unusedLossAmount.title")
-        }
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = LabelViewModel(messages("unusedLossAmount.title"))
+                .asPageHeading(size = LabelSize.Large)
+            )
+            .asNumeric()
+            .withHint(HintViewModel(messages("site.hint.amount")))
+            .withWidth(Fixed10)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+        )
 
         @submitButton()
     }

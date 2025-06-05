@@ -37,10 +37,11 @@
             <li>@messages("wdaMainRate.l1")</li>
             <li>@messages(s"wdaMainRate.l2.$userType")</li>
         </ul>
-
-        @formHelper(action = routes.WdaMainRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
-            @twoRadios(form, "wdaMainRate", userType, taxYear)
-            @submitButton()
-        }
     </div>
+
+    @formHelper(action = routes.WdaMainRateController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
+        @twoRadios(form, "wdaMainRate", userType, taxYear)
+        @submitButton()
+    }
+
 }

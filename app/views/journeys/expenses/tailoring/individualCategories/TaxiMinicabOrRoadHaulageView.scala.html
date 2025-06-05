@@ -16,6 +16,7 @@
 
 @import controllers.journeys.expenses.goodsToSellOrUse.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.LegendSize.Large
 @import views.html.components._
 
 @this(
@@ -38,6 +39,7 @@
             RadiosViewModel.yesNoVertical(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"taxiMinicabOrRoadHaulage.title.$userType"))
+                .asPageHeading(size = Large)
                 .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l")
             )
         )

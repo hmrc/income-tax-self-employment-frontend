@@ -17,6 +17,7 @@
 @import controllers.journeys.adjustments.profitOrLoss.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import models.journeys.adjustments.WhatDoYouWantToDoWithLoss
+@import viewmodels.LegendSize
 @import views.html.components._
 
 @this(
@@ -24,8 +25,7 @@
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
         govukCheckboxes: GovukCheckboxes,
-        submitButton: SubmitButton,
-        heading: Heading
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -36,19 +36,14 @@
 
     @formHelper(action = routes.CurrentYearLossController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading(messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
-
-        <div class="govuk-hint">@messages("whatDoYouWantToDoWithLoss.selectOptions")</div>
-
         @govukCheckboxes(
             CheckboxesViewModel(
                 form = form,
                 name = "value",
                 items = WhatDoYouWantToDoWithLoss.options(),
-                legend = Legend(
-                    classes = "govuk-fieldset__legend--l"
-                )
-            )
+                legend = LegendViewModel(messages(s"whatDoYouWantToDoWithLoss.title.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
+                .asPageHeading(size = LegendSize.Large)
+            ).withHint(Some(HintViewModel(messages("whatDoYouWantToDoWithLoss.selectOptions"))))
         )
 
         @submitButton()
