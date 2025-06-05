@@ -49,6 +49,7 @@ trait FrontendAppConfig {
   def viewAndChangeEnterUtrUrl: String
   def viewAndChangeViewUrlAgent: String
   def travelExpensesShortJourneyEnabled: Boolean
+  def sessionCookieServiceEnabled: Boolean
 
   // Answers API
   def answersApiUrl(ctx: JourneyContext): String
@@ -107,5 +108,7 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
   def answersApiUrl(ctx: JourneyContext): String =
     s"$selfEmploymentBEBaseUrl/income-tax-self-employment/answers/users/${ctx.nino}/businesses/${ctx.businessId}" +
       s"/years/${ctx.taxYear}/journeys/${ctx.journey.entryName}"
+
+  lazy val sessionCookieServiceEnabled: Boolean = servicesConfig.getBoolean("feature-switch.sessionCookieServiceEnabled")
 
 }
