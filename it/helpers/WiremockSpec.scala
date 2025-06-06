@@ -44,7 +44,12 @@ trait WiremockSpec
   val wireMockPort                   = 11111
   val wireMockServer: WireMockServer = new WireMockServer(wireMockConfig().port(wireMockPort))
 
-  lazy val connectedServices: Seq[String] = Seq("auth", "integration-framework", "income-tax-self-employment")
+  lazy val connectedServices: Seq[String] = Seq(
+    "auth",
+    "integration-framework",
+    "income-tax-self-employment",
+    "income-tax-session-data"
+  )
 
   def servicesToUrlConfig: Seq[(String, String)] = connectedServices
     .flatMap(service =>
