@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.industrysectors
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import models.common.UserType
 import play.api.data.Form
 
-class FarmerOrMarketGardenerFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class LiteraryOrCreativeWorksFormProvider @Inject() extends Mappings {
 
   def apply(userType: UserType): Form[Boolean] =
     Form(
-      "value" -> boolean(s"farmerOrMarketGardener.error.required.$userType")
+      "value" -> boolean(s"literaryOrCreativeWorks.error.required.$userType")
     )
 }

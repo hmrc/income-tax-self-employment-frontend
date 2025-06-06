@@ -68,8 +68,7 @@
         @govukRadios(
             RadiosViewModel(
                 field = form("value"),
-                legend = LegendViewModel(messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate))
-                            .asPageHeading(size = Medium),
+                legend = LegendViewModel(messages(s"wfbpFlatRateOrActualCosts.subHeading.$userType", flatRateViewModel.flatRate)),
                 items = WfbpFlatRateOrActualCosts.options(formatMoney(flatRateViewModel.flatRate))
             )
         )

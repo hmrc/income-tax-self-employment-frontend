@@ -53,9 +53,8 @@
         @govukRadios(
             RadiosViewModel.yesNoVertical(
                 field = form("value"),
-                legend = LegendViewModel(messages(
-                    s"disallowableStaffCosts.subHeading.$userType"))
-                                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                legend = LegendViewModel(messages(s"disallowableStaffCosts.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend--m")
             )
         )
 

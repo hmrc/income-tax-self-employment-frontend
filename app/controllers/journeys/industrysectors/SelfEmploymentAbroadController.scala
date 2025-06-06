@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.journeys.abroad
+package controllers.journeys.industrysectors
 
 import controllers.actions._
 import controllers.journeys.fillForm
 import forms.standard.BooleanFormProvider
 import models.Mode
 import models.common.{BusinessId, TaxYear}
-import pages.abroad.SelfEmploymentAbroadPage
+import pages.industrysectors.SelfEmploymentAbroadPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.journeys.abroad.SelfEmploymentAbroadView
+import views.html.journeys.industrysectors.SelfEmploymentAbroadView
 
 import javax.inject.{Inject, Singleton}
 

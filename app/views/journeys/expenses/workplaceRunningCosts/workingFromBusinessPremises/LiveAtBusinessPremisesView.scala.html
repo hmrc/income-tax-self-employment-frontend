@@ -44,19 +44,9 @@
         @govukRadios(
             RadiosViewModel.yesNoVertical(
                 field = form("value"),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <label class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                ${messages(s"liveAtBusinessPremises.title.$userType")}
-                            </label>
-                            <div class="govuk-hint">
-                                ${messages(s"liveAtBusinessPremises.hint.$userType")}
-                            </div>
-                        </div>
-                        """))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
-            )
+                legend = LegendViewModel(messages(s"liveAtBusinessPremises.title.$userType"))
+                .withCssClass("govuk-fieldset__legend--m")
+           ).withHint(HintViewModel(messages(s"liveAtBusinessPremises.hint.$userType")))
         )
 
         @submitButton()

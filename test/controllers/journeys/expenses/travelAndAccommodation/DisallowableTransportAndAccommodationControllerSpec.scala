@@ -25,8 +25,7 @@ import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNa
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DisallowableTransportAndAccommodationPage
-import pages.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesPage
+import pages.expenses.travelAndAccommodation.{DisallowableTransportAndAccommodationPage, PublicTransportAndAccommodationExpensesPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -47,7 +46,13 @@ class DisallowableTransportAndAccommodationControllerSpec extends SpecBase with 
   val expenses: BigDecimal    = 50
   val strExpense: String      = formatMoney(expenses)
   val form: UserType => Form[BigDecimal] = (userType: UserType) =>
-    formProvider(DisallowableTransportAndAccommodationPage, userType, maxValue = expenses, prefix = Some("disallowableTransportAndAccommodation"))
+    formProvider(
+      DisallowableTransportAndAccommodationPage,
+      userType,
+      maxValue = expenses,
+      prefix = Some("disallowableTransportAndAccommodation"),
+      args = Seq(expenses.toString())
+    )
 
   lazy val disallowableTransportAndAccommodationRoute: String =
     routes.DisallowableTransportAndAccommodationController.onPageLoad(taxYear, businessId, NormalMode).url

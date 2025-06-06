@@ -16,10 +16,9 @@
 
 package views.journeys.capitalallowances.zeroEmissionGoodsVehicle
 
-import base.SpecBase._
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimFormProviderSpec._
-import models.{CheckMode, NormalMode}
 import models.common.UserType._
+import models.{CheckMode, NormalMode}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
 import views.ViewBaseSpec

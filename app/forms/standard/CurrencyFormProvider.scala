@@ -35,7 +35,8 @@ class CurrencyFormProvider @Inject() {
             maxValueError: String = OverMaxError,
             nonNumericError: String = NonNumericError,
             prefix: Option[String] = None,
-            optAccountingType: Option[AccountingType] = None): Form[BigDecimal] = {
+            optAccountingType: Option[AccountingType] = None,
+            args: Seq[String] = Seq.empty): Form[BigDecimal] = {
 
     def optCashSuffix(prefix: String) = optAccountingTypeAware(optAccountingType)(prefix)
     val requiredError: String = userTypeAware(userType, prefix.fold(optCashSuffix(page.requiredErrorKey))(s => optCashSuffix(s"$s.error.required")))
@@ -45,7 +46,7 @@ class CurrencyFormProvider @Inject() {
     val nonNumberError: String = prefix.fold(nonNumericError)(s => s"$s.error.nonNumeric.$userType")
 
     Form(
-      "value" -> currency(requiredError, nonNumberError)
+      "value" -> currency(requiredError, nonNumberError, args = args)
         .verifying(greaterThan(minValue, minError))
         .verifying(lessThan(maxValue, maxError))
     )

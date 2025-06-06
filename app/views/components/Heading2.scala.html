@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages.abroad
+@this()
 
-import pages.Page
+@(value: String, headingArgs: Option[String] = None, extraHeadingClasses: String = "", headerSize: String = "m")(implicit messages: Messages)
 
-object SelfEmploymentAbroadCYAPage extends Page {
-  override def toString: String = "selfEmploymentAbroadCYA"
-}
+<h2 class=@{s"govuk-heading-$headerSize $extraHeadingClasses"}>@{headingArgs.fold(messages(value))(messages(value, _))}</h2>

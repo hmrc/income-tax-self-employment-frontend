@@ -17,7 +17,7 @@
 package controllers.journeys.industrySectors
 
 import base.IntegrationBaseSpec
-import controllers.routes
+import controllers.journeys.industrysectors.routes
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.NormalMode
 import models.common.Journey.IndustrySectors
@@ -113,10 +113,8 @@ class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with Integratio
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
 
-        result.status mustBe NOT_IMPLEMENTED
-
-//        result.status mustBe SEE_OTHER
-//        result.header(HeaderNames.LOCATION) mustBe defined // TODO: Replace with actual url once implemented
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe defined
       }
     }
 
@@ -129,10 +127,8 @@ class FarmerOrMarketGardenerControllerISpec extends WiremockSpec with Integratio
 
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
 
-        result.status mustBe NOT_IMPLEMENTED
-
-//        result.status mustBe SEE_OTHER
-//        result.header(HeaderNames.LOCATION) mustBe defined // TODO: Replace with actual url once implemented
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe Some(routes.LiteraryOrCreativeWorksController.onPageLoad(taxYear, businessId, NormalMode).url)
       }
     }
 

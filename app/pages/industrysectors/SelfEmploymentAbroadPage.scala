@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages.abroad
+package pages.industrysectors
 
-import controllers.journeys.abroad.routes
+import controllers.journeys.industrysectors.routes
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
 import pages.OneQuestionPage
@@ -25,7 +25,7 @@ import play.api.mvc.Call
 case object SelfEmploymentAbroadPage extends OneQuestionPage[Boolean] {
   override def toString: String = "selfEmploymentAbroad"
   override def cyaPage(taxYear: TaxYear, businessId: BusinessId): Call =
-    routes.SelfEmploymentAbroadCYAController.onPageLoad(taxYear, businessId)
+    routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId)
 
   override def nextPageInNormalMode(userAnswers: UserAnswers, businessId: BusinessId, taxYear: TaxYear): Call = cyaPage(taxYear, businessId)
 

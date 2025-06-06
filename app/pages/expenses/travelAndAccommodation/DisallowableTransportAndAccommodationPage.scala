@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.expenses.travelAndAccommodation
+
+import pages.OneQuestionPage
 
 case object DisallowableTransportAndAccommodationPage extends OneQuestionPage[BigDecimal] {
 

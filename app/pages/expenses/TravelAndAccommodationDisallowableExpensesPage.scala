@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.expenses
 
-import models.common.BusinessId
-import play.api.libs.json.JsPath
+import pages.OneQuestionPage
 
-case object FarmerOrMarketGardenerPage extends QuestionPage[Boolean] {
+case object TravelAndAccommodationDisallowableExpensesPage extends OneQuestionPage[BigDecimal] {
 
-  override def path(businessId: Option[BusinessId]): JsPath = JsPath \ toString
-
-  override def toString: String = "farmerOrMarketGardener"
-
+  override def toString: String = "travelAndAccommodationDisallowableExpenses"
 }

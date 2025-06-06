@@ -62,7 +62,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"annualInvestmentAllowance.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
-                .withCssClass("govuk-fieldset__legend--m govuk-!-margin-bottom-6"))
+                .withCssClass("govuk-fieldset__legend--m"))
         )
 
         @submitButton()

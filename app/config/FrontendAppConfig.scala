@@ -47,6 +47,7 @@ trait FrontendAppConfig {
   def incomeTaxSubmissionStartUrl(taxYear: Int): String
   def viewAndChangeEnterUtrUrl: String
   def viewAndChangeViewUrlAgent: String
+  def travelExpensesShortJourneyEnabled: Boolean
 
   // Answers API
   def answersApiUrl(ctx: JourneyContext): String
@@ -72,7 +73,8 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
   override val exitSurveyUrl: String     = s"$exitSurveyBaseUrl/feedback/income-tax-self-employment-frontend"
 
   // Feature switching
-  override val languageTranslationEnabled: Boolean = configuration.get[Boolean]("feature-switch.welsh-translation")
+  override val languageTranslationEnabled: Boolean        = configuration.get[Boolean]("feature-switch.welsh-translation")
+  override val travelExpensesShortJourneyEnabled: Boolean = configuration.get[Boolean]("feature-switch.travel-expenses-short-journey")
 
   override val languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),

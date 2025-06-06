@@ -16,7 +16,7 @@
 
 package views.journeys.industrySectors
 
-import forms.FarmerOrMarketGardenerFormProvider
+import forms.industrysectors.FarmerOrMarketGardenerFormProvider
 import models.NormalMode
 import models.common.UserType
 import models.common.UserType.Individual
@@ -24,15 +24,14 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.ViewBaseSpec
-import views.html.FarmerOrMarketGardenerView
+import views.html.journeys.industrysectors.FarmerOrMarketGardenerView
 
 class FarmerOrMarketGardenerViewSpec extends ViewBaseSpec {
 
-  private val view      = app.injector.instanceOf[FarmerOrMarketGardenerView]
-  val formProvider      = new FarmerOrMarketGardenerFormProvider()
-  val individualForm    = formProvider(UserType.Individual)
-  val agentForm         = formProvider(UserType.Agent)
-  private val nextRoute = "/foo"
+  private val view   = app.injector.instanceOf[FarmerOrMarketGardenerView]
+  val formProvider   = new FarmerOrMarketGardenerFormProvider()
+  val individualForm = formProvider(UserType.Individual)
+  val agentForm      = formProvider(UserType.Agent)
 
   object ExpectedIndividual {
     val title    = "Were you a farmer or market gardener?"

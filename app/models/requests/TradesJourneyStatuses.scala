@@ -16,6 +16,7 @@
 
 package models.requests
 
+import config.FrontendAppConfig
 import models.common.JourneyStatus.NotStarted
 import models.common._
 import models.database.UserAnswers
@@ -39,13 +40,13 @@ object TradesJourneyStatuses {
 
   implicit val format: OFormat[TradesJourneyStatuses] = Json.format[TradesJourneyStatuses]
 
-  def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers])(implicit
+  def toViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear, userAnswers: Option[UserAnswers], appConfig: FrontendAppConfig)(implicit
       message: Messages): TradeJourneyStatusesViewModel =
     TradeJourneyStatusesViewModel(
       tradeDetails.tradingName.getOrElse(TradingName.empty),
       tradeDetails.typeOfBusiness,
       tradeDetails.businessId,
-      buildSummaryList(tradeDetails, taxYear, userAnswers)
+      buildSummaryList(tradeDetails, taxYear, userAnswers, appConfig)
     )
 
   def toPrepopViewModel(tradeDetails: TradesJourneyStatuses, taxYear: TaxYear)(implicit message: Messages): PrepopTradeJourneyStatusesViewModel =

@@ -22,11 +22,14 @@
 @import viewmodels.InputWidth._
 @import views.html.components._
 
-@this(layout: templates.Layout,
+@this(
+    layout: templates.Layout,
     formHelper: FormWithCSRF,
     errorSummarySection: ErrorSummarySection,
     govukInput: GovukInput,
-    submitButton: SubmitButton)
+    submitButton: SubmitButton,
+    heading: Heading
+)
 
 @(form: Form[_],
   mode: Mode,
@@ -42,10 +45,37 @@
 
         @errorSummarySection(form)
 
+        @heading(s"otherExpensesAmount.title.$userType")
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text"> @messages("otherExpensesAmount.understandingOtherExpenses")</span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">@messages(s"site.canInclude.$userType")</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("otherExpenses.l1")</li>
+                    <li>@messages("otherExpenses.l2")</li>
+                </ul>
+                @tailoringAnswer match {
+                    case YesAllowable => {
+                        <p class="govuk-body">@messages(s"site.cannotInclude.$userType")</p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>@messages("otherExpenses.l3")</li>
+                            <li>@messages("otherExpenses.l4")</li>
+                            <li>@messages("otherExpenses.l5")</li>
+                        </ul>
+                    }
+                    case _ => {}
+                }
+            </div>
+        </details>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(buildLabelContent(userType, tailoringAnswer)))
+                label = LabelViewModel(messages(s"otherExpensesAmount.title.$userType"))
+                .withCssClass("govuk-visually-hidden")
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))
@@ -55,33 +85,4 @@
 
         @submitButton()
     }
-}
-
-@buildLabelContent(user: UserType, tailoringAnswer: OtherExpenses) = {
-    <h1 class="govuk-label-wrapper">
-        <label class="govuk-label govuk-label--l"> @messages(s"otherExpensesAmount.title.$user") </label>
-    </h1>
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text"> @messages("otherExpensesAmount.understandingOtherExpenses")</span>
-        </summary>
-        <div class="govuk-details__text">
-            <p class="govuk-body">@messages(s"site.canInclude.$user")</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>@messages("otherExpenses.l1")</li>
-                <li>@messages("otherExpenses.l2")</li>
-            </ul>
-            @tailoringAnswer match {
-                case YesAllowable => {
-                    <p class="govuk-body">@messages(s"site.cannotInclude.$user")</p>
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>@messages("otherExpenses.l3")</li>
-                        <li>@messages("otherExpenses.l4")</li>
-                        <li>@messages("otherExpenses.l5")</li>
-                    </ul>
-                }
-                case _ => {}
-            }
-        </div>
-    </details>
 }

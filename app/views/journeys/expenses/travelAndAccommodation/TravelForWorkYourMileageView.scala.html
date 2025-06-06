@@ -50,7 +50,8 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"travelForWorkYourMileage.formLabel.$userType", vehicle)).asPageHeading(Medium)
+                label = LabelViewModel(messages(s"travelForWorkYourMileage.formLabel.$userType", vehicle))
+                .withCssClass("govuk-heading-m")
             )
             .asNumeric()
             .withWidth(Fixed10)
