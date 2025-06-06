@@ -43,6 +43,7 @@ trait FrontendAppConfig {
   def countdown: Int
   def cacheTtl: Int
   def incomeTaxSubmissionBaseUrl: String
+  def vcSessionServiceBaseUrl: String
   def incomeTaxSubmissionIvRedirect: String
   def incomeTaxSubmissionStartUrl(taxYear: Int): String
   def viewAndChangeEnterUtrUrl: String
@@ -82,6 +83,8 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
   )
 
   override val selfEmploymentBEBaseUrl: String = servicesConfig.baseUrl("income-tax-self-employment")
+
+  override val vcSessionServiceBaseUrl: String = servicesConfig.baseUrl("income-tax-session-data")
 
   override val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   override val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
