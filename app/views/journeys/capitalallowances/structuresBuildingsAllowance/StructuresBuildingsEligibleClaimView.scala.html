@@ -33,19 +33,19 @@
 
     @heading(s"structuresBuildingsEligibleClaim.title.$userType")
 
-        <p class="govuk-body">@messages("structuresBuildingsEligibleClaim.p1")</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages(s"structuresBuildingsEligibleClaim.l1.$userType")</li>
-            <li>@messages("structuresBuildingsEligibleClaim.l2")
-                <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.l2.href") >@messages("structuresBuildingsEligibleClaim.l2.link")</a>
-            </li>
-            <li>@messages("structuresBuildingsEligibleClaim.l3")
-                <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.l3.href") >@messages("structuresBuildingsEligibleClaim.l3.link")</a>
-            </li>
-        </ul>
+    <p class="govuk-body">@messages("structuresBuildingsEligibleClaim.p1")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages(s"structuresBuildingsEligibleClaim.l1.$userType")</li>
+        <li>@messages("structuresBuildingsEligibleClaim.l2")
+            <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.l2.href") >@messages("structuresBuildingsEligibleClaim.l2.link")</a>
+        </li>
+        <li>@messages("structuresBuildingsEligibleClaim.l3")
+            <a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.l3.href") >@messages("structuresBuildingsEligibleClaim.l3.link")</a>
+        </li>
+    </ul>
 
-        <p class="govuk-body"><a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.href") >@messages("structuresBuildingsEligibleClaim.link")</a></p>
-    </div>
+    <p class="govuk-body"><a class="govuk-link" target="_blank" href=@messages("structuresBuildingsEligibleClaim.href") >@messages("structuresBuildingsEligibleClaim.link")</a></p>
+
 
     @formHelper(action = routes.StructuresBuildingsEligibleClaimController.onSubmit(taxYear, businessId), Symbol("autoComplete") -> "off") {
 

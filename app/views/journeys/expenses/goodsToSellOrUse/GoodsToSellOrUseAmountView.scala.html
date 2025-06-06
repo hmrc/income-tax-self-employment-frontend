@@ -39,25 +39,35 @@
 
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
-         <span class="govuk-details__summary-text">
-           ${messages("goodsToSellOrUseAmount.d1.heading")}
-          </span>
+         <span class="govuk-details__summary-text">@messages("goodsToSellOrUseAmount.d1.heading")</span>
         </summary>
         <div class="govuk-details__text">
-            <p class="govuk-body">${messages(s"site.canInclude.$userType")}</p>
+            <p class="govuk-body">@messages(s"site.canInclude.$userType")</p>
             <ul class="govuk-list govuk-list--bullet">
-                ${if (taxiDriver) <li>{messages("expenses.fuelCosts")}</li> else ""}
-                <li>${messages("expenses.costOfRawMaterials")}</li>
-                ${if (accountingType == AccountingType.Cash) <li>{messages("expenses.stockBought")}</li> else ""}
-                <li>${messages("expenses.directCostsOfProducing")}</li>
-                ${if (accountingType == AccountingType.Accrual) <li>{messages("expenses.adjustments")}</li> else ""}
-                <li>${messages("expenses.commissions")}</li>
-                <li>${messages("expenses.discounts")}</li>
+                @if (taxiDriver) {
+                    <li>@messages("expenses.fuelCosts")</li>
+                } else {
+                    <li>@messages("expenses.costOfRawMaterials")</li>
+                }
+                @if (accountingType == AccountingType.Cash) {
+                    <li>@messages("expenses.stockBought")</li>
+                } else {
+                    <li>@messages("expenses.directCostsOfProducing")</li>
+                }
+                @if (accountingType == AccountingType.Accrual) {
+                    <li>@messages("expenses.adjustments")</li>
+                } else {
+                    <li>@messages("expenses.commissions")</li>
+                    <li>@messages("expenses.discounts")</li>
+                }
             </ul>
             <p class="govuk-body">${messages(s"site.cannotInclude.$userType")}</p>
             <ul class="govuk-list govuk-list--bullet">
-                ${if (accountingType == AccountingType.Cash) <li>{messages("expenses.costsForPrivateUse")}</li> else ""}
-                <li>${messages("expenses.depreciationOfEquipment")}</li>
+                @if (accountingType == AccountingType.Cash) {
+                    <li>@messages("expenses.costsForPrivateUse")</li>
+                } else {
+                    <li>@messages("expenses.depreciationOfEquipment")</li>
+                }
             </ul>
         </div>
     </details>

@@ -37,12 +37,11 @@
         @heading(s"constructionIndustryAmount.heading.$userType")
 
         <details class="govuk-details" data-module="govuk-details">
-           <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    ${messages(s"expenses.understanding.construction")} </span>
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">@messages(s"expenses.understanding.construction")</span>
             </summary>
             <div class="govuk-details__text">
-                <p class="govuk-body">${messages(s"expenses.includes.construction.$userType")}</p>
+                <p class="govuk-body">@messages(s"expenses.includes.construction.$userType")</p>
             </div>
         </details>
 
