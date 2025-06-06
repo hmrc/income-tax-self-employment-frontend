@@ -17,6 +17,7 @@
 @import controllers.journeys.industrysectors.routes
 @import models.common.{BusinessId, TaxYear, UserType}
 @import views.html.components.{ErrorSummarySection, Heading, SubmitButton}
+@import viewmodels.LegendSize.Large
 
 @this(
         layout: templates.Layout,
@@ -35,12 +36,10 @@
 
         @errorSummarySection(form)
 
-        @heading(s"selfEmploymentAbroad.title.$userType")
-
         @govukRadios(
             RadiosViewModel.yesNoVertical(
                 field = form("value"),
-                legend = LegendViewModel("")
+                legend = LegendViewModel(messages(s"selfEmploymentAbroad.title.$userType")).asPageHeading(Large)
             )
         )
 

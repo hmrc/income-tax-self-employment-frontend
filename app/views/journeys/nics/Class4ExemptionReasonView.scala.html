@@ -17,6 +17,7 @@
 @import controllers.journeys.nics.routes
 @import models.common.{TaxYear, UserType}
 @import models.journeys.nics.ExemptionReason
+@import viewmodels.LegendSize.Large
 @import views.html.components._
 
 @this(
@@ -39,7 +40,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages(s"class4ExemptionReason.title.$userType"))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--l"),
+                .asPageHeading(size = Large),
                 items  = ExemptionReason.options(userType)
             )
         )

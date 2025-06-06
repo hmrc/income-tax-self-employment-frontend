@@ -20,11 +20,14 @@
 @import viewmodels.InputWidth._
 @import views.html.components._
 
-@this(layout: templates.Layout,
+@this(
+      layout: templates.Layout,
       formHelper: FormWithCSRF,
       errorSummarySection: ErrorSummarySection,
       govukInput: GovukInput,
-      submitButton: SubmitButton)
+      submitButton: SubmitButton,
+      heading: Heading
+)
 
 @(form: Form[_], mode: Mode, userType: UserType, accountingType: AccountingType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
 
@@ -34,10 +37,40 @@
 
         @errorSummarySection(form)
 
+        @heading(s"officeSuppliesAmount.title.$userType")
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text"> @messages("officeSuppliesAmount.understandingOfficeSuppliesExpenses") </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">@messages(s"site.canInclude.$userType")</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("officeSupplies.l1")</li>
+                    <li>@messages("officeSupplies.l2")</li>
+                    <li>@messages("officeSupplies.l3")</li>
+                    <li>@messages("officeSupplies.l4")</li>
+                    <li>@messages("officeSupplies.l5")</li>
+                    @if(accountingType == AccountingType.Cash) {
+                        <li>@messages("officeSupplies.l6")</li>
+                    }
+                </ul>
+                <p class="govuk-body">@messages(s"site.cannotInclude.$userType")</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    @if(accountingType == AccountingType.Cash) {
+                        <li>@messages("expenses.listItem.anyAmount")</li>
+                    } else {
+                        <li>@messages("officeSupplies.l7")</li>
+                    }
+                </ul>
+            </div>
+        </details>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(buildLabelContent(userType, accountingType)))
+                label = LabelViewModel(messages(s"officeSuppliesAmount.title.$userType"))
+                .withCssClass("govuk-visually-hidden")
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))
@@ -49,34 +82,3 @@
     }
 }
 
-@buildLabelContent(userType: UserType, accountingType: AccountingType) = {
-    <h1 class="govuk-label-wrapper">
-        <label class="govuk-label govuk-label--l"> @messages(s"officeSuppliesAmount.title.$userType") </label>
-    </h1>
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text"> @messages("officeSuppliesAmount.understandingOfficeSuppliesExpenses") </span>
-        </summary>
-        <div class="govuk-details__text">
-            <p class="govuk-body">@messages(s"site.canInclude.$userType")</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>@messages("officeSupplies.l1")</li>
-                <li>@messages("officeSupplies.l2")</li>
-                <li>@messages("officeSupplies.l3")</li>
-                <li>@messages("officeSupplies.l4")</li>
-                <li>@messages("officeSupplies.l5")</li>
-                @if(accountingType == AccountingType.Cash) {
-                    <li>@messages("officeSupplies.l6")</li>
-                }
-            </ul>
-            <p class="govuk-body">@messages(s"site.cannotInclude.$userType")</p>
-            <ul class="govuk-list govuk-list--bullet">
-                @if(accountingType == AccountingType.Cash) {
-                    <li>@messages("expenses.listItem.anyAmount")</li>
-                } else {
-                    <li>@messages("officeSupplies.l7")</li>
-                }
-            </ul>
-        </div>
-    </details>
-}

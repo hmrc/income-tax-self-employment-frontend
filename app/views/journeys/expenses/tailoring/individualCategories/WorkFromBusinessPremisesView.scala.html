@@ -19,6 +19,7 @@
 @import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.html.components._
+@import viewmodels.LegendSize.Large
 
 @this(
     layout: templates.Layout,
@@ -40,19 +41,8 @@
             RadiosViewModel(
                 field  = form("value"),
                 items  = WorkFromBusinessPremises.options(userType),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                ${messages(s"workFromBusinessPremises.title.$userType")}
-                            </legend>
-                            <div class="govuk-hint">
-                                ${messages(s"workFromBusinessPremises.hint.$userType")}
-                            </div>
-                        </div>
-                    """
-                )).withCssClass("no-margin-bottom")
-            )
+                legend = LegendViewModel(messages(s"workFromBusinessPremises.title.$userType")).asPageHeading(Large)
+            ).withHint(HintViewModel(messages(s"workFromBusinessPremises.hint.$userType")))
         )
 
         @submitButton()

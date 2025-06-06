@@ -16,6 +16,7 @@
 
 @import controllers.journeys.nics.routes
 @import models.common.{TaxYear, UserType}
+@import viewmodels.LegendSize.Large
 @import views.html.components._
 
 @this(
@@ -23,24 +24,23 @@
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
-        submitButton: SubmitButton,
-        heading: Heading
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, userType: UserType, mode: Mode, businessName: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} $businessName.")) {
 
-    @heading(s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} $businessName.")
-
     @formHelper(action = routes.Class4NonDivingExemptSingleBusinessController.onSubmit(taxYear, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummarySection(form)
 
+
         @govukRadios(
             RadiosViewModel.yesNoVertical(
-                field = form("value"),
-                legend = LegendViewModel(s"")
+                field  = form("value"),
+                legend = LegendViewModel(s"${messages(s"class4NonDivingExemptSingleBusiness.subHeading.$userType")} $businessName.")
+                .asPageHeading(size = Large)
             )
         )
 

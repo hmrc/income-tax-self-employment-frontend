@@ -53,7 +53,7 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages(s"turnoverIncomeAmount.subHeading.$userType"))
-                .asPageHeading(LabelSize.Medium)
+                .withCssClass("govuk-label--m")
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.large.amount")))
@@ -61,6 +61,6 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
-        <div class="govuk-!-margin-top-7">@submitButton()</div>
+        @submitButton()
     }
 }
