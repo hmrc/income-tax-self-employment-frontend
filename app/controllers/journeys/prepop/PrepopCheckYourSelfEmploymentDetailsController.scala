@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Logging
 import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
 import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView
+import uk.gov.hmrc.play.language.LanguageUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -38,14 +39,15 @@ class PrepopCheckYourSelfEmploymentDetailsController @Inject() (override val mes
                                                                 getData: DataRetrievalAction,
                                                                 service: SelfEmploymentService,
                                                                 val controllerComponents: MessagesControllerComponents,
-                                                                view: PrepopCheckYourSelfEmploymentDetailsView)(implicit val ec: ExecutionContext)
+                                                                view: PrepopCheckYourSelfEmploymentDetailsView,
+                                                                languageUtils: LanguageUtils)(implicit val ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
     val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
-      val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType)
+      val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType, languageUtils)
       val nextRoute             = PrepopCheckYourSelfEmploymentDetailsPage.nextPage(taxYear, businessId).url
 
       Ok(view(selfEmploymentDetails, taxYear, request.userType, nextRoute))

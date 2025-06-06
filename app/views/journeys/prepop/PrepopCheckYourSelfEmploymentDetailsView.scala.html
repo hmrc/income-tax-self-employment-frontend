@@ -16,9 +16,11 @@
 
 @import models.common.{TaxYear, UserType}
 @import views.html.components._
+@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(layout: templates.Layout,
         govukButton: GovukButton,
+        utils: LanguageUtils,
         govukSummaryList: GovukSummaryList,
         heading: Heading,
         caption: CaptionWithTaxYear
