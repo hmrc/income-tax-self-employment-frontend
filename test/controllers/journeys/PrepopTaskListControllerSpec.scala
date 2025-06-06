@@ -21,11 +21,10 @@ import builders.TradesJourneyStatusesBuilder.aSequenceTadesJourneyStatusesModel
 import builders.UserBuilder.aNoddyUser
 import cats.implicits._
 import controllers.TaskListControllerSpec._
-import controllers.actions.AuthenticatedIdentifierAction.User
+import models.common.Journey.TradeDetails
 import models.common.JourneyStatus
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import models.common.Journey.TradeDetails
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec
@@ -34,12 +33,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
 import stubs.services.SelfEmploymentServiceStub
-import uk.gov.hmrc.auth.core.AffinityGroup
 import views.html.journeys.PrepopTaskListView
 
 class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
-  val nino       = "AA370343B"
-  val user: User = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   private val stubService = StubSubmittedDataRetrievalActionProvider()
 
@@ -63,7 +59,7 @@ class PrepopTaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(taxYear, fakeUser, JourneyStatus.Completed, selfEmploymentList)(
+      contentAsString(result) mustEqual view(taxYear, user, JourneyStatus.Completed, selfEmploymentList)(
         fakeOptionalRequest,
         messages(application)).toString
     }

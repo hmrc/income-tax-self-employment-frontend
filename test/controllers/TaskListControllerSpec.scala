@@ -16,19 +16,18 @@
 
 package controllers
 
+import _root_.config.FrontendAppConfig
 import base.SpecBase._
 import builders.TradesJourneyStatusesBuilder.{aSequenceTadesJourneyStatusesModel, anEmptyTadesJourneyStatusesModel}
 import builders.UserBuilder.aNoddyUser
 import cats.implicits._
-import _root_.config.FrontendAppConfig
 import controllers.TaskListControllerSpec._
-import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.journeys.routes
+import models.common.Journey.TradeDetails
 import models.common.JourneyStatus
 import models.common.TaxYear.dateNow
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import models.common.Journey.TradeDetails
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
 import models.requests.TradesJourneyStatuses
 import org.scalatest.wordspec.AnyWordSpec
@@ -38,15 +37,13 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
 import stubs.services.SelfEmploymentServiceStub
-import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.journeys.taskList.NationalInsuranceContributionsViewModel
 import views.html.journeys.TaskListView
 
 class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
+
   val appConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  val nino                         = "AA370343B"
-  val user: User                   = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   private val stubActionProvider = StubSubmittedDataRetrievalActionProvider()
   private val stubService        = SelfEmploymentServiceStub()
@@ -80,7 +77,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(taxYear, fakeUser, selfEmploymentList, nationalInsuranceEmptySummary(messages(application)))(
+      contentAsString(result) mustEqual view(taxYear, user, selfEmploymentList, nationalInsuranceEmptySummary(messages(application)))(
         fakeOptionalRequest,
         messages(application)).toString
     }

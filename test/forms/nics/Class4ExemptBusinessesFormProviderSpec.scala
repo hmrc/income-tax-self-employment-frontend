@@ -34,9 +34,9 @@ class Class4ExemptBusinessesFormProviderSpec extends FormSpec {
     }
 
     "fail to bind invalid value" in {
-      val invalid = mapping(someNino)
+      val invalid = mapping(nino)
 
-      form.bind(invalid).get must not equal List(someNino)
+      form.bind(invalid).get must not equal List(nino)
     }
 
     "fail to bind when no answer is selected" in {
