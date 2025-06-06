@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package builders
+package models.requests
 
-import models.requests.User
-import uk.gov.hmrc.auth.core.AffinityGroup
+import models.common.UserType
 
-import java.time.LocalDate
+case class User(
+    mtditid: String,
+    arn: Option[String],
+    nino: String,
+    sessionId: String,
+    affinityGroup: String,
+    isSupportingAgent: Boolean = false
+) {
 
-object UserBuilder {
-  val aNoddyUser: User      = User("mtdItId", arn = None, "nino", "sessionId1234", AffinityGroup.Individual.toString)
-  val aNoddyAgentUser: User = User("mtdItId", arn = Some(""), "nino", "sessionId1234", AffinityGroup.Agent.toString)
-
-  val aUserDateOfBirth: LocalDate = LocalDate.of(1997, 7, 30)
+  val userType: UserType = if (arn.nonEmpty) UserType.Agent else UserType.Individual
 }

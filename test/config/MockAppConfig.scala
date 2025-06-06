@@ -25,11 +25,8 @@ trait MockAppConfig extends MockFactory {
 
   object MockAppConfig {
 
-    def loginUrl(url: String): CallHandler0[String] =
-      (() => mockAppConfig.loginUrl).expects().returns(url).anyNumberOfTimes()
-
-    def loginContinueUrl(url: String): CallHandler0[String] =
-      (() => mockAppConfig.loginContinueUrl).expects().returns(url).anyNumberOfTimes()
+    def signInUrl(url: String): CallHandler0[String] =
+      (() => mockAppConfig.signInUrl).expects().returns(url).anyNumberOfTimes()
 
     def viewAndChangeEnterUtrUrl(url: String): CallHandler0[String] =
       (() => mockAppConfig.viewAndChangeEnterUtrUrl).expects().returns(url).anyNumberOfTimes()
