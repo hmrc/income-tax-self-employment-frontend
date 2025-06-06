@@ -20,7 +20,7 @@ import base.SpecBase.{businessId, convertScalaFuture, taxYear}
 import cats.data.EitherT
 import cats.implicits._
 import connectors.SelfEmploymentConnector
-import controllers.actions.AuthenticatedIdentifierAction.User
+import models.requests.User
 import models.common.JourneyAnswersContext
 import models.database.UserAnswers
 import models.domain.ApiResultT
@@ -126,7 +126,7 @@ class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers
 
     val repo                                                 = StubSessionRepository()
     val ctx: OptionalDataRequest[_] => JourneyAnswersContext = req => JourneyAnswersContext(taxYear, req.nino, businessId, req.mtditid, journey)
-    val user = User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
+    val user = User(mtditid = "1234567890", arn = None, nino = "AA112233A", sessionId = "sessionId1234", AffinityGroup.Individual.toString)
 
     val request = OptionalDataRequest[AnyContentAsEmpty.type](FakeRequest(), "userId", user, userAnswers)
 

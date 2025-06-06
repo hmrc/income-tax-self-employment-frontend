@@ -18,7 +18,7 @@ package controllers.journeys.prepop
 
 import base.SpecBase
 import cats.data.EitherT
-import controllers.actions.AuthenticatedIdentifierAction.User
+import models.requests.User
 import controllers.journeys.prepop.routes._
 import controllers.journeys.routes
 import controllers.standard.routes._
@@ -42,9 +42,6 @@ import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
 import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView
 
 class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with MockitoSugar {
-
-  val nino = "AA370343B"
-  val user = User(mtditid.value, None, nino, AffinityGroup.Individual.toString)
 
   val aBusinessData: BusinessData = BusinessData(
     businessId = "businessId",

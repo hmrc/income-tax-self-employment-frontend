@@ -16,7 +16,6 @@
 
 package models.requests
 
-import controllers.actions.AuthenticatedIdentifierAction.User
 import controllers.redirectJourneyRecoveryValueNotFound
 import models.common._
 import models.database.UserAnswers

@@ -34,6 +34,7 @@ trait FrontendAppConfig {
   def loginUrl: String
   def loginContinueUrl: String
   def signOutUrl: String
+  def signInUrl: String
   def exitSurveyBaseUrl: String
   def exitSurveyUrl: String
   def languageTranslationEnabled: Boolean
@@ -70,6 +71,7 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
   override val loginUrl: String         = configuration.get[String]("urls.login")
   override val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   override val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  override val signInUrl: String        = s"$loginUrl?continue=${url"$loginContinueUrl"}&origin=$appName"
 
   override val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   override val exitSurveyUrl: String     = s"$exitSurveyBaseUrl/feedback/income-tax-self-employment-frontend"
