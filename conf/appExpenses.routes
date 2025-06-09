@@ -181,6 +181,9 @@ POST       /:taxYear/:businessId/expenses/travel/change-remove-vehicle          
 GET         /:taxYear/:businessId/expenses/travel/change-public-transport-amount/check                                                 controllers.journeys.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST        /:taxYear/:businessId/expenses/travel/change-public-transport-amount/check                                                 controllers.journeys.expenses.travelAndAccommodation.PublicTransportAndAccommodationExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 
+GET         /:taxYear/:businessId/expenses/travel/travel-accommodation-disallowable-expenses/check                                     controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
+POST        /:taxYear/:businessId/expenses/travel/travel-accommodation-disallowable-expenses/check                                     controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationDisallowableExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
+
 GET        /:taxYear/:businessId/expenses/travel/travel-accommodation-check-answers                                                    controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear: TaxYear, businessId: BusinessId)
 POST       /:taxYear/:businessId/expenses/travel/travel-accommodation-check-answers                                                    controllers.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpensesCYAController.onSubmit(taxYear: TaxYear, businessId: BusinessId)
 

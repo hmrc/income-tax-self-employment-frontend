@@ -153,6 +153,8 @@ taskList.reviewLink = Review self-employments
 taskList.nationalInsuranceContributions = National Insurance Contributions
 
 checkYourAnswers.title = Check Your Answers
+checkYourAnswers.title.individual = Check Your Answers
+checkYourAnswers.title.agent = Check Your Answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.errorPrefix = Error: {0}

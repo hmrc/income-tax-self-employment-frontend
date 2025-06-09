@@ -238,7 +238,8 @@ class MessagesSpec extends SpecBase {
     "english messages file" in {
       val messages: List[(String, String)] = filterExcludedKeys(
         english.toList,
-        exclusionKeysEn ++ publicTravelDuplicateValueExclusionKeys,
+        exclusionKeysEn ++ publicTravelDuplicateValueExclusionKeys ++
+          List("checkYourAnswers.title", "checkYourAnswers.title.individual", "checkYourAnswers.title.agent"),
         exclusionKeySubstrings
       )
 
