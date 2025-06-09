@@ -16,6 +16,7 @@
 
 @import controllers.journeys.adjustments.profitOrLoss.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.LegendSize
 @import views.html.components._
 
 @import models.common.TradingName
@@ -24,18 +25,12 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        twoRadios: TwoRadios,
-        submitButton: SubmitButton,
-        heading: Heading
+        govukRadios: GovukRadios,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, tradingName: TradingName ,userType: UserType, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@legend= {
-    <label class="govuk-hint">
-    @messages(s"previousUnusedLosses.subHeading.$userType")
-    </label>
-}
 
 @layout(pageTitle = title(form, messages("previousUnusedLosses.title", tradingName))) {
 
@@ -43,9 +38,13 @@
 
     @formHelper(action = routes.PreviousUnusedLossesController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @heading("previousUnusedLosses.title", Some(tradingName.value))
-
-        @twoRadios(form, "PreviousUnusedLosses", userType, taxYear, inline = true, legend = Some(legend))
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages("previousUnusedLosses.title", tradingName.value))
+                .asPageHeading(size = LegendSize.Large)
+            ).withHint(HintViewModel(messages(s"previousUnusedLosses.subHeading.$userType")))
+        )
 
         @submitButton()
     }

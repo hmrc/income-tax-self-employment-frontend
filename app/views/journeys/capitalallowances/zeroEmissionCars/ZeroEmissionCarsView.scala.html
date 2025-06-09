@@ -60,21 +60,11 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(HtmlContent(
-                        s"""
-                        <div>
-                            <label class="govuk-label govuk-label--m">
-                                ${messages(s"zecUsedForWork.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString)}
-                            </label>
-                            <div class="govuk-hint govuk-!-margin-bottom-0">
-                                ${messages(s"zecUsedForWork.hint.$userType")}
-                            </div>
-                        </div>
-                        """
-                ))
-                .withCssClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+                legend = LegendViewModel(messages(s"zecUsedForWork.subHeading.$userType", taxYear.startYear.toString, taxYear.endYear.toString))
+                .withCssClass("govuk-fieldset__legend--m")
+            ).withHint(HintViewModel(messages(s"zecUsedForWork.hint.$userType")))
         )
-    )
+
 
         @submitButton()
     }

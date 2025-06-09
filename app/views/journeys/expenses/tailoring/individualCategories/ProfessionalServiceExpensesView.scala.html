@@ -117,19 +117,9 @@
                 form = form,
                 name = "value",
                 items = ProfessionalServiceExpenses.checkboxItems(userType),
-                legend = LegendViewModel(HtmlContent(
-                    s"""
-                        <div>
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                ${messages(s"professionalServiceExpenses.subHeading.$userType")}
-                            </legend>
-                            <div class="govuk-hint">
-                                ${messages("site.selectAllThatApply")}
-                            </div>
-                        </div>
-                    """
-                )).withCssClass("no-margin-bottom")
-            )
+                legend = LegendViewModel(messages(s"professionalServiceExpenses.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend--m")
+            ).withHint(Some(HintViewModel(messages("site.selectAllThatApply"))))
         )
 
         @submitButton()

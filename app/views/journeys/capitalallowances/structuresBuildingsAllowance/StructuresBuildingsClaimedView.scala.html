@@ -16,6 +16,7 @@
 
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
+@import viewmodels.LegendSize.Large
 @import views.html.components._
 
 @this(
@@ -23,8 +24,7 @@
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
         govukRadios: GovukRadios,
-        submitButton: SubmitButton,
-        heading: Heading
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -33,14 +33,14 @@
 
     @errorSummarySection(form, errorLinkOverrides = Map("value" -> "value_0"))
 
-    @heading(s"structuresBuildingsClaimed.subHeading.$userType") <br>
-
     @formHelper(action = routes.StructuresBuildingsClaimedController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(""))
+                legend = LegendViewModel(messages(s"structuresBuildingsClaimed.subHeading.$userType"))
+                .asPageHeading(Large)
+            )
         )
 
         @submitButton()
