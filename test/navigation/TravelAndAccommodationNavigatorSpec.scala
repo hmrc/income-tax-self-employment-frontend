@@ -231,8 +231,9 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
               ua) shouldBe expectedResult
           }
 
-        "navigate to TravelAndAccommodationCYAage from TravelAndAccommodationDisallowableExpensesPage" in { // TODO navigate to CYA page
-          val expectedResult = controllers.journeys.routes.TaskListController.onPageLoad(taxYear)
+        "navigate to TravelAndAccommodationCYAage from TravelAndAccommodationDisallowableExpensesPage" in {
+          val expectedResult = controllers.journeys.expenses.travelAndAccommodation.routes.TravelAndAccommodationDisallowableExpensesCYAController
+            .onPageLoad(taxYear, businessId)
 
           val ua = emptyUserAnswers
             .set(TravelForWorkPage, TravelForWork.YesAllowable, Some(businessId))
