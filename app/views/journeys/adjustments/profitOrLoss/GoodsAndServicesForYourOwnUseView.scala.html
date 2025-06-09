@@ -23,18 +23,13 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         errorSummarySection: ErrorSummarySection,
-        twoRadios: TwoRadios,
+        govukRadios: GovukRadios,
         submitButton: SubmitButton,
         heading: Heading
 )
 
 @(form: Form[_], taxYear: TaxYear, businessId: BusinessId, userType: UserType, mode: Mode, accountingType: AccountingType)(implicit request: Request[_], messages: Messages)
 
-@hintText = {
-    <div class="govuk-hint">
-    @messages(s"goodsAndServicesForYourOwnUse.hint.$userType")
-    </div>
-}
 
 @layout(pageTitle = title(form, messages(s"goodsAndServicesForYourOwnUse.title.$userType"))) {
 
@@ -52,7 +47,14 @@
 
     @formHelper(action = routes.GoodsAndServicesForYourOwnUseController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
-        @twoRadios(form, "goodsAndServicesForYourOwnUse", userType, taxYear, hintText, inline = false)
+        @govukRadios(
+            RadiosViewModel.yesNoWithLabel(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"goodsAndServicesForYourOwnUse.subHeading.$userType"))
+                .withCssClass("govuk-fieldset__legend--m"),
+                inline = false
+            ).withHint(HintViewModel(messages(s"goodsAndServicesForYourOwnUse.hint.$userType")))
+        )
 
         @submitButton()
     }

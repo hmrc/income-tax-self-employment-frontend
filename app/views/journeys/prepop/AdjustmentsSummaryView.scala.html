@@ -34,12 +34,12 @@
     @caption(taxYear)
     @heading("adjustments.businessAdjustments")
 
-    <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
+    <div class="govuk-form-group">
+        <p class="govuk-body">@messages("prepop.useReportingSoftware")</p>
 
-    @govukTable(adjustmentsTable)
-
-    <div class="govuk-!-margin-top-7">
-        @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, AdjustmentsPrepop, NormalMode).url, "site.continue")
+        @govukTable(adjustmentsTable)
     </div>
+
+    @button(journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, AdjustmentsPrepop, NormalMode).url, "site.continue")
 
 }

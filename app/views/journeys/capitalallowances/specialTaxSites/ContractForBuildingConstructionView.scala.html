@@ -16,7 +16,6 @@
 
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import viewmodels.LegendSize.Medium
 @import views.html.components._
 
 @this(layout: templates.Layout,
@@ -48,7 +47,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"contractForBuildingConstruction.subHeading.$userType"))
-                .asPageHeading(size = Medium)
+                .withCssClass("govuk-fieldset__legend--m"))
             )
         )
         @submitButton()

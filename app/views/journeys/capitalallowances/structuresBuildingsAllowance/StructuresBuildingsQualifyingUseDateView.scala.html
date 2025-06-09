@@ -16,7 +16,6 @@
 
 @import controllers.journeys.capitalallowances.structuresBuildingsAllowance.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import viewmodels.LegendSize.Medium
 @import views.html.components._
 
 @this(layout: templates.Layout,
@@ -43,7 +42,8 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("structuresBuildingsQualifyingUseDate"),
-                legend = LegendViewModel(messages("structuresBuildingsQualifyingUseDate.subHeading")).asPageHeading(Medium)
+                legend = LegendViewModel(messages("structuresBuildingsQualifyingUseDate.subHeading"))
+                .withCssClass("govuk-fieldset__legend--m")
             )
             .withHint(HintViewModel(messages(s"structuresBuildingsQualifyingUseDate.hint.$userType")))
         )

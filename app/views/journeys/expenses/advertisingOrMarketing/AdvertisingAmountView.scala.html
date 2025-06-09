@@ -25,7 +25,8 @@
     formHelper: FormWithCSRF,
     errorSummarySection: ErrorSummarySection,
     govukInput: GovukInput,
-    submitButton: SubmitButton
+    submitButton: SubmitButton,
+    heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -34,39 +35,37 @@
 
     @errorSummarySection(form)
 
+    @heading(s"advertisingAmount.title.$userType")
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+         <span class="govuk-details__summary-text">
+           @messages("advertisingAmount.d1.heading")
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p class="govuk-body">@messages(s"site.canInclude.$userType")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("advertisingOrMarketing.l1")</li>
+                <li>@messages("advertisingOrMarketing.l2")</li>
+                <li>@messages("advertisingOrMarketing.l3")</li>
+                <li>@messages("advertisingOrMarketing.l4")</li>
+            </ul>
+            <p class="govuk-body">@messages(s"site.cannotInclude.$userType")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("entertainmentCosts.l1")</li>
+                <li>@messages("entertainmentCosts.l2")</li>
+            </ul>
+        </div>
+    </details>
+
     @formHelper(action = routes.AdvertisingAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(
-                    s"""
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l"> ${messages(s"advertisingAmount.title.$userType")} </label>
-                    </h1>
-                    <details class="govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
-                         <span class="govuk-details__summary-text">
-                           ${messages("advertisingAmount.d1.heading")}
-                          </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <p class="govuk-body">${messages(s"site.canInclude.$userType")}</p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>${messages("advertisingOrMarketing.l1")}</li>
-                                <li>${messages("advertisingOrMarketing.l2")}</li>
-                                <li>${messages("advertisingOrMarketing.l3")}</li>
-                                <li>${messages("advertisingOrMarketing.l4")}</li>
-                            </ul>
-                            <p class="govuk-body">${messages(s"site.cannotInclude.$userType")}</p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>${messages("entertainmentCosts.l1")}</li>
-                                <li>${messages("entertainmentCosts.l2")}</li>
-                            </ul>
-                        </div>
-                    </details>
-                    """
-                ))
+                label = LabelViewModel(messages(s"advertisingAmount.title.$userType"))
+                .withCssClass("govuk-visually-hidden")
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))

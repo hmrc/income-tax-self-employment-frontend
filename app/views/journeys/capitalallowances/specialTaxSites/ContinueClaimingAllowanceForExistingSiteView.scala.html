@@ -16,7 +16,7 @@
 
 @import controllers.journeys.capitalallowances.specialTaxSites.routes
 @import models.common.{BusinessId, TaxYear, UserType}
-@import views.html.components.{SubmitButton, YesNoWithHeadingAndHint, Heading, ErrorSummarySection}
+@import views.html.components.{SubmitButton, Heading, ErrorSummarySection}
 @import viewmodels.LegendSize.Medium
 
 @this(layout: templates.Layout,
@@ -24,7 +24,6 @@
         errorSummarySection: ErrorSummarySection,
         heading: Heading,
         govukRadios: GovukRadios,
-        yesNoWithHeadingAndHint: YesNoWithHeadingAndHint,
         submitButton: SubmitButton)
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_], messages: Messages)
@@ -51,7 +50,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"continueClaimingAllowanceForExistingSite.subHeading.$userType"))
-                .asPageHeading(size = Medium)
+                .withCssClass("govuk-fieldset__legend--m"))
             )
         )
 

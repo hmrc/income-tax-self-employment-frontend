@@ -25,7 +25,8 @@
     formHelper: FormWithCSRF,
     errorSummarySection: ErrorSummarySection,
     govukInput: GovukInput,
-    submitButton: SubmitButton
+    submitButton: SubmitButton,
+    heading: Heading
 )
 
 @(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, accountingType: AccountingType, taxiDriver: Boolean)(implicit request: Request[_], messages: Messages)
@@ -34,42 +35,50 @@
 
     @errorSummarySection(form)
 
+    @heading(s"goodsToSellOrUseAmount.title.$userType")
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+         <span class="govuk-details__summary-text">@messages("goodsToSellOrUseAmount.d1.heading")</span>
+        </summary>
+        <div class="govuk-details__text">
+            <p class="govuk-body">@messages(s"site.canInclude.$userType")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                @if(taxiDriver) {
+                    <li>@messages("expenses.fuelCosts")</li>
+                } else {
+                    <li>@messages("expenses.costOfRawMaterials")</li>
+                }
+                @if(accountingType == AccountingType.Cash) {
+                    <li>@messages("expenses.stockBought")</li>
+                } else {
+                    <li>@messages("expenses.directCostsOfProducing")</li>
+                }
+                @if(accountingType == AccountingType.Accrual) {
+                    <li>@messages("expenses.adjustments")</li>
+                } else {
+                    <li>@messages("expenses.commissions")</li>
+                    <li>@messages("expenses.discounts")</li>
+                }
+            </ul>
+            <p class="govuk-body">${messages(s"site.cannotInclude.$userType")}</p>
+            <ul class="govuk-list govuk-list--bullet">
+                @if(accountingType == AccountingType.Cash) {
+                    <li>@messages("expenses.costsForPrivateUse")</li>
+                } else {
+                    <li>@messages("expenses.depreciationOfEquipment")</li>
+                }
+            </ul>
+        </div>
+    </details>
+
     @formHelper(action = routes.GoodsToSellOrUseAmountController.onSubmit(taxYear, businessId, mode), Symbol("autoComplete") -> "off") {
 
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(HtmlContent(
-                    s"""
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l"> ${messages(s"goodsToSellOrUseAmount.title.$userType")} </label>
-                    </h1>
-                    <details class="govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
-                         <span class="govuk-details__summary-text">
-                           ${messages("goodsToSellOrUseAmount.d1.heading")}
-                          </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <p class="govuk-body">${messages(s"site.canInclude.$userType")}</p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                ${if (taxiDriver) <li>{messages("expenses.fuelCosts")}</li> else ""}
-                                <li>${messages("expenses.costOfRawMaterials")}</li>
-                                ${if (accountingType == AccountingType.Cash) <li>{messages("expenses.stockBought")}</li> else ""}
-                                <li>${messages("expenses.directCostsOfProducing")}</li>
-                                ${if (accountingType == AccountingType.Accrual) <li>{messages("expenses.adjustments")}</li> else ""}
-                                <li>${messages("expenses.commissions")}</li>
-                                <li>${messages("expenses.discounts")}</li>
-                            </ul>
-                            <p class="govuk-body">${messages(s"site.cannotInclude.$userType")}</p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                ${if (accountingType == AccountingType.Cash) <li>{messages("expenses.costsForPrivateUse")}</li> else ""}
-                                <li>${messages("expenses.depreciationOfEquipment")}</li>
-                            </ul>
-                        </div>
-                    </details>
-                    """
-                ))
+                label = LabelViewModel(messages(s"goodsToSellOrUseAmount.title.$userType"))
+                .withCssClass("govuk-visually-hidden")
             )
             .asNumeric()
             .withHint(HintViewModel(messages("site.hint.amount")))
