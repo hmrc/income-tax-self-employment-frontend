@@ -17,8 +17,8 @@
 package base
 
 import builders.UserBuilder
-import config.FrontendAppConfig
 import cats.implicits.catsSyntaxOptionId
+import config.FrontendAppConfig
 import controllers.actions._
 import models.Index
 import models.common.UserType.Individual
@@ -26,8 +26,8 @@ import models.common._
 import models.database.UserAnswers
 import models.errors.HttpError
 import models.errors.HttpErrorBody.SingleErrorBody
-import models.common.Journey
-import models.requests.{DataRequest, OptionalDataRequest}
+import models.requests.{DataRequest, OptionalDataRequest, User}
+import models.session.SessionData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -41,7 +41,7 @@ import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json, Writes}
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Call}
+import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import queries.Settable
 import services.SelfEmploymentService
@@ -57,23 +57,27 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
 
   val taxYear: TaxYear               = TaxYear(ZonedDateTime.now().getYear)
   val userAnswersId                  = "id"
-  val sampleUserId: UserId           = UserId("id")
-  val someNino: Nino                 = Nino("someNino")
-  val mtditid                        = Mtditid("someId")
+  val userId: UserId                 = UserId("id")
+  val nino: Nino                     = Nino("AA112233A")
+  val sessionId                      = "sessionId1234"
+  val mtditid                        = Mtditid("1234567890")
   val arn                            = "arnId"
+  val utr                            = "utr123"
   val businessId: BusinessId         = BusinessId("SJPR05893938418")
   val tradingName: TradingName       = TradingName("Circus Performer")
   val typeOfBusiness: TypeOfBusiness = TypeOfBusiness("Self Employed")
   val zeroValue: BigDecimal          = 0
   val maxAmountValue: BigDecimal     = 100000000000.00
   val index                          = Index(1)
+  val sessionData: SessionData       = SessionData(sessionId, mtditid.value, nino.value, Some(utr))
+  val user                           = User(mtditid.value, arn = None, nino.value, sessionId, AffinityGroup.Individual.toString)
 
   val appConfig = mock[FrontendAppConfig]
 
-  val fakeUser = AuthenticatedIdentifierAction.User(mtditid = "1234567890", arn = None, nino = "AA112233A", AffinityGroup.Individual.toString)
-  val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](FakeRequest(), "userId", fakeUser, None)
+  val fakeRequest                                          = FakeRequest().withHeaders("sessionId" -> sessionId)
+  val fakeOptionalRequest: OptionalDataRequest[AnyContent] = OptionalDataRequest[AnyContent](fakeRequest, "userId", user, None)
 
-  def fakeDataRequest(userAnswers: UserAnswers): DataRequest[AnyContent] = DataRequest[AnyContent](FakeRequest(), "userId", fakeUser, userAnswers)
+  def fakeDataRequest(userAnswers: UserAnswers): DataRequest[AnyContent] = DataRequest[AnyContent](fakeRequest, "userId", user, userAnswers)
 
   def anyNino: Nino               = Nino(any)
   def anyMtditid: Mtditid         = Mtditid(any)
@@ -103,7 +107,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
   def config(app: Application): FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   def messages(app: Application): Messages =
-    app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withHeaders())
+    app.injector.instanceOf[MessagesApi].preferred(fakeRequest.withHeaders())
 
   /** This does not load real values from messages.en */
   def messagesStubbed: Messages = {
@@ -154,8 +158,7 @@ object SpecBase extends SpecBase {
     implicit val msg: Messages   = SpecBase.messages(application)
   }
 
-  val emptyCall: Call                                  = Call("", "", "")
-  val call: Call                                       = Call("GET", "/url")
-  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+  val emptyCall: Call = Call("", "", "")
+  val call: Call      = Call("GET", "/url")
 
 }
