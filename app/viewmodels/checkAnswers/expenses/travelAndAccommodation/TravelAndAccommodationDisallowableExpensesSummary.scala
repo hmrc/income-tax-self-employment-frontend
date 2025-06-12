@@ -17,28 +17,45 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.CheckMode
-import models.common.{BusinessId, TaxYear}
+import models.NormalMode
+import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
+import models.journeys.expenses.individualCategories.TravelForWork
+import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
+import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.checkAnswers.{buildRowBigDecimal, buildRowString}
+import viewmodels.journeys.SummaryListCYA
 
 object TravelAndAccommodationDisallowableExpensesSummary {
-
-  def row(taxYear: TaxYear, businessId: BusinessId, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TravelAndAccommodationDisallowableExpensesPage).map { answer =>
-      SummaryListRowViewModel(
-        key = "travelAndAccommodationDisallowableExpenses.checkYourAnswersLabel",
-        value = ValueViewModel(answer.toString),
-        actions = Seq(
-          ActionItemViewModel(
-            "site.change",
-            routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId = businessId, mode = CheckMode).url)
-            .withVisuallyHiddenText(messages("travelAndAccommodationDisallowableExpenses.change.hidden"))
-        )
-      )
-    }
+  def apply(optTravelExpensesData: Option[TravelExpensesDb], userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(
+      implicit messages: Messages): Aliases.SummaryList =
+    SummaryListCYA.summaryListOpt(
+      List(
+        optTravelExpensesData.flatMap(_.totalTravelExpenses).map { answer =>
+          buildRowBigDecimal(
+            answer,
+            routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, NormalMode),
+            s"travelAndAccommodationTotalExpenses.heading.$userType",
+            "travelAndAccommodationTotalExpenses.change.hidden"
+          )
+        }
+      ) ++ (userAnswers.get(TravelForWorkPage, Option(businessId)) match {
+        case Some(TravelForWork.YesDisallowable) =>
+          List[Option[SummaryListRow]](
+            optTravelExpensesData.collect { case TravelExpensesDb(_, _, _, Some(totalTravelExpenses), Some(disallowableTravelExpenses)) =>
+              buildRowBigDecimal(
+                disallowableTravelExpenses,
+                routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode),
+                Messages(s"travelAndAccommodationDisallowableExpenses.heading.$userType", totalTravelExpenses),
+                "travelAndAccommodationDisallowableExpenses.change.hidden"
+              )
+            }
+          )
+        case _ =>
+          List.empty[Option[SummaryListRow]]
+      })
+    )
 }

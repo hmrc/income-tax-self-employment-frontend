@@ -197,7 +197,12 @@ class TravelAndAccommodationNavigator @Inject() {
     case TravelAndAccommodationTotalExpensesPage =>
       _ => (taxYear, businessId, userAnswers) => handleTravelAndAccom(userAnswers, taxYear, businessId, NormalMode)
     case TravelAndAccommodationDisallowableExpensesPage =>
-      _ => (taxYear, businessId, userAnswers) => Some(journeys.routes.TaskListController.onPageLoad(taxYear)) // TODO redirect to new CYA page
+      _ =>
+        (taxYear, businessId, _) =>
+          Option(
+            routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
+          )
+
     case _ =>
       _ => (_, _, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
   }

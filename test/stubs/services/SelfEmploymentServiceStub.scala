@@ -28,6 +28,7 @@ import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
+import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
 import models.journeys.nics.TaxableProfitAndLoss
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.DataRequest
@@ -161,4 +162,6 @@ case class SelfEmploymentServiceStub(
       request: DataRequest[_],
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearExpensesResult)
+  override def updateTravelExpenses(taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: Mtditid, data: TravelExpensesDb)(implicit
+      hc: HeaderCarrier): ApiResultT[Unit] = EitherT.fromEither[Future](Right())
 }

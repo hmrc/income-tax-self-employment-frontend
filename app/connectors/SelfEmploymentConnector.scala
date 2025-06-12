@@ -24,6 +24,7 @@ import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError
 import models.errors.ServiceError.BusinessNotFoundError
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
+import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
 import models.journeys.{JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -151,6 +152,14 @@ class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAp
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier, ec: ExecutionContext): ApiResultT[Boolean] = {
     val url      = buildUrl(s"$taxYear/check-for-other-income-source/$nino")
     val response = get[Boolean](http, url, mtditid)
+    EitherT(response)
+  }
+
+  def updateTravelExpenses(taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: Mtditid, data: TravelExpensesDb)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): ApiResultT[Unit] = {
+    val url      = buildUrl(s"$taxYear/$businessId/travel-expenses/$nino/answers")
+    val response = put(http, url, mtditid, data)
     EitherT(response)
   }
 
