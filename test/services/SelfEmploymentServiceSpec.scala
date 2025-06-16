@@ -65,7 +65,6 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
   implicit val messages: Messages = messagesStubbed
 
-  val nino: Nino                    = Nino("nino")
   val businessIdAccrual: BusinessId = BusinessId("businessIdAccrual")
   val businessIdCash: BusinessId    = BusinessId("businessIdCash")
 
@@ -251,7 +250,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
 
       "following the handleSuccess method if it binds successfully" in new ServiceWithStubs {
         val dataRequest: DataRequest[AnyContent] =
-          DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", fakeUser, existingZegvAnswers)
+          DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", true.toString)), "userId", user, existingZegvAnswers)
         val result: Future[Result] = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
 
         status(result) shouldBe SEE_OTHER
@@ -259,7 +258,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
       }
       "following the handleError method if it binds unsuccessfully" in new ServiceWithStubs {
         val dataRequest: DataRequest[AnyContent] =
-          DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", "invalid value")), "userId", fakeUser, existingZegvAnswers)
+          DataRequest[AnyContent](request.withFormUrlEncodedBody(("value", "invalid value")), "userId", user, existingZegvAnswers)
         val result: Future[Result] = service.handleForm(form, handleError, handleSuccess)(dataRequest, FormBinding.Implicits.formBinding)
 
         status(result) shouldBe BAD_REQUEST

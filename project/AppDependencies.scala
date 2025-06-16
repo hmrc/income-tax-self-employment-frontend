@@ -15,13 +15,13 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"        %% "play-frontend-hmrc-play-30"            % "12.2.0",
+    "uk.gov.hmrc"        %% "play-frontend-hmrc-play-30"            % "12.5.0",
     "uk.gov.hmrc"        %% "play-conditional-form-mapping-play-30" % "3.3.0",
     "uk.gov.hmrc"        %% "bootstrap-frontend-play-30"            % bootstrapVersion,
     "uk.gov.hmrc.mongo"  %% "hmrc-mongo-play-30"                    % hmrcMongoVersion,
     "org.typelevel"      %% "cats-core"                             % "2.13.0",
-    "com.beachape"       %% "enumeratum"                            % "1.7.6",
-    "com.beachape"       %% "enumeratum-play-json"                  % "1.8.2" excludeAll (jacksonAndPlayExclusions *),
+    "com.beachape"       %% "enumeratum"                            % "1.9.0",
+    "com.beachape"       %% "enumeratum-play-json"                  % "1.9.0" excludeAll (jacksonAndPlayExclusions *),
     "org.codehaus.janino" % "janino"                                % "3.1.12" // it's required by logback for conditional logging
   )
 
@@ -34,7 +34,7 @@ object AppDependencies {
     "org.scalatestplus"   %% "mockito-3-4"             % "3.2.10.0",
     "org.typelevel"       %% "cats-core"               % "2.13.0",
     "org.scalacheck"      %% "scalacheck"              % "1.18.1",
-    "org.mockito"         %% "mockito-scala"           % "1.17.45",
+    "org.mockito"         %% "mockito-scala"           % "2.0.0",
     "org.scalamock"       %% "scalamock"               % "5.2.0"
   ).map(_ % "test, it")
 
