@@ -24,6 +24,8 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.StringContextOps
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URLEncoder
+
 @ImplementedBy(classOf[FrontendAppConfigImpl])
 trait FrontendAppConfig {
   def host: String
@@ -71,7 +73,7 @@ class FrontendAppConfigImpl @Inject() (configuration: Configuration, servicesCon
   override val loginUrl: String         = configuration.get[String]("urls.login")
   override val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   override val signOutUrl: String       = configuration.get[String]("urls.signOut")
-  override val signInUrl: String        = s"$loginUrl?continue=${url"$loginContinueUrl"}&origin=$appName"
+  override val signInUrl: String        = s"$loginUrl?continue=${URLEncoder.encode(loginContinueUrl, "UTF-8")}&origin=$appName"
 
   override val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   override val exitSurveyUrl: String     = s"$exitSurveyBaseUrl/feedback/income-tax-self-employment-frontend"
