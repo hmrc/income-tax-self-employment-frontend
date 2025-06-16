@@ -183,18 +183,8 @@ class TravelAndAccommodationNavigator @Inject() {
         checkRouteMap(page)(userAnswers)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 
-  private def handleTravelAndAccom(ua: UserAnswers, taxYear: TaxYear, businessId: BusinessId, mode: Mode): Option[Call] =
-    ua.get(TravelForWorkPage, businessId) map {
-      case TravelForWork.YesDisallowable =>
-        routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, mode)
-      case _ =>
-        ???
-    }
-
   private val normalTravelExpensesRoutes: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
-    case TravelAndAccommodationTotalExpensesPage =>
-      _ => (taxYear, businessId, userAnswers) => handleTravelAndAccom(userAnswers, taxYear, businessId, NormalMode)
-    case TravelAndAccommodationDisallowableExpensesPage =>
+    case TravelAndAccommodationDisallowableExpensesPage | TravelAndAccommodationTotalExpensesPage =>
       _ =>
         (taxYear, businessId, _) =>
           Option(
