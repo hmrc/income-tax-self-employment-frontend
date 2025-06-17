@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
@@ -37,7 +37,7 @@ object TravelAndAccommodationDisallowableExpensesSummary {
         optTravelExpensesData.flatMap(_.totalTravelExpenses).map { answer =>
           buildRowBigDecimal(
             answer,
-            routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, NormalMode),
+            routes.TravelAndAccommodationTotalExpensesController.onPageLoad(taxYear, businessId, CheckMode),
             s"travelAndAccommodationTotalExpenses.heading.$userType",
             "travelAndAccommodationTotalExpenses.change.hidden"
           )
@@ -48,7 +48,7 @@ object TravelAndAccommodationDisallowableExpensesSummary {
             optTravelExpensesData.collect { case TravelExpensesDb(_, _, _, Some(totalTravelExpenses), Some(disallowableTravelExpenses)) =>
               buildRowBigDecimal(
                 disallowableTravelExpenses,
-                routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode),
+                routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, CheckMode),
                 Messages(s"travelAndAccommodationDisallowableExpenses.heading.$userType", totalTravelExpenses),
                 "travelAndAccommodationDisallowableExpenses.change.hidden"
               )
