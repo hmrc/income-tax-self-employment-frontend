@@ -206,7 +206,8 @@ class TravelAndAccommodationNavigator @Inject() {
         normalTravelExpensesRoutes(page)(model)(taxYear, businessId, userAnswers)
           .getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
       case CheckMode =>
-        checkTravelExpensesRouteMap(page)(model)(taxYear, businessId).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
+        checkTravelExpensesRouteMap(page)(model)(taxYear, businessId, userAnswers)
+          .getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 
   private def normalIndexRoutes: Page => VehicleDetailsDb => (TaxYear, BusinessId, Index) => Option[Call] = {
@@ -269,11 +270,21 @@ class TravelAndAccommodationNavigator @Inject() {
         checkIndexRouteMap(page)(model)(taxYear, businessId, index).getOrElse(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
     }
 
-  private val checkTravelExpensesRouteMap: Page => TravelExpensesDb => (TaxYear, BusinessId) => Option[Call] = {
+  private val checkTravelExpensesRouteMap: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
+
+    case TravelAndAccommodationDisallowableExpensesPage | TravelAndAccommodationTotalExpensesPage =>
+      _ =>
+        (taxYear, businessId, _) =>
+          Option(
+            routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
+          )
+
+    case _ =>
+      _ => (_, _, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
 
     case TravelAndAccommodationTotalExpensesPage =>
       _ =>
-        (taxYear, businessId) =>
+        (taxYear, businessId, _) =>
           Some(
             routes.TravelAndAccommodationExpensesCYAController
               .onPageLoad(taxYear, businessId))
