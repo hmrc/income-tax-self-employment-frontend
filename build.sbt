@@ -1,11 +1,12 @@
 import com.typesafe.sbt.uglify.Import.uglifyOps
 import play.sbt.routes.RoutesKeys
+import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "income-tax-self-employment-frontend"
+
 ThisBuild / majorVersion      := 0
 ThisBuild / scalaVersion      := "2.13.16"
-ThisBuild / scalafmtOnCompile := true
 ThisBuild / useSuperShell     := false
 Global / excludeLintKeys += majorVersion // suppress 'ThisBuild / majorVersion key unused' warning
 
@@ -15,8 +16,6 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(inConfig(Test)(testSettings) *)
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(itSettings) *)
   .settings(
     PlayKeys.playDefaultPort := 10901,
     libraryDependencies ++= AppDependencies(),
@@ -71,14 +70,7 @@ lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   unmanagedSourceDirectories += baseDirectory.value / "test-utils"
 )
 
-lazy val itSettings = Defaults.testSettings ++ Seq(
-  unmanagedSourceDirectories := Seq(
-    baseDirectory.value / "it",
-    baseDirectory.value / "test-utils"
-  ),
-  unmanagedResourceDirectories := Seq(
-    baseDirectory.value / "it" / "resources"
-  ),
-  parallelExecution := false,
-  fork              := false
-)
+lazy val it = project.enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings())
+  .settings(libraryDependencies ++= AppDependencies.test)

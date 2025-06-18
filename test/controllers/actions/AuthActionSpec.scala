@@ -21,7 +21,7 @@ import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys}
 import config.MockAppConfig
 import connectors.MockAuthConnector
 import controllers.standard.routes
-import mocks.MockErrorHandler.{mockErrorHandler, mockInternalServerError}
+import mocks.MockErrorHandler
 import models.errors.ServiceError.MissingAgentClientDetails
 import play.api.Application
 import play.api.mvc.Results.InternalServerError
@@ -35,7 +35,7 @@ import utils.EnrolmentHelper
 
 import scala.concurrent.Future
 
-class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataService with MockAuthConnector {
+class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataService with MockAuthConnector with MockErrorHandler {
 
   trait Fixture {
 

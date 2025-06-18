@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package mocks
+package test.integrationData
 
-import handlers.ErrorHandler
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import play.api.mvc.{Request, Result}
+import java.time.LocalDate
 
-trait MockErrorHandler extends MockFactory {
-  this: TestSuite =>
+object TimeData {
 
-  val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
+  val testDate: LocalDate = LocalDate.of(2025, 1, 1)
 
-  def mockInternalServerError(result: Result): Unit =
-    (mockErrorHandler
-      .internalServerError()(_: Request[_]))
-      .expects(*)
-      .returns(result)
 }
-

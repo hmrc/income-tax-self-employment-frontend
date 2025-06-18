@@ -16,8 +16,10 @@
 
 package connectors
 
+import org.mockito.ArgumentMatchersSugar.eqTo
 import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
@@ -26,16 +28,23 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAuthConnector extends MockFactory {
+  this: TestSuite =>
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   object MockAuthConnector {
 
-    def authorise[T](predicate: Predicate)(response: Future[T]): CallHandler4[Predicate, Retrieval[T], HeaderCarrier, ExecutionContext, Future[T]] =
+    def authorise[T](predicate: Predicate)(response: Future[T]): CallHandler4[Predicate, Retrieval[T], HeaderCarrier, ExecutionContext, Future[T]] = {
+
       (mockAuthConnector
         .authorise[T](_: Predicate, _: Retrieval[T])(_: HeaderCarrier, _: ExecutionContext))
-        .expects(predicate, *, *, *)
-        .returns(response)
+        .expects(
+          eqTo(predicate),
+          *,
+          *,
+          *
+        )
+        .returning(response)
+    }
   }
-
 }
