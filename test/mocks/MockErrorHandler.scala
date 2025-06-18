@@ -32,4 +32,3 @@ trait MockErrorHandler extends MockFactory {
       .expects(*)
       .returns(result)
 }
-
