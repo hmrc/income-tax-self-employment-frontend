@@ -42,6 +42,7 @@ This service runs on port: `localhost:10901`
 - at the end in root project call `./migrate.sh` to add necessary changes to app.routes and messages files
 - call `sbt compile` - fix issues if any
 - call `sbt test` - fix failing tests if any
+- call `sbt it/test` - fix failing tests if any
 
 #### Limitations
 

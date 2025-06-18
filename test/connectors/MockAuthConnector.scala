@@ -37,12 +37,8 @@ trait MockAuthConnector extends MockFactory {
     def authorise[T](predicate: Predicate)(response: Future[T]): CallHandler4[Predicate, Retrieval[T], HeaderCarrier, ExecutionContext, Future[T]] =
       (mockAuthConnector
         .authorise[T](_: Predicate, _: Retrieval[T])(_: HeaderCarrier, _: ExecutionContext))
-        .expects(
-          eqTo(predicate),
-          *,
-          *,
-          *
-        )
-        .returning(response)
+        .expects(predicate, *, *, *)
+        .returns(response)
   }
+
 }
