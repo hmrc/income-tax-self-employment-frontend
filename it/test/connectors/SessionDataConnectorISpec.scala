@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package test.connectors
+package connectors
 
-import connectors.SessionDataConnector
+import base.IntegrationBaseSpec
+import helpers.WiremockSpec
 import models.errors.HttpErrorBody.SingleErrorBody
 import models.errors.ServiceError.{CannotReadJsonError, ConnectorResponseError}
 import models.errors.{HttpError, ServiceError}
 import models.session.SessionData
 import play.api.http.Status._
 import play.api.libs.json.{Json, __}
-import test.base.IntegrationBaseSpec
-import test.helpers.WiremockSpec
+import uk.gov.hmrc.http.SessionKeys.sessionId
 
 class SessionDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 

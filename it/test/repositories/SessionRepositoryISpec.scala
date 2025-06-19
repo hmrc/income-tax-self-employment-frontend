@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package test.repositories
+package repositories
 
 import config.FrontendAppConfig
 import models.database.UserAnswers
@@ -26,7 +26,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-import repositories.SessionRepository
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.temporal.ChronoUnit

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package test.helpers
+package helpers
 
 import com.codahale.metrics.SharedMetricRegistries
 import com.github.tomakehurst.wiremock.WireMockServer

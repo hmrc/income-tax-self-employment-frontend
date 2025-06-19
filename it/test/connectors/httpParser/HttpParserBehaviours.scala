@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package test.connectors.httpParser
+package connectors.httpParser
 
-import connectors.httpParser.HttpParser
 import models.errors.HttpError
 import models.errors.HttpErrorBody.{MultiErrorsBody, SingleErrorBody}
 import org.scalatest.freespec.AnyFreeSpec
@@ -72,7 +71,7 @@ trait HttpParserBehaviours extends AnyFreeSpec with Matchers {
       result mustBe HttpError(INTERNAL_SERVER_ERROR, SingleErrorBody("SERVER_ERROR", serverErrorReason))
     }
 
-  def handleMultpleError(): Unit =
+  def handleMultipleError(): Unit =
     "handle a multiple error" in {
       val result = FakeParser.handleHttpError(failureHttpResponse(Json.parse(multiErrJs)))
       result mustBe

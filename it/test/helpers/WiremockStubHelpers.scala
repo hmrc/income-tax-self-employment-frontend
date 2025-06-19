@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package test.helpers
+package helpers
 
+import base.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsObject, Writes}
-import test.base.IntegrationBaseSpec
 
 trait WiremockStubHelpers {
 

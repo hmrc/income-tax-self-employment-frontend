@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package test.controllers.journeys.industrysectors
+package controllers.journeys.industrysectors
 
-import controllers.journeys.industrysectors.routes
+import base.IntegrationBaseSpec
+import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.common.Journey.IndustrySectors
 import models.common.JourneyAnswersContext
 import models.journeys.industrySectors.IndustrySectorsDb
@@ -24,8 +25,6 @@ import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import test.base.IntegrationBaseSpec
-import test.helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 
 class IndustrySectorsAndAbroadCYAControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 

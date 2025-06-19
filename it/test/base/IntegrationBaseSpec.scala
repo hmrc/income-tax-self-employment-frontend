@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package test.base
+package base
 
 import com.github.tomakehurst.wiremock.http.HttpHeader
+import data.TimeData
+import helpers.SessionCookieHelper
 import models.Index
 import models.common._
 import models.database.UserAnswers
@@ -43,8 +45,6 @@ import play.api.libs.json.{Format, JsObject, JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
-import test.helpers.SessionCookieHelper
-import test.integrationData.TimeData
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.TimeMachine
 

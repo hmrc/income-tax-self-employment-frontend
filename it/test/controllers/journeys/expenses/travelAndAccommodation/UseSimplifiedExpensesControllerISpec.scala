@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package test.controllers.journeys.expenses.travelAndAccommodation
+package controllers.journeys.expenses.travelAndAccommodation
 
-import controllers.journeys.expenses.travelAndAccommodation.routes
+import base.IntegrationBaseSpec
+import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 import models.common.Journey.ExpensesVehicleDetails
 import models.common.JourneyAnswersContext
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import test.base.IntegrationBaseSpec
-import test.helpers.{AnswersApiStub, AuthStub, WiremockSpec}
 
 class UseSimplifiedExpensesControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 

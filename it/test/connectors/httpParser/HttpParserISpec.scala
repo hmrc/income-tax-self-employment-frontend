@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package test.connectors.httpParser
+package connectors.httpParser
 
 class HttpParserISpec extends HttpParserBehaviours {
 
   "FakeParser" - {
     behave like logHttpResponse()
     behave like handleSingleError()
-    behave like handleMultpleError()
+    behave like handleMultipleError()
     behave like returnParsingErrors()
   }
 }

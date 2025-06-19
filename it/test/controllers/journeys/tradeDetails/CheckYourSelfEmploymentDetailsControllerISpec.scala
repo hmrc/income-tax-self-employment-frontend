@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package test.controllers.journeys.tradeDetails
+package controllers.journeys.tradeDetails
 
-import controllers.journeys.tradeDetails.routes
+import base.IntegrationBaseSpec
 import controllers.standard.routes._
+import helpers.{AuthStub, SelfEmploymentApiStub, WiremockSpec}
 import play.api.http.HeaderNames
 import play.api.http.Status.{NOT_FOUND, OK, SEE_OTHER}
 import play.api.libs.json.Json
-import test.base.IntegrationBaseSpec
-import test.helpers.{AuthStub, SelfEmploymentApiStub, WiremockSpec}
 
 class CheckYourSelfEmploymentDetailsControllerISpec extends WiremockSpec with IntegrationBaseSpec {
 

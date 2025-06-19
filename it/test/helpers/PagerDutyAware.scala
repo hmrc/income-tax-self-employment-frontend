@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package test.helpers
+package helpers
 
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.spi.ILoggingEvent

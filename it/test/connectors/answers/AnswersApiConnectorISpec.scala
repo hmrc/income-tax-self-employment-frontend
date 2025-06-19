@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package test.connectors.answers
+package connectors.answers
 
-import connectors.answers.AnswersApiConnector
+import base.IntegrationBaseSpec
+import helpers.{AnswersApiStub, WiremockSpec}
 import models.Index
 import models.common.Journey.ExpensesTravelForWork
 import models.common.JourneyAnswersContext
 import models.journeys.expenses.travelAndAccommodation.{OwnVehicles, TravelExpensesDb}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import test.base.IntegrationBaseSpec
-import test.helpers.{AnswersApiStub, WiremockSpec}
 import uk.gov.hmrc.http.InternalServerException
 
 class AnswersApiConnectorISpec extends WiremockSpec with IntegrationBaseSpec {

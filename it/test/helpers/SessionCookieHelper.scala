@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package test.helpers
+package helpers
 
+import base.IntegrationBaseSpec
 import common.SessionValues
 import play.api.Application
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.ws.WSCookie
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
-import test.base.IntegrationBaseSpec
 import uk.gov.hmrc.crypto.{Crypted, PlainText, SymmetricCryptoFactory}
 import uk.gov.hmrc.http.SessionKeys
 

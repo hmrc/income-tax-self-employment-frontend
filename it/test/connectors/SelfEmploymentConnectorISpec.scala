@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package test.connectors
+package connectors
 
+import base.IntegrationBaseSpec
 import cats.implicits._
-import connectors.SelfEmploymentConnector
-import models.common.Journey.{
-  ExpensesAdvertisingOrMarketing,
-  ExpensesConstruction,
-  ExpensesFinancialCharges,
-  ExpensesGoodsToSellOrUse,
-  ExpensesInterest,
-  ExpensesIrrecoverableDebts,
-  ExpensesOfficeSupplies,
-  ExpensesOtherExpenses,
-  ExpensesProfessionalFees,
-  ExpensesRepairsAndMaintenance,
-  ExpensesStaffCosts,
-  ExpensesTailoring,
-  ExpensesWorkplaceRunningCosts,
-  Income
-}
+import helpers.{PagerDutyAware, WiremockSpec}
+import models.common.Journey.{ExpensesAdvertisingOrMarketing, ExpensesConstruction, ExpensesFinancialCharges, ExpensesGoodsToSellOrUse, ExpensesInterest, ExpensesIrrecoverableDebts, ExpensesOfficeSupplies, ExpensesOtherExpenses, ExpensesProfessionalFees, ExpensesRepairsAndMaintenance, ExpensesStaffCosts, ExpensesTailoring, ExpensesWorkplaceRunningCosts, Income}
 import models.common.{Journey, JourneyAnswersContext, JourneyContextWithNino, JourneyStatus}
 import models.domain.BusinessIncomeSourcesSummary
 import models.errors.HttpErrorBody.SingleErrorBody
@@ -45,8 +31,6 @@ import org.scalatest.EitherValues
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import test.base.IntegrationBaseSpec
-import test.helpers.{PagerDutyAware, WiremockSpec}
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR
 
 import java.time.LocalDate

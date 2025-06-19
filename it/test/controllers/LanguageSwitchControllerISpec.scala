@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package test.controllers
+package controllers
 
+import base.IntegrationBaseSpec
 import config.FrontendAppConfig
 import models.common.TaxYear
 import org.mockito.ArgumentMatchers.any
@@ -25,7 +26,6 @@ import play.api.i18n.Lang
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import test.base.IntegrationBaseSpec
 
 class LanguageSwitchControllerISpec extends IntegrationBaseSpec with OptionValues with MockitoSugar {
 
