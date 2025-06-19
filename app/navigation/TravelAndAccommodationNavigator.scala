@@ -29,14 +29,12 @@ import models.journeys.expenses.travelAndAccommodation.{
   YourFlatRateForVehicleExpenses
 }
 import models.{NormalMode, _}
-import org.apache.commons.lang3.NotImplementedException
 import pages._
 import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import pages.expenses.travelAndAccommodation._
 import pages.travelAndAccommodation.TravelAndAccommodationTotalExpensesPage
 import play.api.mvc.Call
-import play.api.mvc.Results.NotImplemented
 
 import javax.inject.{Inject, Singleton}
 

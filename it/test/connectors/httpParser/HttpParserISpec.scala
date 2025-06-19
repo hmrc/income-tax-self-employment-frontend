@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package mocks
+package connectors.httpParser
 
-import handlers.ErrorHandler
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import play.api.mvc.{Request, Result}
+class HttpParserISpec extends HttpParserBehaviours {
 
-trait MockErrorHandler extends MockFactory {
-  this: TestSuite =>
-
-  val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
-
-  def mockInternalServerError(result: Result): Unit =
-    (mockErrorHandler
-      .internalServerError()(_: Request[_]))
-      .expects(*)
-      .returns(result)
+  "FakeParser" - {
+    behave like logHttpResponse()
+    behave like handleSingleError()
+    behave like handleMultipleError()
+    behave like returnParsingErrors()
+  }
 }
