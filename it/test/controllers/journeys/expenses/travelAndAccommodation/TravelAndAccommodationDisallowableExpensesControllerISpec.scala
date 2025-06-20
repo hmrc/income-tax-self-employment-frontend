@@ -120,7 +120,12 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
         val result = await(buildClient(submitUrl).post(Map("value" -> Seq("400.00"))))
 
         result.status mustBe SEE_OTHER
-        result.header(HeaderNames.LOCATION) mustBe Some(controllers.journeys.routes.TaskListController.onPageLoad(taxYear).url)
+        result.header(HeaderNames.LOCATION) mustBe
+          Some(
+            controllers.journeys.expenses.travelAndAccommodation.routes.TravelAndAccommodationDisallowableExpensesCYAController
+              .onPageLoad(taxYear, businessId)
+              .url
+          )
       }
     }
 
