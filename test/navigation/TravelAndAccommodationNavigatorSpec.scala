@@ -193,7 +193,7 @@ class TravelAndAccommodationNavigatorSpec extends SpecBase {
 
         "navigate to TravelAndAccommodationDisallowableExpensesPage from TravelAndAccommodationTotalExpensesPage" +
           " when TravelForWorkPage option selected is 'YesDisallowable'" in {
-            val expectedResult = routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
+            val expectedResult = routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)
             val ua = emptyUserAnswers
               .set(TravelForWorkPage, TravelForWork.YesDisallowable, Some(businessId))
               .toOption

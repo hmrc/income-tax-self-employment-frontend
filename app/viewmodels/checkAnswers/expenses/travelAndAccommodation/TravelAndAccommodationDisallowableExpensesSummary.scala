@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.expenses.travelAndAccommodation
 
 import controllers.journeys.expenses.travelAndAccommodation.routes
-import models.{CheckMode, NormalMode}
+import models.CheckMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.TravelForWork
@@ -26,7 +26,7 @@ import pages.expenses.tailoring.individualCategories.TravelForWorkPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.{buildRowBigDecimal, buildRowString}
+import viewmodels.checkAnswers.buildRowBigDecimal
 import viewmodels.journeys.SummaryListCYA
 
 object TravelAndAccommodationDisallowableExpensesSummary {

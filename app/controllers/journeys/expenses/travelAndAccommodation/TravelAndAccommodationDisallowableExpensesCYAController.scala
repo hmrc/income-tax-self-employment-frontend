@@ -53,7 +53,7 @@ class TravelAndAccommodationDisallowableExpensesCYAController @Inject() (overrid
       answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData: Option[TravelExpensesDb] =>
         Ok(
           view(
-            "checkYourAnswers",
+            "common.checkYourAnswers",
             taxYear,
             request.userType,
             TravelAndAccommodationDisallowableExpensesSummary(optTravelExpensesData, request.userAnswers, taxYear, businessId, request.userType),

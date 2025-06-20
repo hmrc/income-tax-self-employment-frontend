@@ -16,7 +16,6 @@
 
 package navigation
 
-import controllers.journeys
 import controllers.journeys.expenses.travelAndAccommodation.routes
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
@@ -184,12 +183,30 @@ class TravelAndAccommodationNavigator @Inject() {
     }
 
   private val normalTravelExpensesRoutes: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
-    case TravelAndAccommodationDisallowableExpensesPage | TravelAndAccommodationTotalExpensesPage =>
+    case TravelAndAccommodationDisallowableExpensesPage  =>
       _ =>
         (taxYear, businessId, _) =>
           Option(
             routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
           )
+
+    case  TravelAndAccommodationTotalExpensesPage =>
+      _ =>
+        (taxYear, businessId, userAnswers) =>
+          userAnswers.get(TravelForWorkPage, Option(businessId)) match {
+            case Some(TravelForWork.YesDisallowable) =>
+              Option(
+                routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+              )
+            case Some(TravelForWork.YesAllowable) =>
+              Option(
+                routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
+              )
+            case _ =>
+              Some(
+                controllers.standard.routes.JourneyRecoveryController.onPageLoad()
+              )
+          }
 
     case _ =>
       _ => (_, _, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
@@ -272,21 +289,32 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private val checkTravelExpensesRouteMap: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
 
-    case TravelAndAccommodationDisallowableExpensesPage | TravelAndAccommodationTotalExpensesPage =>
+    case TravelAndAccommodationDisallowableExpensesPage  =>
       _ =>
         (taxYear, businessId, _) =>
           Option(
             routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
           )
 
+    case TravelAndAccommodationTotalExpensesPage =>
+      _ =>
+        (taxYear, businessId, userAnswers) =>
+          userAnswers.get(TravelForWorkPage, Option(businessId)) match{
+            case Some(TravelForWork.YesDisallowable) =>
+              Some(
+                routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)
+              )
+            case Some(TravelForWork.YesAllowable) =>
+              Some(
+                routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
+              )
+            case _ =>
+              Some(
+                controllers.standard.routes.JourneyRecoveryController.onPageLoad()
+              )
+          }
     case _ =>
       _ => (_, _, _) => Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad())
 
-    case TravelAndAccommodationTotalExpensesPage =>
-      _ =>
-        (taxYear, businessId, _) =>
-          Some(
-            routes.TravelAndAccommodationExpensesCYAController
-              .onPageLoad(taxYear, businessId))
   }
 }
