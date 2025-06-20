@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-sbt -DPLAY_ENV=CI clean scalafmtAll scalafmtSbt compile test:compile it:compile
+sbt clean scalafmtAll scalafmtSbt compile coverage test it/test coverageReport
