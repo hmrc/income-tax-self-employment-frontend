@@ -27,6 +27,7 @@ import models.database.UserAnswers
 import models.domain.{ApiResultT, BusinessData, BusinessIncomeSourcesSummary}
 import models.errors.ServiceError.IncomeAnswersNotSubmittedError
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
+import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
 import models.journeys.income.IncomeJourneyAnswers
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
@@ -118,6 +119,9 @@ trait SelfEmploymentService {
       hc: HeaderCarrier): ApiResultT[Unit]
 
   def hasOtherIncomeSources(taxYear: TaxYear, nino: Nino, mtditid: Mtditid)(implicit hc: HeaderCarrier): ApiResultT[Boolean]
+
+  def updateTravelExpenses(taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: Mtditid, data: TravelExpensesDb)(implicit
+      hc: HeaderCarrier): ApiResultT[Unit]
 }
 
 class SelfEmploymentServiceImpl @Inject() (
@@ -288,6 +292,9 @@ class SelfEmploymentServiceImpl @Inject() (
       hc: HeaderCarrier): ApiResultT[Unit] =
     connector.clearExpensesData(taxYear, request.nino, businessId, request.mtditid, journey)
 
+  def updateTravelExpenses(taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: Mtditid, data: TravelExpensesDb)(implicit
+      hc: HeaderCarrier): ApiResultT[Unit] =
+    connector.updateTravelExpenses(taxYear, businessId, nino, mtditid, data)
 }
 
 object SelfEmploymentService {

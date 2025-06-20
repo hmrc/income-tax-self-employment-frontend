@@ -117,7 +117,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(
-          routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode).url)
+          routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId).url)
       }
     }
 
