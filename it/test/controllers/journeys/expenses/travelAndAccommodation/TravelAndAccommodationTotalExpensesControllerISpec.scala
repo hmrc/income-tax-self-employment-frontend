@@ -18,7 +18,7 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.IntegrationBaseSpec
 import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.common.Journey.ExpensesTravelForWork
 import models.common.JourneyAnswersContext
 import models.database.UserAnswers
@@ -117,7 +117,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(
-          routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId).url)
+          routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId,NormalMode).url)
       }
     }
 
