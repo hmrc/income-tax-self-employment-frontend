@@ -1,8 +1,9 @@
 # income-tax-self-employment-frontend
+![](https://img.shields.io/github/v/release/hmrc/income-tax-self-employment-frontend)
 
-This is where users can review and make changes to the Self-employment section of their income tax return.
+The users can review and make changes to the Self-employment section of their income tax return.
 
-## Running the service locally
+## Running the service
 
 you will need to have the following:
 - Installed [MongoDB](https://docs.mongodb.com/manual/installation/)
@@ -10,58 +11,89 @@ you will need to have the following:
 
 The service manager profile for this service is:
 
-    sm --start INCOME_TAX_SELF_EMPLOYMENT_FRONTEND
-
-Run the following command to start the remaining services locally:
-
-    sudo mongod (If not already running)
-    sm --start INCOME_TAX_SUBMISSION_ALL
+    sm2 --start INCOME_TAX_SUBMISSION_ALL
 
 To run the service locally:
 
-    sudo mongod (If not already running)
-    sm --start INCOME_TAX_SUBMISSION_ALL
-    sm --stop INCOME_TAX_SELF_EMPLOYMENT_FRONTEND
-    ./run.sh **OR** sbt -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes run
+    sm2 --stop INCOME_TAX_SELF_EMPLOYMENT_FRONTEND
+    sbt run
 
-This service runs on port: `localhost:10901`
+The service runs on port `10901` by default.
 
-### Creation of pages using G8-Scaffold
 
-- All pages in this service are created using the HMRC G8 frontend scaffold.
-- Documentation of the scaffold and how it is used can be found here:
-    https://github.com/hmrc/hmrc-frontend-scaffold.g8/wiki/Usage
+## Auth Setup - How to enter the service
 
-#### To add a new journey follow the below steps**
+auth-wizard - http://localhost:9949/auth-login-stub/gg-sign-in
 
-- go to root project
-- call `sbt`
-- choose which gitter template you are going to use, e.g. `g8Scaffold journeyBigDecimalPage`
-    - the available list you can find in .g8 folder
-- repeat the process until you generated all the pages
-- at the end in root project call `./migrate.sh` to add necessary changes to app.routes and messages files
-- call `sbt compile` - fix issues if any
-- call `sbt test` - fix failing tests if any
-- call `sbt it/test` - fix failing tests if any
+### Example Auth Setup - Individual
 
-#### Limitations
+| FieldName           | Value                                                                |
+|---------------------|----------------------------------------------------------------------|
+| Redirect url        | http://localhost:9302/update-and-submit-income-tax-return/2025/start |
+| Credential Strength | strong                                                               |
+| Confidence Level     | 250                                                                  |
+| Affinity Group       | Individual                                                           |
+| Nino                | AA000001C                                                            |
+| Enrolment Key 1     | HMRC-MTD-IT                                                          |
+| Identifier Name 1    | MTDITID                                                              |
+| Identifier Value 1   | 1234567890                                                           |
 
-- Right now only templates with journey* require minimum rework, they compile. They just require few tests to add.
-- Other templates are standard scaffold, and may require a lot of manual tasks to move the files to appropriate packages
+### Example Auth Setup - Agent
+if running locally outside service manager ensure service is ran including testOnly Routes:
 
-#### Known Issues
+    sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes
 
-- the current scaffold templates generate a lot of duplicated cost, we must improve our g8 template to stop that
-- in the terminal, sometimes the cursor every few seconds is moved at the beginning. Keep typing, ignore that
+| FieldName            | Value                                                                             |
+|----------------------|-----------------------------------------------------------------------------------|
+| Redirect url         | /test-only/2022/additional-parameters?ClientNino=AA123457A&ClientMTDID=1234567890 |
+| Credential Strength  | weak                                                                              |
+| Confidence Level      | 250                                                                               |
+| Affinity Group        | Agent                                                                             |
+| Enrolment Key 1      | HMRC-MTD-IT                                                                       |
+| Identifier Name 1     | MTDITID                                                                           |
+| Identifier Value 1    | 1234567890                                                                        |
+| Enrolment Key 2      | HMRC-AS-AGENT                                                                     |
+| Identifier Name 2     | AgentReferenceNumber                                                              |
+| Identifier Value 2    | XARN1234567                                                                       |
+
+## Creating pages
+
+This project uses the [hmrc-frontend-scaffold.g8](https://github.com/hmrc/hmrc-frontend-scaffold.g8) template to generate frontend pages.
+
+For instructions on how to create new pages using this scaffold, please refer to the [Usage Guide on the Wiki](https://github.com/hmrc/hmrc-frontend-scaffold.g8/wiki/Usage).
 
 ## Development
 
-We use scalafmt to format our code. Please enable "Reformat on Save" in your IDE.
+To build the project, run:
 
-Then, if you need to format all the code, call: `./build.sh`
+```
+sbt clean compile
+```
+To run the tests, use:
 
-To make sure all tests are green: `./test.sh` - besides tests it checks formatting and scala style.
+```
+sbt clean test it/test
+```
+To run code coverage
 
+```
+sbt clean coverage test it/test coverageReport
+```
+## Code Style
+### Formatting code
+This service uses [Scalafmt](https://scalameta.org/scalafmt/), a code formatter for Scala. The formatting rules configured for this repository are defined within [.scalafmt.conf](.scalafmt.conf). Prior to checking in any changes to this repository, please make sure all files are formatted correctly.
+
+To apply formatting to this repository using the configured rules in [.scalafmt.conf](.scalafmt.conf) execute:
+
+```
+sbt scalafmtAll scalafmtSbt
+```
+
+To check files have been formatted as expected execute:
+
+```
+sbt scalafmtCheckAll scalafmtSbtCheck
+```
 ## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
