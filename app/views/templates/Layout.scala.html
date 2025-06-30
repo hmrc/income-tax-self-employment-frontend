@@ -32,7 +32,8 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
-    alphaBanner: StandardAlphaBanner
+    alphaBanner: StandardAlphaBanner,
+    debugInfo: views.debug.ViewDebug
 )
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
@@ -79,6 +80,7 @@
 @content = {
     @contentBlock
 
+    @{debugInfo.showViewInfo()}
     <div class="govuk-!-margin-top-8">
         @hmrcReportTechnicalIssueHelper()
     </div>
