@@ -38,7 +38,7 @@ object SelfEmploymentDetailsViewModel {
       )
     )
 
-  private def row(rowKey: String, rowContent: String, userType: Option[UserType] = None)(implicit messages: Messages): SummaryListRow = {
+  private def row(rowKey: String, rowContent: String, userType: Option[UserType])(implicit messages: Messages): SummaryListRow = {
     val agentIndividual = userType match {
       case None           => ""
       case Some(userType) => s".$userType"

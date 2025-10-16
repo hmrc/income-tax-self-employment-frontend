@@ -27,14 +27,15 @@ import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.expenses.travelAndAccommodation.TravelExpensesDb
 import models.journeys.{JourneyNameAndStatus, JourneyStatusData, TaskList}
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.EitherTOps.EitherTExtensions
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelfEmploymentConnector @Inject() (http: HttpClient, appConfig: FrontendAppConfig) {
+class SelfEmploymentConnector @Inject() (http: HttpClientV2, appConfig: FrontendAppConfig) {
   private def buildUrl(url: String) = s"${appConfig.selfEmploymentBEBaseUrl}/income-tax-self-employment/$url"
 
   /** Used only for the UI tests

@@ -28,7 +28,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import play.api.{Application, Configuration}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 trait WiremockSpec
@@ -65,7 +65,7 @@ trait WiremockSpec
     )
     .build()
 
-  protected lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
+  protected lazy val httpClient: HttpClientV2 = app.injector.instanceOf[HttpClientV2]
 
   protected val appConfig: FrontendAppConfig =
     new FrontendAppConfigImpl(app.injector.instanceOf[Configuration], app.injector.instanceOf[ServicesConfig]) {

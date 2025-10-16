@@ -17,11 +17,11 @@
 package views.journeys.expenses
 
 import forms.expenses.travelAndAccommodation.TravelForWorkYourVehicleFormProvider
+import models.common.UserType
 import models.{Index, Mode, NormalMode}
-import models.common.{BusinessId, TaxYear, UserType}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import views.ViewBaseSpec
 import views.html.journeys.expenses.travelAndAccommodation.TravelForWorkYourVehicleView
 

@@ -23,10 +23,10 @@ import models.common.JourneyContext
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class AnswersService @Inject() (connector: AnswersApiConnector)(implicit ex: ExecutionContext) {
+class AnswersService @Inject() (connector: AnswersApiConnector) {
 
   def getAnswers[T](ctx: JourneyContext, index: Option[Index] = None)(implicit format: Format[T], hc: HeaderCarrier): Future[Option[T]] =
     connector.getAnswers(ctx, index)

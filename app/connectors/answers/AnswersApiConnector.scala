@@ -134,7 +134,7 @@ object AnswersApiConnector {
   private def unexpectedErrorMessage(ctx: JourneyContext, index: Option[Index] = None): String =
     s"Unexpected error from answers API ${messageSuffix(ctx, index)}"
 
-  private def invalidResponseMessage(ctx: JourneyContext, index: Option[Index] = None): String =
+  private def invalidResponseMessage(ctx: JourneyContext, index: Option[Index]): String =
     s"Failed to parse answers ${messageSuffix(ctx, index)}"
 
   private def messageSuffix(ctx: JourneyContext, index: Option[Index]) = {

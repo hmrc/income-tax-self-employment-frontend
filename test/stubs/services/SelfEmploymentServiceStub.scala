@@ -163,5 +163,5 @@ case class SelfEmploymentServiceStub(
       hc: HeaderCarrier): ApiResultT[Unit] =
     EitherT.fromEither[Future](clearExpensesResult)
   override def updateTravelExpenses(taxYear: TaxYear, businessId: BusinessId, nino: Nino, mtditid: Mtditid, data: TravelExpensesDb)(implicit
-      hc: HeaderCarrier): ApiResultT[Unit] = EitherT.fromEither[Future](Right())
+      hc: HeaderCarrier): ApiResultT[Unit] = EitherT.fromEither[Future](Right((): Unit))
 }

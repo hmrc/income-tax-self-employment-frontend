@@ -24,7 +24,6 @@ import models.errors.{HttpError, ServiceError}
 import models.session.SessionData
 import play.api.http.Status._
 import play.api.libs.json.{Json, __}
-import uk.gov.hmrc.http.SessionKeys.sessionId
 
 class SessionDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
