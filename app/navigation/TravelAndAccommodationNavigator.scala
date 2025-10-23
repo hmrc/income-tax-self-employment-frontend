@@ -134,9 +134,10 @@ class TravelAndAccommodationNavigator @Inject() {
         userAnswers.get(TravelAndAccommodationExpenseTypePage, businessId) match {
           case Some(expenseTypes) if expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
             routes.PublicTransportAndAccommodationExpensesController.onPageLoad(taxYear, businessId, mode)
-          case Some(expenseTypes) if !expenseTypes.contains(TravelAndAccommodationExpenseType.PublicTransportAndOtherAccommodation) =>
+          case Some(_) =>
             // TODO false and does not PublicTransportAndOtherAccommodation == have you finished page(last page)
             routes.VehicleExpensesController.onPageLoad(taxYear, businessId, Index(1), mode) // TODO handle index
+          case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
         }
       case None => controllers.standard.routes.JourneyRecoveryController.onPageLoad()
     }

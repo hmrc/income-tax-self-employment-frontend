@@ -18,14 +18,17 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import base.SpecBase.fakeOptionalRequest.userType
-import builders.OneColumnSummaryBuilder.{testVehicle, testVehicles}
+import builders.OneColumnSummaryBuilder.testVehicle
 import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
 import models.NormalMode
+import models.common.UserType
 import models.database.UserAnswers
+import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddAnotherVehiclePage
+import pages.expenses.travelAndAccommodation.TravelForWorkYourVehiclePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -33,9 +36,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.journeys.expenses.travelAndAccommodation.AddAnotherVehicleView
-import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
-import models.common.UserType
-import pages.expenses.travelAndAccommodation.{RemoveVehiclePage, TravelForWorkYourVehiclePage}
 
 import scala.concurrent.Future
 

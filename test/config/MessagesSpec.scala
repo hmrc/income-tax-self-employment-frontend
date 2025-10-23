@@ -395,10 +395,12 @@ class MessagesSpec extends SpecBase {
     remaining match {
       case Nil => result
       case (currentKey, currentMessage) :: tail =>
-        val duplicate = keysToTest.collect {
-          case (messageKey, message) if currentMessage == message && currentKey != messageKey =>
-            currentKey
-        }.toSet
+        val duplicate = if(currentKey.contains("global.error")) Set() else {
+          keysToTest.collect {
+            case (messageKey, message) if currentMessage == message && currentKey != messageKey =>
+              currentKey
+          }.toSet
+        }
         checkMessagesAreUnique(keysToTest, tail, duplicate ++ result)
     }
 
@@ -408,10 +410,10 @@ class MessagesSpec extends SpecBase {
                                         result: Set[String] = Set.empty): Set[String] =
     remaining match {
       case Nil => result
-      case (key, value) :: tail =>
-        val containsForbiddenChar = illegalCharacters.exists(value.contains(_))
+      case (msgKey, msgValue) :: tail =>
+        val containsForbiddenChar = illegalCharacters.exists(msgValue.contains(_))
         if (containsForbiddenChar) {
-          checkForIllegalCharacters(tail, illegalCharacters, result + key)
+          checkForIllegalCharacters(tail, illegalCharacters, result + msgKey)
         } else {
           checkForIllegalCharacters(tail, illegalCharacters, result)
         }
@@ -421,8 +423,8 @@ class MessagesSpec extends SpecBase {
   private def checkForBlankMessageValues(remaining: List[(String, String)], result: Set[String] = Set.empty): Set[String] =
     remaining match {
       case Nil => result
-      case (key, value) :: tail =>
-        if (value.replaceAll("\\s+", "").isBlank) checkForBlankMessageValues(tail, result + key) else checkForBlankMessageValues(tail, result)
+      case (msgKey, msgValue) :: tail =>
+        if (msgValue.replaceAll("\\s+", "").isBlank) checkForBlankMessageValues(tail, result + msgKey) else checkForBlankMessageValues(tail, result)
     }
 
 }

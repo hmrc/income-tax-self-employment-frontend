@@ -18,7 +18,6 @@ package viewmodels
 
 import base.SpecBase
 import cats.implicits._
-import config.FrontendAppConfig
 import controllers.journeys._
 import models._
 import models.common.AccountingType.Accrual

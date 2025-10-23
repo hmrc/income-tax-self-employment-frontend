@@ -18,7 +18,6 @@ package controllers.journeys.expenses.travelAndAccommodation
 
 import base.SpecBase
 import forms.expenses.travelAndAccommodation.RemoveVehicleFormProvider
-import models.database.UserAnswers
 import models.NormalMode
 import models.common.UserType
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}

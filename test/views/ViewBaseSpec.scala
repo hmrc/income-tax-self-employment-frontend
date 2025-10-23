@@ -25,13 +25,10 @@ import org.jsoup.nodes.Document
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
 import play.api.i18n.Messages
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContent
 import play.twirl.api.Html
 import views.helper.{JsoupHelper, writeHtmlToTempFile}
-import views.html.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvHowMuchDoYouWantToClaimView
 
 trait ViewBaseSpec extends PlaySpec with BeforeAndAfterAll with GuiceOneAppPerSuite with JsoupHelper {
 

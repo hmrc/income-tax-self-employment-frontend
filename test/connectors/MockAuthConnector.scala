@@ -16,7 +16,6 @@
 
 package connectors
 
-import org.mockito.ArgumentMatchersSugar.eqTo
 import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite

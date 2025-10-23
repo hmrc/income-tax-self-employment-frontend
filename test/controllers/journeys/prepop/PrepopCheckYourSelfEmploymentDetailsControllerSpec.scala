@@ -18,16 +18,15 @@ package controllers.journeys.prepop
 
 import base.SpecBase
 import cats.data.EitherT
-import models.requests.User
 import controllers.journeys.prepop.routes._
 import controllers.journeys.routes
 import controllers.standard.routes._
 import models.NormalMode
 import models.common.BusinessId
+import models.common.Journey.BusinessDetailsPrepop
 import models.common.UserType.Individual
 import models.domain.BusinessData
 import models.errors.ServiceError.NotFoundError
-import models.common.Journey.BusinessDetailsPrepop
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,7 +35,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
-import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.play.language.LanguageUtils
 import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
 import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView

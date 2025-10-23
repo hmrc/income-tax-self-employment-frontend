@@ -34,7 +34,7 @@ trait SessionCookieHelper {
   val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
   val sessionId = "session-ac4ed3e7-dbc3-4150-9574-40771c4285c1"
 
-  def bakeSessionCookie(isAgent: Boolean, extraOptions: Option[Map[String, String]] = None): String =
+  def bakeSessionCookie(isAgent: Boolean, extraOptions: Option[Map[String, String]]): String =
     encodeCookieData(baseCookieValues(isAgent, extraOptions))
 
   def getCookieContents(cookie: WSCookie): Map[String, String] =
