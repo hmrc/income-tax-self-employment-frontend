@@ -224,7 +224,6 @@ class ProfessionalServiceExpensesControllerSpec extends SpecBase with MockitoSug
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
           when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, any)) thenReturn EitherT.rightT(())
           when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)) thenReturn EitherT.rightT(())
 
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)
