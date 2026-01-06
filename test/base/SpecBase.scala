@@ -20,6 +20,7 @@ import builders.UserBuilder
 import cats.implicits.catsSyntaxOptionId
 import config.FrontendAppConfig
 import controllers.actions._
+import data.TimeData
 import models.Index
 import models.common.UserType.Individual
 import models.common._
@@ -50,12 +51,11 @@ import stubs.services.SelfEmploymentServiceStub
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.ZonedDateTime
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  val taxYear: TaxYear               = TaxYear(ZonedDateTime.now().getYear)
+  val taxYear: TaxYear               = TaxYear(TimeData.testDate.getYear)
   val userAnswersId                  = "id"
   val userId: UserId                 = UserId("id")
   val nino: Nino                     = Nino("AA112233A")

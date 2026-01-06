@@ -20,6 +20,6 @@ import java.time.LocalDate
 
 object TimeData {
 
-  val testDate: LocalDate = LocalDate.of(2025, 1, 1)
+  val testDate: LocalDate = LocalDate.of(2026, 1, 1)
 
 }

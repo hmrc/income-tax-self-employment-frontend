@@ -23,9 +23,9 @@ import builders.UserBuilder.aNoddyUser
 import cats.implicits._
 import controllers.TaskListControllerSpec._
 import controllers.journeys.routes
+import data.TimeData
 import models.common.Journey.TradeDetails
 import models.common.JourneyStatus
-import models.common.TaxYear.dateNow
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
 import models.journeys.{JourneyNameAndStatus, TaskList, TaskListWithRequest}
@@ -52,7 +52,7 @@ class TaskListControllerSpec extends AnyWordSpec with MockitoSugar {
     NationalInsuranceContributionsViewModel.buildSummaryList(
       None,
       List(anEmptyTadesJourneyStatusesModel),
-      Some(dateNow.minusYears(16)),
+      Some(TimeData.testDate.minusYears(16)),
       List.empty,
       taxYear)(messages)
 
