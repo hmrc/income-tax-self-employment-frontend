@@ -6,7 +6,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "income-tax-self-employment-frontend"
 
 ThisBuild / majorVersion      := 0
-ThisBuild / scalaVersion      := "2.13.16"
+ThisBuild / scalaVersion      := "2.13.18"
 ThisBuild / useSuperShell     := false
 Global / excludeLintKeys += majorVersion // suppress 'ThisBuild / majorVersion key unused' warning
 

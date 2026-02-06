@@ -2,8 +2,8 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "10.4.0"
-  private val hmrcMongoVersion = "2.11.0"
+  private val bootstrapVersion = "10.5.0"
+  private val hmrcMongoVersion = "2.12.0"
 
   val jacksonAndPlayExclusions: Seq[InclusionRule] = Seq(
     ExclusionRule(organization = "com.fasterxml.jackson.core"),
@@ -15,13 +15,13 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"        %% "play-frontend-hmrc-play-30"            % "12.22.0",
+    "uk.gov.hmrc"        %% "play-frontend-hmrc-play-30"            % "12.31.0",
     "uk.gov.hmrc"        %% "play-conditional-form-mapping-play-30" % "3.4.0",
     "uk.gov.hmrc"        %% "bootstrap-frontend-play-30"            % bootstrapVersion,
     "uk.gov.hmrc.mongo"  %% "hmrc-mongo-play-30"                    % hmrcMongoVersion,
     "org.typelevel"      %% "cats-core"                             % "2.13.0",
-    "com.beachape"       %% "enumeratum"                            % "1.9.0",
-    "com.beachape"       %% "enumeratum-play-json"                  % "1.9.0" excludeAll (jacksonAndPlayExclusions *),
+    "com.beachape"       %% "enumeratum"                            % "1.9.4",
+    "com.beachape"       %% "enumeratum-play-json"                  % "1.9.4" excludeAll (jacksonAndPlayExclusions *),
     "org.codehaus.janino" % "janino"                                % "3.1.12" // it's required by logback for conditional logging
   )
 
@@ -35,7 +35,7 @@ object AppDependencies {
     "org.typelevel"       %% "cats-core"               % "2.13.0",
     "org.scalacheck"      %% "scalacheck"              % "1.19.0",
     "org.mockito"         %% "mockito-scala"           % "2.0.0",
-    "org.scalamock"       %% "scalamock"               % "7.5.2"
+    "org.scalamock"       %% "scalamock"               % "7.5.5"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test
