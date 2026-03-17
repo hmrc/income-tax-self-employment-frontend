@@ -4,6 +4,7 @@ object AppDependencies {
 
   private val bootstrapVersion = "10.7.0"
   private val hmrcMongoVersion = "2.12.0"
+  private val enumeratumVersion = "1.9.6"
 
   val jacksonAndPlayExclusions: Seq[InclusionRule] = Seq(
     ExclusionRule(organization = "com.fasterxml.jackson.core"),
@@ -20,8 +21,8 @@ object AppDependencies {
     "uk.gov.hmrc"        %% "bootstrap-frontend-play-30"            % bootstrapVersion,
     "uk.gov.hmrc.mongo"  %% "hmrc-mongo-play-30"                    % hmrcMongoVersion,
     "org.typelevel"      %% "cats-core"                             % "2.13.0",
-    "com.beachape"       %% "enumeratum"                            % "1.9.5",
-    "com.beachape"       %% "enumeratum-play-json"                  % "1.9.5" excludeAll (jacksonAndPlayExclusions *),
+    "com.beachape"       %% "enumeratum"                            % enumeratumVersion,
+    "com.beachape"       %% "enumeratum-play-json"                  % enumeratumVersion excludeAll (jacksonAndPlayExclusions *),
     "org.codehaus.janino" % "janino"                                % "3.1.12" // it's required by logback for conditional logging
   )
 
