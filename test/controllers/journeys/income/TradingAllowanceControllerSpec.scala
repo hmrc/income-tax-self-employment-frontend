@@ -24,7 +24,6 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.income.TradingAllowance
 import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.income.TradingAllowancePage
 import play.api.Application

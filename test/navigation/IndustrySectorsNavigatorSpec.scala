@@ -21,7 +21,7 @@ import controllers.journeys.industrysectors.routes
 import controllers.standard
 import models.NormalMode
 import models.journeys.industrySectors.IndustrySectorsDb
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.Page
 import pages.industrysectors.{FarmerOrMarketGardenerPage, LiteraryOrCreativeWorksPage}
 

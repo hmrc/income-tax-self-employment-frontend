@@ -18,27 +18,24 @@ package connectors
 
 import models.errors.ServiceError
 import models.session.SessionData
-import org.scalamock.handlers.CallHandler1
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import uk.gov.hmrc.http.HeaderCarrier
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.Future
 
-trait MockSessionDataConnector extends MockFactory { this: TestSuite =>
+trait MockSessionDataConnector extends MockitoSugar {
 
   val mockSessionDataConnector: SessionDataConnector = mock[SessionDataConnector]
 
-  private type MockType = CallHandler1[HeaderCarrier, Future[Either[ServiceError, Option[SessionData]]]]
-
   object MockSessionDataConnector {
 
-    private def mockFunction: MockType = (mockSessionDataConnector.getSessionData(_: HeaderCarrier)).expects(*)
+    def getSessionData(resp: Either[ServiceError, Option[SessionData]]): Unit =
+      when(mockSessionDataConnector.getSessionData(any()))
+        .thenReturn(Future.successful(resp))
 
-    def getSessionData(resp: Either[ServiceError, Option[SessionData]]): MockType =
-      mockFunction.returning(Future.successful(resp))
-
-    def getSessionDataException(err: Throwable): MockType =
-      mockFunction.returning(Future.failed(err))
+    def getSessionDataException(err: Throwable): Unit =
+      when(mockSessionDataConnector.getSessionData(any()))
+        .thenReturn(Future.failed(err))
   }
 }

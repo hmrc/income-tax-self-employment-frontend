@@ -20,7 +20,6 @@ import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import models.NormalMode
 import models.common.{BusinessId, TaxYear}
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.income.AnyOtherIncomePage
 import play.api.Application

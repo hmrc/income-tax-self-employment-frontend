@@ -25,7 +25,7 @@ import models.database.UserAnswers
 import models.{CheckMode, Mode, NormalMode}
 import navigation.{FakeWorkplaceRunningCostsNavigatorTwoRoutesNavigator, WorkplaceRunningCostsNavigator}
 import org.mockito.Mockito.when
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatest.prop.TableFor4
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises.LiveAtBusinessPremisesPage
 import play.api.Application

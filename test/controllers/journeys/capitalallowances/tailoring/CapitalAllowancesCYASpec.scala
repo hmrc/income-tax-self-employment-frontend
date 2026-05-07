@@ -33,10 +33,10 @@ class CapitalAllowancesCYASpec extends CYAOnPageLoadControllerBaseSpec with CYAO
 
   override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
-  override val submissionData: JsObject =
+  override lazy val submissionData: JsObject =
     Json.obj("claimCapitalAllowances" -> true, "selectCapitalAllowances" -> Json.arr("zeroEmissionCar"))
 
-  override val testDataCases: List[JsObject] =
+  override lazy val testDataCases: List[JsObject] =
     List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = CapitalAllowanceCYAController.onPageLoad

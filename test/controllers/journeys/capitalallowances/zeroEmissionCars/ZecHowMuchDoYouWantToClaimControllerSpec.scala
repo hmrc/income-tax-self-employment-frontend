@@ -26,7 +26,7 @@ import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.journeys.capitalallowances.zeroEmissionCars.ZecHowMuchDoYouWantToClaim
 import navigation.{FakeWorkplaceRunningCostsNavigator, WorkplaceRunningCostsNavigator}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.capitalallowances.zeroEmissionCars._
 import play.api.Application
 import play.api.data.Form

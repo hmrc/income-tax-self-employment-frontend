@@ -22,8 +22,7 @@ import controllers.standard.{routes => genRoutes}
 import forms.standard.LocalDateFormProvider
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.Form
@@ -56,7 +55,7 @@ abstract case class LocalDateGetAndPostQuestionBaseSpec(controller: String, page
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
+  mockService.persistAnswer(eqTo(businessId), *, *[LocalDate], eqTo(page))(*) returns pageAnswers.asFuture
 
   private def getRequest = FakeRequest(GET, onPageLoadRoute)
   private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(

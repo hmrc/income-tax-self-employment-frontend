@@ -21,16 +21,13 @@ import models.common.UserType
 import models.{Index, Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import views.ViewBaseSpec
 import views.html.journeys.expenses.travelAndAccommodation.SimplifiedExpensesView
 
 class SimplifiedExpensesViewSpec extends ViewBaseSpec {
 
-  val application: Application     = new GuiceApplicationBuilder().build()
-  val view: SimplifiedExpensesView = application.injector.instanceOf[SimplifiedExpensesView]
+  private val view: SimplifiedExpensesView = app.injector.instanceOf[SimplifiedExpensesView]
 
   private val formProvider    = app.injector.instanceOf[SimplifiedExpenseFormProvider]
   private val index: Index    = Index(1)

@@ -26,18 +26,17 @@ import models.errors.{HttpError, HttpErrorBody, ServiceError}
 import models.journeys.{TaskList, TaskListWithRequest}
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchersSugar._
-import org.mockito.IdiomaticMockito.StubbingOps
+import org.mockito.IdiomaticMockito
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsObject
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
 
 import scala.concurrent.Future
 
-class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with Matchers with ScalaFutures with MockitoSugar {
+class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with Matchers with ScalaFutures with IdiomaticMockito {
 
   "apply" should {
     "return a SubmittedDataRetrievalActionImpl" in new TestCase {
@@ -51,7 +50,7 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
 
   "loadTaskList" should {
     "should return a task list for multiple journeys and businesses" in new TestCase {
-      connector.getTaskList(*[Nino], *[TaxYear], *[Mtditid])(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
+      connector.getTaskList(eqTo(nino), eqTo(taxYear), eqTo(mtditid))(*, *) returns EitherT.rightT[Future, ServiceError](aTaskList)
       connector.getSubmittedAnswers[JsObject](*)(*, *, *) returns EitherT.rightT[Future, ServiceError](None)
       repo.set(*) returns Future.successful(true)
 
@@ -64,7 +63,7 @@ class SubmittedDataRetrievalActionProviderImplSpec extends AnyWordSpecLike with 
     }
 
     "should return an error if connector fails" in new TestCase {
-      connector.getTaskList(*[Nino], *[TaxYear], *[Mtditid])(*, *) returns EitherT.leftT[Future, TaskList](
+      connector.getTaskList(eqTo(nino), eqTo(taxYear), eqTo(mtditid))(*, *) returns EitherT.leftT[Future, TaskList](
         ServiceError.ConnectorResponseError("method", "url", HttpError(404, HttpErrorBody.parsingError)))
 
       val underTest = new SubmittedDataRetrievalActionProviderImpl(connector, repo)

@@ -33,10 +33,10 @@ class ZeroEmissionCarsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
   override val pageHeading: String =
     Page.cyaCheckYourAnswersHeading
 
-  override val submissionData: JsObject =
+  override lazy val submissionData: JsObject =
     Json.obj("zeroEmissionCars" -> false)
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ZeroEmissionCarsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ZeroEmissionCarsCYAController.onSubmit

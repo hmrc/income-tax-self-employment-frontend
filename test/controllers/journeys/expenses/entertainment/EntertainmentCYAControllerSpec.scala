@@ -34,11 +34,11 @@ class EntertainmentCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec wit
 
   override val journey: Journey = ExpensesEntertainment
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
     "entertainmentCosts"  -> "yes",
     "entertainmentAmount" -> 200.00
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.EntertainmentCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.EntertainmentCYAController.onSubmit

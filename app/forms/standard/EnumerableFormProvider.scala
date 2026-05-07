@@ -26,6 +26,6 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class EnumerableFormProvider @Inject() extends Mappings {
 
-  def apply[A](page: OneQuestionPage[A], userType: UserType, altPrefix: Option[String] = None)(implicit `enum`: Enumerable[A]): Form[A] =
-    Form("value" -> enumerable[A](userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required")))(enum))
+  def apply[A](page: OneQuestionPage[A], userType: UserType, altPrefix: Option[String] = None)(implicit ev: Enumerable[A]): Form[A] =
+    Form("value" -> enumerable[A](userTypeAware(userType, altPrefix.fold(page.requiredErrorKey)(a => s"$a.error.required")))(ev))
 }

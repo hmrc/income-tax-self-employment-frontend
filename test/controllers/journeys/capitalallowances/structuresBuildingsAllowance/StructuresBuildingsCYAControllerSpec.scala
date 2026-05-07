@@ -31,7 +31,7 @@ class StructuresBuildingsCYAControllerSpec extends CYAOnPageLoadControllerBaseSp
 
   override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
-  override val testDataCases: List[JsObject] = List(
+  override lazy val testDataCases: List[JsObject] = List(
     Json.obj(
       "structuresBuildingsAllowance"     -> true,
       "structuresBuildingsEligibleClaim" -> true,

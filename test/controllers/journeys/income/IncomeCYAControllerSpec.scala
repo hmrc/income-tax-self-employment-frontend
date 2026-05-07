@@ -44,7 +44,7 @@ class IncomeCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYAOn
     "tradingAllowance"           -> "declareExpenses"
   )
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def stubService =
     SelfEmploymentServiceStub(getTotalIncomeResult = turnoverIncomeAmount.asRight, clearSimplifiedExpensesDataResult = ().asRight)

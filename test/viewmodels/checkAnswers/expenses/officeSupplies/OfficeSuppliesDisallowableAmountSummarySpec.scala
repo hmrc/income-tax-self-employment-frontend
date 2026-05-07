@@ -20,7 +20,7 @@ import base.SpecBase
 import models.common.UserType
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.i18n.{DefaultMessagesApi, Lang, MessagesImpl}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}

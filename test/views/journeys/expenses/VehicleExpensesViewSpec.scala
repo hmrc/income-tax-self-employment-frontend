@@ -21,7 +21,7 @@ import forms.expenses.travelAndAccommodation.VehicleExpensesFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType
 import models.{Mode, NormalMode}
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.data.Form
@@ -33,13 +33,21 @@ import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout}
 import play.twirl.api.Html
 import views.html.journeys.expenses.travelAndAccommodation.VehicleExpensesView
 
-class VehicleExpensesViewSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+import scala.concurrent.Await
+import scala.concurrent.duration.*
+
+class VehicleExpensesViewSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with BeforeAndAfterAll {
 
   val application: Application = new GuiceApplicationBuilder().build()
 
   implicit val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
   val view: VehicleExpensesView = application.injector.instanceOf[VehicleExpensesView]
+
+  override def afterAll(): Unit = {
+    Await.result(application.stop(), 30.seconds)
+    super.afterAll()
+  }
 
   def createView(form: Form[_],
                  mode: Mode,

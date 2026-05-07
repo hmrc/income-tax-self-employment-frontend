@@ -55,13 +55,15 @@ class SessionRepositoryISpec
     clock = stubClock
   )
 
+  private val repo: SessionRepository = repository.asInstanceOf[SessionRepository]
+
   ".set" - {
 
     "must set the last updated time on the supplied user answers to `now`, and save them" in {
 
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
-      val setResult     = repository.set(userAnswers).futureValue
+      val setResult     = repo.set(userAnswers).futureValue
       val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
 
       setResult mustEqual true
@@ -77,7 +79,7 @@ class SessionRepositoryISpec
 
         insert(userAnswers).futureValue
 
-        val result         = repository.get(userAnswers.id).futureValue
+        val result         = repo.get(userAnswers.id).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -88,7 +90,7 @@ class SessionRepositoryISpec
 
       "must return None" in {
 
-        repository.get("id that does not exist").futureValue must not be defined
+        repo.get("id that does not exist").futureValue must not be defined
       }
     }
   }
@@ -99,14 +101,14 @@ class SessionRepositoryISpec
 
       insert(userAnswers).futureValue
 
-      val result = repository.clear(userAnswers.id).futureValue
+      val result = repo.clear(userAnswers.id).futureValue
 
       result mustEqual true
-      repository.get(userAnswers.id).futureValue must not be defined
+      repo.get(userAnswers.id).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
-      val result = repository.clear("id that does not exist").futureValue
+      val result = repo.clear("id that does not exist").futureValue
 
       result mustEqual true
     }
@@ -120,7 +122,7 @@ class SessionRepositoryISpec
 
         insert(userAnswers).futureValue
 
-        val result = repository.keepAlive(userAnswers.id).futureValue
+        val result = repo.keepAlive(userAnswers.id).futureValue
 
         val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instant)
 
@@ -134,7 +136,7 @@ class SessionRepositoryISpec
 
       "must return true" in {
 
-        repository.keepAlive("id that does not exist").futureValue mustEqual true
+        repo.keepAlive("id that does not exist").futureValue mustEqual true
       }
     }
   }

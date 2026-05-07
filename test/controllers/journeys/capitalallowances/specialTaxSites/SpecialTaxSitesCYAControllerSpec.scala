@@ -33,7 +33,7 @@ class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec w
 
   override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
-  override val submissionData: JsObject = Json.obj(
+  override lazy val submissionData: JsObject = Json.obj(
     "specialTaxSites" -> true,
     "newSpecialTaxSites" -> List(
       Json.obj(
@@ -49,7 +49,7 @@ class SpecialTaxSitesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec w
     "existingSiteClaimingAmount"               -> BigDecimal(1000)
   )
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.SpecialTaxSitesCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.SpecialTaxSitesCYAController.onSubmit

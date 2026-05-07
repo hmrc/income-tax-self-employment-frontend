@@ -25,8 +25,7 @@ import models.common.UserType.Individual
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.{Form, FormBinding}
@@ -59,7 +58,7 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
 
   def expectedView(expectedForm: Form[_], scenario: TestScenario)(implicit request: Request[_], messages: Messages, application: Application): String
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
+  mockService.persistAnswer(eqTo(businessId), *, eqTo(amount), eqTo(page))(*) returns pageAnswers.asFuture
 
   private def getRequest  = FakeRequest(GET, onPageLoadRoute)
   private def postRequest = FakeRequest(POST, onSubmitRoute).withFormUrlEncodedBody(("value", amount.toString))
@@ -107,12 +106,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
     "on page submission" - {
       "valid data is submitted" - {
         "redirect to the next page" in new TestScenario(answers = pageAnswers.some) {
-          mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns Redirect(onwardRoute).asFuture
-          mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
-            *[DataRequest[_]],
-            *[FormBinding],
-            *[Writes[BigDecimal]]
-          ) returns Redirect(onwardRoute).asFuture
+          mockService.handleForm(*, *, *)(*, *) returns Redirect(onwardRoute).asFuture
+          mockService.defaultHandleForm(*, eqTo(page), eqTo(businessId), eqTo(taxYear), *, *)(*, *, *) returns Redirect(onwardRoute).asFuture
 
           running(application) {
             val result                     = route(application, postRequest).value
@@ -130,12 +125,8 @@ abstract case class BigDecimalGetAndPostQuestionBaseSpec(controller: String, pag
             val boundForm: Form[BigDecimal]                      = createForm(userType).bind(Map("value" -> "invalid value"))
             val expectedErrorView: String                        = expectedView(boundForm, this)(request, messages(application), application)
 
-            mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
-            mockService.defaultHandleForm(*[Form[BigDecimal]], *[OneQuestionPage[BigDecimal]], *[BusinessId], *[TaxYear], *[Mode], *)(
-              *[DataRequest[_]],
-              *[FormBinding],
-              *[Writes[BigDecimal]]
-            ) returns BadRequest(expectedErrorView).asFuture
+            mockService.handleForm(*, *, *)(*, *) returns BadRequest(expectedErrorView).asFuture
+            mockService.defaultHandleForm(*, eqTo(page), eqTo(businessId), eqTo(taxYear), *, *)(*, *, *) returns BadRequest(expectedErrorView).asFuture
 
             running(application) {
               val result = route(application, request).value

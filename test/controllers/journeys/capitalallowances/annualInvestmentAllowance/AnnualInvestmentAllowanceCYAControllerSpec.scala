@@ -32,12 +32,12 @@ class AnnualInvestmentAllowanceCYAControllerSpec extends CYAOnPageLoadController
 
   override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
-  override val submissionData: JsObject = Json.obj(
+  override lazy val submissionData: JsObject = Json.obj(
     "annualInvestmentAllowance"       -> true,
     "annualInvestmentAllowanceAmount" -> 500.00
   )
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.AnnualInvestmentAllowanceCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.AnnualInvestmentAllowanceCYAController.onSubmit

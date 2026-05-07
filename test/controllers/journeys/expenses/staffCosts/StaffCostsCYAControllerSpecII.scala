@@ -36,12 +36,12 @@ class StaffCostsCYAControllerSpecII extends CYAOnPageLoadControllerBaseSpec with
 
   override val pageHeading: String = StaffCostsCYAPage.toString
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
     "disallowableStaffCosts"       -> true,
     "staffCostsAmount"             -> 200.00,
     "staffCostsDisallowableAmount" -> 200.00
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.StaffCostsCYAController.onPageLoad
   override def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.StaffCostsCYAController.onSubmit

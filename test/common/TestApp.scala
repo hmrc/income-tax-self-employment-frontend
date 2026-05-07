@@ -28,6 +28,9 @@ import services.SelfEmploymentService
 import stubs.controllers.actions.StubSubmittedDataRetrievalActionProvider
 import stubs.services.SelfEmploymentServiceStub
 
+import scala.concurrent.Await
+import scala.concurrent.duration.*
+
 object TestApp {
 
   def buildApp(accountingType: AccountingType,
@@ -53,9 +56,10 @@ object TestApp {
   def buildAppFromUserAnswers(userAnswers: UserAnswers): Application =
     buildApp(AccountingType.Cash, UserType.Individual, Some(userAnswers))
 
-  def buildAppWithMessages() = {
-    implicit val application  = SpecBase.applicationBuilder(None, UserType.Individual).build()
+  def buildAppWithMessages(): Messages = {
+    val application           = SpecBase.applicationBuilder(None, UserType.Individual).build()
     val appMessages: Messages = messages(application)
+    Await.result(application.stop(), 30.seconds)
     appMessages
   }
 

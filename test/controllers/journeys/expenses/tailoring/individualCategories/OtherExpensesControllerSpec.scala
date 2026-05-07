@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
+import models.errors.ServiceError
 import forms.standard.EnumerableFormProvider
 import models.common.Journey.ExpensesOtherExpenses
 import models.common.UserType
@@ -266,7 +267,8 @@ class OtherExpensesControllerSpec extends SpecBase with MockitoSugar with Before
 
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesOtherExpenses))(any, any)) thenReturn EitherT
+            .rightT[Future, ServiceError](())
 
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)

@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
+import models.errors.ServiceError
 import forms.standard.EnumerableFormProvider
 import models.common.Journey.ExpensesRepairsAndMaintenance
 import models.common.UserType.{Agent, Individual}
@@ -29,9 +30,8 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse.YesDisallo
 import models.journeys.expenses.individualCategories.{GoodsToSellOrUse, RepairsAndMaintenance}
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.{eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.matchers.MacroBasedMatchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
@@ -48,7 +48,7 @@ import views.html.journeys.expenses.tailoring.individualCategories.RepairsAndMai
 
 import scala.concurrent.Future
 
-class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers with BeforeAndAfterEach {
+class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -207,7 +207,7 @@ class RepairsAndMaintenanceControllerSpec extends SpecBase with MockitoSugar wit
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
           when(
             mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesRepairsAndMaintenance))(any, HeaderCarrier(any))) thenReturn EitherT
-            .rightT(())
+            .rightT[Future, ServiceError](())
 
           val repairsAndMaintenanceRoute: String = routes.RepairsAndMaintenanceController.onPageLoad(taxYear, businessId, CheckMode).url
 

@@ -17,13 +17,12 @@
 package controllers
 
 import base.ControllerTestScenarioSpec
-import base.SpecBase.ToFutureOps
+import base.SpecBase.{ToFutureOps, businessId, taxYear}
 import cats.implicits.catsSyntaxOptionId
 import models.Mode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.OptionValues._
 import org.scalatest.wordspec.AnyWordSpecLike
 import pages.OneQuestionPage
@@ -58,16 +57,9 @@ trait StandardControllerSpec extends AnyWordSpecLike with PlayRunners with Contr
       def request: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest(POST, path)
         .withFormUrlEncodedBody(formData: _*)
 
-      mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns userAnswers.asFuture
-      mockService.persistAnswerAndRedirect(*[OneQuestionPage[_]], *[BusinessId], *[DataRequest[_]], *, *[TaxYear], *[Mode])(*) returns Redirect(
-        onwardUrl).asFuture
-      mockService.submitGatewayQuestionAndRedirect(
-        *[OneQuestionPage[Boolean]],
-        *[BusinessId],
-        *[UserAnswers],
-        *,
-        *[TaxYear],
-        *[Mode]) returns Redirect(onwardUrl).asFuture
+      mockService.persistAnswer(eqTo(businessId), *, *, *)(*) returns userAnswers.asFuture
+      mockService.persistAnswerAndRedirect(*, eqTo(businessId), *, *, eqTo(taxYear), *)(*) returns Redirect(onwardUrl).asFuture
+      mockService.submitGatewayQuestionAndRedirect(*, eqTo(businessId), *, *, eqTo(taxYear), *)(*, *) returns Redirect(onwardUrl).asFuture
 
       "render the correct view" in new TestScenario(
         UserType.Individual,

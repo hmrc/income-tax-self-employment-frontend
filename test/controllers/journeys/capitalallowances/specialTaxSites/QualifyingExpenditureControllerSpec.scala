@@ -21,7 +21,6 @@ import cats.implicits.catsSyntaxOptionId
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.specialTaxSites.{QualifyingExpenditurePage, SpecialTaxSitesBasePage}
 import play.api.Application
 import play.api.data.Form

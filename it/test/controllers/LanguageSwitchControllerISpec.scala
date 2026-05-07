@@ -20,7 +20,8 @@ import base.IntegrationBaseSpec
 import config.FrontendAppConfig
 import models.common.TaxYear
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import play.api.i18n.Lang
 import play.api.mvc.Headers

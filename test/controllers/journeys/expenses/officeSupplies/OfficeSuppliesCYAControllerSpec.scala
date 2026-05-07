@@ -47,9 +47,9 @@ class OfficeSuppliesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec wi
       classes = "govuk-!-margin-bottom-7"
     )
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
     "officeSupplies"       -> "yesAllowable",
     "officeSuppliesAmount" -> officeSuppliesAmount
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 }

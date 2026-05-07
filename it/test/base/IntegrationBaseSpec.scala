@@ -33,6 +33,7 @@ import org.mongodb.scala.bson.Document
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters
 import org.mongodb.scala.result.DeleteResult
+import org.mongodb.scala.SingleObservableFuture
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -43,6 +44,7 @@ import play.api.http.HeaderNames
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Format, JsObject, JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest}
+import play.api.libs.ws.DefaultBodyWritables
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
@@ -50,7 +52,7 @@ import utils.TimeMachine
 
 import scala.concurrent.ExecutionContext
 
-trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with ScalaFutures with BeforeAndAfterEach with SessionCookieHelper {
+trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with ScalaFutures with BeforeAndAfterEach with SessionCookieHelper with DefaultBodyWritables {
 
   val mockTimeMachine: TimeMachine = mock[TimeMachine]
 
@@ -156,6 +158,12 @@ trait IntegrationBaseSpec extends PlaySpec with GuiceOneServerPerSuite with Scal
 
     def insertEmpty(): Unit =
       await(mongo.collection.insertOne(testAnswers).toFuture())
+
+    def insertWithData(data: JsObject): Unit =
+      await(mongo.collection.insertOne(testAnswers.copy(data = data)).toFuture())
+
+    def insertWithAccountingType(accountingType: String = "ACCRUAL"): Unit =
+      insertWithData(Json.obj(businessId.value -> Json.obj("accountingType" -> accountingType)))
 
     def insertJson(journey: Journey, data: JsValue): Unit =
       insertMany(journey -> data)

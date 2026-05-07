@@ -23,7 +23,7 @@ import models._
 import models.database.UserAnswers
 import models.journeys.expenses.individualCategories.WorkFromBusinessPremises
 import models.journeys.expenses.workplaceRunningCosts.{WfbpFlatRateOrActualCosts, WfhFlatRateOrActualCosts}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages._
 import pages.expenses.tailoring.individualCategories.WorkFromBusinessPremisesPage
 import pages.expenses.workplaceRunningCosts.workingFromBusinessPremises._

@@ -50,7 +50,7 @@ object ZecUseOutsideSEFormProvider extends Mappings {
       mapping(
         radioPercentage    -> validateRadio(),
         optDifferentAmount -> validateInt()
-      )(ZecUseOutsideSEFormModel.apply)(ZecUseOutsideSEFormModel.unapply)
+      )(ZecUseOutsideSEFormModel.apply)(m => Some(Tuple.fromProductTyped(m)))
     )
   }
 

@@ -25,8 +25,7 @@ import models.common.UserType.Individual
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.OneQuestionPage
 import play.api.Application
 import play.api.data.{Form, FormBinding}
@@ -59,10 +58,9 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
       messages: Messages,
       application: Application): String
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns pageAnswers.asFuture
+  mockService.persistAnswer(eqTo(businessId), *, *, *)(*) returns pageAnswers.asFuture
   mockService
-    .submitGatewayQuestionAndRedirect(*[OneQuestionPage[Boolean]], *[BusinessId], *[UserAnswers], *, *[TaxYear], *) returns Redirect(
-    onwardRoute).asFuture
+    .submitGatewayQuestionAndRedirect(eqTo(page), eqTo(businessId), *, eqTo(validAnswer), eqTo(taxYear), *)(*, *) returns Redirect(onwardRoute).asFuture
 
   private lazy val getRequest  = FakeRequest(GET, onPageLoadCall.url)
   private lazy val postRequest = FakeRequest(POST, onSubmitCall.url).withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -110,12 +108,8 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
     "on page submission" - {
       "valid data is submitted" - {
         "redirect to the next page" in new TestScenario(answers = pageAnswers.some) {
-          mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns Redirect(onwardRoute).asFuture
-          mockService.defaultHandleForm(*[Form[Boolean]], *[OneQuestionPage[Boolean]], *[BusinessId], *[TaxYear], *[Mode], *)(
-            *[DataRequest[_]],
-            *[FormBinding],
-            *[Writes[Boolean]]
-          ) returns Redirect(onwardRoute).asFuture
+          mockService.handleForm(*, *, *)(*, *) returns Redirect(onwardRoute).asFuture
+          mockService.defaultHandleForm(*, eqTo(page), eqTo(businessId), eqTo(taxYear), *, *)(*, *, *) returns Redirect(onwardRoute).asFuture
 
           running(application) {
             val result                     = route(application, postRequest).value
@@ -133,12 +127,8 @@ abstract case class BooleanGetAndPostQuestionBaseSpec(controllerName: String, pa
             val boundForm         = createForm(userType).bind(Map("value" -> "invalid value"))
             val expectedErrorView = expectedView(boundForm, this)(request, messages(application), application)
 
-            mockService.handleForm(*[Form[Boolean]], *, *)(*[DataRequest[_]], *[FormBinding]) returns BadRequest(expectedErrorView).asFuture
-            mockService.defaultHandleForm(*[Form[Boolean]], *[OneQuestionPage[Boolean]], *[BusinessId], *[TaxYear], *[Mode], *)(
-              *[DataRequest[_]],
-              *[FormBinding],
-              *[Writes[Boolean]]
-            ) returns BadRequest(expectedErrorView).asFuture
+            mockService.handleForm(*, *, *)(*, *) returns BadRequest(expectedErrorView).asFuture
+            mockService.defaultHandleForm(*, eqTo(page), eqTo(businessId), eqTo(taxYear), *, *)(*, *, *) returns BadRequest(expectedErrorView).asFuture
 
             running(application) {
               val result = route(application, request).value

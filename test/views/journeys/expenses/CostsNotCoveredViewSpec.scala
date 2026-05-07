@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.standard.CurrencyFormProvider
 import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.CostsNotCoveredPage
 import play.api.Application
@@ -33,13 +33,21 @@ import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout}
 import play.twirl.api.Html
 import views.html.journeys.expenses.travelAndAccommodation.CostsNotCoveredView
 
-class CostsNotCoveredViewSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+import scala.concurrent.Await
+import scala.concurrent.duration.*
+
+class CostsNotCoveredViewSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with BeforeAndAfterAll {
 
   val application: Application = new GuiceApplicationBuilder().build()
 
   implicit val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
   val view: CostsNotCoveredView = application.injector.instanceOf[CostsNotCoveredView]
+
+  override def afterAll(): Unit = {
+    Await.result(application.stop(), 30.seconds)
+    super.afterAll()
+  }
 
   def createView(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId)(implicit request: Request[_]): Html =
     view(form, mode, userType, taxYear, businessId)(request, messages)

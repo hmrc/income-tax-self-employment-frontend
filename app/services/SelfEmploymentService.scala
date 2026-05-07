@@ -69,7 +69,7 @@ trait SelfEmploymentService {
                                              userAnswers: UserAnswers,
                                              declareJourneyAnswers: Option[SubsetOfAnswers] = None)(implicit hc: HeaderCarrier): ApiResultT[Unit]
 
-  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers]
+  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: List[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers]
 
   def submitGatewayQuestionAndClearDependentAnswers[A](pageUpdated: OneQuestionPage[A],
                                                        businessId: BusinessId,
@@ -178,14 +178,14 @@ class SelfEmploymentServiceImpl @Inject() (
     resultT
   }
 
-  @nowarn("msg=match may not be exhaustive")
-  def setAccountingTypeForIds(userAnswers: UserAnswers, pairedIdsAndAccounting: Seq[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers] =
+  def setAccountingTypeForIds(userAnswers: UserAnswers,
+                              pairedIdsAndAccounting: List[(TradingName, AccountingType, BusinessId)]): Future[UserAnswers] =
     pairedIdsAndAccounting match {
       case Nil =>
         Future(userAnswers)
       case (tradingName: TradingName, accountingType: AccountingType, businessId: BusinessId) :: tail =>
-        persistAnswer(businessId, userAnswers, accountingType, TradeAccountingType) flatMap { updatedUserAnswers: UserAnswers =>
-          persistAnswer(businessId, updatedUserAnswers, tradingName, TradingNameKey) flatMap { updatedUserAnswers: UserAnswers =>
+        persistAnswer(businessId, userAnswers, accountingType, TradeAccountingType) flatMap { (updatedUserAnswers: UserAnswers) =>
+          persistAnswer(businessId, updatedUserAnswers, tradingName, TradingNameKey) flatMap { (updatedUserAnswers: UserAnswers) =>
             setAccountingTypeForIds(updatedUserAnswers, tail)
           }
         }

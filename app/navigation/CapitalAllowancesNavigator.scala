@@ -53,10 +53,9 @@ class CapitalAllowancesNavigator @Inject() {
     case SelectCapitalAllowancesPage =>
       _ =>
         taxYear =>
-          businessId =>
-            tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
+          businessId => tailoring.routes.CapitalAllowanceCYAController.onPageLoad(taxYear, businessId)
 
-        // *** Zero Emission Cars ***
+      // *** Zero Emission Cars ***
 
     case ZeroEmissionCarsPage =>
       userAnswers =>
@@ -100,10 +99,9 @@ class CapitalAllowancesNavigator @Inject() {
     case ZecHowMuchDoYouWantToClaimPage =>
       _ =>
         taxYear =>
-          businessId =>
-            zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
+          businessId => zeroEmissionCars.routes.ZeroEmissionCarsCYAController.onPageLoad(taxYear, businessId)
 
-        // *** Zero Emission Goods Vehicles ***
+      // *** Zero Emission Goods Vehicles ***
 
     case ZeroEmissionGoodsVehiclePage =>
       userAnswers =>

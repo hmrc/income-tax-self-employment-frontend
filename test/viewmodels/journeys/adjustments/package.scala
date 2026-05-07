@@ -85,8 +85,10 @@ package object adjustments {
     s"""|SummaryListRow(Key(HtmlContent(profitOrLoss.netProfitOrLoss.$profitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
          netProfit)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
         |${if (profitOrLoss == Profit) additionsRow else deductionsRow}
-        |${if (profitOrLoss == Profit) deductionsRow
-       else additionsRow}
+        |${
+         if (profitOrLoss == Profit) deductionsRow
+         else additionsRow
+       }
         |SummaryListRow(Key(HtmlContent(profitOrLossCalculation.adjustedSummary.netForTaxPurposes.$netForTaxPurposesProfitOrLoss),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(
          netForTaxPurposes)}),govuk-!-font-weight-regular hmrc-summary-list__key govuk-!-text-align-right), ,None)
         |SummaryListRow(Key(HtmlContent(journeys.adjustments),govuk-!-font-weight-regular hmrc-summary-list__key),Value(HtmlContent(${formatPosNegMoneyWithPounds(

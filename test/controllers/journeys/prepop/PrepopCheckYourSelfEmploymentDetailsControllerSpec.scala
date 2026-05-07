@@ -19,6 +19,7 @@ package controllers.journeys.prepop
 import base.SpecBase
 import cats.data.EitherT
 import controllers.journeys.prepop.routes._
+import models.errors.ServiceError
 import controllers.journeys.routes
 import controllers.standard.routes._
 import models.NormalMode
@@ -36,6 +37,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SelfEmploymentService
 import uk.gov.hmrc.play.language.LanguageUtils
+
+import scala.concurrent.Future
 import viewmodels.checkAnswers.prepop.PrepopSelfEmploymentDetailsViewModel
 import views.html.journeys.prepop.PrepopCheckYourSelfEmploymentDetailsView
 
@@ -80,7 +83,7 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
         running(application) {
           val nextRoute = routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, BusinessDetailsPrepop, NormalMode).url
 
-          when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(aBusinessData)
+          when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT[Future, ServiceError](aBusinessData)
 
           val request = FakeRequest(GET, PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, businessId).url)
 
@@ -102,8 +105,8 @@ class PrepopCheckYourSelfEmploymentDetailsControllerSpec extends SpecBase with M
         running(application) {
           val errorBusinessId: BusinessId = BusinessId("Bad BusinessID")
 
-          when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.leftT(
-            NotFoundError(s"Unable to find business with ID: $businessId"))
+          when(mockService.getBusiness(anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.leftT[Future, BusinessData](
+            NotFoundError(s"Unable to find business with ID: $businessId"): ServiceError)
 
           val request = FakeRequest(GET, PrepopCheckYourSelfEmploymentDetailsController.onPageLoad(taxYear, errorBusinessId).url)
 

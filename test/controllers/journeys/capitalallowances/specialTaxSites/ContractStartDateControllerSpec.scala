@@ -21,7 +21,6 @@ import data.TimeData.testDate
 import models.NormalMode
 import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.specialTaxSites.{ContractStartDatePage, SpecialTaxSitesBasePage}
 import play.api.Application
 import play.api.data.Form

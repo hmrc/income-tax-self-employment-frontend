@@ -23,7 +23,7 @@ import models.common.Journey
 import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest

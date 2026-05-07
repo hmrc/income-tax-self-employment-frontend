@@ -46,7 +46,7 @@ object ZegvHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds
       mapping(
         howMuchDoYouWantToClaim -> validatedRadio,
         totalCost -> mandatoryIf(isEqual(howMuchDoYouWantToClaim, ZegvHowMuchDoYouWantToClaim.LowerAmount.toString), validateAmount(fullAmount))
-      )(ZegvHowMuchDoYouWantToClaimModel.apply)(ZegvHowMuchDoYouWantToClaimModel.unapply)
+      )(ZegvHowMuchDoYouWantToClaimModel.apply)(m => Some(Tuple.fromProductTyped(m)))
     )
   }
 

@@ -24,23 +24,22 @@ import models.common.Journey
 import models.common.UserType.Individual
 import models.database.UserAnswers
 import models.errors.ServiceError.ConnectorResponseError
-import org.mockito.IdiomaticMockito.StubbingOps
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{POST, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{POST, redirectLocation, route, running, status, writeableOf_AnyContentAsEmpty}
 
 import scala.concurrent.Future
 
 trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
 
   protected val journey: Journey
-  protected val submissionData: JsObject
+  protected def submissionData: JsObject
 
   protected implicit lazy val postRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, onSubmitCall(taxYear, businessId).url)
 
-  private val userAnswers: UserAnswers = buildUserAnswers(submissionData)
+  private lazy val userAnswers: UserAnswers = buildUserAnswers(submissionData)
 
   lazy val onwardRoute: String = journeys.routes.SectionCompletedStateController.onPageLoad(taxYear, businessId, journey, NormalMode).url
 
@@ -48,11 +47,14 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
     "journey answers submitted successfully" - {
       "redirect to next page" in new TestScenario(Individual, userAnswers.some) {
         mockService.submitAnswers(*, *, *)(*, *) returns EitherT(Future.successful(().asRight))
-        val result: Future[Result] = route(application, postRequest).value
 
-        status(result) shouldBe 303
+        running(application) {
+          val result: Future[Result] = route(application, postRequest).value
 
-        redirectLocation(result).value shouldBe onwardRoute
+          status(result) shouldBe 303
+
+          redirectLocation(result).value shouldBe onwardRoute
+        }
       }
     }
 
@@ -60,10 +62,12 @@ trait CYAOnSubmitControllerBaseSpec extends CYAControllerBaseSpec {
       "redirect to journey recovery" in new TestScenario(Individual, userAnswers.some) {
         mockService.submitAnswers(*, *, *)(*, *) returns EitherT(Future.successful(ConnectorResponseError("method", "url", httpError).asLeft))
 
-        val result: Future[Result] = route(application, postRequest).value
+        running(application) {
+          val result: Future[Result] = route(application, postRequest).value
 
-        status(result) shouldBe 303
-        redirectLocation(result).value shouldBe standard.routes.JourneyRecoveryController.onPageLoad().url
+          status(result) shouldBe 303
+          redirectLocation(result).value shouldBe standard.routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

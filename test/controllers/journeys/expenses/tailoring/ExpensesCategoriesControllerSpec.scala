@@ -25,6 +25,7 @@ import models.database.UserAnswers
 import models.errors.ServiceError
 import models.journeys.expenses.ExpensesTailoring
 import models.journeys.expenses.ExpensesTailoring.NoExpenses
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.income.TurnoverIncomeAmountPage

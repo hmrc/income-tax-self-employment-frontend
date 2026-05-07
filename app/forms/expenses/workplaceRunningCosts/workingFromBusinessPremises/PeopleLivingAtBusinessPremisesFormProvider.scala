@@ -48,7 +48,7 @@ object PeopleLivingAtBusinessPremisesFormProvider extends Mappings {
         onePerson   -> validateNumberOfPeople(onePerson),
         twoPeople   -> validateNumberOfPeople(twoPeople),
         threePeople -> validateNumberOfPeople(threePeople)
-      )(PeopleLivingAtBusinessPremisesFormModel.apply)(PeopleLivingAtBusinessPremisesFormModel.unapply)
+      )(PeopleLivingAtBusinessPremisesFormModel.apply)(m => Some(Tuple.fromProductTyped(m)))
         .verifying(messages(s"$totalOverMaxError$userType", maxMonths), form => form.onePerson + form.twoPeople + form.threePeople <= maxMonths)
     )
   }

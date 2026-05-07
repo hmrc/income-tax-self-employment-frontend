@@ -52,7 +52,7 @@ class PublicTransportAndAccommodationExpensesCYAControllerSpec extends CYAOnPage
        |    }
        |}
        |""".stripMargin
-  override val submissionData                = Json.parse(data).asInstanceOf[JsObject]
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val submissionData                = Json.parse(data).asInstanceOf[JsObject]
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
 }

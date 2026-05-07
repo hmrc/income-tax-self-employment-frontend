@@ -17,21 +17,22 @@
 package models.journeys.income
 
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class IncomePrepopAnswersSpec extends AnyFreeSpec with TableDrivenPropertyChecks {
+class IncomePrepopAnswersSpec extends AnyFreeSpec with Matchers with TableDrivenPropertyChecks {
 
   "IncomePrepopAnswers .totalIncome" - {
     "should return the sum of the optional turnoverIncome and otherIncome values, or zero if both are None" in {
       val tests: TableFor2[IncomePrepopAnswers, BigDecimal] = Table(
         ("answers", "expectedSum"),
-        (IncomePrepopAnswers(Some(20), Some(10)), 30),
-        (IncomePrepopAnswers(None, Some(10)), 10),
-        (IncomePrepopAnswers(Some(20), None), 20),
-        (IncomePrepopAnswers(None, None), 0)
+        (IncomePrepopAnswers(Some(20), Some(10)), BigDecimal(30)),
+        (IncomePrepopAnswers(None, Some(10)), BigDecimal(10)),
+        (IncomePrepopAnswers(Some(20), None), BigDecimal(20)),
+        (IncomePrepopAnswers(None, None), BigDecimal(0))
       )
       forAll(tests) { case (answers, expectedSum) =>
-        answers.totalIncome == expectedSum
+        answers.totalIncome mustBe expectedSum
       }
     }
   }

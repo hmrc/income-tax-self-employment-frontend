@@ -53,7 +53,7 @@ class SpecialTaxSiteLocationFormProvider @Inject() extends Mappings {
       ),
       postcode -> text(postcodeRequiredError(userType), toUpperCase = true, stripWhitespace = true).verifying(
         regexp(PostcodeRegex, postcodeInvalidError))
-    )(SpecialTaxSiteLocation.apply)(SpecialTaxSiteLocation.unapply))
+    )(SpecialTaxSiteLocation.apply)(s => Some(Tuple.fromProductTyped(s))))
 
 }
 

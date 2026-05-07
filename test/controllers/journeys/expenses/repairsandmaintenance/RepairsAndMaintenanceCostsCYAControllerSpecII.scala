@@ -39,12 +39,12 @@ class RepairsAndMaintenanceCostsCYAControllerSpecII extends CYAOnPageLoadControl
 
   override val pageHeading: String = RepairsAndMaintenanceCostsCYAPage.toString
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
     "repairsAndMaintenance"                   -> "yesDisallowable",
     "repairsAndMaintenanceAmount"             -> 200.00,
     "repairsAndMaintenanceDisallowableAmount" -> 200.00
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def expectedSummaryList(userAnswers: UserAnswers, taxYear: TaxYear, businessId: BusinessId, userType: UserType)(implicit
       messages: Messages): SummaryList =

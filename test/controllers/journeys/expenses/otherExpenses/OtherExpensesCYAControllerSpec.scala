@@ -34,10 +34,10 @@ class OtherExpensesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec wit
   override val pageHeading: String =
     OtherExpensesCYAPage.pageName.value
 
-  override val submissionData: JsObject =
+  override lazy val submissionData: JsObject =
     Json.obj("otherExpenses" -> "yesAllowable", "otherExpensesAmount" -> 200.00)
 
-  override val testDataCases: List[JsObject] =
+  override lazy val testDataCases: List[JsObject] =
     List(submissionData)
 
   override def onPageLoadCall: (TaxYear, BusinessId) => Call =

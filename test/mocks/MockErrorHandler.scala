@@ -17,18 +17,16 @@
 package mocks
 
 import handlers.ErrorHandler
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import play.api.mvc.{Request, Result}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Result
 
-trait MockErrorHandler extends MockFactory {
-  this: TestSuite =>
+trait MockErrorHandler extends MockitoSugar {
 
   val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
 
-  protected def mockInternalServerError(result: Result) =
-    (mockErrorHandler
-      .internalServerError()(_: Request[_]))
-      .expects(*)
-      .returns(result)
+  protected def mockInternalServerError(result: Result): Unit =
+    when(mockErrorHandler.internalServerError()(any()))
+      .thenReturn(result)
 }

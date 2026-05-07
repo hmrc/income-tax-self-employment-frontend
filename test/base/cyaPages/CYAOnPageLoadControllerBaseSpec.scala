@@ -37,7 +37,7 @@ import scala.concurrent.Future
 trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
 
   val pageHeading: String
-  val testDataCases: List[JsObject]
+  def testDataCases: List[JsObject]
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call
 
@@ -60,24 +60,29 @@ trait CYAOnPageLoadControllerBaseSpec extends CYAControllerBaseSpec {
             val onPageLoadRequest        = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
             val summaryList: SummaryList = expectedSummaryList(buildUserAnswers(data), taxYear, businessId, userType)
 
-            val result = route(application, onPageLoadRequest).value
-            val expectedResult =
-              createExpectedView(userType, summaryList, msg, application, onPageLoadRequest)
+            running(application) {
+              val result = route(application, onPageLoadRequest).value
+              val expectedResult =
+                createExpectedView(userType, summaryList, msg, application, onPageLoadRequest)
 
-            status(result) mustBe OK
-            assertEqualWithDiff(contentAsString(result), expectedResult)
+              status(result) mustBe OK
+              assertEqualWithDiff(contentAsString(result), expectedResult)
+            }
           }
         }
       }
     }
     "when no user answers exist" - {
       "should redirect to the journey recovery controller" in {
-        val application            = buildAppFromUserType(Individual, None)
-        val onPageLoadRequest      = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
-        val result: Future[Result] = route(application, onPageLoadRequest).value
+        val application       = buildAppFromUserType(Individual, None)
+        val onPageLoadRequest = FakeRequest(GET, onPageLoadCall(taxYear, businessId).url)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        running(application) {
+          val result: Future[Result] = route(application, onPageLoadRequest).value
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

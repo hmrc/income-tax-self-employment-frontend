@@ -28,8 +28,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.capitalallowances.writingDownAllowance.WdaSpecialRateSummary
 
 class WritingDownAllowanceCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
-  val pageHeading: String           = Page.cyaCheckYourAnswersHeading
-  val testDataCases: List[JsObject] = List(Json.obj(WdaSpecialRatePage.pageName.value -> false))
+  val pageHeading: String                = Page.cyaCheckYourAnswersHeading
+  lazy val testDataCases: List[JsObject] = List(Json.obj(WdaSpecialRatePage.pageName.value -> false))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.WritingDownAllowanceCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.WritingDownAllowanceCYAController.onSubmit

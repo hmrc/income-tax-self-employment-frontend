@@ -20,6 +20,7 @@ import base.SpecBase
 import forms.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountFormProvider
 import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.must.Matchers
 import play.api.Application
 import play.api.data.Form
@@ -31,7 +32,10 @@ import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout}
 import play.twirl.api.Html
 import views.html.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsNewClaimAmountView
 
-class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
+import scala.concurrent.Await
+import scala.concurrent.duration.*
+
+class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers with BeforeAndAfterAll {
 
   val formProvider  = new StructuresBuildingsNewClaimAmountFormProvider()
   val intIndex: Int = 0
@@ -42,6 +46,11 @@ class StructuresBuildingsNewClaimAmountViewSpec extends SpecBase with Matchers {
   implicit val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
   val view: StructuresBuildingsNewClaimAmountView = application.injector.instanceOf[StructuresBuildingsNewClaimAmountView]
+
+  override def afterAll(): Unit = {
+    Await.result(application.stop(), 30.seconds)
+    super.afterAll()
+  }
 
   def createView(form: Form[_], mode: Mode, userType: UserType, taxYear: TaxYear, businessId: BusinessId, index: Int)(implicit
       request: Request[_]): Html =

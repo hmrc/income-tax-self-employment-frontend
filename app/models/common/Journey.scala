@@ -70,7 +70,7 @@ sealed abstract class Journey(override val entryName: String) extends EnumEntry 
   override def toString: String = entryName
 
   /** Used to recognize if there are any answers for that journey. Only leave it Nil if there are no answers to store */
-  val pageKeys: List[PageName]
+  def pageKeys: List[PageName]
 
   def startUrl(taxYear: TaxYear, businessId: BusinessId): String = {
     val _ = (taxYear, businessId) // // TODO Remove default impl when all pages are fixed

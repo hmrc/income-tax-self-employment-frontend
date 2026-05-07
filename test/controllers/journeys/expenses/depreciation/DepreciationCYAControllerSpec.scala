@@ -46,9 +46,9 @@ class DepreciationCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
     classes = "govuk-!-margin-bottom-7"
   )
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
     "depreciation"                   -> "yes",
     "depreciationDisallowableAmount" -> amount
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 }

@@ -18,10 +18,6 @@ package controllers.journeys.income
 
 import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.NormalMode
-import models.common.BusinessId
-import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
-import pages.OneQuestionPage
 import pages.income.NonTurnoverIncomeAmountPage
 import play.api.Application
 import play.api.data.Form
@@ -45,10 +41,4 @@ class NonTurnoverIncomeAmountControllerSpec
     view(form, scenario.mode, scenario.userType, scenario.taxYear, scenario.businessId).toString()
   }
 
-  mockService.persistAnswer(
-    *[BusinessId],
-    *[UserAnswers],
-    *,
-    *[OneQuestionPage[BigDecimal]]
-  ) returns pageAnswers.asFuture
 }

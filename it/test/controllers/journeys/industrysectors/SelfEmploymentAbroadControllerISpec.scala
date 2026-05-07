@@ -1,0 +1,145 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.journeys.industrysectors
+
+import base.IntegrationBaseSpec
+import helpers.{AnswersApiStub, AuthStub, WiremockSpec}
+import models.NormalMode
+import models.common.Journey.IndustrySectors
+import models.common.JourneyAnswersContext
+import models.journeys.industrySectors.IndustrySectorsDb
+import org.jsoup.Jsoup
+import play.api.http.HeaderNames
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.libs.json.Json
+import play.api.test.Helpers._
+
+class SelfEmploymentAbroadControllerISpec extends WiremockSpec with IntegrationBaseSpec {
+
+  val url: String       = routes.SelfEmploymentAbroadController.onPageLoad(taxYear, businessId, NormalMode).url
+  val submitUrl: String = routes.SelfEmploymentAbroadController.onSubmit(taxYear, businessId, NormalMode).url
+
+  val testContext: JourneyAnswersContext = JourneyAnswersContext(taxYear, nino, businessId, mtditid, IndustrySectors)
+
+  val testIndustrySectors: IndustrySectorsDb = IndustrySectorsDb(
+    isAllSelfEmploymentAbroad = Some(true)
+  )
+
+  "GET /:taxYear/:businessId/about-trade/self-employment-abroad" when {
+    "the user is an agent" must {
+      "return OK with the correct view" in {
+        AuthStub.agentAuthorised()
+        AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(url, isAgent = true).get())
+
+        result.header(HeaderNames.LOCATION) mustBe None
+        result.status mustBe OK
+      }
+
+      "return OK and pre-populate the field when the user has data" in {
+        AuthStub.agentAuthorised()
+        DbHelper.insertWithData(Json.obj(businessId.value -> Json.obj("selfEmploymentAbroad" -> true)))
+
+        val result = await(buildClient(url, isAgent = true).get())
+
+        result.header(HeaderNames.LOCATION) mustBe None
+        result.status mustBe OK
+        Jsoup.parse(result.body).select("input[id=value][checked]").isEmpty mustBe false
+      }
+    }
+
+    "the user is an individual" must {
+      "return OK with the correct view" in {
+        AuthStub.authorised()
+        AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(url).get())
+
+        result.header(HeaderNames.LOCATION) mustBe None
+        result.status mustBe OK
+      }
+
+      "return OK and pre-populate the field when the user has data" in {
+        AuthStub.authorised()
+        DbHelper.insertWithData(Json.obj(businessId.value -> Json.obj("selfEmploymentAbroad" -> true)))
+
+        val result = await(buildClient(url).get())
+
+        result.header(HeaderNames.LOCATION) mustBe None
+        result.status mustBe OK
+        Jsoup.parse(result.body).select("input[id=value][checked]").isEmpty mustBe false
+      }
+    }
+
+    "the user is unauthorised" must {
+      "redirect to the login page" in {
+        AuthStub.unauthorisedOtherEnrolment()
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(url).get())
+
+        result.header(HeaderNames.LOCATION).exists(_.contains("gg-sign-in")) mustBe true
+        result.status mustBe SEE_OTHER
+      }
+    }
+  }
+
+  "POST /:taxYear/:businessId/about-trade/self-employment-abroad" when {
+    "the user submits without selecting an option" must {
+      "return BAD REQUEST" in {
+        AuthStub.authorised()
+        AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
+
+        result.status mustBe BAD_REQUEST
+      }
+    }
+
+    "the user selects 'Yes'" must {
+      "redirect to the next page" in {
+        AuthStub.authorised()
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
+        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors))(OK)
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("true"))))
+
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe defined
+      }
+    }
+
+    "the user selects 'No'" must {
+      "redirect to the next page" in {
+        AuthStub.authorised()
+        AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = None))))
+        AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(isAllSelfEmploymentAbroad = Some(false))))(OK)
+        DbHelper.insertEmpty()
+
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("false"))))
+
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe defined
+      }
+    }
+  }
+}

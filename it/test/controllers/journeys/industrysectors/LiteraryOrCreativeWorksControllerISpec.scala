@@ -111,7 +111,7 @@ class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with Integrati
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors))(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("true"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url)
@@ -125,7 +125,7 @@ class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with Integrati
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testIndustrySectors.copy(hasProfitFromCreativeWorks = Some(false))))(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("false"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("false"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(routes.IndustrySectorsAndAbroadCYAController.onPageLoad(taxYear, businessId).url)
@@ -138,7 +138,7 @@ class LiteraryOrCreativeWorksControllerISpec extends WiremockSpec with Integrati
         AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
+import models.errors.ServiceError
 import forms.standard.BooleanFormProvider
 import models.common.Journey.ExpensesIrrecoverableDebts
 import models.{CheckMode, NormalMode}
@@ -188,7 +189,8 @@ class DisallowableIrrecoverableDebtsControllerSpec extends SpecBase with Mockito
 
       "must redirect to the next page when valid data is submitted in CheckMode" in {
         when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT
+          .rightT[Future, ServiceError](())
 
         val ua = baseAnswers.set(DisallowableIrrecoverableDebtsPage, false).success.value
         val application =

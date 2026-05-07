@@ -21,7 +21,7 @@ import cats.implicits.catsSyntaxOptionId
 import controllers.standard.{routes => genRoutes}
 import models.common.UserType
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.Page
 import play.api.Application
 import play.api.data.Form

@@ -23,9 +23,9 @@ import models.common.UserType
 import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses
 import navigation.{FakeTravelAndAccommodationNavigator, TravelAndAccommodationNavigator}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
-import org.mockito.matchers.MacroBasedMatchers
 import pages.expenses.travelAndAccommodation._
 import play.api.data.Form
 import play.api.http.Status.SEE_OTHER
@@ -41,7 +41,7 @@ import views.html.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicl
 
 import scala.concurrent.Future
 
-class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase with MacroBasedMatchers {
+class YourFlatRateForVehicleExpensesControllerSpec extends SpecBase {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
