@@ -41,7 +41,7 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
   private val whatDoYouWantToDoWithLoss =
     List(WhatDoYouWantToDoWithLoss.CarryItForward.toString, WhatDoYouWantToDoWithLoss.DeductFromOtherTypes.toString)
 
-  override val submissionData: JsObject = Json.obj(
+  override lazy val submissionData: JsObject = Json.obj(
     "goodsAndServicesForYourOwnUse" -> true,
     "goodsAndServicesAmount"        -> goodsAndServicesAmount,
     "claimLossRelief"               -> true,
@@ -53,7 +53,7 @@ class ProfitOrLossCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with
     "accountingType"                -> "CASH"
   )
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override protected val journey: Journey = ProfitOrLoss
 

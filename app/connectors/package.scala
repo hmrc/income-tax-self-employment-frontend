@@ -19,6 +19,7 @@ import models.common.Mtditid
 import models.errors.ServiceError
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
@@ -28,28 +29,29 @@ package object connectors {
   type ContentResponse[A] = Either[ServiceError, A]
   type NoContentResponse  = ContentResponse[Unit]
 
-  def post[A: Writes](http: HttpClientV2, url: String, mtditid: Mtditid, body: A)
-                     (implicit hc: HeaderCarrier,
-                      ec: ExecutionContext): Future[Either[ServiceError, Unit]] = {
-    http.post(url"$url")(addExtraHeaders(hc, mtditid))
+  def post[A: Writes](http: HttpClientV2, url: String, mtditid: Mtditid, body: A)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[ServiceError, Unit]] =
+    http
+      .post(url"$url")(addExtraHeaders(hc, mtditid))
       .withBody(Json.toJson(body)(implicitly[Writes[A]]))
       .execute[NoContentResponse]
-  }
 
-  def put[A: Writes](http: HttpClientV2, url: String, mtditid: Mtditid, body: A)
-                    (implicit hc: HeaderCarrier,
-                     ec: ExecutionContext): Future[Either[ServiceError, Unit]] = {
-    http.put(url"$url")(addExtraHeaders(hc, mtditid))
+  def put[A: Writes](http: HttpClientV2, url: String, mtditid: Mtditid, body: A)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Either[ServiceError, Unit]] =
+    http
+      .put(url"$url")(addExtraHeaders(hc, mtditid))
       .withBody(Json.toJson(body)(implicitly[Writes[A]]))
       .execute[NoContentResponse]
-  }
 
   def get[A: Reads](http: HttpClientV2, url: String, mtditid: Mtditid)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext): Future[Either[ServiceError, A]] = {
     implicit val contentHttpContentReads: HttpReads[ContentResponse[A]] =
       new ContentHttpReads[A]
-    http.get(url"$url")(addExtraHeaders(hc, mtditid))
+    http
+      .get(url"$url")(addExtraHeaders(hc, mtditid))
       .execute[ContentResponse[A]]
   }
 
@@ -58,7 +60,8 @@ package object connectors {
       ec: ExecutionContext): Future[Either[ServiceError, Option[A]]] = {
     implicit val optionalContentHttpContentReads: HttpReads[ContentResponse[Option[A]]] =
       new OptionalContentHttpReads[A](allowUnprocessableEntity)
-    http.get(url"$url")(addExtraHeaders(hc, mtditid))
+    http
+      .get(url"$url")(addExtraHeaders(hc, mtditid))
       .execute[ContentResponse[Option[A]]]
   }
 

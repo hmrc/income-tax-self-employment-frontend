@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import builders.BusinessDataBuilder.aBusinessData
 import cats.implicits.catsSyntaxEitherId
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 
 class ControllersPackageSpec extends SpecBase {
 

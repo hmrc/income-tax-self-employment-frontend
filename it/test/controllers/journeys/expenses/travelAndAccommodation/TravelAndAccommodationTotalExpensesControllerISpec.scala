@@ -113,7 +113,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
         DbHelper.insertUserAnswers(userAnswers)
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("500.00"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("500.00"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(
@@ -127,7 +127,7 @@ class TravelAndAccommodationTotalExpensesControllerISpec extends WiremockSpec wi
         AnswersApiStub.getAnswers(testContext)(NOT_FOUND)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

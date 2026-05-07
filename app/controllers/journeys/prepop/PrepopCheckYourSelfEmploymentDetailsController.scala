@@ -46,7 +46,7 @@ class PrepopCheckYourSelfEmploymentDetailsController @Inject() (override val mes
     with Logging {
 
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData) async { implicit request =>
-    val result = service.getBusiness(request.nino, businessId, request.mtditid) map { business: BusinessData =>
+    val result = service.getBusiness(request.nino, businessId, request.mtditid) map { (business: BusinessData) =>
       val selfEmploymentDetails = PrepopSelfEmploymentDetailsViewModel.buildSummaryList(business, request.userType, languageUtils)
       val nextRoute             = PrepopCheckYourSelfEmploymentDetailsPage.nextPage(taxYear, businessId).url
 

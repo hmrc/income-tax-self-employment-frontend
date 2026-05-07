@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.capitalallowances.tailoring
 
 import base.SpecBase
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

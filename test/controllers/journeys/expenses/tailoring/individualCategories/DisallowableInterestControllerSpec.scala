@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
+import models.errors.ServiceError
 import forms.standard.BooleanFormProvider
 import models.common.Journey.ExpensesInterest
 import models.common.UserType
@@ -197,7 +198,8 @@ class DisallowableInterestControllerSpec extends SpecBase with MockitoSugar {
 
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT
+            .rightT[Future, ServiceError](())
 
           val request =
             FakeRequest(POST, professionalServiceExpensesRoute)

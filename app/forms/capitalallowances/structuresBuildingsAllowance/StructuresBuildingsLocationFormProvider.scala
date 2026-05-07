@@ -57,7 +57,7 @@ class StructuresBuildingsLocationFormProvider @Inject() extends Mappings {
       ),
       postcode -> text(postcodeRequiredError(userType), toUpperCase = true, stripWhitespace = true).verifying(
         regexp(PostcodeRegex, postcodeInvalidError))
-    )(StructuresBuildingsLocation.apply)(StructuresBuildingsLocation.unapply))
+    )(StructuresBuildingsLocation.apply)(s => Some(Tuple.fromProductTyped(s))))
 }
 
 object StructuresBuildingsLocationFormProvider {

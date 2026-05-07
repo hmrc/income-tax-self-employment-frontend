@@ -23,7 +23,6 @@ import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.OptionValues._
 import org.scalatest.TryValues._
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -56,7 +55,7 @@ class ZegvUseOutsideSEControllerSpec extends AnyWordSpecLike with PlayRunners wi
     def request: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest(POST, postOnSubmitNormal)
       .withFormUrlEncodedBody(("radioPercentage", "25%"), ("optDifferentAmount", "25"))
 
-    mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns emptyUserAnswers.asFuture
+    mockService.persistAnswer(eqTo(businessId), *, *, *)(*) returns emptyUserAnswers.asFuture
 
     "render the correct view" in new TestScenario(
       UserType.Individual,

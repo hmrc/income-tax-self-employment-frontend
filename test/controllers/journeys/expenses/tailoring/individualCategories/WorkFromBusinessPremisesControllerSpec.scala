@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
+import models.errors.ServiceError
 import forms.standard.EnumerableFormProvider
 import models.common.AccountingType.Accrual
 import models.common.Journey.ExpensesWorkplaceRunningCosts
@@ -249,7 +250,7 @@ class WorkFromBusinessPremisesControllerSpec extends SpecBase with MockitoSugar 
               when(
                 mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesWorkplaceRunningCosts))(
                   any,
-                  HeaderCarrier(any))) thenReturn EitherT.rightT(())
+                  HeaderCarrier(any))) thenReturn EitherT.rightT[Future, ServiceError](())
 
               val premisesRoute: String = routes.WorkFromBusinessPremisesController.onPageLoad(taxYear, businessId, CheckMode).url
 

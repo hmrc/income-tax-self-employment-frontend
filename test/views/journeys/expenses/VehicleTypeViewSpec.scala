@@ -21,16 +21,13 @@ import models.journeys.expenses.travelAndAccommodation.VehicleType
 import models.{Index, Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import views.ViewBaseSpec
 import views.html.journeys.expenses.travelAndAccommodation.VehicleTypeView
 
 class VehicleTypeViewSpec extends ViewBaseSpec {
 
-  val application: Application = new GuiceApplicationBuilder().build()
-  val view: VehicleTypeView    = application.injector.instanceOf[VehicleTypeView]
+  private val view: VehicleTypeView = app.injector.instanceOf[VehicleTypeView]
 
   private val formProvider    = app.injector.instanceOf[VehicleTypeFormProvider]
   private val index: Index    = Index(1)

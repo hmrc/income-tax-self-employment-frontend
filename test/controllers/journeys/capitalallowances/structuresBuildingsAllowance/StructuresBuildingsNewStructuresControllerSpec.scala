@@ -21,7 +21,6 @@ import models.NormalMode
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.capitalallowances.structuresBuildingsAllowance.NewStructureBuilding
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.structuresBuildingsAllowance.{NewStructuresBuildingsList, StructuresBuildingsRemovePage}
 import play.api.Application
 import play.api.data.Form
@@ -53,6 +52,8 @@ class StructuresBuildingsNewStructuresControllerSpec
     view(form, scenario.userType, scenario.taxYear, scenario.businessId, SummaryListCYA.summaryListOpt(List.empty, None)).toString()
   }
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns buildUserAnswers(NewStructuresBuildingsList, List.empty).asFuture
+  mockService.persistAnswer(eqTo(businessId), *, eqTo(List.empty[NewStructureBuilding]), eqTo(NewStructuresBuildingsList))(*) returns buildUserAnswers(
+    NewStructuresBuildingsList,
+    List.empty).asFuture
 
 }

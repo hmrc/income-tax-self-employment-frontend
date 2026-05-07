@@ -60,7 +60,7 @@ class NICsCYAController @Inject() (override val messagesApi: MessagesApi,
   def onPageLoad(taxYear: TaxYear): Action[AnyContent] = (identify andThen getAnswers andThen getJourneyAnswers[NICsJourneyAnswers](req =>
     req.mkJourneyNinoContext(taxYear, nationalInsuranceContributions, NationalInsuranceContributions)) andThen requireData) async {
     implicit request =>
-      val result = service.getBusinesses(request.nino, request.mtditid).map { businesses: Seq[BusinessData] =>
+      val result = service.getBusinesses(request.nino, request.mtditid).map { (businesses: Seq[BusinessData]) =>
         val summaryList = SummaryListCYA.summaryListOpt(
           List(
             new BooleanSummary(Class2NICsPage, routes.Class2NICsController.onPageLoad(taxYear, CheckMode))

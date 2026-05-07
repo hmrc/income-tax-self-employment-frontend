@@ -22,7 +22,6 @@ import models.common.{BusinessId, TaxYear, UserType}
 import models.database.UserAnswers
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.income.{TradingAllowanceAmountPage, TurnoverIncomeAmountPage}
 import play.api.Application

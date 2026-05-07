@@ -38,7 +38,6 @@ import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
 import models.journeys.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsLocation
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.structuresBuildingsAllowance.{StructuresBuildingsBasePage, StructuresBuildingsQualifyingExpenditurePage}
 import play.api.Application
 import play.api.data.Form

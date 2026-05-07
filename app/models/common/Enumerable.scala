@@ -47,7 +47,7 @@ object Enumerable {
           JsError("error.invalid")
       }
 
-    @nowarn("cat=unused")
+    @nowarn("msg=unused")
     implicit def writes[A: Enumerable]: Writes[A] =
       Writes(value => JsString(value.toString))
   }

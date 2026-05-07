@@ -23,11 +23,10 @@ import controllers.standard.{routes => genRoutes}
 import models.NormalMode
 import models.common.{BusinessId, UserType}
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.scalatest.OptionValues._
 import org.scalatest.TryValues._
 import org.scalatest.wordspec.AnyWordSpecLike
-import pages.capitalallowances.zeroEmissionGoodsVehicle.ZegvTotalCostOfVehiclePage
+import pages.capitalallowances.zeroEmissionGoodsVehicle.{ZegvClaimAmountPage, ZegvTotalCostOfVehiclePage}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, PlayRunners}
@@ -64,7 +63,7 @@ class ZegvHowMuchDoYouWantToClaimControllerSpec extends AnyWordSpecLike with Pla
     def request: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest(POST, postOnSubmitNormal)
       .withFormUrlEncodedBody(("howMuchDoYouWantToClaim", "fullCost"))
 
-    mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns emptyUserAnswers.asFuture
+    mockService.persistAnswer(eqTo(businessId), *, eqTo(BigDecimal(100.0)), eqTo(ZegvClaimAmountPage))(*) returns emptyUserAnswers.asFuture
 
     "return to the recovery page if no required data" in new TestScenario(UserType.Individual, emptyUserAnswersAccrual.some) {
       running(application) {

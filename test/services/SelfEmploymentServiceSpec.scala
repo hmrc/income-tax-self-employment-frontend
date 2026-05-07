@@ -38,8 +38,7 @@ import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.{ZegvHowMuchDo
 import models.journeys.income.{IncomeJourneyAnswers, IncomeJourneyAnswersTestData}
 import models.journeys.nics.TaxableProfitAndLoss
 import models.requests.DataRequest
-import org.mockito.IdiomaticMockito.StubbingOps
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.capitalallowances.zeroEmissionGoodsVehicle._
 import pages.expenses.tailoring.simplifiedExpenses.TotalExpensesPage
@@ -148,7 +147,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
   "setAccountingTypeForIds" - {
     "should set the AccountingType of each supplied BusinessId to the UserAnswers, returning the updated UserAnswers when" - {
       "supplied a valid sequence of TradingName, BusinessIds and AccountingTypes" in new ServiceWithStubs {
-        val testList: Seq[(TradingName, WithName with AccountingType, BusinessId)] = Seq(
+        val testList: List[(TradingName, WithName with AccountingType, BusinessId)] = List(
           (TradingName("Circus Performer1"), AccountingType.Accrual, BusinessId("testId1")),
           (TradingName("Circus Performer2"), AccountingType.Cash, BusinessId("testId2")),
           (TradingName("Circus Performer3"), AccountingType.Accrual, BusinessId("testId3"))
@@ -163,7 +162,7 @@ class SelfEmploymentServiceSpec extends SpecBase with ControllerTestScenarioSpec
         result shouldBe expectedResult
       }
       "input sequence is empty" in new ServiceWithStubs {
-        val result: JsObject = await(service.setAccountingTypeForIds(emptyUserAnswers, Seq.empty)).data
+        val result: JsObject = await(service.setAccountingTypeForIds(emptyUserAnswers, List.empty)).data
 
         result shouldBe Json.obj()
       }

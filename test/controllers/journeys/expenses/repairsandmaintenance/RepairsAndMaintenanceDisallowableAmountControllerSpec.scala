@@ -25,7 +25,6 @@ import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
-import utils.MoneyUtils.formatMoney
 import views.html.journeys.expenses.repairsandmaintenance.RepairsAndMaintenanceDisallowableAmountView
 
 class RepairsAndMaintenanceDisallowableAmountControllerSpec
@@ -48,7 +47,7 @@ class RepairsAndMaintenanceDisallowableAmountControllerSpec
       messages: Messages,
       application: Application): String = {
     val view = application.injector.instanceOf[RepairsAndMaintenanceDisallowableAmountView]
-    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, TextAmount(formatMoney(amount))).toString()
+    view(form, scenario.mode, scenario.taxYear, scenario.businessId, scenario.userType, TextAmount(amount)).toString()
   }
 
 }

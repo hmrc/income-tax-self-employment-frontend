@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.expenses.travelAndAccommodation.AddAnotherVehicleFormProvider
 import models.{Mode, NormalMode}
 import models.common.{BusinessId, TaxYear, UserType}
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import builders.OneColumnSummaryBuilder._
@@ -34,13 +34,21 @@ import play.twirl.api.Html
 import viewmodels.components.OneColumnSummaryRow
 import views.html.journeys.expenses.travelAndAccommodation.AddAnotherVehicleView
 
-class AddAnotherVehicleViewSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+import scala.concurrent.Await
+import scala.concurrent.duration.*
+
+class AddAnotherVehicleViewSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with BeforeAndAfterAll {
 
   val application: Application = new GuiceApplicationBuilder().build()
 
   implicit val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
   val view: AddAnotherVehicleView = application.injector.instanceOf[AddAnotherVehicleView]
+
+  override def afterAll(): Unit = {
+    Await.result(application.stop(), 30.seconds)
+    super.afterAll()
+  }
 
   def createView(form: Form[_], mode: Mode, vehicles: List[OneColumnSummaryRow], userType: UserType, taxYear: TaxYear, businessId: BusinessId)(
       implicit request: Request[_]): Html =

@@ -20,7 +20,6 @@ import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import cats.data.EitherT
 import models.NormalMode
 import models.common.{Mtditid, Nino, TaxYear}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.adjustments.profitOrLoss.CarryLossForwardPage
 import play.api.Application
 import play.api.data.Form
@@ -28,6 +27,8 @@ import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.journeys.adjustments.profitOrLoss.CarryLossForwardView
+
+import scala.concurrent.Future
 
 class CurrentYearLossControllerCarryLossForwardSpec extends BooleanGetAndPostQuestionBaseSpec("CurrentYearLossController", CarryLossForwardPage) {
 

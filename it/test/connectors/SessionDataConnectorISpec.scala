@@ -70,7 +70,7 @@ class SessionDataConnectorISpec extends WiremockSpec with IntegrationBaseSpec {
 
         connector.getSessionData(hc).futureValue match {
           case Left(value: CannotReadJsonError) =>
-            value.details.map(_._1) mustBe Seq(
+            value.details.map(_._1).toSet mustBe Set(
               __ \ "sessionId",
               __ \ "nino",
               __ \ "mtditid"

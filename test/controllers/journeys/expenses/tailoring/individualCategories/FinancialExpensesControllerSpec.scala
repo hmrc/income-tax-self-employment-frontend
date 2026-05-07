@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import controllers.standard
+import models.errors.ServiceError
 import forms.expenses.tailoring.individualCategories.FinancialExpensesFormProvider
 import models.common.Journey.{ExpensesFinancialCharges, ExpensesInterest, ExpensesIrrecoverableDebts}
 import models.common.UserType.{Agent, Individual}
@@ -31,9 +32,8 @@ import models.journeys.expenses.individualCategories.ProfessionalServiceExpenses
 import models.journeys.expenses.individualCategories._
 import models.{CheckMode, NormalMode}
 import navigation.{ExpensesTailoringNavigator, FakeExpensesTailoringNavigator}
-import org.mockito.ArgumentMatchers.{eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.matchers.MacroBasedMatchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.expenses.tailoring.ExpensesCategoriesPage
@@ -49,7 +49,7 @@ import views.html.journeys.expenses.tailoring.individualCategories.FinancialExpe
 
 import scala.concurrent.Future
 
-class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with MacroBasedMatchers with BeforeAndAfterEach {
+class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -214,9 +214,12 @@ class FinancialExpensesControllerSpec extends SpecBase with MockitoSugar with Ma
             .url
         running(application) {
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT.rightT(())
-          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT.rightT(())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesIrrecoverableDebts))(any, any)) thenReturn EitherT
+            .rightT[Future, ServiceError](())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesInterest))(any, any)) thenReturn EitherT
+            .rightT[Future, ServiceError](())
+          when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesFinancialCharges))(any, any)) thenReturn EitherT
+            .rightT[Future, ServiceError](())
 
           val request =
             FakeRequest(POST, financialExpensesRoute)

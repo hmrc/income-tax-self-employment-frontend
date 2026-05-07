@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.standard.BooleanFormProvider
+import models.errors.ServiceError
 import models.common.Journey.ExpensesConstruction
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -185,7 +186,8 @@ class DisallowableSubcontractorCostsControllerSpec extends SpecBase with Mockito
       "must redirect to the next page when valid data is submitted in CheckMode" in {
 
         when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesConstruction))(any, any)) thenReturn EitherT
+          .rightT[Future, ServiceError](())
 
         val ua = baseAnswers.set(DisallowableSubcontractorCostsPage, false).success.value
         val application =

@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.standard.BooleanFormProvider
+import models.errors.ServiceError
 import models.common.Journey.ExpensesStaffCosts
 import models.common.UserType
 import models.common.UserType.{Agent, Individual}
@@ -182,7 +183,8 @@ class DisallowableStaffCostsControllerSpec extends SpecBase with MockitoSugar wi
       "must redirect to the next page when valid data is submitted in CheckMode" in {
 
         when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
-        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, HeaderCarrier(any))) thenReturn EitherT.rightT(())
+        when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesStaffCosts))(any, HeaderCarrier(any))) thenReturn EitherT
+          .rightT[Future, ServiceError](())
 
         val ua = baseAnswers.set(DisallowableStaffCostsPage, false).success.value
         val application =

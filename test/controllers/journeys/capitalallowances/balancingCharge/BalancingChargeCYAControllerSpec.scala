@@ -32,7 +32,7 @@ class BalancingChargeCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec {
 
   override val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
-  override val testDataCases: List[JsObject] = List(
+  override lazy val testDataCases: List[JsObject] = List(
     Json.obj(
       "balancingCharge"       -> true,
       "balancingChargeAmount" -> 123.00

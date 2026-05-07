@@ -20,7 +20,6 @@ import base.questionPages.BigDecimalGetAndPostQuestionBaseSpec
 import models.common.{BusinessId, TaxYear}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.income.OtherIncomeAmountPage
 import play.api.Application

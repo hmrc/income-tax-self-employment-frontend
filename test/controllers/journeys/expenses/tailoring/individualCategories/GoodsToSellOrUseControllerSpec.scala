@@ -28,7 +28,6 @@ import models.journeys.expenses.individualCategories.GoodsToSellOrUse
 import models.journeys.expenses.individualCategories.OfficeSupplies.YesDisallowable
 import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
 import org.mockito.Mockito.when
 import pages.expenses.tailoring.ExpensesCategoriesPage
 import pages.expenses.tailoring.individualCategories._
@@ -65,7 +64,7 @@ class GoodsToSellOrUseControllerSpec
     )
   )
 
-  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(filledUserAnswers)
+  when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, eqTo(validAnswer), eqTo(page))(*)) thenReturn Future.successful(filledUserAnswers)
 
   override def expectedView(form: Form[_], scenario: TestScenario)(implicit
       request: Request[_],
@@ -91,12 +90,10 @@ class GoodsToSellOrUseControllerSpec
         def expectedUrl: Call = controllers.journeys.expenses.tailoring.routes.ExpensesTailoringCYAController.onPageLoad(taxYear, businessId)
 
         running(application) {
-          mockService.handleForm(*[Form[_]], *, *)(*[DataRequest[_]], *[FormBinding]) returns SeeOther(onwardRoute.url).asFuture
-          mockService.defaultHandleForm(*[Form[Any]], *[OneQuestionPage[Any]], *[BusinessId], *[TaxYear], *[Mode], *)(
-            *[DataRequest[_]],
-            *[FormBinding],
-            *[Writes[Any]]
-          ) returns SeeOther(onwardRoute.url).asFuture
+          mockService.handleForm(*, *, *)(*, *) returns SeeOther(onwardRoute.url).asFuture
+          mockService.defaultHandleForm(*, eqTo(page), eqTo(businessId), eqTo(taxYear), *, *)(*, *, *) returns SeeOther(onwardRoute.url).asFuture
+          when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, eqTo(GoodsToSellOrUse.No), eqTo(page))(*)) thenReturn Future.successful(
+            filledUserAnswers)
 
           val userAnswers                               = buildUserAnswers(GoodsToSellOrUsePage, newAnswer)
           implicit val request: DataRequest[AnyContent] = fakeDataRequest(userAnswers)

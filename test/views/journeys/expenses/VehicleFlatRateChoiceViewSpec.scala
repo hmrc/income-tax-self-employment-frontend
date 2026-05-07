@@ -21,16 +21,13 @@ import models.common.UserType
 import models.{Index, Mode, NormalMode}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import views.ViewBaseSpec
 import views.html.journeys.expenses.travelAndAccommodation.VehicleFlatRateChoiceView
 
 class VehicleFlatRateChoiceViewSpec extends ViewBaseSpec {
 
-  val application: Application        = new GuiceApplicationBuilder().build()
-  val view: VehicleFlatRateChoiceView = application.injector.instanceOf[VehicleFlatRateChoiceView]
+  private val view: VehicleFlatRateChoiceView = app.injector.instanceOf[VehicleFlatRateChoiceView]
 
   private val formProvider    = app.injector.instanceOf[VehicleFlatRateChoiceFormProvider]
   private val index: Index    = Index(1)

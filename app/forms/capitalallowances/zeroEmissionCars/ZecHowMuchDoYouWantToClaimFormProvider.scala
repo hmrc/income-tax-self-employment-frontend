@@ -49,7 +49,7 @@ object ZecHowMuchDoYouWantToClaimFormProvider extends Mappings with MoneyBounds 
       mapping(
         howMuchDoYouWantToClaim -> validateRadio(),
         totalCost               -> validateAmount(fullAmount)
-      )(ZecHowMuchDoYouWantToClaimModel.apply)(ZecHowMuchDoYouWantToClaimModel.unapply)
+      )(ZecHowMuchDoYouWantToClaimModel.apply)(m => Some(Tuple.fromProductTyped(m)))
     )
   }
 

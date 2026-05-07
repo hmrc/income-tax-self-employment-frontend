@@ -21,7 +21,7 @@ import cats.implicits.catsSyntaxEitherId
 import controllers.{journeys, standard}
 import models.errors.ServiceError.ConnectorResponseError
 import models.errors.{HttpError, HttpErrorBody}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages

@@ -108,7 +108,7 @@ class SimplifiedExpensesControllerISpec extends WiremockSpec with IntegrationBas
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(onSubmitUrl).post(Map("value" -> Seq("true"))))
+        val result = await(buildClient(onSubmitUrl).post(Map[String, Seq[String]]("value" -> Seq("true"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(routes.UseSimplifiedExpensesController.onPageLoad(taxYear, businessId, index).url)
@@ -121,7 +121,7 @@ class SimplifiedExpensesControllerISpec extends WiremockSpec with IntegrationBas
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails)))
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(onSubmitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(onSubmitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

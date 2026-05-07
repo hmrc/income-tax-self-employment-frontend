@@ -28,8 +28,7 @@ import models.errors.ServiceError
 import models.common.Journey
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchersSugar._
-import org.mockito.IdiomaticMockito.StubbingOps
-import org.mockito.MockitoSugar
+import org.mockito.IdiomaticMockito
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsObject, Json}
@@ -42,7 +41,7 @@ import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers with MockitoSugar {
+class SubmittedDataRetrievalActionImplSpec extends AnyWordSpecLike with Matchers with IdiomaticMockito {
 
   "transform" should {
     "return the original request if it already contains answers for the journey" in new SubmittedTestData {

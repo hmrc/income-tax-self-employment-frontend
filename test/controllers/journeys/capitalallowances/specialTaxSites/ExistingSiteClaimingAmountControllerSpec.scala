@@ -21,7 +21,6 @@ import forms.standard.CurrencyFormProvider
 import models.common.{BusinessId, TaxYear, UserType}
 import models.requests.DataRequest
 import models.{Mode, NormalMode}
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.capitalallowances.specialTaxSites.ExistingSiteClaimingAmountPage
 import play.api.Application

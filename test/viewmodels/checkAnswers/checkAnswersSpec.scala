@@ -16,11 +16,16 @@
 
 package viewmodels.checkAnswers
 
-import base.SpecBase.{TestCase, emptyCall}
+import base.SpecBase.emptyCall
+import common.TestApp
 import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 
 class checkAnswersSpec extends AnyWordSpecLike {
+
+  implicit val messages: Messages = TestApp.buildAppWithMessages()
+
   private def expectedRow(expectedAnswer: String, rightTextAlign: Boolean = false) = SummaryListRow(
     Key(Text("keyMessage"), "govuk-!-width-two-thirds"),
     Value(HtmlContent(expectedAnswer), s"govuk-!-width-one-third${if (rightTextAlign) " govuk-!-text-align-right" else ""}"),
@@ -31,24 +36,24 @@ class checkAnswersSpec extends AnyWordSpecLike {
   "buildRowBoolean" should {
 
     "return a SummaryListRow with Yes for answer=True" when {
-      "value is default aligned left" in new TestCase {
+      "value is default aligned left" in {
         val result = buildRowBoolean(answer = true, emptyCall, "keyMessage", "changeMessage")
         assert(result === expectedRow("Yes"))
       }
-      "value is specified as aligned right" in new TestCase {
+      "value is specified as aligned right" in {
         val result = buildRowBoolean(answer = true, emptyCall, "keyMessage", "changeMessage")
         assert(result === expectedRow("Yes"))
       }
     }
 
-    "return a SummaryListRow with No for answer=False" in new TestCase {
+    "return a SummaryListRow with No for answer=False" in {
       val result = buildRowBoolean(answer = false, emptyCall, "keyMessage", "changeMessage")
       assert(result === expectedRow("No"))
     }
   }
 
   "buildRowBigDecimal" should {
-    "return a SummaryListRow with formatted money aligned right" in new TestCase {
+    "return a SummaryListRow with formatted money aligned right" in {
       val result = buildRowBigDecimal(1.0, emptyCall, "keyMessage", "changeMessage")
       assert(result === expectedRow("£1", rightTextAlign = true))
     }
@@ -56,11 +61,11 @@ class checkAnswersSpec extends AnyWordSpecLike {
 
   "buildRowString" should {
     "return a SummaryListRow with a proper key, value and actions" when {
-      "value is default aligned left" in new TestCase {
+      "value is default aligned left" in {
         val result = buildRowString("strAnswer", emptyCall, "keyMessage", "changeMessage")
         assert(result === expectedRow("strAnswer"))
       }
-      "value is specified as aligned right" in new TestCase {
+      "value is specified as aligned right" in {
         val result = buildRowString("strAnswer", emptyCall, "keyMessage", "changeMessage", rightTextAlign = true)
         assert(result === expectedRow("strAnswer", rightTextAlign = true))
       }

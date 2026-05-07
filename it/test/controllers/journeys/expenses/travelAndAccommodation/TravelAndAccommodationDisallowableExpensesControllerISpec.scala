@@ -117,7 +117,7 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
         AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("400.00"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("400.00"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe
@@ -135,7 +135,7 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
       AnswersApiStub.replaceAnswers(testContext, Json.toJson(testTravelAndAccommodationData))(OK)
       DbHelper.insertEmpty()
 
-      val result = await(buildClient(submitUrl).post(Map("value" -> Seq("400.00"))))
+      val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("400.00"))))
 
       result.status mustBe SEE_OTHER
       result.header(HeaderNames.LOCATION) mustBe Some(controllers.standard.routes.JourneyRecoveryController.onPageLoad().url)
@@ -147,7 +147,7 @@ class TravelAndAccommodationDisallowableExpensesControllerISpec extends Wiremock
         AnswersApiStub.getAnswers(testContext)(OK, Some(Json.toJson(testTravelAndAccommodationData)))
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

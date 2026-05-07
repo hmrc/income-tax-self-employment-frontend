@@ -16,28 +16,44 @@
 
 package connectors
 
-import org.scalamock.handlers.CallHandler4
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
+import org.mockito.ArgumentMatchers.{any, eq as meq}
+import org.mockito.Mockito
+import org.mockito.Mockito.when
+import org.mockito.stubbing.OngoingStubbing
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-trait MockAuthConnector extends MockFactory {
-  this: TestSuite =>
+trait MockAuthConnector extends MockitoSugar {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   object MockAuthConnector {
 
-    def authorise[T](predicate: Predicate)(response: Future[T]): CallHandler4[Predicate, Retrieval[T], HeaderCarrier, ExecutionContext, Future[T]] =
-      (mockAuthConnector
-        .authorise[T](_: Predicate, _: Retrieval[T])(_: HeaderCarrier, _: ExecutionContext))
-        .expects(predicate, *, *, *)
-        .returns(response)
+    @SuppressWarnings(Array("unchecked"))
+    private var stubbings: Map[Predicate, OngoingStubbing[Future[Any]]] = Map.empty
+
+    def authorise[T](predicate: Predicate)(response: Future[T]): OngoingStubbing[Future[T]] =
+      stubbings.get(predicate) match {
+        case None =>
+          val stubbing = when(mockAuthConnector.authorise[T](meq(predicate), any())(any(), any()))
+            .thenReturn(response)
+          stubbings = stubbings + (predicate -> stubbing.asInstanceOf[OngoingStubbing[Future[Any]]])
+          stubbing
+        case Some(existing) =>
+          val stubbing = existing
+            .asInstanceOf[OngoingStubbing[Future[T]]]
+            .thenReturn(response)
+          stubbings = stubbings + (predicate -> stubbing.asInstanceOf[OngoingStubbing[Future[Any]]])
+          stubbing
+      }
+
+    def resetStubbing(): Unit = {
+      stubbings = Map.empty
+      Mockito.reset(mockAuthConnector)
+    }
   }
 
 }

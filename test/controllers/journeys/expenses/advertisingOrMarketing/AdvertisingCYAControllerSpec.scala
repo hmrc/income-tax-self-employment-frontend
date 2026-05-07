@@ -50,10 +50,10 @@ class AdvertisingCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with 
     classes = "govuk-!-margin-bottom-7"
   )
 
-  override val submissionData = Json.obj(
+  override lazy val submissionData = Json.obj(
     "advertisingOrMarketing"                   -> "yesDisallowable",
     "advertisingOrMarketingAmount"             -> allowableAmount,
     "advertisingOrMarketingDisallowableAmount" -> disallowableAmount
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 }

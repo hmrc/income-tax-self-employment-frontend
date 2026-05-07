@@ -20,6 +20,7 @@ import base.questionPages.BooleanGetAndPostQuestionBaseSpec
 import builders.NetBusinessProfitOrLossValuesBuilder.aNetBusinessProfitValues
 import cats.data.EitherT
 import models.NormalMode
+import models.errors.ServiceError
 import models.common.AccountingType.Accrual
 import navigation.{CapitalAllowancesNavigator, FakeCapitalAllowanceNavigator}
 import org.mockito.Mockito.when
@@ -33,6 +34,8 @@ import utils.MoneyUtils.formatSumMoneyNoNegative
 import viewmodels.journeys.capitalallowances.AssetBasedAllowanceSummary.buildNetProfitOrLossSummaryList
 import views.html.journeys.capitalallowances.tailoring.ClaimCapitalAllowancesView
 
+import scala.concurrent.Future
+
 class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBaseSpec("ClaimCapitalAllowancesController", ClaimCapitalAllowancesPage) {
 
   override def onPageLoadCall: Call = routes.ClaimCapitalAllowancesController.onPageLoad(taxYear, businessId, NormalMode)
@@ -40,8 +43,8 @@ class ClaimCapitalAllowancesControllerSpec extends BooleanGetAndPostQuestionBase
 
   override def onwardRoute: Call = models.common.onwardRoute
 
-  when(mockService.getNetBusinessProfitOrLossValues(anyTaxYear, anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT.rightT(
-    aNetBusinessProfitValues)
+  when(mockService.getNetBusinessProfitOrLossValues(anyTaxYear, anyNino, anyBusinessId, anyMtditid)(any)) thenReturn EitherT
+    .rightT[Future, ServiceError](aNetBusinessProfitValues)
 
   override def expectedView(form: Form[Boolean], scenario: TestScenario)(implicit
       request: Request[_],

@@ -19,14 +19,14 @@ package forms.capitalallowances.zeroEmissionGoodsVehicle
 import forms.behaviours.SimpleFieldBehaviours
 import forms.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSEFormProvider.ZegvUseOutsideSEFormModel
 import models.journeys.capitalallowances.zeroEmissionGoodsVehicle.ZegvUseOutsideSE
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
 
 class ZegvUseOutsideSEFormProviderSpec extends SimpleFieldBehaviours {
   implicit val msg: Messages = messagesStubbed
 
   "ZegvTotalCostOfVehicleFormProvider" - forAllUserTypes { userType =>
-    implicit val form = ZegvUseOutsideSEFormProvider.apply(userType)
+    implicit val form: Form[ZegvUseOutsideSEFormModel] = ZegvUseOutsideSEFormProvider.apply(userType)
     checkValidInstance(ZegvUseOutsideSEFormModel(ZegvUseOutsideSE.Ten, 1))
     checkValidInstance(ZegvUseOutsideSEFormModel(ZegvUseOutsideSE.TwentyFive, 1))
     checkValidInstance(ZegvUseOutsideSEFormModel(ZegvUseOutsideSE.Fifty, 1))

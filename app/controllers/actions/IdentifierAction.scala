@@ -90,7 +90,7 @@ class AuthenticatedIdentifierAction @Inject() (
             Future.successful(Redirect(config.signInUrl))
           case (None, _) =>
             logger.info(s"[AuthorisedAction][individualAuthentication] - User has no MTD IT enrolment. Redirecting user to sign up for MTD.")
-            Future.successful(Redirect(controllers.authorisationErrors.routes.IndividualAuthErrorController.onPageLoad))
+            Future.successful(Redirect(controllers.authorisationErrors.routes.IndividualAuthErrorController.onPageLoad()))
         }
       case _ =>
         logger.info("[AuthorisedAction][individualAuthentication] User has confidence level below 250.")
@@ -123,7 +123,7 @@ class AuthenticatedIdentifierAction @Inject() (
         .recover {
           case _: AuthorisationException =>
             logger.info(s"[AuthorisedAction][agentAuthentication] - Agent does not have delegated authority for Client.")
-            Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad)
+            Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad())
           case e =>
             logger.error(s"[AuthorisedAction][agentAuthentication] - Unexpected exception of type '${e.getClass.getSimpleName}' was caught")
             errorHandler.internalServerError()
@@ -149,7 +149,7 @@ class AuthenticatedIdentifierAction @Inject() (
           block(IdentifierRequest(request, internalId, User(mtdItId, Some(arn), nino, sessionId, AffinityGroup.Agent.toString, isSupportingAgent)))
         case None =>
           logger.info(s"[AuthorisedAction][agentAuthentication] - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
-          Future.successful(Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad))
+          Future.successful(Redirect(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad()))
       }
     }
 }

@@ -51,11 +51,11 @@ class ProfessionalFeesCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec 
       classes = "govuk-!-margin-bottom-7"
     )
 
-  override val submissionData: JsObject = Json.obj(
+  override lazy val submissionData: JsObject = Json.obj(
     "disallowableProfessionalFees"       -> true,
     "professionalFeesAmount"             -> allowableAmount,
     "professionalFeesDisallowableAmount" -> disallowableAmount
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
 }

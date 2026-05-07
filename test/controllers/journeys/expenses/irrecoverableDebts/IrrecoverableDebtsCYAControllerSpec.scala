@@ -54,7 +54,7 @@ class IrrecoverableDebtsCYAControllerSpec extends CYAOnPageLoadControllerBaseSpe
 
   protected val journey: Journey = Journey.ExpensesIrrecoverableDebts
 
-  protected val submissionData: JsObject = Json.obj(
+  protected lazy val submissionData: JsObject = Json.obj(
     "financialExpenses"                    -> List("irrecoverableDebts"),
     "disallowableIrrecoverableDebts"       -> "yesDisallowable",
     "irrecoverableDebtsAmount"             -> 200.00,

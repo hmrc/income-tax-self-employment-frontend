@@ -21,7 +21,6 @@ import models.NormalMode
 import models.common.BusinessId
 import models.database.UserAnswers
 import models.journeys.capitalallowances.specialTaxSites.NewSpecialTaxSite
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.capitalallowances.specialTaxSites.{NewSpecialTaxSitesList, RemoveSpecialTaxSitePage}
 import play.api.Application
 import play.api.data.Form
@@ -50,6 +49,8 @@ class NewTaxSitesControllerSpec extends BooleanGetAndPostQuestionBaseSpec("NewTa
     view(form, scenario.userType, scenario.taxYear, scenario.businessId, SummaryListCYA.summaryListOpt(List.empty, None), None).toString()
   }
 
-  mockService.persistAnswer(*[BusinessId], *[UserAnswers], *, *)(*) returns buildUserAnswers(NewSpecialTaxSitesList, List.empty).asFuture
+  mockService.persistAnswer(eqTo(businessId), *, eqTo(List.empty[NewSpecialTaxSite]), eqTo(NewSpecialTaxSitesList))(*) returns buildUserAnswers(
+    NewSpecialTaxSitesList,
+    List.empty).asFuture
 
 }

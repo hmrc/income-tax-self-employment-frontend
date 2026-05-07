@@ -21,7 +21,7 @@ import controllers.journeys.capitalallowances._
 import controllers.standard
 import models.database.UserAnswers
 import models.{CheckMode, NormalMode}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.Page
 import pages.capitalallowances.balancingCharge.{BalancingChargeAmountPage, BalancingChargePage}
 import pages.capitalallowances.tailoring.{ClaimCapitalAllowancesPage, SelectCapitalAllowancesPage}

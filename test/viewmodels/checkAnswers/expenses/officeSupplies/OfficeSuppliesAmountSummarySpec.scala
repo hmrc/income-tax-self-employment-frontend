@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.expenses.officeSupplies
 import base.SpecBase
 import models.common.UserType.Individual
 import models.database.UserAnswers
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}

@@ -39,6 +39,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
 
   trait Fixture {
 
+    MockAuthConnector.resetStubbing()
     MockAppConfig.signInUrl("/sign-in")
     MockAppConfig.viewAndChangeEnterUtrUrl("/enter-utr")
     MockAppConfig.incomeTaxSubmissionIvRedirect("/iv-uplift")
@@ -81,13 +82,11 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
               .authorise(EmptyPredicate)(
                 Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
               )
-              .once()
 
             MockAuthConnector
               .authorise(EmptyPredicate)(
                 Future.successful(new ~(enrolments, ConfidenceLevel.L250))
               )
-              .once()
 
             val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
@@ -108,13 +107,11 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
               .authorise(EmptyPredicate)(
                 Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
               )
-              .once()
 
             MockAuthConnector
               .authorise(EmptyPredicate)(
                 Future.successful(new ~(enrolments, ConfidenceLevel.L250))
               )
-              .once()
 
             val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
@@ -136,18 +133,16 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
               .authorise(EmptyPredicate)(
                 Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
               )
-              .once()
 
             MockAuthConnector
               .authorise(EmptyPredicate)(
                 Future.successful(new ~(enrolments, ConfidenceLevel.L250))
               )
-              .once()
 
             val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.IndividualAuthErrorController.onPageLoad.url)
+            redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.IndividualAuthErrorController.onPageLoad().url)
           }
         }
       }
@@ -166,13 +161,11 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
             .authorise(EmptyPredicate)(
               Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Individual)))
             )
-            .once()
 
           MockAuthConnector
             .authorise(EmptyPredicate)(
               Future.successful(new ~(enrolments, ConfidenceLevel.L200))
             )
-            .once()
 
           val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
@@ -225,7 +218,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
               .authorise(EmptyPredicate)(Future.successful(new ~(Some("internalId"), Some(AffinityGroup.Agent))))
 
             MockAuthConnector
-              .authorise(EnrolmentHelper.agentAuthPredicate(mtditid.value))(Future.failed(InsufficientEnrolments("Error")))
+              .authorise(EnrolmentHelper.agentAuthPredicate(mtditid.value))(Future.failed(new RuntimeException("Unexpected error")))
 
             mockInternalServerError(InternalServerError("An unexpected error occurred"))
 
@@ -316,7 +309,7 @@ class AuthActionSpec extends SpecBase with MockAppConfig with MockSessionDataSer
               val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad.url)
+              redirectLocation(result) mustBe Some(controllers.authorisationErrors.routes.AgentAuthErrorController.onPageLoad().url)
             }
           }
         }

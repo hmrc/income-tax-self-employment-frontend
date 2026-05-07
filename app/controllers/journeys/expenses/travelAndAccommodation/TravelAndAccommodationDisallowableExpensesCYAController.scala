@@ -50,7 +50,7 @@ class TravelAndAccommodationDisallowableExpensesCYAController @Inject() (overrid
   def onPageLoad(taxYear: TaxYear, businessId: BusinessId): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val ctx = request.mkJourneyNinoContext(taxYear, businessId, ExpensesTravelForWork)
-      answersService.getAnswers[TravelExpensesDb](ctx).map { optTravelExpensesData: Option[TravelExpensesDb] =>
+      answersService.getAnswers[TravelExpensesDb](ctx).map { (optTravelExpensesData: Option[TravelExpensesDb]) =>
         Ok(
           view(
             "common.checkYourAnswers",

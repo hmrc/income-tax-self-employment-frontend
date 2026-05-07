@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.standard.EnumerableFormProvider
+import models.errors.ServiceError
 import models.common.AccountingType.Accrual
 import models.common.Journey.ExpensesAdvertisingOrMarketing
 import models.common.UserType
@@ -219,7 +220,7 @@ class AdvertisingOrMarketingControllerSpec extends SpecBase with MockitoSugar wi
           when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
           when(
             mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesAdvertisingOrMarketing))(any, HeaderCarrier(any))) thenReturn EitherT
-            .rightT(())
+            .rightT[Future, ServiceError](())
 
           val advertisingOrMarketingRoute: String = routes.AdvertisingOrMarketingController.onPageLoad(taxYear, businessId, CheckMode).url
 

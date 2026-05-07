@@ -17,33 +17,26 @@
 package services.mocks
 
 import models.session.SessionData
-import org.scalamock.handlers.CallHandler3
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import play.api.mvc.Request
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import services.SessionDataService
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait MockSessionDataService extends MockFactory { this: TestSuite =>
+trait MockSessionDataService extends MockitoSugar {
 
   val mockSessionDataService: SessionDataService = mock[SessionDataService]
 
-  private type MockType = CallHandler3[String, Request[_], HeaderCarrier, Future[SessionData]]
-
   object MockSessionDataService {
 
-    private def mockFunction(sessionId: String): MockType =
-      (mockSessionDataService
-        .getSessionData(_: String)(_: Request[_], _: HeaderCarrier))
-        .expects(sessionId, *, *)
+    def getSessionData(sessionId: String)(resp: SessionData): Unit =
+      when(mockSessionDataService.getSessionData(eqTo(sessionId))(any(), any()))
+        .thenReturn(Future.successful(resp))
 
-    def getSessionData(sessionId: String)(resp: SessionData): MockType =
-      mockFunction(sessionId).returning(Future.successful(resp))
-
-    def getSessionDataException(sessionId: String)(err: Throwable): MockType =
-      mockFunction(sessionId).returning(Future.failed(err))
+    def getSessionDataException(sessionId: String)(err: Throwable): Unit =
+      when(mockSessionDataService.getSessionData(eqTo(sessionId))(any(), any()))
+        .thenReturn(Future.failed(err))
   }
 
 }

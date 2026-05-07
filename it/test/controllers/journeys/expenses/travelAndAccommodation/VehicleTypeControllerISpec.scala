@@ -109,7 +109,7 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(VehicleType.values.head.toString))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(VehicleType.values.head.toString))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(routes.SimplifiedExpensesController.onPageLoad(taxYear, businessId, index, NormalMode).url)
@@ -122,7 +122,7 @@ class VehicleTypeControllerISpec extends WiremockSpec with IntegrationBaseSpec {
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails)))
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

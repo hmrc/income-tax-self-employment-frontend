@@ -51,11 +51,11 @@ class InterestCYAControllerSpec extends CYAOnPageLoadControllerBaseSpec with CYA
       classes = "govuk-!-margin-bottom-7"
     )
 
-  override val submissionData: JsObject = Json.obj(
+  override lazy val submissionData: JsObject = Json.obj(
     "disallowableInterest"       -> true,
     "interestAmount"             -> allowableAmount,
     "interestDisallowableAmount" -> disallowableAmount
   )
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
 }

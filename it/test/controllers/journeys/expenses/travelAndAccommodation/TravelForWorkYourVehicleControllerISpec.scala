@@ -104,7 +104,7 @@ class TravelForWorkYourVehicleControllerISpec extends WiremockSpec with Integrat
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("Car"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("Car"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(routes.VehicleTypeController.onPageLoad(taxYear, businessId, index, NormalMode).url)
@@ -117,7 +117,7 @@ class TravelForWorkYourVehicleControllerISpec extends WiremockSpec with Integrat
         AnswersApiStub.getIndex(testContext, index = 1)(NOT_FOUND)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

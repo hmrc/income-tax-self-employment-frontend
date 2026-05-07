@@ -113,7 +113,7 @@ class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSp
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
         DbHelper.insertUserAnswers(userAnswers)
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("100.00"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("100.00"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(routes.TravelAndAccommodationExpensesCYAController.onPageLoad(taxYear, businessId).url)
@@ -126,7 +126,7 @@ class VehicleExpensesControllerISpec extends WiremockSpec with IntegrationBaseSp
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(vehicleExpenses = None))))
         DbHelper.insertUserAnswers(userAnswers)
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

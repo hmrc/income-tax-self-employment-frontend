@@ -27,7 +27,7 @@ import models.common.{BusinessId, Journey, TaxYear, UserType}
 import models.database.UserAnswers
 import models.journeys.expenses.travelAndAccommodation.YourFlatRateForVehicleExpenses.{Actualcost, Flatrate}
 import models.journeys.expenses.travelAndAccommodation.{TravelAndAccommodationExpenseType, VehicleType, YourFlatRateForVehicleExpenses}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.CostsNotCoveredPage
 import pages.expenses.travelAndAccommodation._
 import play.api.i18n.Messages
@@ -99,9 +99,9 @@ class TravelAndAccommodationExpensesCYAControllerSpec extends CYAOnPageLoadContr
       .success
       .value
 
-  val submissionData: JsObject = userAnswers.data
+  lazy val submissionData: JsObject = userAnswers.data
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
   override def expectedSummaryList(
       userAnswers: UserAnswers,

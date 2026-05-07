@@ -28,7 +28,7 @@ import models.errors.{HttpError, ServiceError}
 import models.journeys.adjustments.NetBusinessProfitOrLossValues
 import models.journeys.{JourneyNameAndStatus, TaskList}
 import org.scalatest.EitherValues
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import utils.PagerDutyHelper.PagerDutyKeys.FOURXX_RESPONSE_FROM_CONNECTOR

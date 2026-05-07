@@ -24,7 +24,7 @@ import models.journeys.expenses.individualCategories.TravelForWork
 import models.journeys.expenses.travelAndAccommodation.TravelAndAccommodationExpenseType.{LeasedVehicles, MyOwnVehicle}
 import models.journeys.expenses.travelAndAccommodation.VehicleType.CarOrGoodsVehicle
 import models.journeys.expenses.travelAndAccommodation._
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages._
 import pages.expenses.TravelAndAccommodationDisallowableExpensesPage
 import pages.expenses.tailoring.individualCategories.TravelForWorkPage

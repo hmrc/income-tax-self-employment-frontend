@@ -19,15 +19,12 @@ package views.journeys.expenses
 import models.common.UserType
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import views.ViewBaseSpec
 import views.html.journeys.expenses.travelAndAccommodation.UseSimplifiedExpensesView
 
 class UseSimplifiedExpensesViewSpec extends ViewBaseSpec {
 
-  val application: Application        = new GuiceApplicationBuilder().build()
-  val view: UseSimplifiedExpensesView = application.injector.instanceOf[UseSimplifiedExpensesView]
+  private val view: UseSimplifiedExpensesView = app.injector.instanceOf[UseSimplifiedExpensesView]
 
   private val vehicle: String = "Car"
 

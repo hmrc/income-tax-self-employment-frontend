@@ -48,7 +48,7 @@ object WorkingFromHomeHoursFormProvider extends Mappings {
         value25To50  -> validateHours(value25To50),
         value51To100 -> validateHours(value51To100),
         value101Plus -> validateHours(value101Plus)
-      )(WorkingFromHomeHoursFormModel.apply)(WorkingFromHomeHoursFormModel.unapply)
+      )(WorkingFromHomeHoursFormModel.apply)(m => Some(Tuple.fromProductTyped(m)))
         .verifying(messages(s"$totalOverMaxError$userType", maxMonths), form => form.value25To50 + form.value51To100 + form.value101Plus <= maxMonths)
     )
   }

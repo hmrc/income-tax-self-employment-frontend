@@ -19,6 +19,7 @@ package controllers.journeys.expenses.tailoring.individualCategories
 import base.SpecBase
 import cats.data.EitherT
 import forms.standard.BooleanFormProvider
+import models.errors.ServiceError
 import models.common.Journey.ExpensesProfessionalFees
 import models.{CheckMode, NormalMode}
 import models.common.UserType
@@ -188,7 +189,7 @@ class DisallowableProfessionalFeesControllerSpec extends SpecBase with MockitoSu
 
         when(mockService.persistAnswer(anyBusinessId, anyUserAnswers, any, any)(any)) thenReturn Future.successful(emptyUserAnswers)
         when(mockService.clearExpensesData(anyTaxYear, anyBusinessId, meq(ExpensesProfessionalFees))(any, HeaderCarrier(any))) thenReturn EitherT
-          .rightT(())
+          .rightT[Future, ServiceError](())
 
         val ua = baseAnswers.set(DisallowableStaffCostsPage, false).success.value
         val application =

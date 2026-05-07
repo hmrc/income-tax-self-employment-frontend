@@ -23,10 +23,9 @@ import models.common._
 import models.database.UserAnswers
 import models.{Mode, NormalMode}
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchersSugar
+import org.mockito.{ArgumentMatchersSugar, IdiomaticMockito}
 import org.mockito.Mockito.when
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
@@ -39,7 +38,7 @@ import utils.TimeMachine
 
 import scala.concurrent.Future
 
-trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenPropertyChecks with ArgumentMatchersSugar with ControllerTestScenarioSpec {
+trait ControllerSpec extends SpecBase with TableDrivenPropertyChecks with ArgumentMatchersSugar with ControllerTestScenarioSpec {
 
   val userTypeCases: TableFor1[UserType] = Table(
     "userType",
@@ -48,7 +47,7 @@ trait ControllerSpec extends SpecBase with MockitoSugar with TableDrivenProperty
   )
 }
 
-trait ControllerTestScenarioSpec extends MockitoSugar with DefaultAwaitTimeout with ArgumentMatchersSugar {
+trait ControllerTestScenarioSpec extends DefaultAwaitTimeout with ArgumentMatchersSugar with IdiomaticMockito {
 
   val mockService: SelfEmploymentService = mock[SelfEmploymentService]
   val mockTimeMachine: TimeMachine       = mock[TimeMachine]

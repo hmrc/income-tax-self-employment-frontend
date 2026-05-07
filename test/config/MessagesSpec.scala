@@ -17,7 +17,7 @@
 package config
 
 import base.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers._
 import play.api.Application
 import play.api.i18n.MessagesApi
 
@@ -395,12 +395,14 @@ class MessagesSpec extends SpecBase {
     remaining match {
       case Nil => result
       case (currentKey, currentMessage) :: tail =>
-        val duplicate = if(currentKey.contains("global.error")) Set() else {
-          keysToTest.collect {
-            case (messageKey, message) if currentMessage == message && currentKey != messageKey =>
-              currentKey
-          }.toSet
-        }
+        val duplicate =
+          if (currentKey.contains("global.error")) Set()
+          else {
+            keysToTest.collect {
+              case (messageKey, message) if currentMessage == message && currentKey != messageKey =>
+                currentKey
+            }.toSet
+          }
         checkMessagesAreUnique(keysToTest, tail, duplicate ++ result)
     }
 

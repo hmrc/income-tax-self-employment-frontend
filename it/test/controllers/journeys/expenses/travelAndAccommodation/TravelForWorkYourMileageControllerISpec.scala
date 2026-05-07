@@ -105,7 +105,7 @@ class TravelForWorkYourMileageControllerISpec extends WiremockSpec with Integrat
         AnswersApiStub.replaceIndex(testContext, Json.toJson(testVehicleDetails), index = 1)(OK)
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq("100.00"))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq("100.00"))))
 
         result.status mustBe SEE_OTHER
         result.header(HeaderNames.LOCATION) mustBe Some(
@@ -119,7 +119,7 @@ class TravelForWorkYourMileageControllerISpec extends WiremockSpec with Integrat
         AnswersApiStub.getIndex(testContext, index = 1)(OK, Some(Json.toJson(testVehicleDetails.copy(workMileage = None))))
         DbHelper.insertEmpty()
 
-        val result = await(buildClient(submitUrl).post(Map("value" -> Seq(""))))
+        val result = await(buildClient(submitUrl).post(Map[String, Seq[String]]("value" -> Seq(""))))
 
         result.status mustBe BAD_REQUEST
       }

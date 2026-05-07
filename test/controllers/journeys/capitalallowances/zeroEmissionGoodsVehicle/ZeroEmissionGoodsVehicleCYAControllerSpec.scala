@@ -30,7 +30,7 @@ class ZeroEmissionGoodsVehicleCYAControllerSpec extends CYAOnPageLoadControllerB
 
   val pageHeading: String = Page.cyaCheckYourAnswersHeading
 
-  val testDataCases: List[JsObject] = List(Json.obj("zeroEmissionGoodsVehicle" -> false))
+  lazy val testDataCases: List[JsObject] = List(Json.obj("zeroEmissionGoodsVehicle" -> false))
 
   def onPageLoadCall: (TaxYear, BusinessId) => Call = routes.ZeroEmissionGoodsVehicleCYAController.onPageLoad
   def onSubmitCall: (TaxYear, BusinessId) => Call   = routes.ZeroEmissionGoodsVehicleCYAController.onSubmit

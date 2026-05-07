@@ -184,14 +184,14 @@ class TravelAndAccommodationNavigator @Inject() {
     }
 
   private val normalTravelExpensesRoutes: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
-    case TravelAndAccommodationDisallowableExpensesPage  =>
+    case TravelAndAccommodationDisallowableExpensesPage =>
       _ =>
         (taxYear, businessId, _) =>
           Option(
             routes.TravelAndAccommodationDisallowableExpensesCYAController.onPageLoad(taxYear, businessId)
           )
 
-    case  TravelAndAccommodationTotalExpensesPage =>
+    case TravelAndAccommodationTotalExpensesPage =>
       _ =>
         (taxYear, businessId, userAnswers) =>
           userAnswers.get(TravelForWorkPage, Option(businessId)) match {
@@ -290,7 +290,7 @@ class TravelAndAccommodationNavigator @Inject() {
 
   private val checkTravelExpensesRouteMap: Page => TravelExpensesDb => (TaxYear, BusinessId, UserAnswers) => Option[Call] = {
 
-    case TravelAndAccommodationDisallowableExpensesPage  =>
+    case TravelAndAccommodationDisallowableExpensesPage =>
       _ =>
         (taxYear, businessId, _) =>
           Option(
@@ -300,7 +300,7 @@ class TravelAndAccommodationNavigator @Inject() {
     case TravelAndAccommodationTotalExpensesPage =>
       _ =>
         (taxYear, businessId, userAnswers) =>
-          userAnswers.get(TravelForWorkPage, Option(businessId)) match{
+          userAnswers.get(TravelForWorkPage, Option(businessId)) match {
             case Some(TravelForWork.YesDisallowable) =>
               Some(
                 routes.TravelAndAccommodationDisallowableExpensesController.onPageLoad(taxYear, businessId, NormalMode)

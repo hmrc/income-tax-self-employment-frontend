@@ -21,7 +21,6 @@ import cats.implicits.catsSyntaxOptionId
 import models.NormalMode
 import models.common.BusinessId
 import models.database.UserAnswers
-import org.mockito.IdiomaticMockito.StubbingOps
 import pages.OneQuestionPage
 import pages.capitalallowances.structuresBuildingsAllowance.StructuresBuildingsPreviousClaimUsePage
 import play.api.Application

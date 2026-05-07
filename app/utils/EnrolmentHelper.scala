@@ -18,7 +18,8 @@ package utils
 
 import common.{DelegatedAuthRules, EnrolmentIdentifiers, EnrolmentKeys}
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments, Enrolment => HMRCEnrolment}
+import uk.gov.hmrc.auth.core.{EnrolmentIdentifier, Enrolments, Enrolment as HMRCEnrolment}
+import uk.gov.hmrc.auth.core.Enrolment
 
 object EnrolmentHelper {
 

@@ -70,7 +70,7 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
     view(pageHeading, taxYear, userType, summaryList, onSubmitCall(taxYear, businessId))(request, messages).toString()
   }
 
-  override val submissionData: JsObject = Json.obj(
+  override lazy val submissionData: JsObject = Json.obj(
     "moreThan25Hours"                         -> true,
     "wfhHours25To50"                          -> 1,
     "wfhHours51To100"                         -> 1,
@@ -87,6 +87,6 @@ class WorkplaceRunningCostsCYAControllerSpec extends CYAOnPageLoadControllerBase
     "wfbpClaimingAmount"                      -> 100.00
   )
 
-  override val testDataCases: List[JsObject] = List(submissionData)
+  override lazy val testDataCases: List[JsObject] = List(submissionData)
 
 }
